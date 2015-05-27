@@ -1,3 +1,4 @@
+[![Circle CI](https://circleci.com/gh/DavidThomasSL/intern-project/tree/master.svg?style=svg)](https://circleci.com/gh/DavidThomasSL/intern-project/tree/master)
       _____ _      ____  _   _          _____ ______ _ _ 
      / ____| |    / __ \| \ | |   /\   / ____|  ____| | |
     | |    | |   | |  | |  \| |  /  \ | |  __| |__  | | |
