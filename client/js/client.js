@@ -19,4 +19,4 @@ var send = function () {
     textBox.value = '';
     
     return false;
-}
+};
