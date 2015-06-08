@@ -6,7 +6,7 @@ var testPort = 52684;
 var drivers = [];
 
 module.exports.setupServer = function() {
-    return server(testPort);
+    return server(testPort, false);
 };
 
 module.exports.teardownServer = function(server) {

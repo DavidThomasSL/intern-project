@@ -6,10 +6,10 @@ var socketio = require('socket.io');
 var express = require('express');
 
 
-module.exports = function(port, ip) {
+module.exports = function(port, enableLogging) {
   var router = express();
   var server = http.createServer(router);
-  var io = socketio.listen(server);
+  var io = socketio.listen(server, { log: enableLogging });
 
   router.use(express.static(path.resolve(__dirname, '../client')));
   var messages = [];
@@ -45,7 +45,9 @@ module.exports = function(port, ip) {
 
   server.listen(port, function(){
     var addr = server.address();
-    console.log("Chat server listening at port: " + addr.port);
+    if (enableLogging) {
+      console.log("Chat server listening at port: " + addr.port);
+    }
   });
 
   return server;
