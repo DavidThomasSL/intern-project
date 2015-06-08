@@ -16,9 +16,41 @@ testing.describe("end to end", function() {
 
     testing.describe("on page load", function() {
         testing.it("displays Clonage title", function() {
-            helpers.navigateToSite(server);
-            helpers.getTitleText(server).then(function(text) {
+            var browser = helpers.openBrowser();
+            helpers.getTitleText(browser).then(function(text) {
                 assert.equal(text, "Clonage");
+            });
+        });
+    });
+    testing.describe("on send message", function() {
+        testing.it("clears input field", function() {
+            var browser = helpers.openBrowser();
+            helpers.sendMessage(browser, "Hello World!");
+            helpers.getInputText(browser).then(function(text) {
+                assert.equal(text, "");
+            });
+        });
+        testing.it("adds message to list", function() {
+            var browser = helpers.openBrowser();
+            helpers.sendMessage(browser, "Hello World!");
+            helpers.waitForMessage(browser, "Hello World!");
+            helpers.getMessages(browser).then(function(elements) {
+                assert.equal(elements.length, 1);
+                return elements[0].getText();
+            }).then(function(text) {
+                assert.equal(text, "Hello World!");
+            });
+        });
+        testing.it("sends message to other clients", function() {
+            var browser1 = helpers.openBrowser();
+            var browser2 = helpers.openBrowser();
+            helpers.sendMessage(browser1, "Hello World!");
+            helpers.waitForMessage(browser2, "Hello World!");
+            helpers.getMessages(browser2).then(function(elements) {
+                assert.equal(elements.length, 1);
+                return elements[0].getText();
+            }).then(function(text) {
+                assert.equal(text, "Hello World!");
             });
         });
     });

@@ -1,6 +1,6 @@
 
 var messageList = document.getElementById('messages');
-var textBox = document.getElementById('messageBox');
+var textBox = document.getElementById('message-box');
 
 var socket = io.connect();
 
