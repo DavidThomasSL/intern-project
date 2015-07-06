@@ -3,3 +3,10 @@
     overflow-y: scroll;
     border: 1px solid #ccc;
 }
+
+h1 {
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+  color: red
+}
