@@ -24,5 +24,4 @@ Like Fibbage, but better...
 1) Run "node server.js" from the same directory as this readme
 2) Go to http://intern-project.herokuapp.com/
 
-testing commits
-
+THIS IS A REAL WORKFLOW :)
