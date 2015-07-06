@@ -17,8 +17,9 @@ Like Fibbage, but better...
 
 2) Install node
 
-3) Run "node install" from the same directory as this readme
+3) Run "npm install" to install dependancies 
 
 ## Running the server
 
 1) Run "node server.js" from the same directory as this readme
+
