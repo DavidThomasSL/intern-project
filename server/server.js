@@ -13,19 +13,21 @@ module.exports = function(port, enableLogging) {
         log: enableLogging
     });
 
-  io.set('log level', 1);
+    io.set('log level', 1);
 
-  router.use(express.static(path.resolve(__dirname, '../client')));
+    router.use(express.static(path.resolve(__dirname, '../client')));
 
-  var messages = [];
-  var users = [];
-  var uId = 0;
+    var messages = [];
+    var users = [];
+    var uId = 0;
 
-  io.on('connection', function (socket) {
+    io.on('connection', function(socket) {
 
         //create a new user for the connection
         var user = {};
         user.socket = socket;
+
+        console.log(users);
 
         /*  client requests to join,
             send the uId to the player
@@ -35,28 +37,39 @@ module.exports = function(port, enableLogging) {
             otherwise, create a new player
         */
         socket.on('join', function(msg) {
-            if(msg.token !== undefined) {
+            if (msg.token !== undefined) {
                 console.log("exsitng player")
-                //this user previosuly connected and has an id
-                var existingId = msg.token.id;
-                user = users.filter( function(otherUser) {
-                    return otherUser.uId = existingId;
+                    //this user previosuly connected and has an id
+
+                var existingId = parseInt(msg.token);
+                console.log("existing id" + existingId);
+                user = users.filter(function(otherUser) {
+                    return otherUser.uId === existingId;
                 });
 
+                user = user[0];
+
+                if(user === undefined) {
+                    console.log("SHIIITTT");
+                }
+                else {
+                    console.log(user);
+                }
                 //TODO ERROR CHECK IF NOT FOUND< OR TWO USERS RETURNED
-            }
-            else {
+            } else {
                 //first time this user has joined
                 user.uId = uId;
                 users.push(user);
                 uId++;
-                socket.emit('allocate id', {uId: user.uId});
+                socket.emit('allocate id', {
+                    uId: user.uId
+                });
             }
         });
 
 
         //send all previosu messages to the new user
-        messages.forEach(function (data) {
+        messages.forEach(function(data) {
             socket.emit('message', data);
         });
 
@@ -65,14 +78,14 @@ module.exports = function(port, enableLogging) {
 
         });
 
-        socket.on('disconnect', function () {
-            users = users.filter( function(user) {
-                return user.socket !== socket;
-            });
+        socket.on('disconnect', function() {
+            // users = users.filter(function(user) {
+            //     return user.socket !== socket;
+            // });
         });
 
 
-        socket.on('message', function (msg) {
+        socket.on('message', function(msg) {
             // var text = String(msg || '');
             var sendingText = msg.text;
             var sendingId = msg.id;
@@ -80,7 +93,10 @@ module.exports = function(port, enableLogging) {
             // if (!text)
             //     return;
 
-            var toSend = {text: sendingText, id: sendingId};
+            var toSend = {
+                text: sendingText,
+                id: sendingId
+            };
             console.log(toSend)
 
             broadcast('message', toSend);
@@ -89,10 +105,11 @@ module.exports = function(port, enableLogging) {
         });
     });
 
-  function broadcast(event, data) {
-    users.forEach(function (user) {
-      user.socket.emit(event, data);
-    });
+    function broadcast(event, data) {
+        users.forEach(function(user) {
+            user.socket.emit(event, data);
+        });
+    }
 
     function broadcast(event, data) {
         sockets.forEach(function(socket) {
