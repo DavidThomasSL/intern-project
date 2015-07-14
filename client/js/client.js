@@ -19,19 +19,46 @@ socket.on('connect', function() {
 		setCookie('name', msg.user.name);
 
 	});
+
+	socket.on('room created', function(msg) {
+		console.log(msg.roomId);
+	});
+
+	socket.on('room joined', function(msg) {
+		alert("successfully joined room " + msg.roomId);
+	});
+
+	socket.on('failed room join', function(msg) {
+		alert("failed to join room ");
+	});
 });
 
 function submitName() {
 	var name = document.getElementById('name-input-box').value;
 	document.getElementById('name-input-box').value = "";
 
-	socket.emit('set name', {uId: user.uId, name: name});
+	socket.emit('set name', {
+		uId: user.uId,
+		name: name
+	});
 
 }
 
 function createRoom() {
-	socket.emit('create room', {playerId: user.uId});
+	socket.emit('create room', {
+		playerId: user.uId
+	});
 	console.log("created room");
+}
+
+function joinRoom() {
+	var enteredRoomId = document.getElementById('room-input-box').value;
+	document.getElementById('room-input-box').value = "";
+	socket.emit('join room', {
+		playerId: user.uId,
+		roomId: enteredRoomId
+	});
+
 }
 
 function setCookie(cname, cvalue) {

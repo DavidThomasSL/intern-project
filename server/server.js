@@ -87,7 +87,28 @@ module.exports = function(port, enableLogging) {
             rooms.push(room);
             console.log(rooms);
             roomId++;
-            return room.id;
+            socket.emit('room created', {roomId: room.id});
+            // return room.id;
+        });
+
+        socket.on('join room', function(msg) {
+            rooms.forEach(function (room){
+                if(parseInt(room.id) === parseInt(msg.roomId)){
+                    console.log(msg.roomId)
+                    var found = false;
+                    room.players.forEach( function(player) {
+                        if ( parseInt(player) === parseInt(msg.playerId))
+                            found = true;
+                    });
+                    if (found === false) {
+                    room.players.push(msg.playerId);
+                }
+                    socket.emit('room joined', {roomId: room.id});
+                }
+                    //socket.emit('failed room join');
+            });
+
+            console.log(rooms);
         });
 
         //send all previosu messages to the new user
@@ -96,9 +117,6 @@ module.exports = function(port, enableLogging) {
         });
 
 
-        socket.emit('join', function() {
-
-        });
 
         socket.on('disconnect', function() {
             // users = users.filter(function(user) {
