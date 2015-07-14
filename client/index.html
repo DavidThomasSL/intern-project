@@ -7,16 +7,12 @@
   </head>
   <body>
     <h1>Clonage</h1>
-    
-    <ul id="messages">
-        
-    </ul>
-    
-    <form onsubmit="return send()">
-      <input id="message-box" type="text" placeholder="Message">
-      <input id="submit-message" type="submit" value="Send"></input> 
-    </form>
-    
+    <h2>Enter your name</h2>
+    <input id="name-input-box" placeholder="your name here">
+    <button onclick="submitName()">Submit Name</button>
+
+
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/client.js"></script>
   </body>

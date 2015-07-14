@@ -67,6 +67,11 @@ module.exports = function(port, enableLogging) {
             }
         });
 
+        socket.on('set name', function(msg) {
+            user.name = msg.name;
+            console.log(msg.name);
+        });
+
 
         //send all previosu messages to the new user
         messages.forEach(function(data) {
@@ -84,36 +89,11 @@ module.exports = function(port, enableLogging) {
             // });
         });
 
-
-        socket.on('message', function(msg) {
-            // var text = String(msg || '');
-            var sendingText = msg.text;
-            var sendingId = msg.id;
-
-            // if (!text)
-            //     return;
-
-            var toSend = {
-                text: sendingText,
-                id: sendingId
-            };
-            console.log(toSend)
-
-            broadcast('message', toSend);
-            messages.push(toSend);
-
-        });
     });
 
     function broadcast(event, data) {
         users.forEach(function(user) {
             user.socket.emit(event, data);
-        });
-    }
-
-    function broadcast(event, data) {
-        sockets.forEach(function(socket) {
-            socket.emit(event, data);
         });
     }
 
