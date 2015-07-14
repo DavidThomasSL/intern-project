@@ -29,6 +29,11 @@ function submitName() {
 
 }
 
+function createRoom() {
+	socket.emit('create room', {playerId: user.uId});
+	console.log("created room");
+}
+
 function setCookie(cname, cvalue) {
 	var d = new Date();
 	d.setTime(d.getTime() + (20 * 24 * 60 * 60 * 1000));

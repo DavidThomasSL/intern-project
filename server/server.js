@@ -17,9 +17,11 @@ module.exports = function(port, enableLogging) {
 
     router.use(express.static(path.resolve(__dirname, '../client')));
 
+    var rooms = [];
     var messages = [];
     var users = [];
     var uId = 0;
+    var roomId = 0;
 
     io.on('connection', function(socket) {
 
@@ -49,10 +51,9 @@ module.exports = function(port, enableLogging) {
 
                 user = user[0];
 
-                if(user === undefined) {
+                if (user === undefined) {
                     console.log("SHIIITTT");
-                }
-                else {
+                } else {
                     console.log(user);
                 }
                 //TODO ERROR CHECK IF NOT FOUND< OR TWO USERS RETURNED
@@ -77,6 +78,17 @@ module.exports = function(port, enableLogging) {
             console.log(msg.name);
         });
 
+        //create room, assign id, add current player and return room id to player
+        socket.on('create room', function(msg) {
+            var room = {
+                id: roomId,
+                players: [msg.playerId]
+            };
+            rooms.push(room);
+            console.log(rooms);
+            roomId++;
+            return room.id;
+        });
 
         //send all previosu messages to the new user
         messages.forEach(function(data) {
