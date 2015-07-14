@@ -11,10 +11,13 @@ socket.on('connect', function() {
 		token: getCookie("token")
 	});
 
-	socket.on('allocate id', function(msg) {
-		console.log("Setting cookie for new user" + msg.uId);
-		user.uId = msg.uId;
-		setCookie('token', msg.uId);
+	socket.on('user details', function(msg) {
+		console.log("Setting cookie for new user" + msg.user.uId);
+		user.uId = msg.user.uId;
+		console.log(msg.user);
+		setCookie('token', msg.user.uId);
+		setCookie('name', msg.user.name);
+
 	});
 });
 

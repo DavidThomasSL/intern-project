@@ -61,10 +61,15 @@ module.exports = function(port, enableLogging) {
                 user.uId = uId;
                 users.push(user);
                 uId++;
-                socket.emit('allocate id', {
-                    uId: user.uId
-                });
             }
+
+            user.socket = "";
+            console.log("emtting to user details");
+            socket.emit('user details', {
+                user: user
+            });
+
+            user.socket = socket;
         });
 
         socket.on('set name', function(msg) {
