@@ -28,7 +28,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 	var user = {};
 
 	$scope.enteredName = "";
-	$scope.enteredRoomId = null;
 	$scope.registered = false;
 	$scope.nameSet = false;
 	$scope.roomJoined = false;
@@ -59,13 +58,14 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			// setCookie('name', msg.user.name);
 			$scope.$storage.userId = msg.user.uId;
 			$scope.$storage.username = msg.user.name;
+			$scope.$storage.roomId = undefined;
 
 			$scope.registered = true;
 
 			//check if the user is in a room already
 			//if so, we can put them straight into the next stage of the game
 			if (msg.user.roomId !== undefined) {
-				$scope.enteredRoomId = msg.user.roomId;
+				$scope.$storage.roomId = msg.user.roomId;
 				$scope.roomJoined = true;
 				$scope.gameStage = 1;
 			}
@@ -81,7 +81,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		if (msg.success) {
 			$scope.roomJoined = true;
 			$scope.gameStage = 1;
-			$scope.enteredRoomId = msg.roomId;
+			$scope.$storage.roomId = msg.roomId;
 			print("joined room");
 		} else {
 			print("could not join");
@@ -120,24 +120,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 
 	//PRIVATE HELPER METHODS
 	//------------------------------
-	//TODO USE LOCAL STORAGE
-	function setCookie(cname, cvalue) {
-		var d = new Date();
-		d.setTime(d.getTime() + (20 * 24 * 60 * 60 * 1000));
-		var expires = "expires=" + d.toUTCString();
-		document.cookie = cname + "=" + cvalue + "; " + expires;
-	}
 
-	function getCookie(cname) {
-		var name = cname + "=";
-		var ca = document.cookie.split(';');
-		for (var i = 0; i < ca.length; i++) {
-			var c = ca[i];
-			while (c.charAt(0) == ' ') c = c.substring(1);
-			if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-		}
-		return undefined;
-	}
 
 	function print(msg) {
 		console.log(msg);
