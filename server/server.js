@@ -41,24 +41,28 @@ module.exports = function(port, enableLogging) {
         socket.on('join', function(msg) {
             if (msg.token !== undefined) {
                 console.log("exsitng player")
-                    //this user previosuly connected and has an id
+                //this user previosuly connected and has an id
 
                 var existingId = parseInt(msg.token);
                 console.log("existing id" + existingId);
+
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
                 });
 
-                user = user[0];
-
                 if (user === undefined) {
-                    console.log("SHIIITTT");
+                    console.log("No user found with id");
                 } else {
                     console.log(user);
                 }
+
+                user = user[0];
+
+
                 //TODO ERROR CHECK IF NOT FOUND< OR TWO USERS RETURNED
             } else {
                 //first time this user has joined
+                console.log("new user");
                 user.uId = uId;
                 users.push(user);
                 uId++;
@@ -69,7 +73,6 @@ module.exports = function(port, enableLogging) {
             socket.emit('user details', {
                 user: user
             });
-
             user.socket = socket;
         });
 
@@ -91,22 +94,35 @@ module.exports = function(port, enableLogging) {
             // return room.id;
         });
 
+        /*
+            Given a user id and a room id,
+            check if that room exisits, and add the player if they are not already in it
+            if the room does not exist, send an error back to the player
+            return wether the join was successful or not
+        */
         socket.on('join room', function(msg) {
+
+            var roomToJoin = parseInt(msg.roomId);
+            var userId = parseInt(msg.uId);
+            var joined = false;
+
+            //get the room
             rooms.forEach(function (room){
-                if(parseInt(room.id) === parseInt(msg.roomId)){
-                    console.log(msg.roomId)
-                    var found = false;
-                    room.players.forEach( function(player) {
-                        if ( parseInt(player) === parseInt(msg.playerId))
-                            found = true;
-                    });
-                    if (found === false) {
+
+                if(room.id === roomToJoin){
+
+                    console.log("Found room " + roomToJoin);
+
+                    //add player to room
                     room.players.push(msg.playerId);
+                    joined = true;
                 }
-                    socket.emit('room joined', {roomId: room.id});
-                }
-                    //socket.emit('failed room join');
             });
+
+            if(joined) {console.log("joined successfully");}
+            else {console.log("failed to join room");}
+
+            socket.emit('room join result', {success: joined, roomId: roomToJoin});
 
             console.log(rooms);
         });
