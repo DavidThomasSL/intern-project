@@ -52,7 +52,7 @@ module.exports = function(port, enableLogging) {
                     return otherUser.uId === existingId;
                 });
 
-                //check if the user was found
+                //check if the user was founds
                 if (user.length !== 1) {
                     console.log("No user found with id");
                     user = createNewUser();
@@ -86,15 +86,18 @@ module.exports = function(port, enableLogging) {
 
         //create room, assign id, add current player and return room id to player
         socket.on('create room', function(msg) {
+
             var room = {
                 id: roomId,
                 players: [msg.playerId]
             };
+
+            user.roomId = roomId;
             rooms.push(room);
             console.log(rooms);
             roomId++;
-            socket.emit('room created', {roomId: room.id});
-            // return room.id;
+
+            socket.emit('room join result', {success: true, roomId: room.id});
         });
 
         /*
@@ -118,6 +121,7 @@ module.exports = function(port, enableLogging) {
 
                     //add player to room
                     room.players.push(msg.playerId);
+                    user.roomId = roomToJoin;
                     joined = true;
                 }
             });

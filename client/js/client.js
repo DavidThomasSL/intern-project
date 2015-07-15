@@ -31,47 +31,57 @@ ClonageApp.controller("MainController", function($scope, socket) {
 	$scope.enteredRoomId = null;
 	$scope.registered = false;
 	$scope.nameSet = false;
-
+	$scope.roomJoined = false;
+	$scope.gameStage = 0;
 
 	socket.on('connect', function() {
-		console.log("connected to server");
-
 		//tell the server to register us as a new player or get our old profile
 		socket.emit('join', {
 			token: getCookie("token")
 		});
 
+		//Server sending usre details (either new or previosuly existing)
+		socket.on('user details', function(msg) {
+
+			user.uId = msg.user.uId;
+			print(msg.user);
+
+			//check if user has a name at this stage
+			if (msg.user.name !== undefined) {
+				$scope.nameSet = true;
+				$scope.enteredName = msg.user.name;
+			}
+
+			//Set the browser cookies to user details
+			setCookie('token', msg.user.uId);
+			setCookie('name', msg.user.name);
+
+			$scope.registered = true;
+
+			//check if the user is in a room already
+			//if so, we can put them straight into the next stage of the game
+			if (msg.user.roomId !== undefined) {
+				$scope.enteredRoomId = msg.user.roomId;
+				$scope.roomJoined = true;
+				$scope.gameStage = 1;
+			}
+		});
+
 	});
 
-	//Server sending usre details (either new or previosuly existing)
-	socket.on('user details', function(msg) {
-
-		console.log("Setting cookie for user" + msg.user.uId);
-		user.uId = msg.user.uId;
-		console.log("User details are: ");
-		console.log(msg.user);
-
-		//check if user has a name at this stage
-		if(msg.user.name !== undefined) {
-			$scope.nameSet = true;
-			$scope.enteredName = msg.user.name;
-		}
 
 
-		//Set the browser cookies to user details
-		setCookie('token', msg.user.uId);
-		setCookie('name', msg.user.name);
-
-
-		$scope.registered = true;
-	});
-
-	socket.on('room created', function(msg) {
-		console.log(msg.roomId);
-	});
-
+	//Called when either the user creates a new room or joins an exisiting one
 	socket.on('room join result', function(msg) {
 		alert("room join result " + msg.success);
+		if (msg.success) {
+			$scope.roomJoined = true;
+			$scope.gameStage = 1;
+			$scope.enteredRoomId = msg.roomId;
+			print("joined room");
+		} else {
+			print("could not join");
+		}
 	});
 
 
@@ -81,25 +91,28 @@ ClonageApp.controller("MainController", function($scope, socket) {
 			name: $scope.enteredName
 		});
 		$scope.nameSet = true;
-		console.log("sent name " + $scope.enteredName);
+		print("sent name " + $scope.enteredName);
 	}
 
 	$scope.createRoom = function() {
 		socket.emit('create room', {
 			playerId: user.uId
 		});
-		console.log("created room");
+		print("created room");
 	}
 
 	$scope.joinRoom = function() {
-		console.log("joining room");
+		print("joining room");
 		socket.emit('join room', {
 			playerId: user.uId,
 			roomId: $scope.enteredRoomId
 		});
-		console.log("entered room " + $scope.enteredRoomId);
+		print("entered room " + $scope.enteredRoomId);
 	}
 
+	$scope.isGameStage = function(stage_check) {
+		return stage_check === $scope.gameStage;
+	}
 
 	//PRIVATE HELPER METHODS
 	//------------------------------
@@ -120,6 +133,10 @@ ClonageApp.controller("MainController", function($scope, socket) {
 			if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
 		}
 		return undefined;
+	}
+
+	function print(msg) {
+		console.log(msg);
 	}
 
 
@@ -145,16 +162,16 @@ ClonageApp.controller("MainController", function($scope, socket) {
 // 	});
 
 // 	socket.on('user details', function(msg) {
-// 		console.log("Setting cookie for new user" + msg.user.uId);
+// 		print("Setting cookie for new user" + msg.user.uId);
 // 		user.uId = msg.user.uId;
-// 		console.log(msg.user);
+// 		print(msg.user);
 // 		setCookie('token', msg.user.uId);
 // 		setCookie('name', msg.user.name);
 
 // 	});
 
 // 	socket.on('room created', function(msg) {
-// 		console.log(msg.roomId);
+// 		print(msg.roomId);
 // 	});
 
 // 	socket.on('room joined', function(msg) {
@@ -181,7 +198,7 @@ ClonageApp.controller("MainController", function($scope, socket) {
 // 	socket.emit('create room', {
 // 		playerId: user.uId
 // 	});
-// 	console.log("created room");
+// 	print("created room");
 // }
 
 // function joinRoom() {
