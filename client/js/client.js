@@ -32,6 +32,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 	$scope.nameSet = false;
 	$scope.roomJoined = false;
 	$scope.gameStage = 0;
+	$scope.usersInRoom = [];
 
 	$scope.$storage = $localStorage;
 
@@ -63,30 +64,33 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			$scope.registered = true;
 
 			//check if the user is in a room already
-			//if so, we can put them straight into the next stage of the game
+			// if so, put him back into the room,
+			// then move straight into the next stage of the game
 			if (msg.user.roomId !== undefined) {
-				$scope.$storage.roomId = msg.user.roomId;
-				$scope.roomJoined = true;
-				$scope.gameStage = 1;
+				joinServerRoom(msg.user.roomId, roomJoinResult);
 			}
 		});
 
 	});
 
-
-
-	//Called when either the user creates a new room or joins an exisiting one
-	socket.on('room join result', function(msg) {
-		alert("room join result " + msg.success);
-		if (msg.success) {
+	/*
+		This function is passed as a callback when a user either joins or creates a room
+		It takes as an argument the details of the room the user joined,
+		and sets up local storage so that the user can join the room again if they reconnect
+	*/
+	function roomJoinResult(args) {
+		// alert("room join result " + msg.success);
+		if (args.success) {
 			$scope.roomJoined = true;
 			$scope.gameStage = 1;
-			$scope.$storage.roomId = msg.roomId;
-			print("joined room");
+			$scope.usersInRoom = getUsersFromIds(args.usersInRoom);
+			console.log($scope.usersInRoom);
+			$scope.$storage.roomId = args.roomId;
+
 		} else {
 			print("could not join");
 		}
-	});
+	}
 
 
 	$scope.submitName = function() {
@@ -101,26 +105,57 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 	$scope.createRoom = function() {
 		socket.emit('create room', {
 			playerId: user.uId
+		}, function(args) {
+			roomJoinResult(args);
 		});
 		print("created room");
 	}
 
 	$scope.joinRoom = function() {
 		print("joining room");
-		socket.emit('join room', {
-			playerId: user.uId,
-			roomId: $scope.enteredRoomId
-		});
-		print("entered room " + $scope.enteredRoomId);
+		joinServerRoom($scope.enteredRoomId, roomJoinResult);
 	}
 
 	$scope.isGameStage = function(stage_check) {
 		return stage_check === $scope.gameStage;
 	}
 
+	//Returns a list of all the users in a given room
+	$scope.getUsersInRoom = function() {
+
+		return $scope.usersInRoom;
+	}
+
 	//PRIVATE HELPER METHODS
 	//------------------------------
 
+	//Calls the server to let the player join a room, given a room id
+	function joinServerRoom(roomId, callback) {
+		socket.emit('join room', {
+			playerId: user.uId,
+			roomId: roomId
+		}, function(args) {
+			callback(args)
+		});
+		print("entered room " + roomId);
+	}
+
+	//Given a user id, asks the server for the name of the user with that id
+	function getUsersFromIds(ids) {
+		var usernames = [];
+		ids.forEach(function(id) {
+			socket.emit('get username', {
+				uId: id
+			}, function(name) {
+				usernames.push(name);
+				console.log("got a name");
+			});
+		});
+
+		console.log("here are the users in the game" + usernames);
+		console.log(usernames)
+		return usernames;
+	}
 
 	function print(msg) {
 		console.log(msg);

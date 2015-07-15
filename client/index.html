@@ -1,52 +1,65 @@
-<!doctype html>
-<html lang="en" ng-app="ClonageApp">
+<html lang="en" class="wf-proximanova-n3-active wf-proximanova-n4-active wf-proximanova-n6-active wf-proximanova-n7-active wf-proximanova-i3-active wf-active" ng-app="ClonageApp">
     <head>
-        <title>Clonage</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>CLONAGE</title>
+        <link rel="icon" type="image/jpg" href="includes/images/logo.png">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="//use.typekit.net/jiq8zcw.js"></script>
+        <script src="includes/js/main.js"></script>
+        <script src="includes/js/alton.js"></script>
+        <script src="includes/js/text.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/css/site.css" />
     </head>
+
     <body ng-controller="MainController">
-        <h1>Clonage</h1>
-
-        <div id="signup-flow-container" ng-show="isGameStage(0)">
-            <div id="register-container" ng-hide="registered">
-                LOADING
+        <section class="header mainWrapper active">
+            <div class="logo">
+                <img src="includes/images/logo.png" alt="">
+                <span class="logotext typer"></span>
             </div>
-
-            <!--SETTING THE USER NAME -->
-            <div id="signup-container" ng-hide="nameSet">
-                 <h2>Enter your name</h2>
-                <input id="name-input-box" placeholder="your name here" ng-model="enteredName">
-                <button ng-click="submitName()">Submit Name</button>
+            <!-- ALl the sign up stuff -->
+            <div id="signup-flow-container" class="namestuff" ng-show="isGameStage(0)">
+                <!--SETTING THE USER NAME -->
+                <div id="signup-container" ng-hide="nameSet"><br>
+                    <h2>Enter your name</h2>
+                    <input id="name-input-box" placeholder="your name here" ng-model="enteredName">
+                    <button ng-click="submitName()">Submit Name</button>
+                </div>
+                <!--CHOOSING TO JOIN OR CREATE A ROOM -->
+                <div ng-show="nameSet">
+                    <h2>Hi {{enteredName}}!</h2>
+                    <p>Choose to either join an exisiting room, or create your own for friends to join! </p>
+                    <button ng-click="createRoom()">Create Room</button><br><br>
+                    <input id="room-input-box" placeholder="Enter room id" ng-model="enteredRoomId">
+                    <button ng-click="joinRoom()">Join Room</button>
+                </div>
             </div>
-
-            <!--CHOOSING TO JOIN OR CREATE A ROOM -->
-            <div ng-show="nameSet">
-                <h2>Hi {{enteredName}}!</h2>
-                <p>Choose to either join an exisiting room, or create your own for friends to join! </p>
-                <button ng-click="createRoom()">Create Room</button>
-                <br> <br>
-                <input id="room-input-box" placeholder="Enter room id" ng-model="enteredRoomId">
-                <button ng-click="joinRoom()">Join Room</button>
+            <!--THE REAL GAME STUFF -->
+            <div id="game-room-container" class="namestuff" ng-show="isGameStage(1)">
+                <div id="room-lobby-container">
+                    <h2>Waiting for players to join!<h2>
+                    <h3>ROOM CODE: {{$storage.roomId}}<h3>
+                    List of users who are in the room
+                    <ul>
+                        <li ng-repeat="user in usersInRoom">
+                            {{user}}
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-
-        <div id="game-room-container" ng-show="isGameStage(1)">
-            <div id="room-lobby-container">
-                <h2>Waiting for players to join!<h2>
-                <h3>ROOM CODE:{{$storage.roomId}}<h3>
-                List of users who are in the room
-            </div>
-        </div>
-
-
-
-
-
-
+            <section class="credits">
+                <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a>
+            </section>
+        </section>
+                <!-- Navigation -->
+        </section>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/client.js"></script>
-    </body>
+        </body>
 </html>
