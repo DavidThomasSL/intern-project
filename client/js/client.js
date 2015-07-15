@@ -29,6 +29,8 @@ ClonageApp.controller("MainController", function($scope, socket) {
 
 	$scope.enteredName = "";
 	$scope.enteredRoomId = null;
+	$scope.registered = false;
+	$scope.nameSet = false;
 
 
 	socket.on('connect', function() {
@@ -41,13 +43,27 @@ ClonageApp.controller("MainController", function($scope, socket) {
 
 	});
 
+	//Server sending usre details (either new or previosuly existing)
 	socket.on('user details', function(msg) {
-		console.log("Setting cookie for new user" + msg.user.uId);
+
+		console.log("Setting cookie for user" + msg.user.uId);
 		user.uId = msg.user.uId;
 		console.log("User details are: ");
 		console.log(msg.user);
+
+		//check if user has a name at this stage
+		if(msg.user.name !== undefined) {
+			$scope.nameSet = true;
+			$scope.enteredName = msg.user.name;
+		}
+
+
+		//Set the browser cookies to user details
 		setCookie('token', msg.user.uId);
 		setCookie('name', msg.user.name);
+
+
+		$scope.registered = true;
 	});
 
 	socket.on('room created', function(msg) {
@@ -64,6 +80,7 @@ ClonageApp.controller("MainController", function($scope, socket) {
 			uId: user.uId,
 			name: $scope.enteredName
 		});
+		$scope.nameSet = true;
 		console.log("sent name " + $scope.enteredName);
 	}
 

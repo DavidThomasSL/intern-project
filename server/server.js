@@ -64,6 +64,7 @@ module.exports = function(port, enableLogging) {
                 //first time this user has joined
                 console.log("new user");
                 user.uId = uId;
+                user.name = undefined;
                 users.push(user);
                 uId++;
             }
