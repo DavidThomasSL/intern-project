@@ -44,37 +44,35 @@ module.exports = function(port, enableLogging) {
                 //this user previosuly connected and has an id
 
                 var existingId = parseInt(msg.token);
-                console.log("existing id" + existingId);
 
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
                 });
 
-                if (user === undefined) {
+                //check if the user was found
+                if (user.length !== 1) {
                     console.log("No user found with id");
+                    user = createNewUser();
                 } else {
                     console.log(user);
+                    user = user[0];
                 }
 
-                user = user[0];
-
-
-                //TODO ERROR CHECK IF NOT FOUND< OR TWO USERS RETURNED
             } else {
                 //first time this user has joined
                 console.log("new user");
-                user.uId = uId;
-                user.name = undefined;
-                users.push(user);
-                uId++;
+                user = createNewUser();
             }
 
+            users.push(user);
+
+            //can't send socket over socket, detach then reattach after sending
             user.socket = "";
-            console.log("emtting to user details");
             socket.emit('user details', {
                 user: user
             });
             user.socket = socket;
+
         });
 
         socket.on('set name', function(msg) {
@@ -141,7 +139,18 @@ module.exports = function(port, enableLogging) {
             // });
         });
 
+        //Creates a new user
+        function createNewUser() {
+            var user = {};
+            user.uId = uId;
+            user.name = undefined;
+            uId++;
+            return user;
+        }
+
     });
+
+
 
     function broadcast(event, data) {
         users.forEach(function(user) {
