@@ -12,18 +12,27 @@
             LOADING
         </div>
 
+        <!--SETTING THE USER NAME -->
         <div id="signup-container" ng-hide="nameSet">
              <h2>Enter your name</h2>
             <input id="name-input-box" placeholder="your name here" ng-model="enteredName">
             <button ng-click="submitName()">Submit Name</button>
         </div>
 
+        <!--CHOOSING TO JOIN OR CREATE A ROOM -->
         <div ng-show="nameSet">
             <h2>Hi {{enteredName}}!</h2>
+            <p>Choose to either join an exisiting room, or create your own for friends to join! </p>
             <button ng-click="createRoom()">Create Room</button>
-            <br>
+            <br> <br>
             <input id="room-input-box" placeholder="Enter room id" ng-model="enteredRoomId">
             <button ng-click="joinRoom()">Join Room</button>
+        </div>
+
+        <div id="room-lobby-container" ng-show="joinedRoom">
+        <h2>Waiting for players to join!<h2>
+        <h3>ROOM CODE: XFGSFS<h3>
+        List of users who are in the room
         </div>
 
 

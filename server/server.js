@@ -45,6 +45,9 @@ module.exports = function(port, enableLogging) {
 
                 var existingId = parseInt(msg.token);
 
+                console.log("exisitng users");
+                console.log(users);
+
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
                 });
@@ -53,6 +56,7 @@ module.exports = function(port, enableLogging) {
                 if (user.length !== 1) {
                     console.log("No user found with id");
                     user = createNewUser();
+
                 } else {
                     console.log(user);
                     user = user[0];
@@ -62,9 +66,9 @@ module.exports = function(port, enableLogging) {
                 //first time this user has joined
                 console.log("new user");
                 user = createNewUser();
+
             }
 
-            users.push(user);
 
             //can't send socket over socket, detach then reattach after sending
             user.socket = "";
@@ -144,6 +148,8 @@ module.exports = function(port, enableLogging) {
             var user = {};
             user.uId = uId;
             user.name = undefined;
+            user.roomId = undefined;
+            users.push(user);
             uId++;
             return user;
         }
