@@ -1,4 +1,4 @@
-var ClonageApp = angular.module("ClonageApp", []);
+var ClonageApp = angular.module("ClonageApp", ['ngStorage']);
 
 ClonageApp.factory('socket', function($rootScope) {
 	var socket = io.connect();
@@ -24,7 +24,7 @@ ClonageApp.factory('socket', function($rootScope) {
 	};
 });
 
-ClonageApp.controller("MainController", function($scope, socket) {
+ClonageApp.controller("MainController", function($scope, socket, $localStorage, $sessionStorage) {
 	var user = {};
 
 	$scope.enteredName = "";
@@ -34,10 +34,12 @@ ClonageApp.controller("MainController", function($scope, socket) {
 	$scope.roomJoined = false;
 	$scope.gameStage = 0;
 
+	$scope.$storage = $localStorage;
+
 	socket.on('connect', function() {
 		//tell the server to register us as a new player or get our old profile
 		socket.emit('join', {
-			token: getCookie("token")
+			token: $scope.$storage.userId
 		});
 
 		//Server sending usre details (either new or previosuly existing)
@@ -53,8 +55,10 @@ ClonageApp.controller("MainController", function($scope, socket) {
 			}
 
 			//Set the browser cookies to user details
-			setCookie('token', msg.user.uId);
-			setCookie('name', msg.user.name);
+			// setCookie('token', msg.user.uId);
+			// setCookie('name', msg.user.name);
+			$scope.$storage.userId = msg.user.uId;
+			$scope.$storage.username = msg.user.name;
 
 			$scope.registered = true;
 
