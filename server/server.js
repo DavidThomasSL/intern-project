@@ -85,7 +85,7 @@ module.exports = function(port, enableLogging) {
         });
 
         //create room, assign id, add current player and return room id to player
-        socket.on('create room', function(msg) {
+        socket.on('create room', function(msg, callback) {
 
             var room = {
                 id: roomId,
@@ -94,10 +94,11 @@ module.exports = function(port, enableLogging) {
 
             user.roomId = roomId;
             rooms.push(room);
-            console.log(rooms);
+            // console.log(rooms);
             roomId++;
 
-            socket.emit('room join result', {success: true, roomId: room.id});
+            // socket.emit('room join result', {success: true, roomId: room.id, usersInRoom: room.players});
+            callback({success: true, roomId: room.id, usersInRoom: room.players});
         });
 
         /*
@@ -106,22 +107,26 @@ module.exports = function(port, enableLogging) {
             if the room does not exist, send an error back to the player
             return wether the join was successful or not
         */
-        socket.on('join room', function(msg) {
+        socket.on('join room', function(msg, callback) {
 
-            var roomToJoin = parseInt(msg.roomId);
+            var toJoinId = parseInt(msg.roomId);
             var userId = parseInt(msg.uId);
             var joined = false;
+            var joinedRoom = {};
 
             //get the room
             rooms.forEach(function (room){
 
-                if(room.id === roomToJoin){
+                if(room.id === toJoinId){
 
-                    console.log("Found room " + roomToJoin);
+
+                    console.log("Found room " + toJoinId);
 
                     //add player to room
                     room.players.push(msg.playerId);
-                    user.roomId = roomToJoin;
+                    user.roomId = toJoinId;
+                    joinedRoom = room;
+
                     joined = true;
                 }
             });
@@ -129,7 +134,8 @@ module.exports = function(port, enableLogging) {
             if(joined) {console.log("joined successfully");}
             else {console.log("failed to join room");}
 
-            socket.emit('room join result', {success: joined, roomId: roomToJoin});
+            // socket.emit('room join result', {success: joined, roomId: toJoinId, usersInRoom: joinedRoom.players});
+            callback({success: joined, roomId: toJoinId, usersInRoom: joinedRoom.players});
 
             console.log(rooms);
         });
@@ -139,12 +145,65 @@ module.exports = function(port, enableLogging) {
             socket.emit('message', data);
         });
 
+        socket.on('get username', function(msg, callback) {
+
+            var  userToReturn = [];
+
+            userToReturn = users.filter(function(user){
+                return user.uId === parseInt(msg.uId);
+            });
+
+            userToReturn = userToReturn[0].name;
+
+            // console.log("get a username" + msg.uId);
+            // console.log(userToReturn);
 
 
+            callback(userToReturn);
+        });
+
+        //When a client disconnect, we remove him from the room he was in
+        //the user still remembers what room his was in however,
+        //so that he can join again
         socket.on('disconnect', function() {
-            // users = users.filter(function(user) {
-            //     return user.socket !== socket;
-            // });
+            console.log("Disconnecting player");
+            console.log(rooms);
+            rooms.forEach( function(room){
+                if (room.id === user.roomId) {
+
+                    room.players = room.players.filter(function(usersInRoom) {
+                        return usersInRoom !== user.uId;
+                    });
+
+                };
+
+            });
+            console.log(rooms);
+
+        });
+
+        socket.on('get room users', function(msg, callback) {
+
+            var roomToReturn = [];
+            var usersInRoom = [];
+
+            roomToReturn = rooms.filter(function(room) {
+                if( room.id === parseInt(msg.roomId)) {
+                    return room;
+                }
+            });
+
+            roomToReturn = roomToReturn[0];
+
+            users.forEach( function(user) {
+                if (user.roomId == roomToReturn.id) {
+                    usersInRoom.push(user.name);
+                }
+            });
+
+            console.log(usersInRoom);
+
+            callback(usersInRoom);
         });
 
         //Creates a new user
