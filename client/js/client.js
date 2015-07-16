@@ -111,9 +111,23 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		print("created room");
 	};
 
+
 	$scope.joinRoom = function() {
 		print("joining room");
 		joinServerRoom($scope.enteredRoomId, roomJoinResult);
+	};
+
+	$scope.goback = function(number) {
+		if (number == 1) {
+			$scope.nameSet = true;
+			$scope.gameStage = 0;
+			print("going back to room");
+		}
+		else {
+			$scope.nameSet = false;
+			$scope.gameStage = 0;
+			print("going back to name");
+		}
 	};
 
 	$scope.isGameStage = function(stage_check) {
