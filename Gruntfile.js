@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     var artifactsLocation = "build_artifacts";
     grunt.initConfig({
         jshint: {
-            all: ["Gruntfile.js", "server.js", "server/**/*.js", "test/**/*.js", "client/**/*.js"],
+            all: ["Gruntfile.js", "server.js", "server/**/*.js", "test/**/*.js", "client/js/*.js"],
             options: {
                 jshintrc: true
             }
