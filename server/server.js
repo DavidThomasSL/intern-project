@@ -40,7 +40,7 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('join', function(msg) {
             if (msg.token !== undefined) {
-                console.log("exsitng player")
+                console.log("exsitng player");
                 //this user previosuly connected and has an id
 
                 var existingId = parseInt(msg.token);
@@ -175,7 +175,7 @@ module.exports = function(port, enableLogging) {
                         return usersInRoom !== user.uId;
                     });
 
-                };
+                }
 
             });
             console.log(rooms);

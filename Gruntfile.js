@@ -72,11 +72,11 @@ module.exports = function(grunt) {
         // }
     });
 
-    grunt.registerTask("check", ["jshint"]);
-    grunt.registerTask("test", ["check", "mochaTest:test"]);
-    grunt.registerTask("ci-test", ["check", "mochaTest:ci"]);
-    grunt.registerTask("default", "test");
     grunt.registerTask('selenium', ['selenium_start']);
     grunt.registerTask('server', ['express:test', 'watch']);
     grunt.registerTask('e2e-test', ['selenium_start', 'express:test', 'protractor:e2e']);
+    grunt.registerTask("check", ["jshint"]);
+    grunt.registerTask("test", ["check", "e2e-test"]);
+    grunt.registerTask("ci-test", ["check", "e2e-test"]);
+    grunt.registerTask("default", "test");
 };

@@ -19,7 +19,7 @@ ClonageApp.factory('socket', function($rootScope) {
 						callback.apply(socket, args);
 					}
 				});
-			})
+			});
 		}
 	};
 });
@@ -100,7 +100,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		});
 		$scope.nameSet = true;
 		print("sent name " + $scope.enteredName);
-	}
+	};
 
 	$scope.createRoom = function() {
 		socket.emit('create room', {
@@ -109,22 +109,22 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			roomJoinResult(args);
 		});
 		print("created room");
-	}
+	};
 
 	$scope.joinRoom = function() {
 		print("joining room");
 		joinServerRoom($scope.enteredRoomId, roomJoinResult);
-	}
+	};
 
 	$scope.isGameStage = function(stage_check) {
 		return stage_check === $scope.gameStage;
-	}
+	};
 
 	//Returns a list of all the users in a given room
 	$scope.getUsersInRoom = function() {
 
 		return $scope.usersInRoom;
-	}
+	};
 
 	//PRIVATE HELPER METHODS
 	//------------------------------
@@ -135,7 +135,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			playerId: user.uId,
 			roomId: roomId
 		}, function(args) {
-			callback(args)
+			callback(args);
 		});
 		print("entered room " + roomId);
 	}
@@ -153,7 +153,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		});
 
 		console.log("here are the users in the game" + usernames);
-		console.log(usernames)
+		console.log(usernames);
 		return usernames;
 	}
 
