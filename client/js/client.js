@@ -99,7 +99,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			name: $scope.enteredName
 		});
 		$scope.nameSet = true;
-		$scope.selection = items[1]
 		print("sent name " + $scope.enteredName);
 	};
 
@@ -129,7 +128,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			$scope.gameStage = 0;
 			print("going back to name");
 		}
-	}
+	};
 
 	$scope.isGameStage = function(stage_check) {
 		return stage_check === $scope.gameStage;
