@@ -174,12 +174,20 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 	function getUsersFromIds(ids) {
 		var usernames = [];
 		ids.forEach(function(id) {
-			socket.emit('get username', {
-				uId: id
-			}, function(name) {
-				usernames.push(name);
-				console.log("got a name");
-			});
+
+			if (id === $scope.$storage.userId) {
+				usernames.push("Me!");
+			}
+			else {
+				socket.emit('get username', {
+					uId: id
+				}, function(name) {
+					usernames.push(name);
+					console.log("got a name");
+				});
+			}
+
+
 		});
 
 		console.log("here are the users in the game" + usernames);

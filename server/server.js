@@ -270,8 +270,6 @@ module.exports = function(port, enableLogging) {
 
     });
 
-
-
     function broadcast(event, data) {
         users.forEach(function(user) {
             user.socket.emit(event, data);
