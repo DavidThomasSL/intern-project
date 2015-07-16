@@ -4,9 +4,38 @@
     border: 1px solid #ccc;
 }
 
-h1 {
-  display: block;
-  font-size: 2em;
-  font-weight: bold;
-  color: red
-}
+/* Variables */
+h1, h2, h3, h4, h5 { font-family: "proxima-nova", sans-serif; }
+
+h3 { font-family: "proxima-nova", sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; }
+
+h2 { color: #ffffff; font-family: 'Lora', serif; font-size: 36px; font-weight: 600; }
+
+p { font-family: "proxima-nova", sans-serif; color: #ffffff; font-size: 21px; font-weight: 300; line-height: 28px; }
+
+/* End Variables */
+body, html { width: 100%; height: 100%; margin: 0; font-family: "proxima-nova", sans-serif; }
+
+.mainWrapper { background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 1.1)), url(../includes/images/background.jpg) no-repeat center center; background-size: cover; width: 100%; height: 100%; text-align: center; }
+.mainWrapper .namestuff { top: 17%; position: absolute; width:100% ; height: 350px; text-align: center; background-color:black; opacity: 0.3;}
+.mainWrapper .logo { top: 8%; position: relative; text-align: center; -webkit-transform: translateY(-50%); -moz-transform: translateY(-50%); -ms-transform: translateY(-50%); -o-transform: translateY(-50%); transform: translateY(-50%); }
+.mainWrapper .logo img { width: auto; height: 115px; margin-top: -30px; max-width: 80%; }
+.mainWrapper .logo .logotext { font-family: "proxima-nova", sans-serif; font-weight: bolder; text-transform: uppercase; font-size: 56px; color: white; line-height: 1.2em; letter-spacing: 2.5px; }
+.mainWrapper a i { color: white; font-size: 30px; position: absolute; bottom: 50px; text-align: center; }
+
+@keyframes pulse { 0% { transform: scale(1, 1); }
+  50% { transform: scale(1.3, 1.3); }
+  100% { transform: scale(1, 1); } }
+
+@-webkit-keyframes pulse { 0% { -webkit-transform: scale(1, 1); }
+  50% { -webkit-transform: scale(1.3, 1.3); }
+  100% { -webkit-transform: scale(1, 1); } }
+
+.animating { -webkit-animation: pulse 1s linear infinite; animation: pulse 1s linear infinite; }
+
+footer { background-color: #272727; padding: 150px 0; text-align: center; }
+footer img { width: 154px; height: 154px; }
+
+.credits { background-color: black; padding: 20px 0; text-align: bottom; bottom: 0 ; position: absolute; width:100%; height: 5% ;}
+.credits a { color: #545454; -webkit-transition: all .25s ease-in-out; -moz-transition: all .25s ease-in-out; -ms-transition: all .25s ease-in-out; -o-transition: all .25s ease-in-out; transition: all .25s ease-in-out; }
+.credits a:hover { text-decoration: none; color: #f37420; }
