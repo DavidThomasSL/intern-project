@@ -70,7 +70,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 				joinServerRoom(msg.user.roomId, roomJoinResult);
 			}
 		});
-
 	});
 
 	/*
@@ -92,7 +91,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		}
 	}
 
-
 	$scope.submitName = function() {
 		socket.emit('set name', {
 			uId: user.uId,
@@ -111,26 +109,19 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		print("created room");
 	};
 
-
 	$scope.joinRoom = function() {
 		print("joining room");
 		joinServerRoom($scope.enteredRoomId, roomJoinResult);
 	};
 
 	$scope.goback = function(number) {
-		if (number == 1) {
-			$scope.nameSet = true;
-			$scope.gameStage = 0;
-			print("going back to room");
-		}
-		else {
-			$scope.nameSet = false;
-			$scope.gameStage = 0;
-			print("going back to name");
-		}
+		$scope.nameSet = false;
+		$scope.gameStage = 0;
+		print("going back to name");
 	};
 
 	$scope.isGameStage = function(stage_check) {
+
 		return stage_check === $scope.gameStage;
 	};
 
@@ -138,6 +129,31 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 	$scope.getUsersInRoom = function() {
 
 		return $scope.usersInRoom;
+	};
+
+	/*
+		Removes the user from the room he is on, and on the server
+		Takes them back to the room join/create page
+		Removed room id from the session storage
+	*/
+	$scope.leaveRoom = function() {
+
+		var roomId = $scope.$storage.roomId;
+		var userId = $scope.$storage.userId;
+
+		console.log("removing player....");
+
+		socket.emit('leave room', {roomId: roomId, userId: userId}, function(msg) {
+			if(msg) {
+				console.log("user left room: " + roomId);
+				$scope.$storage.roomId = undefined;
+				$scope.gameStage = 0;
+			}
+			else {
+				console.log("there was an error");
+			}
+		});
+
 	};
 
 	//PRIVATE HELPER METHODS

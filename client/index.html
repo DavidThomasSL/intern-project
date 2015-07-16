@@ -26,7 +26,7 @@
             <!--SETTING THE USER NAME -->
             <div id="signup-container" class="namestuff"  ng-show="isGameStage(0) && !nameSet"><br>
                 <h2>Enter your name</h2>
-                <input id="name-input-box" placeholder="your name here" ng-model="enteredName">
+                <input id="name-input-box" placeholder="your name here" ng-model="enteredName" autofocus>
                 <button ng-click="submitName()">Submit Name</button>
             </div>
 
@@ -52,7 +52,9 @@
                             {{user}}
                         </li>
                     </ul>
-                    <input type="submit" ng-click="goback(1)" value="Go back">
+
+                    <button ng-click="leaveRoom()">Leave Room</button>
+
                 </div>
             </div>
 
