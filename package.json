@@ -17,6 +17,12 @@
     "socket.io": "~0.9.14"
   },
   "scripts": {
-    "test": "grunt ci-test"
+    "test": "grunt ci-test",
+  },
+  "devDependencies": {
+    "grunt-contrib-connect": "^0.10.1",
+    "grunt-express-server": "^0.5.1",
+    "grunt-selenium-webdriver": "^0.2.451",
+    "protractor": "^2.1.0"
   }
 }
