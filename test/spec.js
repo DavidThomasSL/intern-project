@@ -38,7 +38,7 @@ describe('Clonage App', function() {
 			expect(element(by.id('join-create-container')).isDisplayed()).toBe(true);
 		});
 
-		it('on refresh, remebers name and goes straight to joining a room', function() {
+		it('on refresh, name is remebered and user goes straight to joining a room', function() {
 
 			clonageSignup.submitName("Bob");
 			clonageSignup.refresh();
@@ -60,10 +60,49 @@ describe('Clonage App', function() {
 			expect(element(by.id('signup-container')).isDisplayed()).toBe(true);
 			expect(element(by.id('join-create-container')).isDisplayed()).toBe(false);
 		});
-
 	});
 
 	describe('As a registered user', function() {
+
+		var clonageRoomCreate;
+
+		beforeEach(function() {
+			var clonageSignup = new ClonageSignupPage();
+
+			clonageSignup.get();
+			clonageSignup.submitName("Bob");
+
+			clonageRoomCreate = new ClonageRoomCreatePage();
+
+		});
+
+		afterEach(function() {
+			browser.executeScript('window.sessionStorage.clear();');
+	   		browser.executeScript('window.localStorage.clear();');
+		});
+
+		it('can see the room join/create page', function() {
+			expect(element(by.id('signup-container')).isDisplayed()).toBe(false);
+			expect(element(by.id('join-create-container')).isDisplayed()).toBe(true);
+		});
+
+		it('can create a new room join are automatically put into it', function() {
+			clonageRoomCreate.createRoom();
+
+			expect(element(by.id('join-create-container')).isDisplayed()).toBe(false);
+			expect(element(by.id('main-game-container')).isDisplayed()).toBe(true);
+		});
+
+		it('in a lobby can see the room code as 0', function() {
+			clonageRoomCreate.createRoom();
+			browser.pause();
+			expect(element(by.model('$storage.roomId')).getAttribute('value')).toBe('0');
+
+
+
+		});
+
+
 
 	});
 
@@ -87,7 +126,6 @@ var ClonageSignupPage = function() {
 
 	var nameInputBox = element(by.id('name-input-box'));
 	var nameSubmitButton = element(by.id('name-submit-button'));
-	var createRoomButton = element(by.id('create-room-button'));
 
 	this.get = function() {
 		browser.get('/');
@@ -99,11 +137,17 @@ var ClonageSignupPage = function() {
 		nameSubmitButton.click();
 	};
 
-	this.createRoom = function() {
-		createRoomButton.click();
-	};
 
 	this.refresh = function() {
 		this.get();
+	};
+};
+
+var ClonageRoomCreatePage = function() {
+
+	var createRoomButton = element(by.id('create-room-button'));
+
+	this.createRoom = function() {
+		createRoomButton.click();
 	};
 };
