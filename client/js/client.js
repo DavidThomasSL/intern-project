@@ -1,4 +1,4 @@
-var ClonageApp = angular.module("ClonageApp", ['ngStorage']);
+var ClonageApp = angular.module("ClonageApp", ['ngStorage', 'ngRoute']);
 
 ClonageApp.factory('socket', function($rootScope) {
 	var socket = io.connect();
@@ -24,7 +24,29 @@ ClonageApp.factory('socket', function($rootScope) {
 	};
 });
 
-ClonageApp.controller("MainController", function($scope, socket, $localStorage, $sessionStorage) {
+ClonageApp.config (['$routeProvider', '$locationProvider',
+  function($routeProvider, $locationProvider) {
+    $routeProvider
+      .when('/', {
+        templateUrl: '/templates/setname.html'
+      })
+      .when('/joining', {
+        templateUrl: '/templates/joining.html'
+      })
+      .when('/room/', {
+      	templateUrl: '/templates/room.html'
+      })
+      .otherwise({
+      	templateUrl : '/templates/setname.html'
+      });
+
+}]);
+
+
+
+
+
+ClonageApp.controller("MainController", function($scope, socket, $localStorage, $sessionStorage, $location, $route) {
 	var user = {};
 
 	$scope.enteredName = "";
@@ -35,6 +57,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 	$scope.usersInRoom = [];
 
 	$scope.$storage = $localStorage;
+
 
 	socket.on('connect', function() {
 		//tell the server to register us as a new player or get our old profile
@@ -52,25 +75,55 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			if (msg.user.name !== undefined) {
 				$scope.nameSet = true;
 				$scope.enteredName = msg.user.name;
+				$location.path('/joining');
 			}
 
-			//Set the browser cookies to user details
-			// setCookie('token', msg.user.uId);
-			// setCookie('name', msg.user.name);
+			//Storing user details in browser local storage
 			$scope.$storage.userId = msg.user.uId;
 			$scope.$storage.username = msg.user.name;
-			$scope.$storage.roomId = undefined;
+			$scope.$storage.roomId = -1;
 
 			$scope.registered = true;
 
 			//check if the user is in a room already
 			// if so, put him back into the room,
 			// then move straight into the next stage of the game
-			if (msg.user.roomId !== undefined) {
+			if (msg.user.roomId > -1) {
 				joinServerRoom(msg.user.roomId, roomJoinResult);
 			}
 		});
 	});
+
+	$scope.submitName = function(form) {
+
+		var enteredName = form.enteredName;
+		$scope.enteredName = enteredName;
+
+		socket.emit('set name', {
+			uId: user.uId,
+			name: enteredName
+		}, function() {
+			$location.path('/joining');
+		});
+		$scope.nameSet = true;
+	};
+
+
+	$scope.createRoom = function() {
+		socket.emit('create room', {
+			playerId: user.uId
+		}, function(args) {
+			roomJoinResult(args);
+		});
+		print("created room");
+	};
+
+
+	$scope.joinRoom = function(form) {
+		print("joining room");
+		joinServerRoom(form.enteredRoomId, roomJoinResult);
+	};
+
 
 	/*
 		This function is passed as a callback when a user either joins or creates a room
@@ -85,40 +138,12 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			$scope.usersInRoom = getUsersFromIds(args.usersInRoom);
 			console.log($scope.usersInRoom);
 			$scope.$storage.roomId = args.roomId;
+			$location.path('/room/');
 
 		} else {
 			print("could not join");
 		}
 	}
-
-	$scope.submitName = function() {
-		socket.emit('set name', {
-			uId: user.uId,
-			name: $scope.enteredName
-		});
-		$scope.nameSet = true;
-		print("sent name " + $scope.enteredName);
-	};
-
-	$scope.createRoom = function() {
-		socket.emit('create room', {
-			playerId: user.uId
-		}, function(args) {
-			roomJoinResult(args);
-		});
-		print("created room");
-	};
-
-	$scope.joinRoom = function() {
-		print("joining room");
-		joinServerRoom($scope.enteredRoomId, roomJoinResult);
-	};
-
-	$scope.goback = function(number) {
-		$scope.nameSet = false;
-		$scope.gameStage = 0;
-		print("going back to name");
-	};
 
 	$scope.isGameStage = function(stage_check) {
 
@@ -146,8 +171,9 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		socket.emit('leave room', {roomId: roomId, userId: userId}, function(msg) {
 			if(msg) {
 				console.log("user left room: " + roomId);
-				$scope.$storage.roomId = undefined;
+				$scope.$storage.roomId = -1;
 				$scope.gameStage = 0;
+				$location.path('/joining');
 			}
 			else {
 				console.log("there was an error");
@@ -191,7 +217,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		});
 
 		console.log("here are the users in the game" + usernames);
-		console.log(usernames);
 		return usernames;
 	}
 
@@ -202,71 +227,3 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 
 
 });
-
-
-//Controllers
-//-------------->
-
-
-// var messageList = document.getElementById('messages');
-// var textBox = document.getElementById('message-box');
-
-// // var socket = io.connect();
-// // var user = {};
-
-// socket.on('connect', function() {
-
-// 	//tell the server to register us as a new player or get our old profile
-// 	socket.emit('join', {
-// 		token: getCookie("token")
-// 	});
-
-// 	socket.on('user details', function(msg) {
-// 		print("Setting cookie for new user" + msg.user.uId);
-// 		user.uId = msg.user.uId;
-// 		print(msg.user);
-// 		setCookie('token', msg.user.uId);
-// 		setCookie('name', msg.user.name);
-
-// 	});
-
-// 	socket.on('room created', function(msg) {
-// 		print(msg.roomId);
-// 	});
-
-// 	socket.on('room joined', function(msg) {
-// 		alert("successfully joined room " + msg.roomId);
-// 	});
-
-// 	socket.on('failed room join', function(msg) {
-// 		alert("failed to join room ");
-// 	});
-// });
-
-// function submitName() {
-// 	var name = document.getElementById('name-input-box').value;
-// 	document.getElementById('name-input-box').value = "";
-
-// 	socket.emit('set name', {
-// 		uId: user.uId,
-// 		name: name
-// 	});
-
-// }
-
-// function createRoom() {
-// 	socket.emit('create room', {
-// 		playerId: user.uId
-// 	});
-// 	print("created room");
-// }
-
-// function joinRoom() {
-// 	var enteredRoomId = document.getElementById('room-input-box').value;
-// 	document.getElementById('room-input-box').value = "";
-// 	socket.emit('join room', {
-// 		playerId: user.uId,
-// 		roomId: enteredRoomId
-// 	});
-
-// }

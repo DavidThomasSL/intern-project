@@ -24,12 +24,9 @@ module.exports = function(port, enableLogging) {
     var roomId = 0;
 
     io.on('connection', function(socket) {
-
         //create a new user for the connection
         var user = {};
         user.socket = socket;
-
-        console.log(users);
 
         /*  client requests to join,
             send the uId to the player
@@ -39,6 +36,7 @@ module.exports = function(port, enableLogging) {
             otherwise, create a new player
         */
         socket.on('join', function(msg) {
+            console.log("player joined");
             if (msg.token !== undefined) {
                 console.log("exsitng player");
                 //this user previosuly connected and has an id
@@ -78,9 +76,11 @@ module.exports = function(port, enableLogging) {
 
         });
 
-        socket.on('set name', function(msg) {
+        socket.on('set name', function(msg, callback) {
             user.name = msg.name;
             console.log(msg.name);
+
+            callback();
         });
 
         //create room, assign id, add current player and return room id to player
@@ -205,11 +205,8 @@ module.exports = function(port, enableLogging) {
             });
 
             userToReturn = userToReturn[0].name;
-
             // console.log("get a username" + msg.uId);
             // console.log(userToReturn);
-
-
             callback(userToReturn);
         });
 
@@ -218,19 +215,15 @@ module.exports = function(port, enableLogging) {
         //so that he can join again
         socket.on('disconnect', function() {
             console.log("Disconnecting player");
-            console.log(rooms);
-            rooms.forEach(function(room) {
-                if (room.id === user.roomId) {
 
+            rooms.forEach( function(room){
+                if (room.id === user.roomId) {
                     room.players = room.players.filter(function(usersInRoom) {
                         return usersInRoom !== user.uId;
                     });
 
                 }
-
             });
-            console.log(rooms);
-
         });
 
         socket.on('get room users', function(msg, callback) {
@@ -262,7 +255,7 @@ module.exports = function(port, enableLogging) {
             var user = {};
             user.uId = uId;
             user.name = undefined;
-            user.roomId = undefined;
+            user.roomId = -1;
             users.push(user);
             uId++;
             return user;

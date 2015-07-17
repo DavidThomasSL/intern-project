@@ -1,0 +1,14 @@
+<!--THE REAL GAME STUFF -->
+<div class="animate-switch">
+    <div id="room-lobby-container" class="namestuff">
+        <h2>Waiting for players to join!<h2>
+        <h3>ROOM CODE: {{$storage.roomId}}<h3>
+        List of users who are in the room
+        <ul>
+            <li ng-repeat="user in usersInRoom">
+                {{user}}
+            </li>
+        </ul>
+        <input type="submit" ng-click="leaveRoom()" value="Go back">
+    </div>
+</div>
