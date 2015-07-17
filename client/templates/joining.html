@@ -1,0 +1,14 @@
+<div id="signup-container" class="namestuff">
+    <h2>Hi {{enteredName}}!</h2>
+
+    <p>Choose to either join an exisiting room, or create your own for friends to join! </p>
+
+    <button ng-click="createRoom()">Create Room</button><br><br>
+
+    <input id="room-input-box" placeholder="Enter room id" ng-model="enteredRoomId">
+
+    <button ng-click="joinRoom()">Join Room</button><br><br>
+
+    <input type="submit" value="Go back">
+
+</div>

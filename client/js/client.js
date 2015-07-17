@@ -1,4 +1,4 @@
-var ClonageApp = angular.module("ClonageApp", ['ngStorage']);
+var ClonageApp = angular.module("ClonageApp", ['ngStorage', 'ngRoute']);
 
 ClonageApp.factory('socket', function($rootScope) {
 	var socket = io.connect();
@@ -24,7 +24,26 @@ ClonageApp.factory('socket', function($rootScope) {
 	};
 });
 
-ClonageApp.controller("MainController", function($scope, socket, $localStorage, $sessionStorage) {
+ClonageApp.config (['$routeProvider', '$locationProvider',
+  function($routeProvider, $locationProvider) {
+    $routeProvider
+      .when('/', {
+        templateUrl: '/templates/setname.html'
+      })
+      .when('/joining', {
+        templateUrl: '/templates/joining.html'
+        // controller: 'MainController'
+      })
+      .when('/room/:roomId', {
+      	templateUrl: '/templates/room.html'
+      })
+      .otherwise({
+      	templateUrl : '/templates/setname.html'
+      });
+
+}]);
+
+ClonageApp.controller("MainController", function($scope, socket, $localStorage, $sessionStorage, $location) {
 	var user = {};
 
 	$scope.enteredName = "";
@@ -37,6 +56,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 	$scope.$storage = $localStorage;
 
 	socket.on('connect', function() {
+		print("new connection");
 		//tell the server to register us as a new player or get our old profile
 		socket.emit('join', {
 			token: $scope.$storage.userId
@@ -73,6 +93,37 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 
 	});
 
+	$scope.submitName = function(form) {
+
+		var enteredName = form.enteredName;
+		$scope.enteredName = enteredName;
+
+		print("sending name " + enteredName);
+		socket.emit('set name', {
+			uId: user.uId,
+			name: enteredName
+		});
+		$scope.nameSet = true;
+		print("sent name " + enteredName);
+		$location.path('/joining');
+	};
+
+
+	$scope.createRoom = function() {
+		socket.emit('create room', {
+			playerId: user.uId
+		}, function(args) {
+			roomJoinResult(args);
+		});
+		print("created room");
+	};
+
+
+	$scope.joinRoom = function() {
+		print("joining room");
+		joinServerRoom($scope.enteredRoomId, roomJoinResult);
+	};
+
 	/*
 		This function is passed as a callback when a user either joins or creates a room
 		It takes as an argument the details of the room the user joined,
@@ -91,31 +142,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			print("could not join");
 		}
 	}
-
-
-	$scope.submitName = function() {
-		socket.emit('set name', {
-			uId: user.uId,
-			name: $scope.enteredName
-		});
-		$scope.nameSet = true;
-		print("sent name " + $scope.enteredName);
-	};
-
-	$scope.createRoom = function() {
-		socket.emit('create room', {
-			playerId: user.uId
-		}, function(args) {
-			roomJoinResult(args);
-		});
-		print("created room");
-	};
-
-
-	$scope.joinRoom = function() {
-		print("joining room");
-		joinServerRoom($scope.enteredRoomId, roomJoinResult);
-	};
 
 	$scope.goback = function(number) {
 		if (number == 1) {
@@ -167,7 +193,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		});
 
 		console.log("here are the users in the game" + usernames);
-		console.log(usernames);
 		return usernames;
 	}
 
@@ -178,71 +203,3 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 
 
 });
-
-
-//Controllers
-//-------------->
-
-
-// var messageList = document.getElementById('messages');
-// var textBox = document.getElementById('message-box');
-
-// // var socket = io.connect();
-// // var user = {};
-
-// socket.on('connect', function() {
-
-// 	//tell the server to register us as a new player or get our old profile
-// 	socket.emit('join', {
-// 		token: getCookie("token")
-// 	});
-
-// 	socket.on('user details', function(msg) {
-// 		print("Setting cookie for new user" + msg.user.uId);
-// 		user.uId = msg.user.uId;
-// 		print(msg.user);
-// 		setCookie('token', msg.user.uId);
-// 		setCookie('name', msg.user.name);
-
-// 	});
-
-// 	socket.on('room created', function(msg) {
-// 		print(msg.roomId);
-// 	});
-
-// 	socket.on('room joined', function(msg) {
-// 		alert("successfully joined room " + msg.roomId);
-// 	});
-
-// 	socket.on('failed room join', function(msg) {
-// 		alert("failed to join room ");
-// 	});
-// });
-
-// function submitName() {
-// 	var name = document.getElementById('name-input-box').value;
-// 	document.getElementById('name-input-box').value = "";
-
-// 	socket.emit('set name', {
-// 		uId: user.uId,
-// 		name: name
-// 	});
-
-// }
-
-// function createRoom() {
-// 	socket.emit('create room', {
-// 		playerId: user.uId
-// 	});
-// 	print("created room");
-// }
-
-// function joinRoom() {
-// 	var enteredRoomId = document.getElementById('room-input-box').value;
-// 	document.getElementById('room-input-box').value = "";
-// 	socket.emit('join room', {
-// 		playerId: user.uId,
-// 		roomId: enteredRoomId
-// 	});
-
-// }
