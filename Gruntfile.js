@@ -20,9 +20,7 @@ module.exports = function(grunt) {
             options: {
                 configFile: 'test/conf.js',
                 args: {
-                    params: {
-                        name: 'CLONAGE'
-                    }
+                    verbose: true
                 }
             },
             e2e: {
@@ -60,19 +58,6 @@ module.exports = function(grunt) {
                 }
             }
         }
-        // mochaTest: {
-        //     test: {
-        //         src: ["test/**/*.js"]
-        //     },
-        //     ci: {
-        //         src: ["test/**/*.js"],
-        //         options: {
-        //             reporter: "xunit",
-        //             captureFile: testOutputLocation + "/mocha/junit.xml",
-        //             quiet: true
-        //         }
-        //     }
-        // }
     });
 
     grunt.registerTask('selenium', ['selenium_start']);
