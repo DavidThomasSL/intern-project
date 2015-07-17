@@ -67,7 +67,6 @@ module.exports = function(port, enableLogging) {
 
             }
 
-
             //can't send socket over socket, detach then reattach after sending
             user.socket = "";
             socket.emit('user details', {
@@ -98,7 +97,11 @@ module.exports = function(port, enableLogging) {
             roomId++;
 
             // socket.emit('room join result', {success: true, roomId: room.id, usersInRoom: room.players});
-            callback({success: true, roomId: room.id, usersInRoom: room.players});
+            callback({
+                success: true,
+                roomId: room.id,
+                usersInRoom: room.players
+            });
         });
 
         /*
@@ -115,41 +118,89 @@ module.exports = function(port, enableLogging) {
             var joinedRoom = {};
 
             //get the room
-            rooms.forEach(function (room){
-
-                if(room.id === toJoinId){
-
-
-                    console.log("Found room " + toJoinId);
-
-                    //add player to room
+            rooms.forEach(function(room) {
+                //add player to room
+                if (room.id === toJoinId) {
                     room.players.push(msg.playerId);
                     user.roomId = toJoinId;
                     joinedRoom = room;
-
                     joined = true;
                 }
             });
 
-            if(joined) {console.log("joined successfully");}
-            else {console.log("failed to join room");}
+            if (joined) {
+                console.log("joined successfully");
+            } else {
+                console.log("failed to join room");
+            }
 
             // socket.emit('room join result', {success: joined, roomId: toJoinId, usersInRoom: joinedRoom.players});
-            callback({success: joined, roomId: toJoinId, usersInRoom: joinedRoom.players});
+            callback({
+                success: joined,
+                roomId: toJoinId,
+                usersInRoom: joinedRoom.players
+            });
 
             console.log(rooms);
         });
 
+        /*
+            Removes a given user from a given room
+            The user needs to removed to reference to te room,
+            and the server needs to have a reference to the user removed
+        */
+        socket.on('leave room', function(msg, callback) {
+
+            var userToLeaveId = parseInt(msg.userId);
+            var roomToLeave = parseInt(msg.roomId);
+            var removed = false;
+
+            console.log("In leave room");
+
+            //remove user from room
+            rooms.forEach(function(room) {
+
+                if (room.id === roomToLeave) {
+
+                    if (room.players.indexOf(userToLeaveId) > -1) {
+
+                        room.players = room.players.filter(function(playerId) {
+                            return playerId !== userToLeaveId;
+                        });
+
+                        removed = true;
+                    }
+                }
+            });
+
+            //remove room from user
+            users.forEach(function(otherUser) {
+
+                if (otherUser.uId === userToLeaveId) {
+                    otherUser.roomId = undefined;
+                }
+            });
+
+            if (removed) {
+                console.log("Removed user " + userToLeaveId + " from room " + roomToLeave);
+            } else {
+                console.log("ERROR: USER WAS NOT IN ROOM");
+            }
+
+            callback(removed);
+        });
+
         //send all previosu messages to the new user
+        //TODO REMOVE
         messages.forEach(function(data) {
             socket.emit('message', data);
         });
 
         socket.on('get username', function(msg, callback) {
 
-            var  userToReturn = [];
+            var userToReturn = [];
 
-            userToReturn = users.filter(function(user){
+            userToReturn = users.filter(function(user) {
                 return user.uId === parseInt(msg.uId);
             });
 
@@ -164,6 +215,7 @@ module.exports = function(port, enableLogging) {
         //so that he can join again
         socket.on('disconnect', function() {
             console.log("Disconnecting player");
+
             rooms.forEach( function(room){
                 if (room.id === user.roomId) {
                     room.players = room.players.filter(function(usersInRoom) {
@@ -180,14 +232,14 @@ module.exports = function(port, enableLogging) {
             var usersInRoom = [];
 
             roomToReturn = rooms.filter(function(room) {
-                if( room.id === parseInt(msg.roomId)) {
+                if (room.id === parseInt(msg.roomId)) {
                     return room;
                 }
             });
 
             roomToReturn = roomToReturn[0];
 
-            users.forEach( function(user) {
+            users.forEach(function(user) {
                 if (user.roomId == roomToReturn.id) {
                     usersInRoom.push(user.name);
                 }
@@ -203,15 +255,13 @@ module.exports = function(port, enableLogging) {
             var user = {};
             user.uId = uId;
             user.name = undefined;
-            user.roomId = undefined;
+            user.roomId = -1;
             users.push(user);
             uId++;
             return user;
         }
 
     });
-
-
 
     function broadcast(event, data) {
         users.forEach(function(user) {
