@@ -1,4 +1,4 @@
-<html lang="en" class="wf-proximanova-n3-active wf-proximanova-n4-active wf-proximanova-n6-active wf-proximanova-n7-active wf-proximanova-i3-active wf-active" ng-app="ClonageApp">
+<html lang="en" class="wf-proximanova-n3-active wf-proximanova-n4-active wf-proximanova-n6-active wf-proximanova-n7-active wf-proximanova-i3-active wf-active" >
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -15,9 +15,8 @@
         <link rel="stylesheet" href="/css/site.css" />
     </head>
 
-    <body ng-controller="MainController">
+    <body ng-app="ClonageApp" ng-controller="MainController">
         <section class="header mainWrapper active">
-
             <div class="logo">
                 <img src="includes/images/logo.png" alt="">
                 <span class="logotext typer"></span>
@@ -25,13 +24,13 @@
 
             <!--SETTING THE USER NAME -->
             <div id="signup-container" class="namestuff"  ng-show="isGameStage(0) && !nameSet"><br>
-                <h2>Enter your name</h2>
+                <h2 id="testid">Enter your name</h2>
                 <input id="name-input-box" placeholder="your name here" ng-model="enteredName">
                 <button ng-click="submitName()">Submit Name</button>
             </div>
 
             <!--CHOOSING TO JOIN OR CREATE A ROOM -->
-            <div id="signup-container" class="namestuff" ng-show="isGameStage(0) && nameSet">
+            <div id="join-create-container" class="namestuff" ng-show="isGameStage(0) && nameSet">
                 <h2>Hi {{enteredName}}!</h2>
                 <p>Choose to either join an exisiting room, or create your own for friends to join! </p>
                 <button ng-click="createRoom()">Create Room</button><br><br>

@@ -1,9 +1,17 @@
 // spec.js
-describe('Protractor Demo App', function() {
-  it('should have a title', function() {
+describe('Clonage App', function() {
 
-    browser.get('/');
+	beforeEach(function() {
+		browser.get('/');
+		browser.waitForAngular();
+	});
 
-    expect(browser.getTitle()).toEqual('CLONAGE');
-  });
+	it('should have a title', function() {
+		expect(browser.getTitle()).toEqual('CLONAGE');
+	});
+
+	it('only name entry should be visible', function() {
+		expect(element(by.id('testid')).getText()).toEqual("Enter your name");
+	});
+
 });
