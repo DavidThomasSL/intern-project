@@ -25,98 +25,112 @@ describe('Clonage App', function() {
 
 		afterEach(function() {
 			browser.executeScript('window.sessionStorage.clear();');
-	   		browser.executeScript('window.localStorage.clear();');
+			browser.executeScript('window.localStorage.clear();');
 		});
-
-		//todo starts on joining page
 
 		it('can enter a name and move to joining a room', function() {
 			clonageSignup.submitName("Bob");
 			expect(element(by.id('signup-container')).isPresent()).toBe(false);
 			expect(element(by.id('room-join-container')).isPresent()).toBe(true);
 			expect(browser.getCurrentUrl()).toMatch(/\/joining/);
-
 		});
 
-		// it('on refresh, name is remebered and user goes straight to joining a room', function() {
+		it('users name is shown on the joining room page', function() {
+			clonageSignup.submitName("Bob");
+			expect(element(by.id('user-name-text')).getText()).toBe('Hi Bob!');
+			expect(element(by.id('room-input-box')).isPresent()).toBe(true);
+		});
 
-		// 	clonageSignup.submitName("Bob");
-		// 	clonageSignup.refresh();
+		it('on refresh, name is remebered and user goes straight to joining a room', function() {
 
-		// 	expect(element(by.model('enteredName')).getAttribute('value')).toBe('Bob');
-		// 	expect(element(by.id('signup-container')).isDisplayed()).toBe(false);
-		// 	expect(element(by.id('join-create-container')).isDisplayed()).toBe(true);
-		// });
+			clonageSignup.submitName("Bob");
+			clonageSignup.refresh();
 
-		// it('if session storage times out, user has to enter name again', function() {
+			expect(element(by.id('user-name-text')).getText()).toBe('Hi Bob!');
+			expect(browser.getCurrentUrl()).toMatch(/\/joining/);
+			expect(element(by.id('room-join-container')).isDisplayed()).toBe(true);
+		});
 
-		// 	clonageSignup.submitName("Bob");
+		it('if session storage times out, user has to enter name again', function() {
 
-		// 	browser.executeScript('window.sessionStorage.clear();');
-	 //   		browser.executeScript('window.localStorage.clear();');
+			clonageSignup.submitName("Bob");
 
-	 //   		clonageSignup.refresh();
+			browser.executeScript('window.sessionStorage.clear();');
+			browser.executeScript('window.localStorage.clear();');
 
-		// 	expect(element(by.id('signup-container')).isDisplayed()).toBe(true);
-		// 	expect(element(by.id('join-create-container')).isDisplayed()).toBe(false);
-		// });
+			clonageSignup.refresh();
+
+			expect(element(by.id('signup-container')).isDisplayed()).toBe(true);
+			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
+		});
 	});
 
-	// describe('As a registered user', function() {
+	describe('As a registered user', function() {
 
-	// 	var clonageRoomCreate;
+		beforeEach(function() {
+			var clonageSignup = new ClonageSignupPage();
 
-	// 	beforeEach(function() {
-	// 		var clonageSignup = new ClonageSignupPage();
+			clonageSignup.get();
+			clonageSignup.submitName("Bob");
+		});
 
-	// 		clonageSignup.get();
-	// 		clonageSignup.submitName("Bob");
+		afterEach(function() {
+			browser.executeScript('window.sessionStorage.clear();');
+			browser.executeScript('window.localStorage.clear();');
+		});
 
-	// 		clonageRoomCreate = new ClonageRoomCreatePage();
+		it('can see the room join/create page', function() {
+			expect(element(by.id('signup-container')).isPresent()).toBe(false);
+			expect(element(by.id('room-join-container')).isDisplayed()).toBe(true);
+			expect(browser.getCurrentUrl()).toMatch(/\/joining/);
+		});
+	});
 
-	// 	});
+	describe('When creating a room', function() {
 
-	// 	afterEach(function() {
-	// 		browser.executeScript('window.sessionStorage.clear();');
-	//    		browser.executeScript('window.localStorage.clear();');
-	// 	});
+		var clonageSignup;
+		var clonageRoomCreate;
 
-	// 	it('can see the room join/create page', function() {
-	// 		expect(element(by.id('signup-container')).isDisplayed()).toBe(false);
-	// 		expect(element(by.id('join-create-container')).isDisplayed()).toBe(true);
-	// 	});
+		beforeEach(function() {
+			clonageSignup = new ClonageSignupPage();
+			clonageRoomCreate = new ClonageRoomCreatePage();
+		});
 
-	// 	it('can create a new room join are automatically put into it', function() {
-	// 		clonageRoomCreate.createRoom();
+		it('user can create a new room and are automatically put into it', function() {
+			clonageSignup.get();
+			clonageSignup.submitName("Bob");
+			clonageRoomCreate.createRoom();
 
-	// 		expect(element(by.id('join-create-container')).isDisplayed()).toBe(false);
-	// 		expect(element(by.id('main-game-container')).isDisplayed()).toBe(true);
-	// 	});
+			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
+			expect(element(by.id('room-lobby-container')).isDisplayed()).toBe(true);
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		});
 
-	// 	it('in a lobby can see the room code as 0', function() {
-	// 		clonageRoomCreate.createRoom();
-	// 		browser.pause();
-	// 		expect(element(by.model('$storage.roomId')).getAttribute('value')).toBe('0');
+		it('users in a lobby can see the room code as 0', function() {
+			expect(element(by.id('room-code-display')).getText()).toBe('ROOM CODE: 0');
+		});
 
+		it('user can see themselves in the room as \'Me!\'', function() {
+			expect(element.all(by.repeater('user in usersInRoom')).get(0).getText()).toBe('Me!');
+		});
 
+		it('on refresh the user is put back in the room lobby', function() {
+			clonageSignup.refresh();
+			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
+			expect(element(by.id('room-lobby-container')).isDisplayed()).toBe(true);
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		});
 
-	// 	});
+		it('if session storage lost user put back in joining page', function() {
+			browser.executeScript('window.sessionStorage.clear();');
+			browser.executeScript('window.localStorage.clear();');
+			browser.refresh();
+			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
+			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		});
 
-	// });
-
-
-
-	// it('can create a room and move to room lobby', function() {
-
-
-	// 	clonageSignup.submitName("Bob");
-	// 	clonageSignup.createRoom();
-
-	// 	expect(element(by.id('join-create-container')).isDisplayed()).toBe(false);
-	// 	expect(element(by.id('main-game-container')).isDisplayed()).toBe(true);
-
-	// });
-
+	});
 
 });
 
