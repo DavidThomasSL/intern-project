@@ -24,29 +24,26 @@ ClonageApp.factory('socket', function($rootScope) {
 	};
 });
 
-ClonageApp.config (['$routeProvider', '$locationProvider',
-  function($routeProvider, $locationProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: '/templates/setname.html'
-      })
-      .when('/joining', {
-        templateUrl: '/templates/joining.html'
-      })
-      .when('/room/', {
-      	templateUrl: '/templates/room.html'
-      })
-      .otherwise({
-      	templateUrl : '/templates/setname.html'
-      });
+ClonageApp.config(['$routeProvider', '$locationProvider',
+	function($routeProvider, $locationProvider) {
+		$routeProvider
+			.when('/', {
+				templateUrl: '/templates/setname.html'
+			})
+			.when('/joining', {
+				templateUrl: '/templates/joining.html'
+			})
+			.when('/room/', {
+				templateUrl: '/templates/room.html'
+			})
+			.otherwise({
+				templateUrl: '/templates/setname.html'
+			});
 
-}]);
+	}
+]);
 
-
-
-
-
-ClonageApp.controller("MainController", function($scope, socket, $localStorage, $sessionStorage, $location, $route) {
+ClonageApp.controller("MainController", function($scope, socket, $localStorage, $sessionStorage, $location) {
 	var user = {};
 
 	$scope.enteredName = "";
@@ -124,7 +121,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		joinServerRoom(form.enteredRoomId, roomJoinResult);
 	};
 
-
 	/*
 		This function is passed as a callback when a user either joins or creates a room
 		It takes as an argument the details of the room the user joined,
@@ -168,14 +164,16 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 
 		console.log("removing player....");
 
-		socket.emit('leave room', {roomId: roomId, userId: userId}, function(msg) {
-			if(msg) {
+		socket.emit('leave room', {
+			roomId: roomId,
+			userId: userId
+		}, function(msg) {
+			if (msg) {
 				console.log("user left room: " + roomId);
 				$scope.$storage.roomId = -1;
 				$scope.gameStage = 0;
 				$location.path('/joining');
-			}
-			else {
+			} else {
 				console.log("there was an error");
 			}
 		});
@@ -203,8 +201,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 
 			if (id === $scope.$storage.userId) {
 				usernames.push("Me!");
-			}
-			else {
+			} else {
 				socket.emit('get username', {
 					uId: id
 				}, function(name) {
@@ -212,7 +209,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 					console.log("got a name");
 				});
 			}
-
 
 		});
 
