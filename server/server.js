@@ -4,6 +4,10 @@ var path = require('path');
 var async = require('async');
 var socketio = require('socket.io');
 var express = require('express');
+var log4js = require('log4js');
+
+var logger = log4js.getLogger();
+
 
 
 module.exports = function(port, enableLogging) {
@@ -14,6 +18,8 @@ module.exports = function(port, enableLogging) {
     });
 
     io.set('log level', 1);
+    logger.setLevel('INFO');
+
 
     router.use(express.static(path.resolve(__dirname, '../client')));
 
@@ -36,15 +42,18 @@ module.exports = function(port, enableLogging) {
             otherwise, create a new player
         */
         socket.on('join', function(msg) {
-            console.log("player joined");
+
+            logger.info("player joined")
+                // console.log("player joined");
+
             if (msg.token !== undefined) {
-                console.log("exsitng player");
+                // console.log("exsitng player");
                 //this user previosuly connected and has an id
 
                 var existingId = parseInt(msg.token);
 
-                console.log("exisitng users");
-                console.log(users);
+                logger.info("user has joined previosuly");
+                logger.debug(users);
 
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
@@ -52,17 +61,17 @@ module.exports = function(port, enableLogging) {
 
                 //check if the user was founds
                 if (user.length !== 1) {
-                    console.log("No user found with id");
+                    logger.warn("No user found with id");
                     user = createNewUser();
 
                 } else {
-                    console.log(user);
+                    logger.debug(user);
                     user = user[0];
                 }
 
             } else {
                 //first time this user has joined
-                console.log("new user");
+                logger.info("new user");
                 user = createNewUser();
 
             }
@@ -78,7 +87,7 @@ module.exports = function(port, enableLogging) {
 
         socket.on('set name', function(msg, callback) {
             user.name = msg.name;
-            console.log(msg.name);
+            logger.info(msg.name);
 
             callback();
         });
@@ -129,9 +138,9 @@ module.exports = function(port, enableLogging) {
             });
 
             if (joined) {
-                console.log("joined successfully");
+                logger.info("joined successfully");
             } else {
-                console.log("failed to join room");
+                logger.error("failed to join room");
             }
 
             // socket.emit('room join result', {success: joined, roomId: toJoinId, usersInRoom: joinedRoom.players});
@@ -141,7 +150,7 @@ module.exports = function(port, enableLogging) {
                 usersInRoom: joinedRoom.players
             });
 
-            console.log(rooms);
+            logger.debug(rooms);
         });
 
         /*
@@ -154,8 +163,6 @@ module.exports = function(port, enableLogging) {
             var userToLeaveId = parseInt(msg.userId);
             var roomToLeave = parseInt(msg.roomId);
             var removed = false;
-
-            console.log("In leave room");
 
             //remove user from room
             rooms.forEach(function(room) {
@@ -182,9 +189,9 @@ module.exports = function(port, enableLogging) {
             });
 
             if (removed) {
-                console.log("Removed user " + userToLeaveId + " from room " + roomToLeave);
+                logger.info("Removed user " + userToLeaveId + " from room " + roomToLeave);
             } else {
-                console.log("ERROR: USER WAS NOT IN ROOM");
+                logger.error("USER WAS NOT IN ROOM");
             }
 
             callback(removed);
@@ -205,8 +212,7 @@ module.exports = function(port, enableLogging) {
             });
 
             userToReturn = userToReturn[0].name;
-            // console.log("get a username" + msg.uId);
-            // console.log(userToReturn);
+            logger.info("getting username of user " + msg.uId);
             callback(userToReturn);
         });
 
@@ -214,9 +220,9 @@ module.exports = function(port, enableLogging) {
         //the user still remembers what room his was in however,
         //so that he can join again
         socket.on('disconnect', function() {
-            console.log("Disconnecting player");
+            logger.info("Disconnecting player");
 
-            rooms.forEach( function(room){
+            rooms.forEach(function(room) {
                 if (room.id === user.roomId) {
                     room.players = room.players.filter(function(usersInRoom) {
                         return usersInRoom !== user.uId;
@@ -245,7 +251,7 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            console.log(usersInRoom);
+            logger.debug(usersInRoom);
 
             callback(usersInRoom);
         });
@@ -272,7 +278,7 @@ module.exports = function(port, enableLogging) {
     server.listen(port, function() {
         var addr = server.address();
         if (enableLogging) {
-            console.log("Chat server listening at port: " + addr.port);
+            logger.info("Chat server listening at port: " + addr.port);
         }
     });
 
