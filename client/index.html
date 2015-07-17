@@ -22,48 +22,15 @@
                 <img src="includes/images/logo.png" alt="">
                 <span class="logotext typer"></span>
             </div>
-
-            <!--SETTING THE USER NAME -->
-            <div id="signup-container" class="namestuff"  ng-show="isGameStage(0) && !nameSet"><br>
-                <h2>Enter your name</h2>
-                <input id="name-input-box" placeholder="your name here" ng-model="enteredName">
-                <button ng-click="submitName()">Submit Name</button>
-            </div>
-
-            <!--CHOOSING TO JOIN OR CREATE A ROOM -->
-            <div id="signup-container" class="namestuff" ng-show="isGameStage(0) && nameSet">
-                <h2>Hi {{enteredName}}!</h2>
-                <p>Choose to either join an exisiting room, or create your own for friends to join! </p>
-                <button ng-click="createRoom()">Create Room</button><br><br>
-                <input id="room-input-box" placeholder="Enter room id" ng-model="enteredRoomId">
-                <button ng-click="joinRoom()">Join Room</button><br><br>
-                <input type="submit" ng-click="goback(0)" value="Go back">
-            </div>
-
-
-            <!--THE REAL GAME STUFF -->
-            <div class="animate-switch" ng-show="isGameStage(1)">
-                <div id="room-lobby-container" class="namestuff">
-                    <h2>Waiting for players to join!<h2>
-                    <h3>ROOM CODE: {{$storage.roomId}}<h3>
-                    List of users who are in the room
-                    <ul>
-                        <li ng-repeat="user in usersInRoom">
-                            {{user}}
-                        </li>
-                    </ul>
-                    <input type="submit" ng-click="goback(1)" value="Go back">
-                </div>
-            </div>
-
-            <!-- Footer/credits -->
-            <section class="credits">
-                <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a>
-            </section>
-
+            <ng-view></ng-view>
+                <!-- Footer/credits -->
+                <section class="credits">
+                    <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a>
+                </section>
         </section>
 
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/client.js"></script>
