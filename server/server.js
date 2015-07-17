@@ -43,7 +43,7 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('join', function(msg) {
 
-            logger.info("player joined")
+            logger.info("player joined");
                 // console.log("player joined");
 
             if (msg.token !== undefined) {
