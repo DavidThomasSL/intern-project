@@ -89,17 +89,17 @@ describe('Clonage App', function() {
 	describe('When creating a room', function() {
 
 		var clonageSignup;
-		var clonageRoomCreate;
+		var clonageRoomJoinPage;
 
 		beforeEach(function() {
 			clonageSignup = new ClonageSignupPage();
-			clonageRoomCreate = new ClonageRoomCreatePage();
+			clonageRoomJoinPage = new ClonageRoomJoinPage();
 		});
 
 		it('user can create a new room and are automatically put into it', function() {
 			clonageSignup.get();
 			clonageSignup.submitName("Bob");
-			clonageRoomCreate.createRoom();
+			clonageRoomJoinPage.createRoom();
 
 			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
 			expect(element(by.id('room-lobby-container')).isDisplayed()).toBe(true);
@@ -132,6 +132,50 @@ describe('Clonage App', function() {
 
 	});
 
+	describe('When joining an exsiting room', function() {
+		var clonageSignup;
+		var clonageRoomJoinPage;
+		var browser2;
+		var element2;
+
+		beforeEach(function() {
+			clonageSignup = new ClonageSignupPage();
+			clonageRoomJoinPage = new ClonageRoomJoinPage();
+			browser2 = browser.forkNewDriverInstance(false, true);
+			element2 = browser2.element;
+
+			browser2.get('/');
+			browser2.waitForAngular();
+
+			element2(by.id('name-input-box')).sendKeys('Alice');
+			element2(by.id('name-submit-button')).click();
+			element2(by.id('create-room-button')).click();
+		});
+
+		afterEach(function() {
+			browser2.close();
+		});
+
+		it('can join an extisting room and go into the lobby and see other users in the room', function() {
+			clonageSignup.get();
+			clonageSignup.submitName("Bob");
+			clonageRoomJoinPage.joinRoom('0');
+
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
+			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
+
+			expect(element.all(by.repeater('user in usersInRoom')).get(0).getText()).toBe('Me!');
+			expect(element.all(by.repeater('user in usersInRoom')).get(1).getText()).toBe('Alice');
+		});
+
+		//BROKEN FOR NOW
+		// it('if other use joins while in the room user can see that without updating', function() {
+		// 	expect(element.all(by.repeater('user in usersInRoom')).get(0).getText()).toBe('Me!');
+		// 	expect(element.all(by.repeater('user in usersInRoom')).get(1).getText()).toBe('Alice');
+		// });
+	});
+
 });
 
 var ClonageSignupPage = function() {
@@ -154,11 +198,18 @@ var ClonageSignupPage = function() {
 	};
 };
 
-var ClonageRoomCreatePage = function() {
+var ClonageRoomJoinPage = function() {
 
 	var createRoomButton = element(by.id('create-room-button'));
+	var roomInputBox = element(by.id('room-input-box'));
+	var roomJoinButton = element(by.id('room-join-button'));
 
 	this.createRoom = function() {
 		createRoomButton.click();
+	};
+
+	this.joinRoom = function(roomId) {
+		roomInputBox.sendKeys(roomId);
+		roomJoinButton.click();
 	};
 };
