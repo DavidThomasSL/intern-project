@@ -125,6 +125,7 @@ module.exports = function(port, enableLogging) {
                     user.roomId = toJoinId;
                     joinedRoom = room;
                     joined = true;
+                    broadcastroom(toJoinId, 'new join', joinedRoom.players);
                 }
             });
 
@@ -188,12 +189,6 @@ module.exports = function(port, enableLogging) {
             }
 
             callback(removed);
-        });
-
-        //send all previosu messages to the new user
-        //TODO REMOVE
-        messages.forEach(function(data) {
-            socket.emit('message', data);
         });
 
         socket.on('get username', function(msg, callback) {
@@ -266,6 +261,16 @@ module.exports = function(port, enableLogging) {
     function broadcast(event, data) {
         users.forEach(function(user) {
             user.socket.emit(event, data);
+        });
+    }
+
+     function broadcastroom(roomId, event, data) {
+
+        users.forEach(function(user) {
+            if (user.roomId === parseInt(roomId) ) {
+                console.log("found user in room");
+                user.socket.emit(event, data);
+            }
         });
     }
 

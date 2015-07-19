@@ -62,6 +62,10 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			token: $scope.$storage.userId
 		});
 
+		socket.on('new join', function(msg) {
+			$scope.usersInRoom = getUsersFromIds(msg);
+		});
+
 		//Server sending usre details (either new or previosuly existing)
 		socket.on('user details', function(msg) {
 
