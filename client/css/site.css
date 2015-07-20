@@ -39,3 +39,5 @@ footer img { width: 154px; height: 154px; }
 .credits { background-color: black; padding: 20px 0; text-align: bottom; bottom: 0 ; position: absolute; width:100%; height: 5% ;}
 .credits a { color: #545454; -webkit-transition: all .25s ease-in-out; -moz-transition: all .25s ease-in-out; -ms-transition: all .25s ease-in-out; -o-transition: all .25s ease-in-out; transition: all .25s ease-in-out; }
 .credits a:hover { text-decoration: none; color: #f37420; }
+
+ul { list-style-type: none; }
