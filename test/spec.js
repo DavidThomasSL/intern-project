@@ -40,7 +40,7 @@ describe('Clonage App', function() {
 
 			clonageSignup.refresh();
 
-			expect(element(by.id('user-name-text')).getText()).toBe('Hi Bob!');
+			expect(element(by.binding('enteredName')).getText()).toBe('Hi Bob!');
 			expect(browser.getCurrentUrl()).toMatch(/\/joining/);
 			expect(element(by.id('room-join-container')).isDisplayed()).toBe(true);
 		});
