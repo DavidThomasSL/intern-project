@@ -93,6 +93,26 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			}
 		});
 
+		//when a new user joins the room
+		socket.on('new join', function(msg) {
+
+
+			console.log("new user:" + msg);
+			var newuser = getUserFromId(msg);
+
+			console.log("new username:" + newuser);
+
+			// var alreadyin = false;
+			// $scope.usersInRoom.forEach(function(user) {
+			// 	if (newuser === user) {
+			// 		alreadyin = true;
+			// 	}
+			// });
+			// if (alreadyin === false ) {
+			// 	//$scope.usersInRoom.push(newuser);
+			// }
+		});
+
 	});
 
 	$scope.submitName = function(form) {
@@ -141,7 +161,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			$location.path('/room/');
 
 		} else {
-			print("could not join");
+			alert("Could not join");
 		}
 	}
 
@@ -183,6 +203,30 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 
 		console.log("here are the users in the game" + usernames);
 		return usernames;
+	}
+
+	function getUserFromId(id) {
+		var username;
+		socket.emit('get username', {
+				uId: id
+			}, function(name) {
+
+				var alreadyin = false;
+				$scope.usersInRoom.forEach(function(user) {
+					if (name === user) {
+						alreadyin = true;
+				 	}
+				 });
+				if (alreadyin === false ) {
+					$scope.usersInRoom.push(name);
+				}
+
+				console.log("got a name: " + name);
+				return name;
+			});
+
+		console.log("got a username: " + name);
+
 	}
 
 	function print(msg) {

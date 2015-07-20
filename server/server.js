@@ -128,21 +128,18 @@ module.exports = function(port, enableLogging) {
                     joinedRoom = room;
 
                     joined = true;
+
+                    broadcastroom(parseInt(joinedRoom), "new join", msg.playerId);
                 }
             });
 
-            if(joined) {console.log("joined successfully");}
-            else {console.log("failed to join room");}
+            if(joined) {console.log("joined successfully"); }
+            else {console.log("failed to join room"); }
 
             // socket.emit('room join result', {success: joined, roomId: toJoinId, usersInRoom: joinedRoom.players});
             callback({success: joined, roomId: toJoinId, usersInRoom: joinedRoom.players});
 
             console.log(rooms);
-        });
-
-        //send all previosu messages to the new user
-        messages.forEach(function(data) {
-            socket.emit('message', data);
         });
 
         socket.on('get username', function(msg, callback) {
@@ -212,6 +209,17 @@ module.exports = function(port, enableLogging) {
     });
 
 
+    function broadcastroom(roomid, event, data) {
+        users.forEach(function(user, roomid) {
+            console.log('looking for users in room');
+            console.log(user.roomId);
+            console.log(roomid);
+            if (parseInt(user.roomId) === parseInt(roomid)) {
+                console.log('found users in room');
+                user.socket.emit(event, data);
+            }
+        });
+    }
 
     function broadcast(event, data) {
         users.forEach(function(user) {
