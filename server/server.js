@@ -86,6 +86,7 @@ module.exports = function(port, enableLogging) {
         //create room, assign id, add current player and return room id to player
         socket.on('create room', function(msg, callback) {
 
+            roomId = makeid();
             var room = {
                 id: roomId,
                 players: [msg.playerId]
@@ -93,8 +94,9 @@ module.exports = function(port, enableLogging) {
 
             user.roomId = roomId;
             rooms.push(room);
-            // console.log(rooms);
-            roomId++;
+
+            console.log(rooms);
+              //roomId++;
 
             // socket.emit('room join result', {success: true, roomId: room.id, usersInRoom: room.players});
             callback({
@@ -112,7 +114,7 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('join room', function(msg, callback) {
 
-            var toJoinId = parseInt(msg.roomId);
+            var toJoinId = msg.roomId;
             var userId = parseInt(msg.uId);
             var joined = false;
             var joinedRoom = {};
@@ -153,7 +155,7 @@ module.exports = function(port, enableLogging) {
         socket.on('leave room', function(msg, callback) {
 
             var userToLeaveId = parseInt(msg.userId);
-            var roomToLeave = parseInt(msg.roomId);
+            var roomToLeave = msg.roomId;
             var removed = false;
 
             console.log("In leave room");
@@ -229,7 +231,7 @@ module.exports = function(port, enableLogging) {
             var usersInRoom = [];
 
             roomToReturn = rooms.filter(function(room) {
-                if (room.id === parseInt(msg.roomId)) {
+                if (room.id === msg.roomId) {
                     return room;
                 }
             });
@@ -266,14 +268,31 @@ module.exports = function(port, enableLogging) {
         });
     }
 
-     function broadcastroom(roomId, event, data) {
+     function broadcastroom(room, event, data) {
 
         users.forEach(function(user) {
-            if (user.roomId === parseInt(roomId) ) {
+            if (user.roomId === room ) {
                 console.log("found user in room");
                 user.socket.emit(event, data);
             }
         });
+    }
+
+    //make an id for 5 letters until it is unique
+    function makeid() {
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var used = true;
+        var text;
+        while ( used === true ) {
+            text = "";
+            used = false ;
+            for( var i=0; i < 5; i++ ) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length)); }
+            rooms.forEach(function(room) {
+                if ( room.id === text ) { used = true; }
+            });
+        }
+        return text;
     }
 
     server.listen(port, function() {

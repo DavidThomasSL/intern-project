@@ -230,6 +230,4 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		console.log(msg);
 	}
 
-
-
 });
