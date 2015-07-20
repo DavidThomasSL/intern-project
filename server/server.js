@@ -125,15 +125,14 @@ module.exports = function(port, enableLogging) {
                     user.roomId = toJoinId;
                     joinedRoom = room;
                     joined = true;
+
                     broadcastroom(toJoinId, 'new join', joinedRoom.players);
                 }
             });
 
-            if (joined) {
-                console.log("joined successfully");
-            } else {
-                console.log("failed to join room");
-            }
+            if (joined) { console.log("joined successfully"); }
+            else { console.log("failed to join room"); }
+
 
             // socket.emit('room join result', {success: joined, roomId: toJoinId, usersInRoom: joinedRoom.players});
             callback({
@@ -144,6 +143,7 @@ module.exports = function(port, enableLogging) {
 
             console.log(rooms);
         });
+
 
         /*
             Removes a given user from a given room
@@ -170,6 +170,8 @@ module.exports = function(port, enableLogging) {
                         });
 
                         removed = true;
+
+                        broadcastroom(roomToLeave, 'new leave', room.players);
                     }
                 }
             });

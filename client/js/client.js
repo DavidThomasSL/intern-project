@@ -62,7 +62,13 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			token: $scope.$storage.userId
 		});
 
+		//new player joined -> update player list in room
 		socket.on('new join', function(msg) {
+			$scope.usersInRoom = getUsersFromIds(msg);
+		});
+
+		//player leaved room -> update player list in room
+		socket.on('new leave', function(msg) {
 			$scope.usersInRoom = getUsersFromIds(msg);
 		});
 
@@ -141,7 +147,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 			$location.path('/room/');
 
 		} else {
-			print("could not join");
+			alert("Could not join");
 		}
 	}
 
