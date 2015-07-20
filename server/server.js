@@ -170,6 +170,8 @@ module.exports = function(port, enableLogging) {
                         });
 
                         removed = true;
+
+                        broadcastroom(roomToLeave, 'new leave', room.players);
                     }
                 }
             });
