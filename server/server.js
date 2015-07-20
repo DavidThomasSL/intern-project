@@ -125,6 +125,10 @@ module.exports = function(port, enableLogging) {
                     user.roomId = toJoinId;
                     joinedRoom = room;
                     joined = true;
+
+                    //broadcast joining event to all other users in the room
+
+
                 }
             });
 

@@ -21,13 +21,7 @@ describe('Clonage App', function() {
 
 		beforeEach(function() {
 			clonageSignup = new ClonageSignupPage();
-			// clonageSignup.get();
 		});
-
-		// afterEach(function() {
-		// 	browser.executeScript('window.sessionStorage.clear();');
-		// 	browser.executeScript('window.localStorage.clear();');
-		// });
 
 		it('can enter a name and move to joining a room', function() {
 			clonageSignup.submitName("Bob");
@@ -37,14 +31,13 @@ describe('Clonage App', function() {
 		});
 
 		it('users name is shown on the joining room page', function() {
-			// clonageSignup.submitName("Bob");
-			expect(element(by.id('user-name-text')).getText()).toBe('Hi Bob!');
+
+			expect(element(by.binding('enteredName')).getText()).toBe('Hi Bob!');
 			expect(element(by.id('room-input-box')).isPresent()).toBe(true);
 		});
 
 		it('on refresh, name is remebered and user goes straight to joining a room', function() {
 
-			// clonageSignup.submitName("Bob");
 			clonageSignup.refresh();
 
 			expect(element(by.id('user-name-text')).getText()).toBe('Hi Bob!');
@@ -53,8 +46,6 @@ describe('Clonage App', function() {
 		});
 
 		it('if session storage times out, user has to enter name again', function() {
-
-			// clonageSignup.submitName("Bob");
 
 			browser.executeScript('window.sessionStorage.clear();');
 			browser.executeScript('window.localStorage.clear();');
@@ -73,14 +64,7 @@ describe('Clonage App', function() {
 		beforeEach(function() {
 			clonageSignup = new ClonageSignupPage();
 
-			// clonageSignup.get();
-			// clonageSignup.submitName("Bob");
 		});
-
-		// afterEach(function() {
-		// 	browser.executeScript('window.sessionStorage.clear();');
-		// 	browser.executeScript('window.localStorage.clear();');
-		// });
 
 		it('can see the room join/create page', function() {
 
@@ -112,7 +96,7 @@ describe('Clonage App', function() {
 		});
 
 		it('users in a lobby can see the room code as 0', function() {
-			expect(element(by.id('room-code-display')).getText()).toBe('ROOM CODE: 0');
+			expect(element(by.binding('$storage.roomId')).getText()).toBe('ROOM CODE: 0');
 		});
 
 		it('user can see themselves in the room as \'Me!\'', function() {
@@ -159,8 +143,6 @@ describe('Clonage App', function() {
 			element2(by.id('name-input-box')).sendKeys('Alice');
 			element2(by.id('name-submit-button')).click();
 			element2(by.id('create-room-button')).click();
-
-			// browser.close();
 
 			browser.executeScript('window.sessionStorage.clear();');
 			browser.executeScript('window.localStorage.clear();');
