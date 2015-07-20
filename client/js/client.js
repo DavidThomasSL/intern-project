@@ -101,6 +101,7 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		});
 	});
 
+
 	$scope.submitName = function(form) {
 
 		var enteredName = form.enteredName;

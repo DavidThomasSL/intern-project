@@ -20,9 +20,7 @@ module.exports = function(grunt) {
             options: {
                 configFile: 'test/conf.js',
                 args: {
-                    params: {
-                        name: 'CLONAGE'
-                    }
+                    verbose: true
                 }
             },
             e2e: {
@@ -45,7 +43,10 @@ module.exports = function(grunt) {
         },
         selenium_start: {
             options: {
-                port: 4444
+                port: 4444,
+                args : {
+
+                }
             }
         },
         watch: {
@@ -57,24 +58,11 @@ module.exports = function(grunt) {
                 }
             }
         }
-        // mochaTest: {
-        //     test: {
-        //         src: ["test/**/*.js"]
-        //     },
-        //     ci: {
-        //         src: ["test/**/*.js"],
-        //         options: {
-        //             reporter: "xunit",
-        //             captureFile: testOutputLocation + "/mocha/junit.xml",
-        //             quiet: true
-        //         }
-        //     }
-        // }
     });
 
     grunt.registerTask('selenium', ['selenium_start']);
     grunt.registerTask('server', ['express:test', 'watch']);
-    grunt.registerTask('e2e-test', ['selenium_start', 'express:test', 'protractor:e2e']);
+    grunt.registerTask('e2e-test', ['express:test', 'selenium_start' , 'protractor:e2e']);
     grunt.registerTask("check", ["jshint"]);
     grunt.registerTask("test", ["check", "e2e-test"]);
     grunt.registerTask("ci-test", ["check", "e2e-test"]);

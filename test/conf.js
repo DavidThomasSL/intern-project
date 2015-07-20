@@ -5,4 +5,13 @@ exports.config = {
 	params: {
 		name: 'CLONAGE'
 	},
+	capabilities: {
+		'browserName': 'chrome',
+		'chromeOptions': {
+			'args': ['incognito']
+		}
+	},
+	framework: 'jasmine2',
+	getPageTimeout: 10000,
+	allScriptsTimeout: 10000
 };
