@@ -226,30 +226,6 @@ ClonageApp.controller("MainController", function($scope, socket, $localStorage, 
 		return usernames;
 	}
 
-	function getUserFromId(id) {
-		var username;
-		socket.emit('get username', {
-				uId: id
-			}, function(name) {
-
-				var alreadyin = false;
-				$scope.usersInRoom.forEach(function(user) {
-					if (name === user) {
-						alreadyin = true;
-				 	}
-				 });
-				if (alreadyin === false ) {
-					$scope.usersInRoom.push(name);
-				}
-
-				console.log("got a name: " + name);
-				return name;
-			});
-
-		console.log("got a username: " + name);
-
-	}
-
 	function print(msg) {
 		console.log(msg);
 	}
