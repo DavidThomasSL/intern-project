@@ -288,11 +288,16 @@ module.exports = function(port, enableLogging) {
             used = false ;
             for( var i=0; i < 5; i++ ) {
                 text += possible.charAt(Math.floor(Math.random() * possible.length)); }
-            rooms.forEach(function(room) {
-                if ( room.id === text ) { used = true; }
-            });
+            used = checkId(text);
         }
         return text;
+    }
+
+    function checkId (text) {
+        rooms.forEach(function(room) {
+            if ( room.id === text ) { return true; }
+        });
+        return false;
     }
 
     server.listen(port, function() {
