@@ -32,7 +32,6 @@ module.exports = function(port, enableLogging) {
     io.on('connection', function(socket) {
         //create a new user for the connection
         var user = {};
-        user.socket = socket;
 
         /*  client requests to join,
             send the uId to the player
@@ -41,19 +40,16 @@ module.exports = function(port, enableLogging) {
             and we retrieve their user information
             otherwise, create a new player
         */
-        socket.on('join', function(msg) {
+        socket.on('USER register', function(msg) {
 
             logger.info("player joined");
-            // console.log("player joined");
 
             if (msg.token !== undefined) {
-                // console.log("exsitng player");
-                //this user previosuly connected and has an id
 
                 var existingId = parseInt(msg.token);
 
-                logger.info("user has joined previosuly");
-                logger.debug(users);
+                //this user previosuly connected and has an id
+                logger.info("user has joined previously");
 
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
@@ -61,98 +57,122 @@ module.exports = function(port, enableLogging) {
 
                 //check if the user was founds
                 if (user.length !== 1) {
-                    logger.warn("No user found with id");
+                    logger.warn("No user found with id, creating new user");
                     user = createNewUser();
-
                 } else {
-                    logger.debug(user);
                     user = user[0];
                 }
 
             } else {
                 //first time this user has joined
-
-                logger.info("new user");
+                logger.info("New user, creating new user");
                 user = createNewUser();
             }
 
             //can't send socket over socket, detach then reattach after sending
+            sendUserDetails();
+
+            if (user.roomId !== "") {
+                rooms.forEach(function(room) {
+                    if (room.id === user.roomId) {
+                        putUserInRoom(room.id);
+                    }
+                });
+            }
+
+        });
+
+        socket.on('USER set name', function(msg) {
+            user.name = msg.name;
+            logger.info("User set name as: " + msg.name);
+            sendUserDetails();
+            putUserInJoining();
+        });
+
+        function sendUserDetails() {
             user.socket = "";
-            socket.emit('user details', {
+            socket.emit('USER details', {
                 user: user
             });
             user.socket = socket;
 
-        });
+        }
 
-        socket.on('set name', function(msg, callback) {
-            user.name = msg.name;
-            logger.info(msg.name);
-
-            callback();
-        });
+        function putUserInJoining() {
+            socket.emit('ROUTING', {
+                location: 'joining'
+            });
+        }
 
         //create room, assign id, add current player and return room id to player
-        socket.on('create room', function(msg, callback) {
+        socket.on('ROOM create', function(msg) {
 
             roomId = makeid();
             var room = {
                 id: roomId,
-                players: [msg.playerId]
+                usersInRoom: []
             };
 
-            user.roomId = roomId;
             rooms.push(room);
 
-            // socket.emit('room join result', {success: true, roomId: room.id, usersInRoom: room.players});
-            callback({
-                success: true,
-                roomId: room.id,
-                usersInRoom: room.players
-            });
+            putUserInRoom(roomId);
         });
+
 
         /*
             Given a user id and a room id,
             check if that room exisits, and add the player if they are not already in it
-            if the room does not exist, send an error back to the player
-            return wether the join was successful or not
         */
-        socket.on('join room', function(msg, callback) {
+        socket.on('ROOM join', function(msg) {
+            putUserInRoom(msg.roomId);
+        });
 
-            var toJoinId = msg.roomId;
-            var userId = parseInt(msg.uId);
+        /*
+            Puts a user into a room
+            Tells the user and the room that a change has occured
+            Tells the routing service to move to the room page
+            Tell all other users in the room that a player has joined
+        */
+        function putUserInRoom(roomId) {
+            logger.debug("putting user in room");
             var joined = false;
-            var joinedRoom = {};
 
-            //get the room
             rooms.forEach(function(room) {
-                //add player to room
-                if (room.id === toJoinId) {
-                    room.players.push(msg.playerId);
-                    user.roomId = toJoinId;
-                    joinedRoom = room;
+                if (room.id === roomId) {
+
+                    room.usersInRoom.push({
+                        uId: user.uId,
+                        username: user.name
+                    });
+
+                    user.roomId = roomId;
+
+                    socket.emit('USER room join', {
+                        success: true,
+                        roomId: room.id
+                    });
+
+                    socket.emit('ROUTING', {
+                        location: 'room'
+                    });
+
+                    //Update the room serveice of every user
+                    broadcastroom(room.id, 'ROOM details', {
+                        roomId: room.id,
+                        usersInRoom: room.usersInRoom
+                    });
+
+                    logger.info("User " + user.uId + " joined room " + roomId);
+
                     joined = true;
 
-                    broadcastroom(toJoinId, 'new join', joinedRoom.players);
                 }
             });
 
-            if (joined) {
-                logger.info("joined successfully");
-            } else {
-                logger.error("failed to join room");
+            if (!joined) {
+                logger.error("User cannot join room " + roomId);
             }
-
-            // socket.emit('room join result', {success: joined, roomId: toJoinId, usersInRoom: joinedRoom.players});
-            callback({
-                success: joined,
-                roomId: toJoinId,
-                usersInRoom: joinedRoom.players
-            });
-
-            logger.debug(rooms);
-        });
+        }
 
 
         /*
@@ -160,9 +180,8 @@ module.exports = function(port, enableLogging) {
             The user needs to removed to reference to te room,
             and the server needs to have a reference to the user removed
         */
-        socket.on('leave room', function(msg, callback) {
+        socket.on('ROOM leave', function(msg) {
 
-            var userToLeaveId = parseInt(msg.userId);
             var roomToLeave = msg.roomId;
             var removed = false;
 
@@ -171,46 +190,31 @@ module.exports = function(port, enableLogging) {
 
                 if (room.id === roomToLeave) {
 
-                    if (room.players.indexOf(userToLeaveId) > -1) {
+                    room.usersInRoom = room.usersInRoom.filter(function(userInRoom) {
+                        return userInRoom.uId !== user.uId;
+                    });
 
-                        room.players = room.players.filter(function(playerId) {
-                            return playerId !== userToLeaveId;
-                        });
-
-                        removed = true;
-                        broadcastroom(roomToLeave, 'new leave', room.players);
-                    }
+                    broadcastroom(room.id, 'ROOM details', {
+                        roomId: room.id,
+                        usersInRoom: room.usersInRoom
+                    });
                 }
             });
 
             //remove room from user
             users.forEach(function(otherUser) {
-
-                if (otherUser.uId === userToLeaveId) {
-                    otherUser.roomId = undefined;
+                if (otherUser.uId === user.uId) {
+                    otherUser.roomId = "";
+                    sendUserDetails();
                 }
             });
 
-
-            if (removed) {
-                logger.info("Removed user " + userToLeaveId + " from room " + roomToLeave);
-            } else {
-                logger.error("USER WAS NOT IN ROOM");
-            }
-
-            callback(removed);
-        });
-
-        socket.on('get username', function(msg, callback) {
-            var userToReturn = [];
-
-            userToReturn = users.filter(function(user) {
-                return user.uId === parseInt(msg.uId);
+            socket.emit('ROUTING', {
+                location: 'joining'
             });
 
-            userToReturn = userToReturn[0].name;
-            logger.info("getting username of user " + msg.uId);
-            callback(userToReturn);
+            logger.info("Removed user " + user.uId + " from room " + roomToLeave);
+
         });
 
         //When a client disconnect, we remove him from the room he was in
@@ -220,36 +224,21 @@ module.exports = function(port, enableLogging) {
             logger.info("Disconnecting player");
 
             rooms.forEach(function(room) {
+
                 if (room.id === user.roomId) {
-                    room.players = room.players.filter(function(usersInRoom) {
-                        return usersInRoom !== user.uId;
+
+                    room.usersInRoom = room.usersInRoom.filter(function(usersInRoom) {
+                        return usersInRoom.uId !== user.uId;
                     });
+
+                    broadcastroom(room.id, 'ROOM details', {
+                        roomId: room.id,
+                        usersInRoom: room.usersInRoom
+                    });
+
+                    logger.info("Removing player from room" + room.id);
                 }
             });
-        });
-
-        socket.on('get room users', function(msg, callback) {
-
-            var roomToReturn = [];
-            var usersInRoom = [];
-
-            roomToReturn = rooms.filter(function(room) {
-                if (room.id === msg.roomId) {
-                    return room;
-                }
-            });
-
-            roomToReturn = roomToReturn[0];
-
-            users.forEach(function(user) {
-                if (user.roomId == roomToReturn.id) {
-                    usersInRoom.push(user.name);
-                }
-            });
-
-            logger.debug(usersInRoom);
-
-            callback(usersInRoom);
         });
 
         //Creates a new user
@@ -257,7 +246,8 @@ module.exports = function(port, enableLogging) {
             var user = {};
             user.uId = uId;
             user.name = undefined;
-            user.roomId = -1;
+            user.roomId = "";
+            user.socket = socket;
             users.push(user);
             uId++;
             return user;
@@ -272,7 +262,6 @@ module.exports = function(port, enableLogging) {
     function broadcastroom(room, event, data) {
         users.forEach(function(user) {
             if (user.roomId === room) {
-                console.log("found user in room");
                 user.socket.emit(event, data);
             }
         });

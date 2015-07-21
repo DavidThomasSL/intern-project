@@ -2,13 +2,14 @@
 <div class="animate-switch">
     <div id="room-lobby-container" class="namestuff">
         <h2>Waiting for players to join!<h2>
-        <h3>ROOM CODE: {{$storage.roomId}}<h3>
+        <h3>ROOM CODE: {{roomId()}}<h3>
         List of users who are in the room
         <ul>
-            <li ng-repeat="user in usersInRoom">
-                {{user}}
+            <li ng-repeat="user in getUsersInRoom()">
+                {{user.username}}
             </li>
         </ul>
-        <input type="submit" id="leaveRoom" ng-click="leaveRoom()" value="Go back">
+        <input type="submit" ng-click="leaveRoom()" value="Go Back">
+
     </div>
 </div>
