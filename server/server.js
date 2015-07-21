@@ -18,7 +18,7 @@ module.exports = function(port, enableLogging) {
     });
 
     io.set('log level', 1);
-    logger.setLevel('DEBUG');
+    logger.setLevel('INFO');
 
 
     router.use(express.static(path.resolve(__dirname, '../client')));
@@ -68,7 +68,7 @@ module.exports = function(port, enableLogging) {
                 logger.info("New user, creating new user");
                 user = createNewUser();
             }
-            // console.log(user);
+
             //can't send socket over socket, detach then reattach after sending
             sendUserDetails();
 
@@ -262,8 +262,6 @@ module.exports = function(port, enableLogging) {
     function broadcastroom(room, event, data) {
         users.forEach(function(user) {
             if (user.roomId === room) {
-                console.log("found user in room");
-                console.log(user);
                 user.socket.emit(event, data);
             }
         });

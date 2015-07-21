@@ -143,14 +143,17 @@ describe('Clonage App', function() {
 			must create a new user and join that room
 		*/
 		beforeEach(function() {
+
 			clonageSignup = new ClonageSignupPage();
 			clonageRoomJoinPage = new ClonageRoomJoinPage();
+
 
 			browser2 = browser.forkNewDriverInstance(false, true);
 			element2 = browser2.element;
 
 			browser2.get('/');
 			browser2.waitForAngular();
+
 
 			element2(by.id('name-input-box')).sendKeys('Alice');
 			element2(by.id('name-submit-button')).click();
@@ -159,6 +162,7 @@ describe('Clonage App', function() {
 
 			element2(by.binding('roomId')).getText().then(function(text) {
 				roomId = text.split(" ")[2];
+
 			});
 
 			browser.executeScript('window.sessionStorage.clear();');
@@ -175,11 +179,13 @@ describe('Clonage App', function() {
 
 		it('can join an extisting room and go into the lobby and see other users in the room', function() {
 
+
 			clonageRoomJoinPage.joinRoom(roomId);
 
 			expect(browser.getCurrentUrl()).toMatch(/\/room/);
 			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
 			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
+
 
 			expect(element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Alice');
 			expect(element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
