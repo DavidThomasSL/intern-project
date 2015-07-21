@@ -10,6 +10,9 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
             .when('/room/', {
                 templateUrl: '/templates/room.html'
             })
+            .when('/question/', {
+                templateUrl: '/templates/question.html'
+            })
             .otherwise({
                 templateUrl: '/templates/setname.html'
             });

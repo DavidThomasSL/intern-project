@@ -1,6 +1,7 @@
 ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket, $sessionStorage) {
 
     var user = {};
+    var gameHand = {};
 
     /*
         When the client connects, we need to register him with the server properly
@@ -24,6 +25,12 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         userInRoom = true;
     });
 
+    socket.on('USER hand', function(data) {
+        gameHand = data.hand;
+        console.log("got game hand");
+        console.log(gameHand);
+    });
+
     function registerUser() {
         socket.emit('USER register', {
             token: $sessionStorage.userId
@@ -44,12 +51,17 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         return user.id;
     }
 
+    function getUserHand() {
+        return gameHand;
+    }
+
     return {
         hello: function() {
             console.log("hello");
         },
         setName: setName,
         getUserName: getUserName,
-        getUserId: getUserId
+        getUserId: getUserId,
+        getUserHand: getUserHand
     };
 }]);

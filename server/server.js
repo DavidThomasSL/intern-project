@@ -8,7 +8,7 @@ var log4js = require('log4js');
 
 var logger = log4js.getLogger();
 
-
+var GameController = require('./GameController');
 
 module.exports = function(port, enableLogging) {
     var router = express();
@@ -174,7 +174,6 @@ module.exports = function(port, enableLogging) {
             }
         }
 
-
         /*
             Removes a given user from a given room
             The user needs to removed to reference to te room,
@@ -239,6 +238,50 @@ module.exports = function(port, enableLogging) {
                     logger.debug("Removing player from room" + room.id);
                 }
             });
+        });
+
+        /*
+            Called by the GameService
+            Creates a new gamecontroller, adds the current room to it
+            gamecontroller starts whirring
+        */
+        socket.on('GAME start', function(data) {
+            var room;
+
+            console.log("TRYING TO START GAME");
+
+            rooms.forEach( function(otherRoom) {
+                if(otherRoom.id === data.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            var gameController = new GameController();
+
+            room.gameController = gameController;
+
+
+            room.gameController.initialize(room.usersInRoom, function(data) {
+                // console.log(data.players);
+                // console.log(data.roundQuestion);
+
+
+                broadcastroom(room.id, 'ROUTING',{location: 'question'} );
+                broadcastroom(room.id, 'GAME question', {question: data.roundQuestion, round: data.round});
+
+                //TODO give each user their seperate hand
+                broadcastroom(room.id, 'USER hand',  {hand: data.players[0].hand});
+
+                console.log("SEND GAME START TO PARTICIPANTS");
+            });
+
+
+
+            //send the question to the game service
+
+            //send each user a set of answers
+
+            //route the clients to the question page
         });
 
         //Creates a new user
