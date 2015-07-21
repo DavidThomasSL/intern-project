@@ -49,7 +49,7 @@ module.exports = function(port, enableLogging) {
                 var existingId = parseInt(msg.token);
 
                 //this user previosuly connected and has an id
-                logger.info("user has joined previously");
+                logger.debug("user has joined previously");
 
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
@@ -65,7 +65,7 @@ module.exports = function(port, enableLogging) {
 
             } else {
                 //first time this user has joined
-                logger.info("New user, creating new user");
+                logger.debug("New user, creating new user");
                 user = createNewUser();
             }
 
@@ -84,7 +84,7 @@ module.exports = function(port, enableLogging) {
 
         socket.on('USER set name', function(msg) {
             user.name = msg.name;
-            logger.info("User set name as: " + msg.name);
+            logger.debug("User set name as: " + msg.name);
             sendUserDetails();
             putUserInJoining();
         });
@@ -236,7 +236,7 @@ module.exports = function(port, enableLogging) {
                         usersInRoom: room.usersInRoom
                     });
 
-                    logger.info("Removing player from room" + room.id);
+                    logger.debug("Removing player from room" + room.id);
                 }
             });
         });
