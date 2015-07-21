@@ -61,6 +61,12 @@ ClonageApp.service('roomService', ['socket', '$localStorage', function(socket, $
         return usersInRoom;
     }
 
+    function leaveRoom() {
+        socket.emit('ROOM leave', {
+            roomId: roomId
+        });
+    }
+
     socket.on("ROOM details", function(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
@@ -72,8 +78,9 @@ ClonageApp.service('roomService', ['socket', '$localStorage', function(socket, $
         createRoom: createRoom,
         joinRoom: joinRoom,
         usersInRoom: usersInRoom,
-        getUsersInRoom: getUsersInRoom
-    }
+        getUsersInRoom: getUsersInRoom,
+        leaveRoom: leaveRoom
+    };
 
 }]);
 
@@ -152,6 +159,10 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
 
     $scope.joinRoom = function(form) {
         roomService.joinRoom(form.enteredRoomId);
+    };
+
+    $scope.leaveRoom = function() {
+        roomService.leaveRoom();
     };
 
 });

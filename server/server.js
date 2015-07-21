@@ -136,6 +136,7 @@ module.exports = function(port, enableLogging) {
         */
         function putUserInRoom(roomId) {
             logger.debug("putting user in room");
+            var joined = false;
 
             rooms.forEach(function(room) {
                 if (room.id === roomId) {
@@ -164,8 +165,12 @@ module.exports = function(port, enableLogging) {
 
                     logger.info("User " + user.uId + " joined room " + roomId);
 
+                    joined = true;
+
                 }
             });
+
+            if(!joined) {logger.error("User cannot join room " + roomId);}
         }
 
 
@@ -174,9 +179,8 @@ module.exports = function(port, enableLogging) {
             The user needs to removed to reference to te room,
             and the server needs to have a reference to the user removed
         */
-        socket.on('leave room', function(msg, callback) {
+        socket.on('ROOM leave', function(msg) {
 
-            var userToLeaveId = parseInt(msg.userId);
             var roomToLeave = msg.roomId;
             var removed = false;
 
@@ -185,46 +189,31 @@ module.exports = function(port, enableLogging) {
 
                 if (room.id === roomToLeave) {
 
-                    if (room.players.indexOf(userToLeaveId) > -1) {
+                    room.usersInRoom = room.usersInRoom.filter(function(userInRoom) {
+                        return userInRoom.uId !== user.uId;
+                    });
 
-                        room.players = room.players.filter(function(playerId) {
-                            return playerId !== userToLeaveId;
-                        });
-
-                        removed = true;
-                        broadcastroom(roomToLeave, 'new leave', room.players);
-                    }
+                    broadcastroom(room.id, 'ROOM details', {
+                        roomId: room.id,
+                        usersInRoom: room.usersInRoom
+                    });
                 }
             });
 
             //remove room from user
             users.forEach(function(otherUser) {
-
-                if (otherUser.uId === userToLeaveId) {
-                    otherUser.roomId = undefined;
+                if (otherUser.uId === user.uId) {
+                    otherUser.roomId = "";
+                    sendUserDetails();
                 }
             });
 
-
-            if (removed) {
-                logger.info("Removed user " + userToLeaveId + " from room " + roomToLeave);
-            } else {
-                logger.error("USER WAS NOT IN ROOM");
-            }
-
-            callback(removed);
-        });
-
-        socket.on('get username', function(msg, callback) {
-            var userToReturn = [];
-
-            userToReturn = users.filter(function(user) {
-                return user.uId === parseInt(msg.uId);
+            socket.emit('ROUTING', {
+                location: 'joining'
             });
 
-            userToReturn = userToReturn[0].name;
-            logger.info("getting username of user " + msg.uId);
-            callback(userToReturn);
+            logger.info("Removed user " + user.uId + " from room " + roomToLeave);
+
         });
 
         //When a client disconnect, we remove him from the room he was in
@@ -247,34 +236,8 @@ module.exports = function(port, enableLogging) {
                     });
 
                     logger.info("Removing player from room" + room.id);
-
                 }
             });
-
-        });
-
-        socket.on('get room users', function(msg, callback) {
-
-            var roomToReturn = [];
-            var usersInRoom = [];
-
-            roomToReturn = rooms.filter(function(room) {
-                if (room.id === msg.roomId) {
-                    return room;
-                }
-            });
-
-            roomToReturn = roomToReturn[0];
-
-            users.forEach(function(user) {
-                if (user.roomId == roomToReturn.id) {
-                    usersInRoom.push(user.name);
-                }
-            });
-
-            logger.debug(usersInRoom);
-
-            callback(usersInRoom);
         });
 
         //Creates a new user
