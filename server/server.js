@@ -89,21 +89,6 @@ module.exports = function(port, enableLogging) {
             putUserInJoining();
         });
 
-        function sendUserDetails() {
-            user.socket = "";
-            socket.emit('USER details', {
-                user: user
-            });
-            user.socket = socket;
-
-        }
-
-        function putUserInJoining() {
-            socket.emit('ROUTING', {
-                location: 'joining'
-            });
-        }
-
         //create room, assign id, add current player and return room id to player
         socket.on('ROOM create', function(msg) {
 
@@ -118,7 +103,6 @@ module.exports = function(port, enableLogging) {
             putUserInRoom(roomId);
         });
 
-
         /*
             Given a user id and a room id,
             check if that room exisits, and add the player if they are not already in it
@@ -127,52 +111,6 @@ module.exports = function(port, enableLogging) {
             putUserInRoom(msg.roomId);
         });
 
-        /*
-            Puts a user into a room
-            Tells the user and the room that a change has occured
-            Tells the routing service to move to the room page
-            Tell all other users in the room that a player has joined
-        */
-        function putUserInRoom(roomId) {
-            logger.debug("putting user in room");
-            var joined = false;
-
-            rooms.forEach(function(room) {
-                if (room.id === roomId) {
-
-                    room.usersInRoom.push({
-                        uId: user.uId,
-                        username: user.name
-                    });
-
-                    user.roomId = roomId;
-
-                    socket.emit('USER room join', {
-                        success: true,
-                        roomId: room.id
-                    });
-
-                    socket.emit('ROUTING', {
-                        location: 'room'
-                    });
-
-                    //Update the room serveice of every user
-                    broadcastroom(room.id, 'ROOM details', {
-                        roomId: room.id,
-                        usersInRoom: room.usersInRoom
-                    });
-
-                    logger.info("User " + user.uId + " joined room " + roomId);
-
-                    joined = true;
-
-                }
-            });
-
-            if (!joined) {
-                logger.error("User cannot join room " + roomId);
-            }
-        }
 
         /*
             Removes a given user from a given room
@@ -216,6 +154,50 @@ module.exports = function(port, enableLogging) {
 
         });
 
+        /*
+            Called by the GameService
+            Creates a new gamecontroller, adds the current room to it
+            gamecontroller starts whirring
+        */
+        socket.on('GAME start', function(data) {
+            var room;
+
+            console.log("TRYING TO START GAME");
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === data.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            var gameController = new GameController();
+
+            room.gameController = gameController;
+
+
+            room.gameController.initialize(room.usersInRoom, function(data) {
+                // console.log(data.players);
+                // console.log(data.roundQuestion);
+
+
+                broadcastroom(room.id, 'ROUTING', {
+                    location: 'question'
+                });
+                broadcastroom(room.id, 'GAME question', {
+                    question: data.roundQuestion,
+                    round: data.round
+                });
+
+                //TODO give each user their seperate hand
+                broadcastroom(room.id, 'USER hand', {
+                    hand: data.players[0].hand
+                });
+
+                console.log("SEND GAME START TO PARTICIPANTS");
+            });
+
+        });
+
         //When a client disconnect, we remove him from the room he was in
         //the user still remembers what room his was in however,
         //so that he can join again
@@ -241,48 +223,66 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-            Called by the GameService
-            Creates a new gamecontroller, adds the current room to it
-            gamecontroller starts whirring
+                    Puts a user into a room
+                    Tells the user and the room that a change has occured
+                    Tells the routing service to move to the room page
+                    Tell all other users in the room that a player has joined
         */
-        socket.on('GAME start', function(data) {
-            var room;
+        function putUserInRoom(roomId) {
+            logger.debug("putting user in room");
+            var joined = false;
 
-            console.log("TRYING TO START GAME");
+            rooms.forEach(function(room) {
+                if (room.id === roomId) {
 
-            rooms.forEach( function(otherRoom) {
-                if(otherRoom.id === data.roomId) {
-                    room = otherRoom;
+                    room.usersInRoom.push({
+                        uId: user.uId,
+                        username: user.name
+                    });
+
+                    user.roomId = roomId;
+
+                    socket.emit('USER room join', {
+                        success: true,
+                        roomId: room.id
+                    });
+
+                    socket.emit('ROUTING', {
+                        location: 'room'
+                    });
+
+                    //Update the room serveice of every user
+                    broadcastroom(room.id, 'ROOM details', {
+                        roomId: room.id,
+                        usersInRoom: room.usersInRoom
+                    });
+
+                    logger.info("User " + user.uId + " joined room " + roomId);
+
+                    joined = true;
+
                 }
             });
 
-            var gameController = new GameController();
+            if (!joined) {
+                logger.error("User cannot join room " + roomId);
+            }
+        }
 
-            room.gameController = gameController;
-
-
-            room.gameController.initialize(room.usersInRoom, function(data) {
-                // console.log(data.players);
-                // console.log(data.roundQuestion);
-
-
-                broadcastroom(room.id, 'ROUTING',{location: 'question'} );
-                broadcastroom(room.id, 'GAME question', {question: data.roundQuestion, round: data.round});
-
-                //TODO give each user their seperate hand
-                broadcastroom(room.id, 'USER hand',  {hand: data.players[0].hand});
-
-                console.log("SEND GAME START TO PARTICIPANTS");
+        function sendUserDetails() {
+            user.socket = "";
+            socket.emit('USER details', {
+                user: user
             });
+            user.socket = socket;
 
+        }
 
-
-            //send the question to the game service
-
-            //send each user a set of answers
-
-            //route the clients to the question page
-        });
+        function putUserInJoining() {
+            socket.emit('ROUTING', {
+                location: 'joining'
+            });
+        }
 
         //Creates a new user
         function createNewUser() {

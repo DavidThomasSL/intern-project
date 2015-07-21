@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "An online game about cloning stuff",
   "main": "server.js",
-  "repository": "",
+  "repository": "https://github.com/DavidThomasSL/intern-project.git",
   "author": "David Thomas <dthomas@scottlogic.co.uk>",
   "dependencies": {
     "async": "~0.2.8",
