@@ -1,4 +1,6 @@
 // spec.js
+var webdriver = require('selenium-webdriver');
+
 describe('Clonage App', function() {
 
 	beforeEach(function() {
@@ -25,23 +27,28 @@ describe('Clonage App', function() {
 
 		it('can enter a name and move to joining a room', function() {
 			clonageSignup.submitName("Bob");
+
 			expect(element(by.id('signup-container')).isPresent()).toBe(false);
 			expect(element(by.id('room-join-container')).isPresent()).toBe(true);
 			expect(browser.getCurrentUrl()).toMatch(/\/joining/);
 		});
 
 		it('users name is shown on the joining room page', function() {
+			clonageSignup.submitName("Bob");
 
-			expect(element(by.binding('enteredName')).getText()).toBe('Hi Bob!');
+			expect(browser.getCurrentUrl()).toMatch(/\/joining/);
+			expect(element(by.binding('getUserName')).getText()).toBe('Hi Bob!');
 			expect(element(by.id('room-input-box')).isPresent()).toBe(true);
 		});
 
 		it('on refresh, name is remebered and user goes straight to joining a room', function() {
 
-			clonageSignup.refresh();
+			clonageSignup.submitName("Bob");
+			browser.refresh();
+			browser.waitForAngular();
 
-			expect(element(by.binding('enteredName')).getText()).toBe('Hi Bob!');
 			expect(browser.getCurrentUrl()).toMatch(/\/joining/);
+			expect(element(by.binding('getUserName')).getText()).toBe('Hi Bob!');
 			expect(element(by.id('room-join-container')).isDisplayed()).toBe(true);
 		});
 
@@ -50,7 +57,7 @@ describe('Clonage App', function() {
 			browser.executeScript('window.sessionStorage.clear();');
 			browser.executeScript('window.localStorage.clear();');
 
-			clonageSignup.refresh();
+			browser.refresh();
 
 			expect(element(by.id('signup-container')).isDisplayed()).toBe(true);
 			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
@@ -63,7 +70,6 @@ describe('Clonage App', function() {
 
 		beforeEach(function() {
 			clonageSignup = new ClonageSignupPage();
-
 		});
 
 		it('can see the room join/create page', function() {
@@ -85,109 +91,120 @@ describe('Clonage App', function() {
 		beforeEach(function() {
 			clonageSignup = new ClonageSignupPage();
 			clonageRoomJoinPage = new ClonageRoomJoinPage();
-
-			// browser.pause();
 		});
 
 		it('user can create a new room and are automatically put into it', function() {
-
+			clonageSignup.submitName("Ben");
 			clonageRoomJoinPage.createRoom();
 
 			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
 			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
 			expect(browser.getCurrentUrl()).toMatch(/\/room/);
 
-			element(by.binding('$storage.roomId')).getText().then(function(text) {
+			element(by.binding('roomId')).getText().then(function(text) {
 				roomId = text;
 			});
 		});
 
 		it('users in a lobby can see the room code', function() {
-			roomId = roomId.split(" ")[2];
 
-			clonageRoomJoinPage.joinRoom(roomId);
 			expect(browser.getCurrentUrl()).toMatch(/\/room/);
-			expect(element(by.binding('$storage.roomId')).getText()).toBe('ROOM CODE: ' + roomId);
+			expect(element(by.binding('roomId')).getText().then(function(text) {
+				roomId = text.split(" ")[2];
+				return roomId.length;
+			})).toBe(5);
+
 		});
 
-		it('user can see themselves in the room as \'Me!\'', function() {
-			clonageRoomJoinPage.joinRoom(roomId);
-			expect(browser.getCurrentUrl()).toMatch(/\/room/);
-			expect(element.all(by.repeater('user in usersInRoom')).get(0).getText()).toBe('Me!');
-		});
-
-
-		//Broken, fix on client refactor
-		// it('on refresh the user is put back in the room lobby', function() {
-		// 	clonageSignup.refresh();
-		// 	expect(element(by.id('room-join-container')).isPresent()).toBe(false);
-		// 	expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
+		// it('user can see themselves in the room as \'Me!\'', function() {
+		// 	clonageRoomJoinPage.joinRoom(roomId);
 		// 	expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		// 	expect(element.all(by.repeater('user in usersInRoom')).get(0).getText()).toBe('Me!');
 		// });
 
-		// it('if session storage lost user put back in joining page', function() {
-		// 	browser.executeScript('window.sessionStorage.clear();');
-		// 	browser.executeScript('window.localStorage.clear();');
-		// 	browser.refresh();
-		// 	expect(element(by.id('room-join-container')).isPresent()).toBe(false);
-		// 	expect(element(by.id('room-lobby-container')).isPresent()).toBe(false);
-		// 	expect(browser.getCurrentUrl()).toMatch(/\/joining/);
-		// });
+		it('on refresh the user is put back in the room lobby', function() {
+			browser.refresh();
+			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
+			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		});
 
 	});
 
-	// describe('When joining an exsiting room', function() {
-	// 	var clonageSignup;
-	// 	var clonageRoomJoinPage;
-	// 	var browser2;
-	// 	var element2;
+	describe('When joining an exsiting room', function() {
+		var clonageSignup;
+		var clonageRoomJoinPage;
+		var browser2;
+		var element2;
+		var roomId;
 
-	// 	/*
-	// 		Create a new user on another browser who creates a room
-	// 		must create a new user and join that room
-	// 	*/
-	// 	beforeEach(function() {
-	// 		clonageSignup = new ClonageSignupPage();
-	// 		clonageRoomJoinPage = new ClonageRoomJoinPage();
-	// 		browser2 = browser.forkNewDriverInstance(false, true);
-	// 		element2 = browser2.element;
+		/*
+			Create a new user on another browser who creates a room
+			must create a new user and join that room
+		*/
+		beforeEach(function() {
+			clonageSignup = new ClonageSignupPage();
+			clonageRoomJoinPage = new ClonageRoomJoinPage();
 
-	// 		browser2.get('/');
-	// 		browser2.waitForAngular();
+			browser2 = browser.forkNewDriverInstance(false, true);
+			element2 = browser2.element;
 
-	// 		element2(by.id('name-input-box')).sendKeys('Alice');
-	// 		element2(by.id('name-submit-button')).click();
-	// 		element2(by.id('create-room-button')).click();
+			browser2.get('/');
+			browser2.waitForAngular();
 
-	// 		browser.executeScript('window.sessionStorage.clear();');
-	// 		browser.executeScript('window.localStorage.clear();');
+			element2(by.id('name-input-box')).sendKeys('Alice');
+			element2(by.id('name-submit-button')).click();
+			browser2.waitForAngular();
+			element2(by.id('create-room-button')).click();
 
-	// 		clonageSignup.get();
-	// 		clonageSignup.submitName('John');
+			element2(by.binding('roomId')).getText().then(function(text) {
+				roomId = text.split(" ")[2];
+			});
 
-	// 	});
+			browser.executeScript('window.sessionStorage.clear();');
+			browser.executeScript('window.localStorage.clear();');
 
-	// 	afterEach(function() {
-	// 		browser2.close();
-	// 	});
+			clonageSignup.get();
+			clonageSignup.submitName('John');
 
-	// 	it('can join an extisting room and go into the lobby and see other users in the room', function() {
-	// 		clonageRoomJoinPage.joinRoom('1');
+		});
 
-	// 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
-	// 		expect(element(by.id('room-join-container')).isPresent()).toBe(false);
-	// 		expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
+		afterEach(function() {
+			browser2.close();
+		});
 
-	// 		expect(element.all(by.repeater('user in usersInRoom')).get(0).getText()).toBe('Me!');
-	// 		expect(element.all(by.repeater('user in usersInRoom')).get(1).getText()).toBe('Alice');
-	// 	});
+		it('can join an extisting room and go into the lobby and see other users in the room', function() {
 
-	// 	//BROKEN FOR NOW
-	// 	// it('if other use joins while in the room user can see that without updating', function() {
-	// 	// 	expect(element.all(by.repeater('user in usersInRoom')).get(0).getText()).toBe('Me!');
-	// 	// 	expect(element.all(by.repeater('user in usersInRoom')).get(1).getText()).toBe('Alice');
-	// 	// });
-	// });
+			clonageRoomJoinPage.joinRoom(roomId);
+
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
+			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
+
+			expect(element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Alice');
+			expect(element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
+		});
+
+		it('if other use joins quits in the room user can see that without updating', function() {
+
+			clonageRoomJoinPage.joinRoom(roomId);
+			browser2.element(by.buttonText("Go Back")).click();
+			browser2.waitForAngular();
+
+			expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(1);
+		});
+
+		it('if other use joins room in the room user can see that without updating', function() {
+
+			clonageRoomJoinPage.joinRoom(roomId);
+			browser2.element(by.buttonText("Go Back")).click();
+			browser2.element(by.id('room-input-box')).sendKeys(roomId);
+			browser2.element(by.id('room-join-button')).click();
+			browser2.waitForAngular();
+
+			expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+		});
+	});
 
 });
 

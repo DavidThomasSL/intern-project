@@ -50,7 +50,6 @@ module.exports = function(port, enableLogging) {
 
                 //this user previosuly connected and has an id
                 logger.info("user has joined previously");
-                logger.debug(users);
 
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
@@ -61,7 +60,6 @@ module.exports = function(port, enableLogging) {
                     logger.warn("No user found with id, creating new user");
                     user = createNewUser();
                 } else {
-                    logger.debug(user);
                     user = user[0];
                 }
 
@@ -97,6 +95,7 @@ module.exports = function(port, enableLogging) {
                 user: user
             });
             user.socket = socket;
+
         }
 
         function putUserInJoining() {
@@ -170,7 +169,9 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            if(!joined) {logger.error("User cannot join room " + roomId);}
+            if (!joined) {
+                logger.error("User cannot join room " + roomId);
+            }
         }
 
 

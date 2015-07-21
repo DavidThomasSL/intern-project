@@ -38,7 +38,7 @@ ClonageApp.service('RoutingService', ['socket', '$location', function(socket, $l
     return null;
 }]);
 
-ClonageApp.service('roomService', ['socket', '$localStorage', function(socket, $localStorage) {
+ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket, $sessionStorage) {
 
     var roomId = -1;
     var usersInRoom = [];
@@ -67,6 +67,10 @@ ClonageApp.service('roomService', ['socket', '$localStorage', function(socket, $
         });
     }
 
+    function getRoomId() {
+        return roomId;
+    }
+
     socket.on("ROOM details", function(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
@@ -79,13 +83,14 @@ ClonageApp.service('roomService', ['socket', '$localStorage', function(socket, $
         joinRoom: joinRoom,
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
-        leaveRoom: leaveRoom
+        leaveRoom: leaveRoom,
+        getRoomId: getRoomId
     };
 
 }]);
 
 
-ClonageApp.service('userService', ['socket', '$localStorage', function(socket, $localStorage) {
+ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket, $sessionStorage) {
 
     var user = {};
 
@@ -100,20 +105,20 @@ ClonageApp.service('userService', ['socket', '$localStorage', function(socket, $
 
     socket.on('USER details', function(msg) {
         user = msg.user;
-        $localStorage.userId = user.uId;
-        $localStorage.roomId = user.roomId;
+        $sessionStorage.userId = user.uId;
+        $sessionStorage.roomId = user.roomId;
         console.log("Got user details from server " + user.uId);
         console.log(user);
     });
 
     socket.on("USER room join", function(data) {
-        $localStorage.roomId = data.roomId;
+        $sessionStorage.roomId = data.roomId;
         userInRoom = true;
     });
 
     function registerUser() {
         socket.emit('USER register', {
-            token: $localStorage.userId
+            token: $sessionStorage.userId
         });
     }
 
@@ -142,11 +147,12 @@ ClonageApp.service('userService', ['socket', '$localStorage', function(socket, $
 }]);
 
 
-ClonageApp.controller("MainController", function($scope, userService, roomService, RoutingService, $location, $localStorage) {
+ClonageApp.controller("MainController", function($scope, userService, roomService, RoutingService, $location, $sessionStorage) {
 
-    $scope.$storage = $localStorage;
+    $scope.$storage = $sessionStorage;
     $scope.getUserName = userService.getUserName;
     $scope.getUsersInRoom = roomService.getUsersInRoom;
+    $scope.roomId = roomService.getRoomId;
 
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());
