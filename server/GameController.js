@@ -8,13 +8,14 @@ module.exports = function(data) {
 	var blackCards = [];
 	var whiteCards = [];
 
+	//Number of white cards a user should always have
+	var HANDSIZE = 7;
+
 	/*
 		Called by the server when a game starts
 	*/
 	var initialize = function(usersInRoom, callback) {
 		round = 0;
-
-
 
 		path.join(__dirname, './BlackWhiteCards.json');
 
@@ -72,9 +73,7 @@ module.exports = function(data) {
 	var getRoundQuestion = function() {
 
 		var index = Math.floor((Math.random() * blackCards.length) + 1);
-		console.log(index);
 		var question = blackCards[index];
-		console.log(question);
 
 		return question.text;
 
@@ -85,7 +84,17 @@ module.exports = function(data) {
 		Gives a players an inital set of respones
 	*/
 	var dealUserHand = function() {
-		return ["Seagulls", "THe Jews", "The Gay Agenda", "Ben and Jerries", "Ethnic Cleansing"];
+
+		var hand = [];
+
+		for (var i = 0; i < HANDSIZE; i++) {
+			var index = Math.floor((Math.random() * whiteCards.length) + 1);
+
+			var card = whiteCards[index];
+			hand.push(card);
+		}
+
+		return hand;
 	};
 
 	/*

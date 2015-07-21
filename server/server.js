@@ -162,7 +162,6 @@ module.exports = function(port, enableLogging) {
         socket.on('GAME start', function(data) {
             var room;
 
-            console.log("TRYING TO START GAME");
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === data.roomId) {
@@ -170,15 +169,9 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            var gameController = new GameController();
-
-            room.gameController = gameController;
-
+            room.gameController = new GameController();
 
             room.gameController.initialize(room.usersInRoom, function(data) {
-                // console.log(data.players);
-                // console.log(data.roundQuestion);
-
 
                 broadcastroom(room.id, 'ROUTING', {
                     location: 'question'
@@ -188,14 +181,17 @@ module.exports = function(port, enableLogging) {
                     round: data.round
                 });
 
-                //TODO give each user their seperate hand
-                broadcastroom(room.id, 'USER hand', {
-                    hand: data.players[0].hand
+                data.players.forEach(function(player) {
+                    users.forEach(function(user) {
+                        if (player.uId === user.uId) {
+                            user.socket.emit('USER hand', {hand: player.hand});
+                        }
+                    });
                 });
 
-                console.log("SEND GAME START TO PARTICIPANTS");
             });
 
+            logger.info("Starting game in room " + room.id);
         });
 
         //When a client disconnect, we remove him from the room he was in
