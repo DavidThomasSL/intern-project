@@ -5,8 +5,8 @@
         <h3>ROOM CODE: {{$storage.roomId}}<h3>
         List of users who are in the room
         <ul>
-            <li ng-repeat="user in usersInRoom">
-                {{user}}
+            <li ng-repeat="user in getUsersInRoom()">
+                {{user.username}} id: {{user.uId}}
             </li>
         </ul>
         <input type="submit" ng-click="leaveRoom()" value="Go back">

@@ -32,7 +32,6 @@ module.exports = function(port, enableLogging) {
     io.on('connection', function(socket) {
         //create a new user for the connection
         var user = {};
-        user.socket = socket;
 
         /*  client requests to join,
             send the uId to the player
@@ -93,11 +92,11 @@ module.exports = function(port, enableLogging) {
         });
 
         function sendUserDetails() {
-            var userToSend = user;
-            userToSend.socket = "";
+            user.socket = "";
             socket.emit('USER details', {
-                user: userToSend
+                user: user
             });
+            user.socket = socket;
         }
 
         function putUserInJoining() {
@@ -105,7 +104,6 @@ module.exports = function(port, enableLogging) {
                 location: 'joining'
             });
         }
-
 
         //create room, assign id, add current player and return room id to player
         socket.on('ROOM create', function(msg) {
@@ -121,43 +119,6 @@ module.exports = function(port, enableLogging) {
             putUserInRoom(roomId);
         });
 
-        /*
-            Puts a user into a room
-            Tells the user and the room that a change has occured
-            Tells the routing service to move to the room page
-        */
-        function putUserInRoom(roomId) {
-            logger.debug("putting user in room");
-
-            rooms.forEach(function(room) {
-                if (room.id === roomId) {
-
-
-                    console.log("PUTTING USER IN ROOM IN 1");
-                    room.usersInRoom.push({
-                        uId: user.uId,
-                        username: user.name
-                    });
-
-                    user.roomId = roomId;
-
-
-                    socket.emit('USER room join', {
-                        success: true,
-                        roomId: room.id
-                    });
-                    socket.emit('ROOM details', {
-                        roomId: room.id,
-                        usersInRoom: room.usersInRoom
-                    });
-                    socket.emit('ROUTING', {
-                        location: 'room'
-                    });
-                    logger.info("User " + user.uId + " joined room " + roomId);
-
-                }
-            });
-        }
 
         /*
             Given a user id and a room id,
@@ -166,6 +127,46 @@ module.exports = function(port, enableLogging) {
         socket.on('ROOM join', function(msg) {
             putUserInRoom(msg.roomId);
         });
+
+        /*
+            Puts a user into a room
+            Tells the user and the room that a change has occured
+            Tells the routing service to move to the room page
+            Tell all other users in the room that a player has joined
+        */
+        function putUserInRoom(roomId) {
+            logger.debug("putting user in room");
+
+            rooms.forEach(function(room) {
+                if (room.id === roomId) {
+
+                    room.usersInRoom.push({
+                        uId: user.uId,
+                        username: user.name
+                    });
+
+                    user.roomId = roomId;
+
+                    socket.emit('USER room join', {
+                        success: true,
+                        roomId: room.id
+                    });
+
+                    socket.emit('ROUTING', {
+                        location: 'room'
+                    });
+
+                    //Update the room serveice of every user
+                    broadcastroom(room.id, 'ROOM details', {
+                        roomId: room.id,
+                        usersInRoom: room.usersInRoom
+                    });
+
+                    logger.info("User " + user.uId + " joined room " + roomId);
+
+                }
+            });
+        }
 
 
         /*
@@ -240,6 +241,11 @@ module.exports = function(port, enableLogging) {
                         return usersInRoom.uId !== user.uId;
                     });
 
+                    broadcastroom(room.id, 'ROOM details', {
+                        roomId: room.id,
+                        usersInRoom: room.usersInRoom
+                    });
+
                     logger.info("Removing player from room" + room.id);
 
                 }
@@ -277,6 +283,7 @@ module.exports = function(port, enableLogging) {
             user.uId = uId;
             user.name = undefined;
             user.roomId = "";
+            user.socket = socket;
             users.push(user);
             uId++;
             return user;
@@ -292,6 +299,7 @@ module.exports = function(port, enableLogging) {
         users.forEach(function(user) {
             if (user.roomId === room) {
                 console.log("found user in room");
+                console.log(user);
                 user.socket.emit(event, data);
             }
         });

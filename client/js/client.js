@@ -30,8 +30,7 @@ ClonageApp.service('RoutingService', ['socket', '$location', function(socket, $l
 
         if (msg.location === 'room') {
             $location.path('/room');
-        }
-        else if (msg.location === 'joining') {
+        } else if (msg.location === 'joining') {
             $location.path('/joining');
         }
     });
@@ -51,11 +50,15 @@ ClonageApp.service('roomService', ['socket', '$localStorage', function(socket, $
 
     }
 
-    function joinRoom(userId) {
+    function joinRoom(roomId) {
         socket.emit('ROOM join', {
-            uId: userId,
-            roomId: $localStorage.roomId
+            roomId: roomId
         });
+    }
+
+    function getUsersInRoom() {
+        console.log(usersInRoom);
+        return usersInRoom;
     }
 
     socket.on("ROOM details", function(data) {
@@ -67,7 +70,9 @@ ClonageApp.service('roomService', ['socket', '$localStorage', function(socket, $
 
     return {
         createRoom: createRoom,
-        joinRoom: joinRoom
+        joinRoom: joinRoom,
+        usersInRoom: usersInRoom,
+        getUsersInRoom: getUsersInRoom
     }
 
 }]);
@@ -76,9 +81,6 @@ ClonageApp.service('roomService', ['socket', '$localStorage', function(socket, $
 ClonageApp.service('userService', ['socket', '$localStorage', function(socket, $localStorage) {
 
     var user = {};
-    var userRegistered = false;
-
-    $localStorage.userRegistered = false;
 
     /*
         When the client connects, we need to register him with the server properly
@@ -92,7 +94,6 @@ ClonageApp.service('userService', ['socket', '$localStorage', function(socket, $
     socket.on('USER details', function(msg) {
         user = msg.user;
         $localStorage.userId = user.uId;
-        $localStorage.userRegistered = true;
         $localStorage.roomId = user.roomId;
         console.log("Got user details from server " + user.uId);
         console.log(user);
@@ -120,15 +121,7 @@ ClonageApp.service('userService', ['socket', '$localStorage', function(socket, $
     }
 
     function getUserId() {
-        return user.uId;
-    }
-
-    function getUserRoomId() {
-        return user.roomId;
-    }
-
-    function isUserRegistered() {
-        return userRegistered;
+        return user.id;
     }
 
     return {
@@ -137,9 +130,7 @@ ClonageApp.service('userService', ['socket', '$localStorage', function(socket, $
         },
         setName: setName,
         getUserName: getUserName,
-        getUserId: getUserId,
-        getUserRoomId: getUserRoomId,
-        isUserRegistered: isUserRegistered
+        getUserId: getUserId
     };
 }]);
 
@@ -147,65 +138,8 @@ ClonageApp.service('userService', ['socket', '$localStorage', function(socket, $
 ClonageApp.controller("MainController", function($scope, userService, roomService, RoutingService, $location, $localStorage) {
 
     $scope.$storage = $localStorage;
-    $scope.user = userService;
-
-    $scope.getUserName = $scope.user.getUserName;
-
-
-    // socket.on('connect', function() {
-    //  //tell the server to register us as a new player or get our old profile
-    //  socket.emit('join', {
-    //      token: $scope.$storage.userId
-    //  });
-
-    //  //new player joined -> update player list in room
-    //  socket.on('new join', function(msg) {
-    //      $scope.usersInRoom = getUsersFromIds(msg);
-    //  });
-
-    //  //player leaved room -> update player list in room
-    //  socket.on('new leave', function(msg) {
-    //      $scope.usersInRoom = getUsersFromIds(msg);
-    //  });
-
-    //  //Server sending usre details (either new or previosuly existing)
-    //  socket.on('user details', function(msg) {
-
-    //      user.uId = msg.user.uId;
-    //      print(msg.user);
-
-    //      //check if user has a name at this stage
-    //      if (msg.user.name !== undefined) {
-    //          $scope.nameSet = true;
-    //          $scope.enteredName = msg.user.name;
-    //          $location.path('/joining');
-    //      }
-
-    //      //Storing user details in browser local storage
-    //      $scope.$storage.userId = msg.user.uId;
-    //      $scope.$storage.username = msg.user.name;
-    //      $scope.$storage.roomId = -1;
-
-    //      $scope.registered = true;
-
-    //      //check if the user is in a room already
-    //      // if so, put him back into the room,
-    //      // then move straight into the next stage of the game
-    //      if (msg.user.roomId > -1) {
-    //          joinServerRoom(msg.user.roomId, roomJoinResult);
-    //      }
-    //  });
-    // });
-
-
-
-    // $scope.userInRoom = userService.userInRoom();
-
-    // if ($scope.$storage.roomId !== undefined && $scope.userRegistered) {
-    //  console.log("registered");
-    //  roomService.joinRoom(userService.getUserRoomId());
-    // }
-
+    $scope.getUserName = userService.getUserName;
+    $scope.getUsersInRoom = roomService.getUsersInRoom;
 
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());
@@ -214,6 +148,10 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     $scope.submitName = function(form) {
         //todo validate input field
         userService.setName(form.enteredName);
+    };
+
+    $scope.joinRoom = function(form) {
+        roomService.joinRoom(form.enteredRoomId);
     };
 
 
