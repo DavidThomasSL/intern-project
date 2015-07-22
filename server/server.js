@@ -109,7 +109,24 @@ module.exports = function(port, enableLogging) {
             check if that room exisits, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            putUserInRoom(msg.roomId);
+            var foundRoom = false;
+            rooms.forEach(function(room) {
+                if (room.id === msg.roomId) {
+                    foundRoom = true;
+                    if (room.gameInProgress) {
+                        socket.emit('ROOM error', {
+                            msg: "Game already in progress"
+                        });
+                    } else {
+                        putUserInRoom(msg.roomId);
+                    }
+                }
+            });
+            if (foundRoom === false) {
+                socket.emit('ROOM error', {
+                    msg: "Room not found"
+                });
+            }
         });
 
 
@@ -272,10 +289,6 @@ module.exports = function(port, enableLogging) {
 
                 }
             });
-
-            if (!joined) {
-                logger.error("User cannot join room " + roomId);
-            }
         }
 
         function sendUserDetails() {
