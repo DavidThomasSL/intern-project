@@ -58,14 +58,14 @@ module.exports = function(data) {
 		};
 
 		players.push(player);
-	}
+	};
 
 	/*
 		Given a userId, get their hand of white cards they have at this point in the game
 	*/
 	var getUserHand = function(userId) {
 
-	}
+	};
 
 	/*
 		Returns a random questions
@@ -98,7 +98,7 @@ module.exports = function(data) {
 	};
 
 	/*
-	 
+
 	 */
 	var submitAnswer = function(round, userId) {
 
