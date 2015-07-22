@@ -162,6 +162,7 @@ module.exports = function(data) {
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
 			console.log("everyone voted!");
+			// newRound();
 			callback({
 				answers: currentRound.answers
 			});
@@ -169,6 +170,17 @@ module.exports = function(data) {
 
 		console.log(currentRound.answers);
 	};
+
+
+	// var newRound = function() {
+	// 	roundCount +=1 ;
+	// 	var round = {
+	// 		count: roundCount,
+	// 		question: getRoundQuestion(),
+	// 		answers: []
+	// 	};
+	// 	rounds.push(round);
+	// }
 
 	/*
 	add 50 points to player -> called on each vote

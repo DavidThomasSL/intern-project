@@ -371,7 +371,7 @@ module.exports = function(port, enableLogging) {
                     if (ans.playerId !== user.uId) {
                         var field = {
                             ans: ans.answerText
-                        }
+                        };
                         toSend.push(field);
                     }
                 });
