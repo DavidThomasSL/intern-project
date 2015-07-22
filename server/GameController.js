@@ -40,7 +40,7 @@ module.exports = function(data) {
 					count: roundCount,
 					question: getRoundQuestion(),
 					answers: []
-				}
+				};
 
 				rounds.push(round);
 
@@ -106,36 +106,86 @@ module.exports = function(data) {
 		return hand;
 	};
 
+	//var update
+
 	/*
 		submit the answer and change the used card with another one in players
 	 */
 	var submitAnswer = function(playerId, answer, callback) {
-		var answer = {
+		var ans = {
 			playerId: playerId,
-			answerText: answer
+			answerText: answer,
+			playersVote: []
 		};
 
 		var currentRound = rounds[rounds.length-1];
-		currentRound.answers.push(answer);
+		currentRound.answers.push(ans);
 
 		//check if everyone submitted
 		if (currentRound.answers.length === players.length) {
-			startVoteStage(currentRound.answers);
-			console.log("everyone submitted!");
+			callback({
+				answers: currentRound.answers
+			});
 		}
 
 		console.log(currentRound.answers);
-		//change the used card to a new card
+
+		//TODO : change the used card to a new card
+
+
 	};
 
-	var startVoteStage = function(answers) {
+		/*
+		submit the vote and change the used card with another one in players
+	 */
+	var submitVote = function(playerId, answer, callback) {
 
-		// emit to server 'vote stage'
-		// send to server all answers
-	}
+		var currentRound = rounds[rounds.length-1];
+
+		currentRound.answers.forEach(function(option){
+			if(option.answerText === answer) {
+				option.playersVote.push(playerId);
+				addPoints(option.playerId);
+			}
+		});
+
+		//check if everyone voted
+		if (countVotes(currentRound) === players.length) {
+			console.log("everyone voted!");
+			callback({
+				answers: currentRound.answers
+			});
+		}
+
+		console.log(currentRound.answers);
+	};
+
+	/*
+	add 50 points to player -> called on each vote
+	*/
+	var addPoints = function(playerId) {
+		console.log("added vote");
+		players.forEach (function(player){
+			if (player.uId === playerId ) {
+				player.points += 50 ;
+			}
+		});
+	};
+
+	/*
+	count the overall votes in this round
+	*/
+	var countVotes = function(currentRound) {
+		var votes = 0 ;
+		currentRound.answers.forEach(function(option){
+			votes += option.playersVote.length;
+		});
+		return votes ;
+	};
 
 	return {
 		initialize: initialize,
-		submitAnswer: submitAnswer
+		submitAnswer: submitAnswer,
+		submitVote: submitVote
 	};
 };

@@ -20,7 +20,6 @@ module.exports = function(port, enableLogging) {
     io.set('log level', 1);
     logger.setLevel('INFO');
 
-
     router.use(express.static(path.resolve(__dirname, '../client')));
 
     var rooms = [];
@@ -208,7 +207,48 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            room.gameController.submitAnswer(msg.playerId, msg.answer);
+            room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
+
+                if (data !== undefined) {
+
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'vote'
+                    });
+
+                    broadcastroom(room.id, 'GAME voting', {
+                        answers: data.answers
+                    });
+                }
+
+            });
+        });
+
+        // submit a vote
+        socket.on('USER vote', function(msg) {
+            var room;
+
+            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === msg.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
+
+                // if (data!=undefined) {
+
+                //     broadcastroom(room.id, 'ROUTING', {
+                //         location: 'vote'
+                //     });
+
+                //     broadcastroom(room.id, 'GAME voting', {
+                //         answers: data.answers
+                //     });
+                // }
+
+            });
         });
 
         //When a client disconnect, we remove him from the room he was in

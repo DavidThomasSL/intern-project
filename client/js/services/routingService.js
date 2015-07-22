@@ -8,8 +8,9 @@ ClonageApp.service('RoutingService', ['socket', '$location', function(socket, $l
         } else if (msg.location === 'joining') {
             $location.path('/joining');
         } else if(msg.location === 'question') {
-            console.log("chaning path");
         	$location.path('/question');
+        } else if(msg.location === 'vote') {
+            $location.path('/vote');
         }
     });
 
