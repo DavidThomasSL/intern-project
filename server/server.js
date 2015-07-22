@@ -195,6 +195,22 @@ module.exports = function(port, enableLogging) {
             logger.info("Starting game in room " + room.id);
         });
 
+
+        // submit answer
+        socket.on('USER answer', function(msg) {
+            var room;
+
+            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === msg.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.submitAnswer(msg.playerId, msg.answer);
+        });
+
         //When a client disconnect, we remove him from the room he was in
         //the user still remembers what room his was in however,
         //so that he can join again

@@ -4,9 +4,10 @@ var path = require('path');
 module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
-	var round = 0;
+	var roundCount = 0;
 	var blackCards = [];
 	var whiteCards = [];
+	var rounds = [];
 
 	//Number of white cards a user should always have
 	var HANDSIZE = 7;
@@ -35,11 +36,19 @@ module.exports = function(data) {
 					setupPlayer(user);
 				});
 
+				var round = {
+					count: roundCount,
+					question: getRoundQuestion(),
+					answers: []
+				}
+
+				rounds.push(round);
+
 				//return this game information back to the server
 				callback({
 					players: players,
-					roundQuestion: getRoundQuestion(),
-					round: round
+					roundQuestion: round.question,
+					round: roundCount
 				});
 			}
 		});
@@ -98,13 +107,35 @@ module.exports = function(data) {
 	};
 
 	/*
-
+		submit the answer and change the used card with another one in players
 	 */
-	var submitAnswer = function(round, userId) {
+	var submitAnswer = function(playerId, answer, callback) {
+		var answer = {
+			playerId: playerId,
+			answerText: answer
+		};
 
+		var currentRound = rounds[rounds.length-1];
+		currentRound.answers.push(answer);
+
+		//check if everyone submitted
+		if (currentRound.answers.length === players.length) {
+			startVoteStage(currentRound.answers);
+			console.log("everyone submitted!");
+		}
+
+		console.log(currentRound.answers);
+		//change the used card to a new card
 	};
 
+	var startVoteStage = function(answers) {
+
+		// emit to server 'vote stage'
+		// send to server all answers
+	}
+
 	return {
-		initialize: initialize
+		initialize: initialize,
+		submitAnswer: submitAnswer
 	};
 };
