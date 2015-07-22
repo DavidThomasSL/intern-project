@@ -211,12 +211,12 @@ module.exports = function(port, enableLogging) {
 
                 if (data !== undefined) {
 
-                    broadcastroom(room.id, 'ROUTING', {
-                        location: 'vote'
+                    broadcastoptions(room.id, 'GAME voting', {
+                        answers: data.answers
                     });
 
-                    broadcastroom(room.id, 'GAME voting', {
-                        answers: data.answers
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'vote'
                     });
                 }
 
@@ -359,6 +359,23 @@ module.exports = function(port, enableLogging) {
         users.forEach(function(user) {
             if (user.roomId === room) {
                 user.socket.emit(event, data);
+            }
+        });
+    }
+
+    function broadcastoptions(room, event, data) {
+        users.forEach(function(user) {
+            var toSend = [];
+            if (user.roomId === room) {
+                data.answers.forEach(function(ans) {
+                    if (ans.playerId !== user.uId) {
+                        var field = {
+                            ans: ans.answerText
+                        }
+                        toSend.push(field);
+                    }
+                });
+                user.socket.emit(event, toSend);
             }
         });
     }

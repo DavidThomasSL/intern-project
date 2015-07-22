@@ -106,12 +106,27 @@ module.exports = function(data) {
 		return hand;
 	};
 
-	//var update
+	/*
+	update a users hand by replacing the used card with a new random one
+	*/
+	var updateHand = function(userId, usedCard) {
+		players.forEach(function(player){
+			if (player.uId === userId) {
+				player.hand.forEach(function(card){
+					if (card === usedCard) {
+						var index = Math.floor((Math.random() * whiteCards.length) + 1);
+						card = whiteCards[index];
+					}
+				});
+			}
+		});
+	};
 
 	/*
 		submit the answer and change the used card with another one in players
 	 */
 	var submitAnswer = function(playerId, answer, callback) {
+
 		var ans = {
 			playerId: playerId,
 			answerText: answer,
@@ -120,6 +135,7 @@ module.exports = function(data) {
 
 		var currentRound = rounds[rounds.length-1];
 		currentRound.answers.push(ans);
+		updateHand(playerId, answer);
 
 		//check if everyone submitted
 		if (currentRound.answers.length === players.length) {
@@ -127,12 +143,6 @@ module.exports = function(data) {
 				answers: currentRound.answers
 			});
 		}
-
-		console.log(currentRound.answers);
-
-		//TODO : change the used card to a new card
-
-
 	};
 
 		/*
