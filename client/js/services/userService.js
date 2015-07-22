@@ -48,7 +48,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     }
 
     function getUserId() {
-        return user.id;
+        return user.uId;
     }
 
     function getUserHand() {
