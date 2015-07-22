@@ -5,8 +5,11 @@ module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
 	var round = 0;
-	var blackCards = [];
-	var whiteCards = [];
+	var blackCardsMaster = [];
+	var whiteCardsMaster = [];
+	var blackCardsCurrent = [];
+	var whiteCardsCurrent = [];
+	//deal from current arrays, when card it dealt remove it to stop player getting same cards
 
 	//Number of white cards a user should always have
 	var HANDSIZE = 7;
@@ -28,8 +31,12 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCards = cards.blackCards;
-				whiteCards = cards.whiteCards;
+				blackCardsMaster = cards.blackCards;
+				whiteCardsMaster = cards.whiteCards;
+				blackCardsCurrent = blackCardsMaster.slice(0);
+				whiteCardsCurrent = whiteCardsMaster.slice(0);
+
+				//TODO : stop game if we don't have enough inital white cards (HANDSIZE * number of players)
 
 				usersInRoom.forEach(function(user) {
 					setupPlayer(user);
@@ -72,12 +79,19 @@ module.exports = function(data) {
 	*/
 	var getRoundQuestion = function() {
 
-		var index = Math.floor((Math.random() * blackCards.length));
-		var question = blackCards[index];
+		if (blackCardsCurrent.length <= 0) {
+			blackCardsMaster.forEach(function(card) {
+				blackCardsCurrent.push(card);
+			});
+		} //refreshing the card list if we reach the end of questions;
+
+		var index = Math.floor((Math.random() * blackCardsCurrent.length));
+
+		var question = blackCardsCurrent[index];
+		blackCardsCurrent.splice(index, 1);
+		//removing dealt card from card list
 
 		return question.text;
-
-		// return "__ Helps me sleep at night";
 	};
 
 	/*
@@ -86,11 +100,14 @@ module.exports = function(data) {
 	var dealUserHand = function() {
 
 		var hand = [];
-
 		for (var i = 0; i < HANDSIZE; i++) {
-			var index = Math.floor((Math.random() * whiteCards.length));
 
-			var card = whiteCards[index];
+			var index = Math.floor((Math.random() * whiteCardsCurrent.length));
+
+			var card = whiteCardsCurrent[index];
+			whiteCardsCurrent.splice(index, 1);
+			//removing dealt card from card list
+
 			hand.push(card);
 		}
 
