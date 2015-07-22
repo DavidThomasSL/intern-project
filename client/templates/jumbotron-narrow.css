@@ -1,0 +1,129 @@
+/* Space out content a bit */
+body {
+  padding-bottom: 20px;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+/* Custom page header */
+.header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+}
+
+/* Custom page footer */
+.footer {
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  margin-bottom: 10px;
+  height: 380px;
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0%,rgba(0,0,0,1)), color-stop(20%,rgba(0,0,0,0.65)),color-stop(40%,rgba(0,0,0,0.2)), color-stop(100%,rgba(0,0,0,0))), url('/../../includes/images/background.jpg'); /* Chrome,Safari4+
+  /*background: url('/../../includes/images/background.jpg');*/
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: 50% -400px;
+  background-size: 100%, 150%;
+  text-align: left;
+  padding-left: 40px;
+}
+
+.jumbotron .lead {
+  font-size: 30px;
+  color: white;
+}
+
+
+.header .btn {
+  padding: 14px 24px;
+  font-size: 21px;
+  float: right;
+}
+
+.header .instructions {
+  text-align: center;
+}
+
+
+.jumbotron h1 {
+  font-size: 90px;
+  margin-top: 15%;
+  color: white;
+}
+
+
+/* Supporting marketing content */
+.marketing {
+  margin: 40px 0;
+}
+.marketing p + h4 {
+  margin-top: 28px;
+}
+
+.name-submit-container {
+  margin-top: 30px;
+  margin-bottom: 100px;
+}
+
+#join-create-container {
+  margin: 20px 20px 100px 20px;
+}
+
+#romm-lobby-users-container {
+  margin: 30px 20px 100px 20px;
+}
+
+
+@media only screen and (max-device-width: 480px) {
+  /* Main marketing message and sign up button */
+    .jumbotron {
+      height: 300px;
+      text-align: center;
+      border-bottom: 1px solid #e5e5e5;
+      background-attachment: scroll;
+      background-position: 50% 0%;
+      background-size: 200% 120%;
+      text-align: center;
+      padding: 30px 10px 30px 0px;
+
+
+    }
+    .jumbotron .lead {
+      font-size: 30px;
+      color: white;
+    }
+
+    .jumbotron h1 {
+      font-size: 70px;
+      margin-top: 15%;
+      color: white;
+    }
+}
