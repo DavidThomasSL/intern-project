@@ -72,7 +72,7 @@ module.exports = function(data) {
 	*/
 	var getRoundQuestion = function() {
 
-		var index = Math.floor((Math.random() * blackCards.length) + 1);
+		var index = Math.floor((Math.random() * blackCards.length));
 		var question = blackCards[index];
 
 		return question.text;
@@ -88,7 +88,7 @@ module.exports = function(data) {
 		var hand = [];
 
 		for (var i = 0; i < HANDSIZE; i++) {
-			var index = Math.floor((Math.random() * whiteCards.length) + 1);
+			var index = Math.floor((Math.random() * whiteCards.length));
 
 			var card = whiteCards[index];
 			hand.push(card);
