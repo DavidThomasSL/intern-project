@@ -181,6 +181,7 @@ module.exports = function(port, enableLogging) {
                     round: data.round
                 });
 
+                //Send each user in the room their individual hand (delt by the GameController)
                 data.players.forEach(function(player) {
                     users.forEach(function(user) {
                         if (player.uId === user.uId) {
