@@ -18,7 +18,12 @@ module.exports = function(port, enableLogging) {
     });
 
     io.set('log level', 1);
-    logger.setLevel('INFO');
+
+    if (enableLogging) {
+        logger.setLevel('ALL');
+    } else {
+        logger.setLevel('INFO');
+    }
 
 
     router.use(express.static(path.resolve(__dirname, '../client')));
@@ -42,7 +47,7 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('USER register', function(msg) {
 
-            logger.info("player joined");
+            logger.debug("player joined");
 
             if (msg.token !== undefined) {
 
@@ -95,7 +100,8 @@ module.exports = function(port, enableLogging) {
             roomId = makeid();
             var room = {
                 id: roomId,
-                usersInRoom: []
+                usersInRoom: [],
+                gameInProgress: false
             };
 
             rooms.push(room);
@@ -108,7 +114,24 @@ module.exports = function(port, enableLogging) {
             check if that room exisits, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            putUserInRoom(msg.roomId);
+            var foundRoom = false;
+            rooms.forEach(function(room) {
+                if (room.id === msg.roomId) {
+                    foundRoom = true;
+                    if (room.gameInProgress) {
+                        socket.emit('ROOM error', {
+                            msg: "Game already in progress"
+                        });
+                    } else {
+                        putUserInRoom(msg.roomId);
+                    }
+                }
+            });
+            if (foundRoom === false) {
+                socket.emit('ROOM error', {
+                    msg: "Room not found"
+                });
+            }
         });
 
 
@@ -133,7 +156,8 @@ module.exports = function(port, enableLogging) {
 
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
-                        usersInRoom: room.usersInRoom
+                        usersInRoom: room.usersInRoom,
+                        gameInProgress: room.gameInProgress
                     });
                 }
             });
@@ -150,7 +174,7 @@ module.exports = function(port, enableLogging) {
                 location: 'joining'
             });
 
-            logger.info("Removed user " + user.uId + " from room " + roomToLeave);
+            logger.debug("Removed user " + user.uId + " from room " + roomToLeave);
 
         });
 
@@ -170,6 +194,7 @@ module.exports = function(port, enableLogging) {
             });
 
             room.gameController = new GameController();
+            room.gameInProgress = true;
 
             room.gameController.initialize(room.usersInRoom, function(data) {
 
@@ -180,26 +205,88 @@ module.exports = function(port, enableLogging) {
                     question: data.roundQuestion,
                     round: data.round
                 });
+                broadcastroom(room.id, 'ROOM details', {
+                    roomId: room.id,
+                    usersInRoom: room.usersInRoom,
+                    gameInProgress: room.gameInProgress
+                });
 
                 //Send each user in the room their individual hand (delt by the GameController)
                 data.players.forEach(function(player) {
                     users.forEach(function(user) {
                         if (player.uId === user.uId) {
-                            user.socket.emit('USER hand', {hand: player.hand});
+                            user.socket.emit('USER hand', {
+                                hand: player.hand
+                            });
                         }
                     });
                 });
 
             });
 
-            logger.info("Starting game in room " + room.id);
+            logger.debug("Starting game in room " + room.id);
+        });
+
+
+        // submit answer
+        socket.on('USER answer', function(msg) {
+            var room;
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === msg.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
+
+                if (data !== undefined) {
+
+                    broadcastoptions(room.id, 'GAME voting', {
+                        answers: data.answers
+                    });
+
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'vote'
+                    });
+                }
+
+            });
+        });
+
+        // submit a vote
+        socket.on('USER vote', function(msg) {
+            var room;
+
+            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === msg.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
+
+                // if (data!=undefined) {
+
+                //     broadcastroom(room.id, 'ROUTING', {
+                //         location: 'vote'
+                //     });
+
+                //     broadcastroom(room.id, 'GAME voting', {
+                //         answers: data.answers
+                //     });
+                // }
+
+            });
         });
 
         //When a client disconnect, we remove him from the room he was in
         //the user still remembers what room his was in however,
         //so that he can join again
         socket.on('disconnect', function() {
-            logger.info("Disconnecting player");
+            logger.debug("Disconnecting player");
 
             rooms.forEach(function(room) {
 
@@ -211,7 +298,8 @@ module.exports = function(port, enableLogging) {
 
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
-                        usersInRoom: room.usersInRoom
+                        usersInRoom: room.usersInRoom,
+                        gameInProgress: room.gameInProgress
                     });
 
                     logger.debug("Removing player from room" + room.id);
@@ -251,19 +339,16 @@ module.exports = function(port, enableLogging) {
                     //Update the room serveice of every user
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
-                        usersInRoom: room.usersInRoom
+                        usersInRoom: room.usersInRoom,
+                        gameInProgress: room.gameInProgress
                     });
 
-                    logger.info("User " + user.uId + " joined room " + roomId);
+                    logger.debug("User " + user.uId + " joined room " + roomId);
 
                     joined = true;
 
                 }
             });
-
-            if (!joined) {
-                logger.error("User cannot join room " + roomId);
-            }
         }
 
         function sendUserDetails() {
@@ -273,6 +358,10 @@ module.exports = function(port, enableLogging) {
             });
             user.socket = socket;
 
+        }
+
+        function sendGameDetails(gameController) {
+            socket.emit('GAME details', gameController.getGameDetails());
         }
 
         function putUserInJoining() {
@@ -295,14 +384,38 @@ module.exports = function(port, enableLogging) {
 
     });
 
-    // emit event and data to all players in a certain room
-    // that is passed as an argument
-    // -> used to send a new join and new leave event
-    // with the data as the new list of players in the room
+    /*
+    emit event and data to all players in a certain room
+    that is passed as an argument
+    -> used to send a new join and new leave event
+    with the data as the new list of players in the room
+    */
     function broadcastroom(room, event, data) {
         users.forEach(function(user) {
             if (user.roomId === room) {
                 user.socket.emit(event, data);
+            }
+        });
+    }
+
+    /*
+        Sends to every user in a room a list of submitted answers to a question
+        excluding the answer that the user themselves submitting
+        preventing them from voting for them selves
+    */
+    function broadcastoptions(room, event, data) {
+        users.forEach(function(user) {
+            var toSend = [];
+            if (user.roomId === room) {
+                data.answers.forEach(function(ans) {
+                    if (ans.playerId !== user.uId) {
+                        var field = {
+                            ans: ans.answerText
+                        };
+                        toSend.push(field);
+                    }
+                });
+                user.socket.emit(event, toSend);
             }
         });
     }
@@ -338,9 +451,9 @@ module.exports = function(port, enableLogging) {
 
     server.listen(port, function() {
         var addr = server.address();
-        if (enableLogging) {
-            logger.info("Chat server listening at port: " + addr.port);
-        }
+
+        logger.info("Chat server listening at port: " + addr.port);
+
     });
 
     return server;

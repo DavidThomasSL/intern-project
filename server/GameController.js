@@ -4,9 +4,14 @@ var path = require('path');
 module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
-	var round = 0;
-	var blackCards = [];
-	var whiteCards = [];
+	var roundCount = 0;
+	var rounds = [];
+	var POINTS_PER_VOTE = 50;
+	var blackCardsMaster = [];
+	var whiteCardsMaster = [];
+	var blackCardsCurrent = [];
+	var whiteCardsCurrent = [];
+	//deal from current arrays, when card it dealt remove it to stop player getting same cards
 
 	//Number of white cards a user should always have
 	var HANDSIZE = 7;
@@ -28,18 +33,30 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCards = cards.blackCards;
-				whiteCards = cards.whiteCards;
+				blackCardsMaster = cards.blackCards;
+				whiteCardsMaster = cards.whiteCards;
+				blackCardsCurrent = blackCardsMaster.slice(0);
+				whiteCardsCurrent = whiteCardsMaster.slice(0);
+
+				//TODO : stop game if we don't have enough inital white cards (HANDSIZE * number of players)
 
 				usersInRoom.forEach(function(user) {
 					setupPlayer(user);
 				});
 
+				var round = {
+					count: roundCount,
+					question: getRoundQuestion(),
+					answers: []
+				};
+
+				rounds.push(round);
+
 				//return this game information back to the server
 				callback({
 					players: players,
-					roundQuestion: getRoundQuestion(),
-					round: round
+					roundQuestion: round.question,
+					round: roundCount
 				});
 			}
 		});
@@ -72,12 +89,19 @@ module.exports = function(data) {
 	*/
 	var getRoundQuestion = function() {
 
-		var index = Math.floor((Math.random() * blackCards.length) + 1);
-		var question = blackCards[index];
+		if (blackCardsCurrent.length <= 0) {
+			blackCardsMaster.forEach(function(card) {
+				blackCardsCurrent.push(card);
+			});
+		} //refreshing the card list if we reach the end of questions;
+
+		var index = Math.floor((Math.random() * blackCardsCurrent.length));
+
+		var question = blackCardsCurrent[index];
+		blackCardsCurrent.splice(index, 1);
+		//removing dealt card from card list
 
 		return question.text;
-
-		// return "__ Helps me sleep at night";
 	};
 
 	/*
@@ -86,11 +110,14 @@ module.exports = function(data) {
 	var dealUserHand = function() {
 
 		var hand = [];
-
 		for (var i = 0; i < HANDSIZE; i++) {
-			var index = Math.floor((Math.random() * whiteCards.length) + 1);
 
-			var card = whiteCards[index];
+			var index = Math.floor((Math.random() * whiteCardsCurrent.length));
+
+			var card = whiteCardsCurrent[index];
+			whiteCardsCurrent.splice(index, 1);
+			//removing dealt card from card list
+
 			hand.push(card);
 		}
 
@@ -98,13 +125,110 @@ module.exports = function(data) {
 	};
 
 	/*
+	update a users hand by replacing the used card with a new random one
+	*/
+	var updateHand = function(userId, usedCard) {
+		players.forEach(function(player){
+			if (player.uId === userId) {
+				player.hand.forEach(function(card){
+					if (card === usedCard) {
+						var index = Math.floor((Math.random() * whiteCardsCurrent.length));
+						card = whiteCardsCurrent[index];
+					}
+				});
+			}
+		});
+	};
+
+	/*
+		submit the answer and change the used card with another one in players
 
 	 */
-	var submitAnswer = function(round, userId) {
+	 //TODO change this to a promise with a reject clause
 
+	var submitAnswer = function(playerId, answer, callback) {
+
+		var ans = {
+			playerId: playerId,
+			answerText: answer,
+			playersVote: []
+		};
+
+		var currentRound = rounds[rounds.length-1];
+		currentRound.answers.push(ans);
+		updateHand(playerId, answer);
+
+		//check if everyone submitted
+		if (currentRound.answers.length === players.length) {
+			callback({
+				answers: currentRound.answers
+			});
+		}
+	};
+
+		/*
+		submit the vote and change the used card with another one in players
+	 */
+	var submitVote = function(playerId, answer, callback) {
+
+		var currentRound = rounds[rounds.length-1];
+
+		currentRound.answers.forEach(function(option){
+			if(option.answerText === answer) {
+				option.playersVote.push(playerId);
+				addPoints(option.playerId);
+			}
+		});
+
+		//check if everyone voted
+		if (countVotes(currentRound) === players.length) {
+			console.log("everyone voted!");
+			// newRound();
+			callback({
+				answers: currentRound.answers
+			});
+		}
+
+		console.log(currentRound.answers);
+	};
+
+
+	// var newRound = function() {
+	// 	roundCount +=1 ;
+	// 	var round = {
+	// 		count: roundCount,
+	// 		question: getRoundQuestion(),
+	// 		answers: []
+	// 	};
+	// 	rounds.push(round);
+	// }
+
+	/*
+	add 50 points to player -> called on each vote
+	*/
+	var addPoints = function(playerId) {
+		console.log("added vote");
+		players.forEach (function(player){
+			if (player.uId === playerId ) {
+				player.points += POINTS_PER_VOTE ;
+			}
+		});
+	};
+
+	/*
+	count the overall votes in this round
+	*/
+	var countVotes = function(currentRound) {
+		var votes = 0 ;
+		currentRound.answers.forEach(function(option){
+			votes += option.playersVote.length;
+		});
+		return votes ;
 	};
 
 	return {
-		initialize: initialize
+		initialize: initialize,
+		submitAnswer: submitAnswer,
+		submitVote: submitVote
 	};
 };

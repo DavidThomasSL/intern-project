@@ -8,6 +8,7 @@
     <form name="roomSubmissionForm" ng-submit="joinRoom(roomSubmissionForm)">
     <input id="room-input-box" placeholder="Enter room id" ng-model="roomSubmissionForm.enteredRoomId">
     <button id="room-join-button" type="submit">Join Room</button>
+    <h3 ng-show="roomErrorMessage()"> {{roomErrorMessage()}}</h3>
     </form>
 
     <input type="submit" value="Go back">
