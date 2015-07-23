@@ -1,0 +1,182 @@
+/* Space out content a bit */
+body, html {
+  position: relative;
+  padding-bottom: 20px;
+  height: 100%
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+/* Custom page header */
+.header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 20px;
+}
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+}
+
+/* Custom page footer */
+.footer {
+  /*position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);*/
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+
+  }
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
+.wrapper {
+  min-height: 800px;
+  margin-bottom: 60px;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  position: relative;
+  margin-bottom: 10px;
+  height: 380px;
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0%,rgba(0,0,0,1)), color-stop(20%,rgba(0,0,0,0.65)),color-stop(40%,rgba(0,0,0,0.2)), color-stop(100%,rgba(0,0,0,0))), url('/../../includes/images/background.jpg'); /* Chrome,Safari4+
+  /*background: url('/../../includes/images/background.jpg');*/
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: 50% -400px;
+  background-size: 100% 100%;
+  /*text-align: left;*/
+  padding-left: 40px;
+  padding-top: 200px
+}
+
+.jumbotron .lead {
+  color: white;
+  float: left;
+  text-align: left;
+}
+
+.lead p{
+  font-size: 25px;
+}
+
+.jumbotron .username {
+  padding: 120px 40px 0px 0px;
+  color: white;
+  font-size: 25px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  margin-bottom: 10px;
+}
+
+.jumbotron h1 {
+  float: left;
+  color: white;
+  font-size: 90px;
+}
+
+
+.header .btn {
+  padding: 14px 24px;
+  font-size: 21px;
+  float: right;
+}
+
+.header .instructions {
+  text-align: center;
+}
+
+#question-text .panel-title {
+  font-size: 15px;
+}
+
+#question-text .panel-body {
+  font-size: 30px;
+}
+
+
+.name-submit-container {
+  margin-top: 30px;
+  margin-bottom: 100px;
+}
+
+#join-create-container {
+  margin: 20px 20px 100px 20px;
+}
+
+#romm-lobby-users-container {
+  margin: 30px 20px 100px 20px;
+}
+
+
+@media only screen and (max-device-width: 480px) {
+  /* Main marketing message and sign up button */
+    .jumbotron {
+      height: 250px;
+      background-attachment: scroll;
+      background-position: 50% 40%;
+      background-size: 200% 150%;
+      text-align: center;
+      padding: 80px 10px 30px 20px;
+
+
+    }
+    .jumbotron .lead {
+      margin-bottom: 0px;
+    }
+
+    .jumbotron h1 {
+      font-size: 70px;
+      margin-top: 15%;
+    }
+
+    .jumbotron .username {
+      padding: 0px 20px 0px 0px;
+      margin-bottom: 10px;
+      float: right;
+      visibility: hidden;
+    }
+}
+
+/* ANIMATIONS
+============================================================================= */
+
+/* slide in from the bottom */
+@keyframes slideOutLeft {
+    to      { transform: translateX(-100%); }
+}
+
+/* scale up */
+@keyframes scaleUp {
+    from    { opacity: 0.3; -webkit-transform: scale(0.8); }
+}
+
+/* slide in from the bottom */
+@keyframes slideOutLeft {
+    to      { transform: translateX(-100%); }
+}
+
+.ng-enter           { animation: scaleUp 0.5s both ease-in; z-index: 8888; }
+.ng-leave           { animation: slideOutLeft 0.5s both ease-in; z-index: 9999; }

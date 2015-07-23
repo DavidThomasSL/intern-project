@@ -238,7 +238,7 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            room.gameController.newRound( function(data) {
+            room.gameController.newRound(function(data) {
 
                 broadcastroom(room.id, 'ROUTING', {
                     location: 'question'
@@ -274,7 +274,7 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            room.gameController.finishGame( function(data) {
+            room.gameController.finishGame(function(data) {
 
                 broadcastroom(room.id, 'ROUTING', {
                     location: 'endGame'
@@ -290,10 +290,12 @@ module.exports = function(port, enableLogging) {
         });
 
         // submit answer
-        socket.on('USER answer', function(msg) {
+        socket.on('USER submitChoice', function(msg) {
             var room;
 
-            socket.emit('ROUTING', { location: 'wait' });
+            socket.emit('ROUTING', {
+                location: 'waitQuestion'
+            });
 
             // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
 
@@ -303,11 +305,19 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
+
+
             room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
 
-                if (data !== undefined) {
+                broadcastroom(room.id, 'GAME numOfChoicesSubmitted', {
+                    number: data.answers.length
+                });
 
-                    broadcastoptions(room.id, 'GAME voting', {
+                console.log("number of answers submitted = " + data.answers.length);
+
+                if (data.allChoicesSubmitted === true) {
+
+                    broadcastoptions(room.id, 'GAME chosenAnswers', {
                         answers: data.answers
                     });
 
@@ -323,7 +333,9 @@ module.exports = function(port, enableLogging) {
         socket.on('USER vote', function(msg) {
             var room;
 
-            socket.emit('ROUTING', { location: 'wait' });
+            socket.emit('ROUTING', {
+                location: 'waitVote'
+            });
 
             // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
 
@@ -342,7 +354,7 @@ module.exports = function(port, enableLogging) {
                         location: 'results'
                     });
 
-                    broadcastroom(room.id, 'GAME results', {
+                    broadcastroom(room.id, 'GAME playerRoundResults', {
                         results: data.res
                     });
                 }

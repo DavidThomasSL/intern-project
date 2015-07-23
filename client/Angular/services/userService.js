@@ -14,8 +14,8 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         });
     }
 
-    function submitAnswer(enteredAnswer) {
-        emitAnswer(enteredAnswer);
+    function submitChoice(enteredAnswer) {
+        emitChoice(enteredAnswer);
     }
 
     function submitVote(enteredAnswer) {
@@ -27,7 +27,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     }
 
     function getUserId() {
-        return user.id;
+        return user.uId;
     }
 
     function getUserHand() {
@@ -71,8 +71,8 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     //INTERNAL HELPER FUNCTIONS
     //-----------------
 
-    function emitAnswer(answer) {
-        socket.emit('USER answer', {
+    function emitChoice(answer) {
+        socket.emit('USER submitChoice', {
             playerId: user.uId,
             answer: answer,
             roomId: user.roomId
@@ -98,8 +98,10 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         getUserName: getUserName,
         getUserId: getUserId,
         getUserHand: getUserHand,
-        submitAnswer: submitAnswer,
+        submitChoice: submitChoice,
         submitVote: submitVote
     };
 
 }]);
+
+

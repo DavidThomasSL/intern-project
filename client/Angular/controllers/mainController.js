@@ -6,10 +6,12 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     $scope.roomId = roomService.getRoomId;
     $scope.roundQuestion = gameService.getRoundQuestion;
     $scope.userHand = userService.getUserHand;
+    $scope.getUserId = userService.getUserId;
     $scope.gameInProgress = roomService.getGameInProgress;
     $scope.roomErrorMessage = roomService.getErrorMessage;
     $scope.answers = gameService.getAnswers;
-    $scope.results = gameService.getResults;
+    $scope.waitingAnswerCounter = gameService.getAnswerCounter;
+    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
     $scope.finalresults = gameService.getFinalResults;
 
     $scope.finishGame = function() {
@@ -21,7 +23,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     };
 
     $scope.submitAnswer = function(enteredAnswer) {
-        userService.submitAnswer(enteredAnswer);
+        userService.submitChoice(enteredAnswer);
     };
 
     $scope.submitVote = function(enteredAnswer) {
@@ -37,8 +39,8 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
         userService.setName(form.enteredName);
     };
 
-    $scope.joinRoom = function(form) {
-        roomService.joinRoom(form.enteredRoomId);
+    $scope.joinRoom = function(roomId) {
+        roomService.joinRoom(roomId);
     };
 
     $scope.leaveRoom = function() {
@@ -47,6 +49,15 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
 
     $scope.startGame = function() {
         gameService.startGame($scope.roomId());
+    };
+
+    $scope.getUserId = function() {
+        return userService.getUserId();
+    };
+
+    $scope.getRoomUserCount = function() {
+        var num = roomService.getUsersInRoom();
+        return num.length;
     };
 
 });

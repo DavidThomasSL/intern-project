@@ -1,49 +1,50 @@
-<html lang="en" class="wf-proximanova-n3-active wf-proximanova-n4-active wf-proximanova-n6-active wf-proximanova-n7-active wf-proximanova-i3-active wf-active" >
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="../../favicon.ico">
         <title>CLONAGE</title>
-        <link rel="icon" type="image/jpg" href="includes/images/logo.png">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="//use.typekit.net/jiq8zcw.js"></script>
-        <script src="includes/js/main.js"></script>
-        <script src="includes/js/text.js"></script>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/site.css" />
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" href="/includes/css/test-site.css" >
     </head>
-
     <body ng-app="ClonageApp" ng-controller="MainController">
-        <section class="header mainWrapper active">
-            <div class="logo">
-                <img src="includes/images/logo.png" alt="">
-                <span class="logotext typer"></span>
+        <!--COntent goes here -->
+        <div class="wrapper">
+            <div class="jumbotron">
+                <div class="lead">
+                    <h1>Clonage</h1>
+                    <p>Room Join or Create</p>
+                </div>
+                <p class="username">{{getUserName()}}</p>
             </div>
-            <ng-view></ng-view>
-                <!-- Footer/credits -->
-                <section class="credits">
-                    <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a>
-                </section>
-
-        </section>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+            <div ng-view>
+            </div ng-view>
+        </div>
+        <footer class="footer">
+            <p>&copy; <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a></p>
+        </footer>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-animate.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://cdn.rawgit.com/btford/angular-socket-io/v0.7.0/socket.min.js"></script>
-
         <!-- start client/js tags -->
-        <script src="js/client.js"></script>
-        <script src="js/config/routeConfig.js"></script>
-        <script src="js/controllers/mainController.js"></script>
-        <script src="js/services/gameService.js"></script>
-        <script src="js/services/roomService.js"></script>
-        <script src="js/services/routingService.js"></script>
-        <script src="js/services/socketService.js"></script>
-        <script src="js/services/userService.js"></script>
+        <script src="Angular/ClonageApp.js"></script>
+        <script src="Angular/config/routeConfig.js"></script>
+        <script src="Angular/controllers/mainController.js"></script>
+        <script src="Angular/services/gameService.js"></script>
+        <script src="Angular/services/roomService.js"></script>
+        <script src="Angular/services/routingService.js"></script>
+        <script src="Angular/services/socketService.js"></script>
+        <script src="Angular/services/userService.js"></script>
         <!-- end client/js tags -->
-
     </body>
 </html>
