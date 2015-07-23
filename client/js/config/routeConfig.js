@@ -22,6 +22,9 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
             .when('/results/', {
                 templateUrl: '/templates/results.html'
             })
+            .when('/endGame/', {
+                templateUrl: '/templates/endGame.html'
+            })
             .otherwise({
                 templateUrl: '/templates/setname.html'
             });

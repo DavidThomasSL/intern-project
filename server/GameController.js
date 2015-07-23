@@ -80,6 +80,25 @@ module.exports = function(data) {
 		});
 	};
 
+	//finish game and send back final scores
+	var finishGame = function(callback) {
+
+		var results = [];
+
+		players.forEach(function(pl){
+			var result = {
+				player: pl.uId,
+				score: pl.points
+			};
+			results.push(result);
+		});
+
+		// newRound();
+		callback({
+			res: results
+		});
+	};
+
 	/*
 		Sets up a player with a user id, a new hand and 0 points
 		Adds them to the player list
@@ -229,16 +248,6 @@ module.exports = function(data) {
 	};
 
 
-	// var newRound = function() {
-	// 	roundCount +=1 ;
-	// 	var round = {
-	// 		count: roundCount,
-	// 		question: getRoundQuestion(),
-	// 		answers: []
-	// 	};
-	// 	rounds.push(round);
-	// }
-
 	/*
 	add 50 points to player -> called on each vote
 	*/
@@ -266,6 +275,7 @@ module.exports = function(data) {
 		initialize: initialize,
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
-		newRound: newRound
+		newRound: newRound,
+		finishGame: finishGame
 	};
 };

@@ -241,11 +241,6 @@ module.exports = function(port, enableLogging) {
                     question: data.roundQuestion,
                     round: data.round
                 });
-                // broadcastroom(room.id, 'ROOM details', {
-                //     roomId: room.id,
-                //     usersInRoom: room.usersInRoom,
-                //     gameInProgress: room.gameInProgress
-                // });
 
                 //Send each user in the room their individual hand (delt by the GameController)
                 data.players.forEach(function(player) {
@@ -261,6 +256,31 @@ module.exports = function(port, enableLogging) {
             });
 
             logger.info("Starting new round in room " + room.id);
+        });
+
+        socket.on('GAME finish', function(data) {
+            var room;
+
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === data.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.finishGame( function(data) {
+
+                broadcastroom(room.id, 'ROUTING', {
+                    location: 'endGame'
+                });
+
+                broadcastroom(room.id, 'GAME finish', {
+                    results: data.res
+                });
+
+            });
+
+            logger.info("Finishing game in room " + room.id);
         });
 
         // submit answer
