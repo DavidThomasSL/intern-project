@@ -1,7 +1,7 @@
 ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket, $sessionStorage) {
 
     var user = {};
-    var gameHand = {};   
+    var gameHand = {};
 
 
     //--------------------
@@ -19,7 +19,6 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     }
 
     function submitVote(enteredAnswer) {
-        alert(enteredAnswer);
         emitVote(enteredAnswer);
     }
 
@@ -28,7 +27,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     }
 
     function getUserId() {
-        return user.id;
+        return user.uId;
     }
 
     function getUserHand() {
@@ -102,5 +101,5 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         submitAnswer: submitAnswer,
         submitVote: submitVote
     };
-    
+
 }]);
