@@ -40,4 +40,9 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
         gameService.startGame($scope.roomId());
     };
 
+    $scope.getUserId = function() {
+        console.log( userService.getUserId());
+        return  userService.getUserId();
+    };
+
 });

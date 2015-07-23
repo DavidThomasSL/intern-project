@@ -14,7 +14,7 @@
       </div>
     </div>
   </div>
-  <div id="romm-lobby-users-container">
+  <div id="room-lobby-container">
     <div class="row">
       <div class="col-md-6 text-center" ng-repeat="user in getUsersInRoom()">
         <div class="panel panel-default">
@@ -24,10 +24,13 @@
           </div>
         </div>
       </div>
+     <!--  <li  ng-repeat="user in getUsersInRoom()">
+        <p>{{user.username}}</p>
+      </li> -->
     </div>
     <div class="row">
       <div class="col-md-12 text-center">
-        <button type="button" class="btn btn-lg btn-primary">Start Game</button>
+        <button type="button" class="btn btn-lg btn-primary" ng-click="startGame()">Start Game</button>
       </div>
     </div>
   </div>
