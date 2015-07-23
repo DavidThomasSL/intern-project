@@ -167,12 +167,13 @@ module.exports = function(data) {
 	var updateHand = function(userId, usedCard) {
 		players.forEach(function(player){
 			if (player.uId === userId) {
-				player.hand.forEach(function(card){
-					if (card === usedCard) {
-						var index = Math.floor((Math.random() * whiteCardsCurrent.length));
-						card = whiteCardsCurrent[index];
-					}
+				player.hand = player.hand.filter(function(card) {
+					if (card !== usedCard)
+						return card;
 				});
+				var index = Math.floor((Math.random() * whiteCardsCurrent.length));
+				card = whiteCardsCurrent[index];
+				player.hand.push(card);
 			}
 		});
 	};
