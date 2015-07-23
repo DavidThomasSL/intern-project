@@ -350,11 +350,13 @@ module.exports = function(port, enableLogging) {
         }
 
     });
-
-    // emit event and data to all players in a certain room
-    // that is passed as an argument
-    // -> used to send a new join and new leave event
-    // with the data as the new list of players in the room
+    
+    /*
+    emit event and data to all players in a certain room
+    that is passed as an argument
+    -> used to send a new join and new leave event
+    with the data as the new list of players in the room
+    */
     function broadcastroom(room, event, data) {
         users.forEach(function(user) {
             if (user.roomId === room) {
@@ -363,6 +365,11 @@ module.exports = function(port, enableLogging) {
         });
     }
 
+    /*
+        Sends to every user in a room a list of submitted answers to a question
+        excluding the answer that the user themselves submitting
+        preventing them from voting for them selves
+    */
     function broadcastoptions(room, event, data) {
         users.forEach(function(user) {
             var toSend = [];

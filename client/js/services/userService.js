@@ -1,7 +1,43 @@
 ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket, $sessionStorage) {
 
     var user = {};
-    var gameHand = {};
+    var gameHand = {};   
+
+
+    //--------------------
+    //PUBLIC API
+    //-------------------
+
+    function registerUser() {
+        socket.emit('USER register', {
+            token: $sessionStorage.userId
+        });
+    }
+
+    function submitAnswer(enteredAnswer) {
+        emitAnswer(enteredAnswer);
+    }
+
+    function submitVote(enteredAnswer) {
+        alert(enteredAnswer);
+        emitVote(enteredAnswer);
+    }
+
+    function getUserName() {
+        return user.name;
+    }
+
+    function getUserId() {
+        return user.id;
+    }
+
+    function getUserHand() {
+        return gameHand;
+    }
+
+    //----------------------
+    //SOCKET EVENT LISTENERS
+    //-=-----------------
 
     /*
         When the client connects, we need to register him with the server properly
@@ -22,6 +58,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
 
     socket.on("USER room join", function(data) {
         $sessionStorage.roomId = data.roomId;
+        user.roomId = data.roomId;
         userInRoom = true;
     });
 
@@ -31,34 +68,23 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         console.log(gameHand);
     });
 
-    function registerUser() {
-        socket.emit('USER register', {
-            token: $sessionStorage.userId
-        });
-    }
+    //-------------------
+    //INTERNAL HELPER FUNCTIONS
+    //-----------------
 
-    function submitAnswer(enteredAnswer) {
-        emitAnswer(enteredAnswer);
-    }
-
-    function submitVote(enteredAnswer) {
-        alert(enteredAnswer);
-         emitVote(enteredAnswer);
-    }
-
-    function emitAnswer(answer){
+    function emitAnswer(answer) {
         socket.emit('USER answer', {
-            playerId: $sessionStorage.userId,
+            playerId: user.uId,
             answer: answer,
-            roomId: $sessionStorage.roomId
+            roomId: user.roomId
         });
     }
 
-    function emitVote(answer){
+    function emitVote(answer) {
         socket.emit('USER vote', {
-            playerId: $sessionStorage.userId,
+            playerId: user.uId,
             answer: answer,
-            roomId: $sessionStorage.roomId
+            roomId: user.roomId
         });
     }
 
@@ -68,22 +94,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         });
     }
 
-    function getUserName() {
-        return user.name;
-    }
-
-    function getUserId() {
-        return user.id;
-    }
-
-    function getUserHand() {
-        return gameHand;
-    }
-
     return {
-        hello: function() {
-            console.log("hello");
-        },
         setName: setName,
         getUserName: getUserName,
         getUserId: getUserId,
@@ -91,4 +102,5 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         submitAnswer: submitAnswer,
         submitVote: submitVote
     };
+    
 }]);

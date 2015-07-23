@@ -3,6 +3,10 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
     var roomId = -1;
     var usersInRoom = [];
 
+    //--------------------
+    //PUBLIC API
+    //-------------------
+
     function createRoom(playerId) {
         socket.emit("ROOM create", {
             playerId: playerId
@@ -30,6 +34,12 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
     function getRoomId() {
         return roomId;
     }
+
+
+    //----------------------
+    //SOCKET EVENT LISTENERS
+    //-=-----------------
+
 
     socket.on("ROOM details", function(data) {
         roomId = data.roomId;
