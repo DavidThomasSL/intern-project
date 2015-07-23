@@ -55,7 +55,7 @@ ClonageApp.service('gameService', ['socket', function(socket) {
     //-=-----------------
 
 	socket.on('GAME question', function(data) {
-		console.log("got question " + data.question);
+		// console.log("got question " + data.question);
 		currentQuestion = data.question;
 		round = data.round;
 	});

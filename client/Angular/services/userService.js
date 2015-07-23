@@ -51,8 +51,6 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         user = msg.user;
         $sessionStorage.userId = user.uId;
         $sessionStorage.roomId = user.roomId;
-        console.log("Got user details from server " + user.uId);
-        console.log(user);
     });
 
     socket.on("USER room join", function(data) {
@@ -63,8 +61,6 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
 
     socket.on('USER hand', function(data) {
         gameHand = data.hand;
-        console.log("got game hand");
-        console.log(gameHand);
     });
 
     //-------------------
