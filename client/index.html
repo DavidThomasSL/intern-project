@@ -16,13 +16,21 @@
     </head>
     <body ng-app="ClonageApp" ng-controller="MainController">
         <!--COntent goes here -->
-        <ng-view></ng-view>
+        <div class="wrapper">
+            <ng-view></ng-view>
+        </div>
+        <footer class="footer">
+            <p>&copy; <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a></p>
+        </footer>
+
+
+
+
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://cdn.rawgit.com/btford/angular-socket-io/v0.7.0/socket.min.js"></script>
-
         <!-- start client/js tags -->
         <script src="js/client.js"></script>
         <script src="js/config/routeConfig.js"></script>
@@ -33,6 +41,5 @@
         <script src="js/services/socketService.js"></script>
         <script src="js/services/userService.js"></script>
         <!-- end client/js tags -->
-
     </body>
 </html>
