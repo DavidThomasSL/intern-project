@@ -293,6 +293,7 @@ module.exports = function(port, enableLogging) {
         socket.on('USER answer', function(msg) {
             var room;
 
+            console.log("going to wait");
             socket.emit('ROUTING', { location: 'wait' });
 
             // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);

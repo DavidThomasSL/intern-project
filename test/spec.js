@@ -1,6 +1,4 @@
 // spec.js
-var webdriver = require('selenium-webdriver');
-
 describe('Clonage App', function() {
 
 	beforeEach(function() {
@@ -37,7 +35,7 @@ describe('Clonage App', function() {
 			clonageSignup.submitName("Bob");
 
 			expect(browser.getCurrentUrl()).toMatch(/\/joining/);
-			expect(element(by.binding('getUserName')).getText()).toBe('Hi Bob!');
+			expect(element(by.binding('getUserName')).getText()).toBe('Bob');
 			expect(element(by.id('room-input-box')).isPresent()).toBe(true);
 		});
 
@@ -48,7 +46,7 @@ describe('Clonage App', function() {
 			browser.waitForAngular();
 
 			expect(browser.getCurrentUrl()).toMatch(/\/joining/);
-			expect(element(by.binding('getUserName')).getText()).toBe('Hi Bob!');
+			expect(element(by.binding('getUserName')).getText()).toBe('Bob');
 			expect(element(by.id('room-join-container')).isDisplayed()).toBe(true);
 		});
 
@@ -113,14 +111,16 @@ describe('Clonage App', function() {
 				roomId = text.split(" ")[2];
 				return roomId.length;
 			})).toBe(5);
-
 		});
 
-		// it('user can see themselves in the room as \'Me!\'', function() {
-		// 	clonageRoomJoinPage.joinRoom(roomId);
-		// 	expect(browser.getCurrentUrl()).toMatch(/\/room/);
-		// 	expect(element.all(by.repeater('user in usersInRoom')).get(0).getText()).toBe('Me!');
-		// });
+		it('user can see themselves in the room', function() {
+
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
+			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
+
+			expect(element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Ben');
+		});
 
 		it('on refresh the user is put back in the room lobby', function() {
 			browser.refresh();
@@ -138,10 +138,10 @@ describe('Clonage App', function() {
 		var element2;
 		var roomId;
 
-		/*
-			Create a new user on another browser who creates a room
-			must create a new user and join that room
-		*/
+
+			// Create a new user on another browser who creates a room
+			// must create a new user and join that room
+
 		beforeEach(function() {
 
 			clonageSignup = new ClonageSignupPage();
@@ -194,22 +194,22 @@ describe('Clonage App', function() {
 		it('if other use joins quits in the room user can see that without updating', function() {
 
 			clonageRoomJoinPage.joinRoom(roomId);
-			browser2.element(by.buttonText("Go Back")).click();
+			browser2.element(by.buttonText("Exit Room")).click();
 			browser2.waitForAngular();
 
 			expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(1);
 		});
 
-		it('if other use joins room in the room user can see that without updating', function() {
+		// it('if other use joins room in the room user can see that without updating', function() {
 
-			clonageRoomJoinPage.joinRoom(roomId);
-			browser2.element(by.buttonText("Go Back")).click();
-			browser2.element(by.id('room-input-box')).sendKeys(roomId);
-			browser2.element(by.id('room-join-button')).click();
-			browser2.waitForAngular();
+		// 	clonageRoomJoinPage.joinRoom(roomId);
+		// 	browser2.element(by.buttonText("Go Back")).click();
+		// 	browser2.element(by.id('room-input-box')).sendKeys(roomId);
+		// 	browser2.element(by.id('room-join-button')).click();
+		// 	browser2.waitForAngular();
 
-			expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
-		});
+		// 	expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+		// });
 	});
 
 });
