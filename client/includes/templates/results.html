@@ -5,7 +5,7 @@
 		<h2>{{roundQuestion()}} <h2>
 		<h3>
 			<form name="VoteAnswerForm" ng-submit="nextRound()">
-					<ul ng-repeat="result in roundVotes()" >
+					<ul ng-repeat="result in getPayerRoundResults()" >
 						<li>{{result.player}} : {{result.ans}} -> {{result.playerVote.length * 50}}<br><h4>{{result.playerPoints}}</h4>
 						</li>
 					</ul>
