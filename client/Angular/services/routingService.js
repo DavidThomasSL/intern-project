@@ -16,8 +16,8 @@ ClonageApp.service('RoutingService', ['socket', '$location', function(socket, $l
             case 'vote' :
                 $location.path('/vote');
                 break;
-            case 'wait' :
-                $location.path('/wait');
+            case 'waitVote' :
+                $location.path('/waitVote');
                 break;
             case 'results' :
                 $location.path('/results');
@@ -25,6 +25,8 @@ ClonageApp.service('RoutingService', ['socket', '$location', function(socket, $l
             case 'endGame' :
                 $location.path('/endGame');
                 break;
+            case 'waitQuestion' :
+                $location.path('/waitQuestion');
         }
     });
 

@@ -199,7 +199,13 @@ module.exports = function(data) {
 		//check if everyone submitted
 		if (currentRound.answers.length === players.length) {
 			callback({
-				answers: currentRound.answers
+				answers: currentRound.answers,
+				allChoicesSubmitted : true
+			});
+		} else {
+			callback({
+				answers: currentRound.answers,
+				allChoicesSubmitted : false
 			});
 		}
 	};
