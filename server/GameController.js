@@ -20,7 +20,7 @@ module.exports = function(data) {
 		Called by the server when a game starts
 	*/
 	var initialize = function(usersInRoom, callback) {
-		round = 0;
+		roundCount = 0;
 
 		path.join(__dirname, './BlackWhiteCards.json');
 
@@ -59,6 +59,43 @@ module.exports = function(data) {
 					round: roundCount
 				});
 			}
+		});
+	};
+
+	var newRound = function(callback) {
+		roundCount += 1;
+		var round = {
+			count: roundCount,
+			question: getRoundQuestion(),
+			answers: []
+		};
+
+		rounds.push(round);
+
+		//return this round information back to the server
+		callback({
+			players: players,
+			roundQuestion: round.question,
+			round: roundCount
+		});
+	};
+
+	//finish game and send back final scores
+	var finishGame = function(callback) {
+
+		var results = [];
+
+		players.forEach(function(pl){
+			var result = {
+				player: pl.uId,
+				score: pl.points
+			};
+			results.push(result);
+		});
+
+		// newRound();
+		callback({
+			res: results
 		});
 	};
 
@@ -130,12 +167,13 @@ module.exports = function(data) {
 	var updateHand = function(userId, usedCard) {
 		players.forEach(function(player){
 			if (player.uId === userId) {
-				player.hand.forEach(function(card){
-					if (card === usedCard) {
-						var index = Math.floor((Math.random() * whiteCardsCurrent.length));
-						card = whiteCardsCurrent[index];
-					}
+				player.hand = player.hand.filter(function(card) {
+					if (card !== usedCard)
+						return card;
 				});
+				var index = Math.floor((Math.random() * whiteCardsCurrent.length));
+				card = whiteCardsCurrent[index];
+				player.hand.push(card);
 			}
 		});
 	};
@@ -183,25 +221,33 @@ module.exports = function(data) {
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
 			console.log("everyone voted!");
+
+			var results = [];
+			currentRound.answers.forEach(function(answer){
+				var points;
+				players.forEach(function(pl){
+					if (pl.uId === answer.playerId) {
+						points = pl.points;
+					}
+				});
+				var result = {
+					player: answer.playerId,
+					ans: answer.answerText,
+					playerVote: answer.playersVote,
+					playerPoints: points
+				};
+				results.push(result);
+			});
+
 			// newRound();
 			callback({
-				answers: currentRound.answers
+				res: results
 			});
 		}
 
 		console.log(currentRound.answers);
 	};
 
-
-	// var newRound = function() {
-	// 	roundCount +=1 ;
-	// 	var round = {
-	// 		count: roundCount,
-	// 		question: getRoundQuestion(),
-	// 		answers: []
-	// 	};
-	// 	rounds.push(round);
-	// }
 
 	/*
 	add 50 points to player -> called on each vote
@@ -229,6 +275,8 @@ module.exports = function(data) {
 	return {
 		initialize: initialize,
 		submitAnswer: submitAnswer,
-		submitVote: submitVote
+		submitVote: submitVote,
+		newRound: newRound,
+		finishGame: finishGame
 	};
 };

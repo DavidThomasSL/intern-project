@@ -18,7 +18,13 @@ module.exports = function(port, enableLogging) {
     });
 
     io.set('log level', 1);
-    logger.setLevel('INFO');
+
+    if (enableLogging) {
+        logger.setLevel('ALL');
+    } else {
+        logger.setLevel('INFO');
+    }
+
 
     router.use(express.static(path.resolve(__dirname, '../client')));
 
@@ -41,7 +47,7 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('USER register', function(msg) {
 
-            logger.info("player joined");
+            logger.debug("player joined");
 
             if (msg.token !== undefined) {
 
@@ -168,7 +174,7 @@ module.exports = function(port, enableLogging) {
                 location: 'joining'
             });
 
-            logger.info("Removed user " + user.uId + " from room " + roomToLeave);
+            logger.debug("Removed user " + user.uId + " from room " + roomToLeave);
 
         });
 
@@ -218,13 +224,76 @@ module.exports = function(port, enableLogging) {
 
             });
 
-            logger.info("Starting game in room " + room.id);
+            logger.debug("Starting game in room " + room.id);
         });
 
+
+        socket.on('GAME next round', function(data) {
+            var room;
+
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === data.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.newRound( function(data) {
+
+                broadcastroom(room.id, 'ROUTING', {
+                    location: 'question'
+                });
+                broadcastroom(room.id, 'GAME question', {
+                    question: data.roundQuestion,
+                    round: data.round
+                });
+
+                //Send each user in the room their individual hand (delt by the GameController)
+                data.players.forEach(function(player) {
+                    users.forEach(function(user) {
+                        if (player.uId === user.uId) {
+                            user.socket.emit('USER hand', {
+                                hand: player.hand
+                            });
+                        }
+                    });
+                });
+
+            });
+
+            logger.info("Starting new round in room " + room.id);
+        });
+
+        socket.on('GAME finish', function(data) {
+            var room;
+
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === data.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.finishGame( function(data) {
+
+                broadcastroom(room.id, 'ROUTING', {
+                    location: 'endGame'
+                });
+
+                broadcastroom(room.id, 'GAME finish', {
+                    results: data.res
+                });
+
+            });
+
+            logger.info("Finishing game in room " + room.id);
+        });
 
         // submit answer
         socket.on('USER answer', function(msg) {
             var room;
+
+            socket.emit('ROUTING', { location: 'wait' });
 
             // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
 
@@ -254,6 +323,8 @@ module.exports = function(port, enableLogging) {
         socket.on('USER vote', function(msg) {
             var room;
 
+            socket.emit('ROUTING', { location: 'wait' });
+
             // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
 
             rooms.forEach(function(otherRoom) {
@@ -262,18 +333,19 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
+
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
 
-                // if (data!=undefined) {
+                if (data !== undefined) {
 
-                //     broadcastroom(room.id, 'ROUTING', {
-                //         location: 'vote'
-                //     });
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'results'
+                    });
 
-                //     broadcastroom(room.id, 'GAME voting', {
-                //         answers: data.answers
-                //     });
-                // }
+                    broadcastroom(room.id, 'GAME results', {
+                        results: data.res
+                    });
+                }
 
             });
         });
@@ -282,7 +354,7 @@ module.exports = function(port, enableLogging) {
         //the user still remembers what room his was in however,
         //so that he can join again
         socket.on('disconnect', function() {
-            logger.info("Disconnecting player");
+            logger.debug("Disconnecting player");
 
             rooms.forEach(function(room) {
 
@@ -339,7 +411,7 @@ module.exports = function(port, enableLogging) {
                         gameInProgress: room.gameInProgress
                     });
 
-                    logger.info("User " + user.uId + " joined room " + roomId);
+                    logger.debug("User " + user.uId + " joined room " + roomId);
 
                     joined = true;
 
@@ -379,7 +451,7 @@ module.exports = function(port, enableLogging) {
         }
 
     });
-    
+
     /*
     emit event and data to all players in a certain room
     that is passed as an argument
@@ -447,9 +519,9 @@ module.exports = function(port, enableLogging) {
 
     server.listen(port, function() {
         var addr = server.address();
-        if (enableLogging) {
-            logger.info("Chat server listening at port: " + addr.port);
-        }
+
+        logger.info("Chat server listening at port: " + addr.port);
+
     });
 
     return server;

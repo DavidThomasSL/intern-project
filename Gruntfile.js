@@ -22,7 +22,7 @@ module.exports = function(grunt) {
             options: {
                 configFile: 'test/conf.js',
                 args: {
-                    verbose: true
+                    "verbose": "true"
                 }
             },
             e2e: {
@@ -39,7 +39,14 @@ module.exports = function(grunt) {
             },
             test: {
                 options: {
-                    script: './server.js'
+                    script: './server.js',
+                    args: ['debug=true']
+                }
+            },
+            prod: {
+                options: {
+                    script: './server.js',
+                    args: ['debug=false']
                 }
             }
         },
@@ -82,10 +89,11 @@ module.exports = function(grunt) {
     grunt.registerTask('selenium', ['selenium_start']);
     grunt.registerTask('server', ['express:test', 'watch']);
     grunt.registerTask('e2e-test', ['express:test', 'selenium_start', 'protractor:e2e']);
+    grunt.registerTask('ci-e2e-test', ['express:prod', 'selenium_start', 'protractor:e2e']);
     grunt.registerTask("check", ["jshint"]);
     grunt.registerTask("install", "auto_install");
     grunt.registerTask("test", ["check", "e2e-test"]);
-    grunt.registerTask("ci-test", ["check", "e2e-test"]);
+    grunt.registerTask("ci-test", ["check", "ci-e2e-test"]);
     grunt.registerTask("scripts", "tags");
     grunt.registerTask("default", ['tags', 'test']);
 };

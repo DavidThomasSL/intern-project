@@ -8,8 +8,10 @@
 					<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer}}"> {{answer}}</label><br>
 				</div>
 				<br>
-				<button type="submit">Submit Answer</button>
+				<button type="submit">Submit Answer</button><br>
 			</form>
+			<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
+			<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
 		</h3>
 	</div>
 </div>
