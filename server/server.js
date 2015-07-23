@@ -343,7 +343,7 @@ module.exports = function(port, enableLogging) {
                         location: 'results'
                     });
 
-                    broadcastroom(room.id, 'GAME results', {
+                    broadcastroom(room.id, 'GAME roundVotes', {
                         results: data.res
                     });
                 }
