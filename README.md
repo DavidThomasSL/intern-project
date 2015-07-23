@@ -1,6 +1,6 @@
 [![Circle CI](https://circleci.com/gh/DavidThomasSL/intern-project/tree/master.svg?style=svg)](https://circleci.com/gh/DavidThomasSL/intern-project/tree/master)
 
-      _____ _      ____  _   _          _____ ______ _ _ 
+      _____ _      ____  _   _          _____ ______ _ _
      / ____| |    / __ \| \ | |   /\   / ____|  ____| | |
     | |    | |   | |  | |  \| |  /  \ | |  __| |__  | | |
     | |    | |   | |  | | . ` | / /\ \| | |_ |  __| | | |
@@ -17,11 +17,10 @@ Like Fibbage, but better...
 
 2) Install node
 
-3) Run "npm install" to install dependancies 
+3) Run "npm install" to install dependancies
 
 ## Running the server
 
 1) Run "node server.js" from the same directory as this readme
 2) Go to http://intern-project.herokuapp.com/
-
-testing dev build
+3) Go to http://intern-project-dev.herokuapp.com/ for the dev build
