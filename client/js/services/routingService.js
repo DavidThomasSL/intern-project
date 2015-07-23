@@ -3,16 +3,26 @@ ClonageApp.service('RoutingService', ['socket', '$location', function(socket, $l
     socket.on("ROUTING", function(msg) {
         console.log("sending user to room");
 
-        if (msg.location === 'room') {
-            $location.path('/room');
-        } else if (msg.location === 'joining') {
-            $location.path('/joining');
-        } else if(msg.location === 'question') {
-        	$location.path('/question');
-        } else if(msg.location === 'vote') {
-            $location.path('/vote');
+        switch(msg.location) {
+            case 'room':
+                $location.path('/room');
+                break;
+            case 'joining':
+                $location.path('/joining');
+                break;
+            case 'question':
+                $location.path('/question');
+                break;
+            case 'vote':
+                $location.path('/vote');
+                break;
+            case 'answerWait':
+                $location.path('/answerWait');
+                break;
+            default :
+                //if route message is not recognised
+                alert('Error - cannot route to ' + msg.location);
         }
     });
-
     return null;
 }]);

@@ -236,8 +236,17 @@ module.exports = function(port, enableLogging) {
 
             room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
 
-                if (data !== undefined) {
 
+                console.log("sending user to waiting page");
+                socket.emit('ROUTING' , {
+                    location : 'answerWait'
+                });
+
+                //after user has submitted answer move them to the waiting page
+
+
+                if (data.allPlayersSubmitted === true) {
+                    console.log("All players submitted answers");
                     broadcastoptions(room.id, 'GAME voting', {
                         answers: data.answers
                     });
@@ -246,6 +255,7 @@ module.exports = function(port, enableLogging) {
                         location: 'vote'
                     });
                 }
+                //when all players submitted send to voting page
 
             });
         });
@@ -379,7 +389,7 @@ module.exports = function(port, enableLogging) {
         }
 
     });
-    
+
     /*
     emit event and data to all players in a certain room
     that is passed as an argument
