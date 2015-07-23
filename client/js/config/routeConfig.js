@@ -16,6 +16,12 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
             .when('/vote/', {
                 templateUrl: '/templates/vote.html'
             })
+            .when('/wait/', {
+                templateUrl: '/templates/wait.html'
+            })
+            .when('/results/', {
+                templateUrl: '/templates/results.html'
+            })
             .otherwise({
                 templateUrl: '/templates/setname.html'
             });

@@ -226,6 +226,8 @@ module.exports = function(port, enableLogging) {
         socket.on('USER answer', function(msg) {
             var room;
 
+            socket.emit('ROUTING', { location: 'wait' });
+
             // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
 
             rooms.forEach(function(otherRoom) {
@@ -254,6 +256,8 @@ module.exports = function(port, enableLogging) {
         socket.on('USER vote', function(msg) {
             var room;
 
+            socket.emit('ROUTING', { location: 'wait' });
+
             // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
 
             rooms.forEach(function(otherRoom) {
@@ -261,6 +265,7 @@ module.exports = function(port, enableLogging) {
                     room = otherRoom;
                 }
             });
+
 
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
 
@@ -379,7 +384,7 @@ module.exports = function(port, enableLogging) {
         }
 
     });
-    
+
     /*
     emit event and data to all players in a certain room
     that is passed as an argument

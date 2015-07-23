@@ -132,8 +132,8 @@ module.exports = function(data) {
 			if (player.uId === userId) {
 				player.hand.forEach(function(card){
 					if (card === usedCard) {
-						var index = Math.floor((Math.random() * whiteCards.length) + 1);
-						card = whiteCards[index];
+						var index = Math.floor((Math.random() * whiteCardsCurrent.length) + 1);
+						card = whiteCardsCurrent[index];
 					}
 				});
 			}

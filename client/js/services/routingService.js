@@ -11,6 +11,10 @@ ClonageApp.service('RoutingService', ['socket', '$location', function(socket, $l
         	$location.path('/question');
         } else if(msg.location === 'vote') {
             $location.path('/vote');
+        } else if(msg.location === 'wait') {
+            $location.path('/wait');
+        } else if(msg.location === 'results') {
+            $location.path('/results');
         }
     });
 
