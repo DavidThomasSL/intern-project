@@ -3,9 +3,11 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	var currentQuestion = "";
 	var round = -1;
 	var answers = [];
-	var results = [];
+	var playerRoundResults = [];
 	var finalresults = [];
+	var answerCounter = 0;
 	var maxRounds = 8; //variable holding the number of rounds wanted
+
 
     //--------------------
     //PUBLIC API
@@ -28,9 +30,14 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		return answers;
 	}
 
+	function getAnswerCounter() {
+		return answerCounter;
+	}
+
+
 	//get results of voting
-	function getResults() {
-		return results;
+	function getPlayerRoundResults() {
+		return playerRoundResults;
 	}
 
 	//get final scores after the game finished
@@ -67,13 +74,13 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	});
 
 	//load all answers in order to begin voting
-	socket.on('GAME voting', function(data) {
+	socket.on('GAME chosenAnswers', function(data) {
 		answers = data;
 	});
 
 	//after each round get the results of voting
-	socket.on('GAME results', function(data) {
-		results = data.results;
+	socket.on('GAME playerRoundResults', function(data) {
+		playerRoundResults = data.results;
 	});
 
 	//when game finished load the final scores into finalresults variable
@@ -81,15 +88,20 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		finalresults = data.results;
 	});
 
+	socket.on('GAME numOfChoicesSubmitted', function(data) {
+		answerCounter = data;
+	});
+
 	return {
 		startGame: startGame,
 		getRoundQuestion: getRoundQuestion,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
-		getResults: getResults,
+		getPlayerRoundResults: getPlayerRoundResults,
 		getFinalResults: getFinalResults,
 		nextRound: nextRound,
-		finishGame: finishGame
+		finishGame: finishGame,
+		getAnswerCounter: getAnswerCounter
 	};
 
 }]);

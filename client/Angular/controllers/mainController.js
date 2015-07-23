@@ -12,10 +12,12 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
 
     //get all answers submitted in order to visualise them on the voting page
     $scope.answers = gameService.getAnswers;
+    $scope.waitingAnswerCounter = gameService.getAnswerCounter;
+    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
 
     //get results after each round which involves: what each player submitted, who voted for their answer, and their score after the round
     //in order to calculate the points after the round multiply 50 with the number of votes
-    $scope.results = gameService.getResults;
+    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
 
     //get final scores for all players when the game finishes
     $scope.finalresults = gameService.getFinalResults;
@@ -32,7 +34,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
 
     //function call to submit an answer to the question
     $scope.submitAnswer = function(enteredAnswer) {
-        userService.submitAnswer(enteredAnswer);
+        userService.submitChoice(enteredAnswer);
     };
 
     //function call to submit a vote for the funniest answer
