@@ -1,0 +1,17 @@
+<!--THE REAL GAME STUFF -->
+<div class="animate-switch">
+	<div id="game-lobby-container" class="namestuff">
+	<h5>Votes are in:</h5>
+		<h2>{{roundQuestion()}} <h2>
+		<h3>
+			<form name="VoteAnswerForm" ng-submit="nextRound()">
+					<ul ng-repeat="result in results()" >
+						<li>{{result.player}} : {{result.ans}} -> {{result.playerVote.length * 50}}<br><h4>{{result.playerPoints}}</h4>
+						</li>
+					</ul>
+				<br>
+				<button type="submit">Next Round</button>
+			</form>
+		</h3>
+	</div>
+</div>

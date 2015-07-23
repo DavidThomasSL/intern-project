@@ -3,6 +3,7 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	var currentQuestion = "";
 	var round = -1;
 	var answers = [];
+	var results = [];
 
     //--------------------
     //PUBLIC API
@@ -24,6 +25,11 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		return answers;
 	}
 
+	function getResults() {
+		console.log(results);
+		return results;
+	}
+
 
     //----------------------
     //SOCKET EVENT LISTENERS
@@ -39,11 +45,16 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		answers = data;
 	});
 
+	socket.on('GAME results', function(data) {
+		results = data.results;
+	});
+
 	return {
 		startGame: startGame,
 		getRoundQuestion: getRoundQuestion,
 		getAnswers: getAnswers,
-		getCurrentRound: getCurrentRound
+		getCurrentRound: getCurrentRound,
+		getResults: getResults
 	};
 
 }]);

@@ -183,9 +183,29 @@ module.exports = function(data) {
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
 			console.log("everyone voted!");
+
+			var results = [];
+			currentRound.answers.forEach(function(answer){
+				var points;
+				players.forEach(function(pl){
+					if (pl.uId === answer.playerId) {
+						points = pl.points;
+					}
+				});
+				var result = {
+					player: answer.playerId,
+					ans: answer.answerText,
+					playerVote: answer.playersVote,
+					playerPoints: points
+				}
+				results.push(result);
+			});
+
+			//console.log(results);
+
 			// newRound();
 			callback({
-				answers: currentRound.answers
+				res: results
 			});
 		}
 

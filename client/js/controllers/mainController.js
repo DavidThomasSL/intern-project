@@ -9,6 +9,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     $scope.gameInProgress = roomService.getGameInProgress;
     $scope.roomErrorMessage = roomService.getErrorMessage;
     $scope.answers = gameService.getAnswers;
+    $scope.results = gameService.getResults;
 
     $scope.submitAnswer = function(enteredAnswer) {
         userService.submitAnswer(enteredAnswer);

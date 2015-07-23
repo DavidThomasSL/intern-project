@@ -269,16 +269,16 @@ module.exports = function(port, enableLogging) {
 
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
 
-                // if (data!=undefined) {
+                if (data!=undefined) {
 
-                //     broadcastroom(room.id, 'ROUTING', {
-                //         location: 'vote'
-                //     });
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'results'
+                    });
 
-                //     broadcastroom(room.id, 'GAME voting', {
-                //         answers: data.answers
-                //     });
-                // }
+                    broadcastroom(room.id, 'GAME results', {
+                        results: data.res
+                    });
+                }
 
             });
         });
