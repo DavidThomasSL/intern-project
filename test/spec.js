@@ -212,6 +212,87 @@ describe('Clonage App', function() {
 		// });
 	});
 
+	describe('When starting a game', function() {
+		var clonageSignup;
+		var clonageRoomJoinPage;
+		var browser2;
+		var element2;
+		var roomId;
+
+
+			// Create a new user on another browser who creates a room
+			// must create a new user and join that room
+
+		beforeEach(function() {
+
+			clonageSignup = new ClonageSignupPage();
+			clonageRoomJoinPage = new ClonageRoomJoinPage();
+
+
+			browser2 = browser.forkNewDriverInstance(false, true);
+			element2 = browser2.element;
+
+			browser2.get('/');
+			browser2.waitForAngular();
+
+
+			element2(by.id('name-input-box')).sendKeys('Alice');
+			element2(by.id('name-submit-button')).click();
+			browser2.waitForAngular();
+			element2(by.id('create-room-button')).click();
+
+			element2(by.binding('roomId')).getText().then(function(text) {
+				roomId = text.split(" ")[2];
+
+			});
+
+			browser.executeScript('window.sessionStorage.clear();');
+			browser.executeScript('window.localStorage.clear();');
+
+			clonageSignup.get();
+			clonageSignup.submitName('John');
+
+		});
+
+		afterEach(function() {
+			browser2.close();
+		});
+
+		it('can start the game', function() {
+
+
+			clonageRoomJoinPage.joinRoom(roomId);
+
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+			expect(element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Alice');
+			expect(element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
+			browser.element(by.buttonText("Start Game")).click();
+			browser.waitForAngular();
+			expect(browser.getCurrentUrl()).toMatch(/\/question/);
+
+		});
+
+		// it('if other use joins quits in the room user can see that without updating', function() {
+
+		// 	clonageRoomJoinPage.joinRoom(roomId);
+		// 	browser2.element(by.buttonText("Exit Room")).click();
+		// 	browser2.waitForAngular();
+
+		// 	expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(1);
+		// });
+
+		// it('if other use joins room in the room user can see that without updating', function() {
+
+		// 	clonageRoomJoinPage.joinRoom(roomId);
+		// 	browser2.element(by.buttonText("Go Back")).click();
+		// 	browser2.element(by.id('room-input-box')).sendKeys(roomId);
+		// 	browser2.element(by.id('room-join-button')).click();
+		// 	browser2.waitForAngular();
+
+		// 	expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+		// });
+	});
+
 });
 
 var ClonageSignupPage = function() {
