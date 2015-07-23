@@ -99,8 +99,8 @@ body, html {
 
 .white-card {
    position: relative;
-  min-height: 200px;
-
+  min-height: 150px;
+  font-size: 20px;
 }
 .submit-ans-button {
   position: absolute;
