@@ -41,7 +41,12 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     };
 
     $scope.getUserId = function() {
-        return  userService.getUserId();
+        return userService.getUserId();
     };
+
+    $scope.getRoomUserCount = function() {
+        var num = roomService.getUsersInRoom();
+        return num.length;
+    }
 
 });
