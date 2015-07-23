@@ -7,9 +7,13 @@ ClonageApp.service('gameService', ['socket', function(socket) {
     //--------------------
     //PUBLIC API
     //-------------------
-    
+
 	function getRoundQuestion() {
 		return currentQuestion;
+	}
+
+	function getCurrentRound() {
+		return round;
 	}
 
 	function startGame(roomId) {
@@ -38,7 +42,8 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	return {
 		startGame: startGame,
 		getRoundQuestion: getRoundQuestion,
-		getAnswers: getAnswers
+		getAnswers: getAnswers,
+		getCurrentRound: getCurrentRound
 	};
 
 }]);

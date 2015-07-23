@@ -2,6 +2,8 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
 
     var roomId = -1;
     var usersInRoom = [];
+    var gameInProgress = false;
+    var errorMessage = "";
 
     //--------------------
     //PUBLIC API
@@ -18,6 +20,7 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
         socket.emit('ROOM join', {
             roomId: roomId
         });
+        errorMessage = "";
     }
 
     function getUsersInRoom() {
@@ -35,17 +38,28 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
         return roomId;
     }
 
-
     //----------------------
     //SOCKET EVENT LISTENERS
     //-=-----------------
 
+    function getGameInProgess(){
+        return gameInProgress;
+    }
+
+    function getErrorMessage(){
+        if(errorMessage !== ""){
+            return errorMessage;
+        }
+    }
 
     socket.on("ROOM details", function(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
-        console.log("users in room, below");
-        console.log(usersInRoom);
+        gameInProgress = data.gameInProgress;
+    });
+
+    socket.on("ROOM error", function(data) {
+        errorMessage = data.msg;
     });
 
     return {
@@ -54,7 +68,9 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
-        getRoomId: getRoomId
+        getRoomId: getRoomId,
+        getGameInProgress: getGameInProgess,
+        getErrorMessage: getErrorMessage
     };
 
 }]);

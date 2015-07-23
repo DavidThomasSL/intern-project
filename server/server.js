@@ -94,7 +94,8 @@ module.exports = function(port, enableLogging) {
             roomId = makeid();
             var room = {
                 id: roomId,
-                usersInRoom: []
+                usersInRoom: [],
+                gameInProgress: false
             };
 
             rooms.push(room);
@@ -107,7 +108,24 @@ module.exports = function(port, enableLogging) {
             check if that room exisits, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            putUserInRoom(msg.roomId);
+            var foundRoom = false;
+            rooms.forEach(function(room) {
+                if (room.id === msg.roomId) {
+                    foundRoom = true;
+                    if (room.gameInProgress) {
+                        socket.emit('ROOM error', {
+                            msg: "Game already in progress"
+                        });
+                    } else {
+                        putUserInRoom(msg.roomId);
+                    }
+                }
+            });
+            if (foundRoom === false) {
+                socket.emit('ROOM error', {
+                    msg: "Room not found"
+                });
+            }
         });
 
 
@@ -132,7 +150,8 @@ module.exports = function(port, enableLogging) {
 
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
-                        usersInRoom: room.usersInRoom
+                        usersInRoom: room.usersInRoom,
+                        gameInProgress: room.gameInProgress
                     });
                 }
             });
@@ -169,6 +188,7 @@ module.exports = function(port, enableLogging) {
             });
 
             room.gameController = new GameController();
+            room.gameInProgress = true;
 
             room.gameController.initialize(room.usersInRoom, function(data) {
 
@@ -179,12 +199,19 @@ module.exports = function(port, enableLogging) {
                     question: data.roundQuestion,
                     round: data.round
                 });
+                broadcastroom(room.id, 'ROOM details', {
+                    roomId: room.id,
+                    usersInRoom: room.usersInRoom,
+                    gameInProgress: room.gameInProgress
+                });
 
                 //Send each user in the room their individual hand (delt by the GameController)
                 data.players.forEach(function(player) {
                     users.forEach(function(user) {
                         if (player.uId === user.uId) {
-                            user.socket.emit('USER hand', {hand: player.hand});
+                            user.socket.emit('USER hand', {
+                                hand: player.hand
+                            });
                         }
                     });
                 });
@@ -267,7 +294,8 @@ module.exports = function(port, enableLogging) {
 
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
-                        usersInRoom: room.usersInRoom
+                        usersInRoom: room.usersInRoom,
+                        gameInProgress: room.gameInProgress
                     });
 
                     logger.debug("Removing player from room" + room.id);
@@ -307,7 +335,8 @@ module.exports = function(port, enableLogging) {
                     //Update the room serveice of every user
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
-                        usersInRoom: room.usersInRoom
+                        usersInRoom: room.usersInRoom,
+                        gameInProgress: room.gameInProgress
                     });
 
                     logger.info("User " + user.uId + " joined room " + roomId);
@@ -316,10 +345,6 @@ module.exports = function(port, enableLogging) {
 
                 }
             });
-
-            if (!joined) {
-                logger.error("User cannot join room " + roomId);
-            }
         }
 
         function sendUserDetails() {
@@ -329,6 +354,10 @@ module.exports = function(port, enableLogging) {
             });
             user.socket = socket;
 
+        }
+
+        function sendGameDetails(gameController) {
+            socket.emit('GAME details', gameController.getGameDetails());
         }
 
         function putUserInJoining() {

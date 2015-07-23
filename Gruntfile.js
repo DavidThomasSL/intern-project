@@ -7,6 +7,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-express-server');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-auto-install');
+    grunt.loadNpmTasks('grunt-script-link-tags');
 
     var testOutputLocation = process.env.CIRCLE_TEST_REPORTS || "test_output";
     var artifactsLocation = "build_artifacts";
@@ -61,6 +62,20 @@ module.exports = function(grunt) {
         },
         auto_install: {
             local: {}
+        },
+        tags: {
+            build: {
+                options: {
+                    scriptTemplate: '<script src="{{ path }}"></script>',
+                    linkTemplate: '<link href="{{ path }}"/>',
+                    openTag: '<!-- start client/js tags -->',
+                    closeTag: '<!-- end client/js tags -->'
+                },
+                src: [
+                    'client/js/**/*.js',
+                ],
+                dest: 'client/index.html'
+            }
         }
     });
 
@@ -71,5 +86,6 @@ module.exports = function(grunt) {
     grunt.registerTask("install", "auto_install");
     grunt.registerTask("test", ["check", "e2e-test"]);
     grunt.registerTask("ci-test", ["check", "e2e-test"]);
-    grunt.registerTask("default", "test");
+    grunt.registerTask("scripts", "tags");
+    grunt.registerTask("default", ['tags', 'test']);
 };
