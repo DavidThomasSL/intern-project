@@ -81,7 +81,7 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	//after each round get the results of voting
 	socket.on('GAME playerRoundResults', function(data) {
 		playerRoundResults = data.results;
-	}
+	});
 
 	//when game finished load the final scores into finalresults variable
 	socket.on('GAME finish', function(data) {
