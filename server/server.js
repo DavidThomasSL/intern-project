@@ -18,7 +18,13 @@ module.exports = function(port, enableLogging) {
     });
 
     io.set('log level', 1);
-    logger.setLevel('INFO');
+
+    if (enableLogging) {
+        logger.setLevel('ALL');
+    } else {
+        logger.setLevel('INFO');
+    }
+
 
     router.use(express.static(path.resolve(__dirname, '../client')));
 
@@ -41,7 +47,7 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('USER register', function(msg) {
 
-            logger.info("player joined");
+            logger.debug("player joined");
 
             if (msg.token !== undefined) {
 
@@ -168,7 +174,7 @@ module.exports = function(port, enableLogging) {
                 location: 'joining'
             });
 
-            logger.info("Removed user " + user.uId + " from room " + roomToLeave);
+            logger.debug("Removed user " + user.uId + " from room " + roomToLeave);
 
         });
 
@@ -218,15 +224,13 @@ module.exports = function(port, enableLogging) {
 
             });
 
-            logger.info("Starting game in room " + room.id);
+            logger.debug("Starting game in room " + room.id);
         });
 
 
         // submit answer
         socket.on('USER answer', function(msg) {
             var room;
-
-            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === msg.roomId) {
@@ -282,7 +286,7 @@ module.exports = function(port, enableLogging) {
         //the user still remembers what room his was in however,
         //so that he can join again
         socket.on('disconnect', function() {
-            logger.info("Disconnecting player");
+            logger.debug("Disconnecting player");
 
             rooms.forEach(function(room) {
 
@@ -339,7 +343,7 @@ module.exports = function(port, enableLogging) {
                         gameInProgress: room.gameInProgress
                     });
 
-                    logger.info("User " + user.uId + " joined room " + roomId);
+                    logger.debug("User " + user.uId + " joined room " + roomId);
 
                     joined = true;
 
@@ -379,7 +383,7 @@ module.exports = function(port, enableLogging) {
         }
 
     });
-    
+
     /*
     emit event and data to all players in a certain room
     that is passed as an argument
@@ -447,9 +451,9 @@ module.exports = function(port, enableLogging) {
 
     server.listen(port, function() {
         var addr = server.address();
-        if (enableLogging) {
-            logger.info("Chat server listening at port: " + addr.port);
-        }
+
+        logger.info("Chat server listening at port: " + addr.port);
+
     });
 
     return server;
