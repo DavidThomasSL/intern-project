@@ -5,7 +5,7 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	var answers = [];
 	var results = [];
 	var finalresults = [];
-	var maxRounds = 2; //variable holding the number of rounds wanted
+	var maxRounds = 8; //variable holding the number of rounds wanted
 
     //--------------------
     //PUBLIC API
