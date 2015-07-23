@@ -4,6 +4,6 @@ deployment:
     heroku:
       appname: intern-project
   dev:
-  	branch: dev
-  	heroku:
-  		appname: intern-project-dev
+    branch: dev
+    heroku:
+        appname: intern-project-dev
