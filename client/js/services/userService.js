@@ -19,7 +19,6 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     }
 
     function submitVote(enteredAnswer) {
-        alert(enteredAnswer);
         emitVote(enteredAnswer);
     }
 
@@ -104,3 +103,5 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     };
 
 }]);
+
+
