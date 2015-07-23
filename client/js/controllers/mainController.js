@@ -28,8 +28,8 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
         userService.setName(form.enteredName);
     };
 
-    $scope.joinRoom = function(form) {
-        roomService.joinRoom(form.enteredRoomId);
+    $scope.joinRoom = function(roomId) {
+        roomService.joinRoom(roomId);
     };
 
     $scope.leaveRoom = function() {
@@ -41,7 +41,6 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     };
 
     $scope.getUserId = function() {
-        console.log( userService.getUserId());
         return  userService.getUserId();
     };
 

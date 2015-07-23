@@ -20,18 +20,19 @@
       <p style="margin-top: 20px">Create a brand new game room. You can then tell your friends the unique ROOM CODE, which they can use to join your room</p>
     </div>
     <div class="col-md-6  text-center">
-      <form class="form-inline" name="roomSubmissionForm" ng-submit="joinRoom(roomSubmissionForm)">
-       <button type="submit" id="room-join-button" class="btn btn-lg  btn-success" style="margin-bottom: 20px">Join Exisiting Room</button>
+      <form class="form-inline" name="roomSubmissionForm" ng-submit="joinRoom(enteredRoomId)">
+        <button type="submit" id="room-join-button" class="btn btn-lg  btn-success" style="margin-bottom: 20px" ng-disabled="roomSubmissionForm.enteredRoomId.$invalid">Join Exisiting Room</button>
         <div class="form-group">
           <div class="input-group">
             <div class="input-group-addon">#</div>
-            <input type="text" class="form-control" id="room-input-box" placeholder="CODE" ng-model="roomSubmissionForm.enteredRoomId">
+            <input type="text" class="form-control" id="room-input-box" name="enteredRoomId" placeholder="CODE" ng-model="enteredRoomId" ng-minlength="5" required>
+          </div>
+          <div class="input-group">
+            <span ng-show="roomSubmissionForm.enteredRoomId.$invalid">enter 5 digit room code</span>
           </div>
         </div>
       </form>
-
       <p style="margin-top: 20px">If you know the ROOM CODE of an existing room, you can join it, if the game has not started yet.</p>
-      <a href="room_lobby_test.html">MOVE TO LOBBY TEST</a>
     </div>
   </div>
   </div> <!-- /container -->
