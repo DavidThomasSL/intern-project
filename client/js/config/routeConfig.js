@@ -7,14 +7,17 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
             .when('/joining', {
                 templateUrl: '/templates/joining.html'
             })
-            .when('/room/', {
+            .when('/room', {
                 templateUrl: '/templates/room.html'
             })
-            .when('/question/', {
+            .when('/question', {
                 templateUrl: '/templates/question.html'
             })
-            .when('/vote/', {
+            .when('/vote', {
                 templateUrl: '/templates/vote.html'
+            })
+            .when('/answerWait', {
+                templateUrl: '/templates/answerWait.html'
             })
             .otherwise({
                 templateUrl: '/templates/setname.html'

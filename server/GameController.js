@@ -128,9 +128,9 @@ module.exports = function(data) {
 	update a users hand by replacing the used card with a new random one
 	*/
 	var updateHand = function(userId, usedCard) {
-		players.forEach(function(player){
+		players.forEach(function(player) {
 			if (player.uId === userId) {
-				player.hand.forEach(function(card){
+				player.hand.forEach(function(card) {
 					if (card === usedCard) {
 						var index = Math.floor((Math.random() * whiteCardsCurrent.length));
 						card = whiteCardsCurrent[index];
@@ -144,7 +144,7 @@ module.exports = function(data) {
 		submit the answer and change the used card with another one in players
 
 	 */
-	 //TODO change this to a promise with a reject clause
+	//TODO change this to a promise with a reject clause
 
 	var submitAnswer = function(playerId, answer, callback) {
 
@@ -154,27 +154,33 @@ module.exports = function(data) {
 			playersVote: []
 		};
 
-		var currentRound = rounds[rounds.length-1];
+		var currentRound = rounds[rounds.length - 1];
 		currentRound.answers.push(ans);
 		updateHand(playerId, answer);
 
 		//check if everyone submitted
 		if (currentRound.answers.length === players.length) {
 			callback({
+				allPlayersSubmitted: true,
+				answers: currentRound.answers
+			});
+		} else {
+			callback({
+				allPlayersSubmitted: false,
 				answers: currentRound.answers
 			});
 		}
 	};
 
-		/*
+	/*
 		submit the vote and change the used card with another one in players
 	 */
 	var submitVote = function(playerId, answer, callback) {
 
-		var currentRound = rounds[rounds.length-1];
+		var currentRound = rounds[rounds.length - 1];
 
-		currentRound.answers.forEach(function(option){
-			if(option.answerText === answer) {
+		currentRound.answers.forEach(function(option) {
+			if (option.answerText === answer) {
 				option.playersVote.push(playerId);
 				addPoints(option.playerId);
 			}
@@ -182,13 +188,11 @@ module.exports = function(data) {
 
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
-			console.log("everyone voted!");
 			// newRound();
 			callback({
 				answers: currentRound.answers
 			});
 		}
-
 		console.log(currentRound.answers);
 	};
 
@@ -208,9 +212,9 @@ module.exports = function(data) {
 	*/
 	var addPoints = function(playerId) {
 		console.log("added vote");
-		players.forEach (function(player){
-			if (player.uId === playerId ) {
-				player.points += POINTS_PER_VOTE ;
+		players.forEach(function(player) {
+			if (player.uId === playerId) {
+				player.points += POINTS_PER_VOTE;
 			}
 		});
 	};
@@ -219,11 +223,11 @@ module.exports = function(data) {
 	count the overall votes in this round
 	*/
 	var countVotes = function(currentRound) {
-		var votes = 0 ;
-		currentRound.answers.forEach(function(option){
+		var votes = 0;
+		currentRound.answers.forEach(function(option) {
 			votes += option.playersVote.length;
 		});
-		return votes ;
+		return votes;
 	};
 
 	return {

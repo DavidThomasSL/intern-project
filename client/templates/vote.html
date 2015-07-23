@@ -5,8 +5,10 @@
 		<h2>{{roundQuestion()}} <h2>
 		<h3>
 			<form name="VoteAnswerForm" ng-submit="submitVote(enteredAnswer)">
-				<div ng-repeat="answer in answers()" >
-					<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer.ans}}"> {{answer.ans}}</label><br>
+				<div ng-repeat="answer in answers().answers" >
+					<div ng-hide="getUserId()===answer.playerId">
+					<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer}}"> {{answer.answerText}}</label><br>
+					</div>
 				</div>
 				<br>
 				<button type="submit">Submit Vote</button>

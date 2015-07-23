@@ -240,9 +240,25 @@ module.exports = function(port, enableLogging) {
 
             room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
 
-                if (data !== undefined) {
+                console.log(data.answers);
+                console.log(data.answers.length);
+                broadcastroom(room.id, 'GAME answers', {
+                    answers: data.answers
+                });
+                //sends answers after every submit so players waiting can see how many have submitted
 
-                    broadcastoptions(room.id, 'GAME voting', {
+                console.log("sending user to waiting page");
+                socket.emit('ROUTING', {
+                    location: 'answerWait'
+                });
+                //after user has submitted answer move them to the waiting page
+
+
+                if (data.allPlayersSubmitted === true) {
+                    console.log("All players submitted answers");
+                    console.log("sending " + data.answers + " as options");
+
+                    broadcastroom(room.id, 'GAME answers', {
                         answers: data.answers
                     });
 
@@ -250,6 +266,7 @@ module.exports = function(port, enableLogging) {
                         location: 'vote'
                     });
                 }
+                //when all players submitted send to voting page
 
             });
         });
