@@ -45,6 +45,10 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		}
 	}
 
+	function finishGame(roomId) {
+		socket.emit("GAME finish", {roomId: roomId});
+	}
+
 
     //----------------------
     //SOCKET EVENT LISTENERS
@@ -75,7 +79,8 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		getCurrentRound: getCurrentRound,
 		getResults: getResults,
 		getFinalResults: getFinalResults,
-		nextRound: nextRound
+		nextRound: nextRound,
+		finishGame: finishGame
 	};
 
 }]);
