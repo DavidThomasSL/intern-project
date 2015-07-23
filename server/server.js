@@ -236,18 +236,25 @@ module.exports = function(port, enableLogging) {
 
             room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
 
+                console.log(data.answers);
+                console.log(data.answers.length);
+                broadcastroom(room.id, 'GAME answers', {
+                    answers: data.answers
+                });
+                //sends answers after every submit so players waiting can see how many have submitted
 
                 console.log("sending user to waiting page");
-                socket.emit('ROUTING' , {
-                    location : 'answerWait'
+                socket.emit('ROUTING', {
+                    location: 'answerWait'
                 });
-
                 //after user has submitted answer move them to the waiting page
 
 
                 if (data.allPlayersSubmitted === true) {
                     console.log("All players submitted answers");
-                    broadcastoptions(room.id, 'GAME answers', {
+                    console.log("sending " + data.answers + " as options");
+
+                    broadcastroom(room.id, 'GAME answers', {
                         answers: data.answers
                     });
 

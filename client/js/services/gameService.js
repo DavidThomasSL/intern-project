@@ -3,6 +3,7 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	var currentQuestion = "";
 	var round = -1;
 	var answers = [];
+	var voteOptions = [];
 
     //--------------------
     //PUBLIC API
@@ -30,7 +31,6 @@ ClonageApp.service('gameService', ['socket', function(socket) {
     //-=-----------------
 
 	socket.on('GAME question', function(data) {
-		console.log("got question " + data.question);
 		currentQuestion = data.question;
 		round = data.round;
 	});
@@ -38,6 +38,7 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	socket.on('GAME answers', function(data) {
 		answers = data;
 	});
+
 
 	return {
 		startGame: startGame,

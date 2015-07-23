@@ -1,7 +1,6 @@
 ClonageApp.service('RoutingService', ['socket', '$location', function(socket, $location) {
 
     socket.on("ROUTING", function(msg) {
-        console.log("sending user to room");
 
         switch(msg.location) {
             case 'room':
