@@ -20,7 +20,6 @@ module.exports = function(port, enableLogging) {
     io.set('log level', 1);
     logger.setLevel('INFO');
 
-
     router.use(express.static(path.resolve(__dirname, '../client')));
 
     var rooms = [];
@@ -222,6 +221,63 @@ module.exports = function(port, enableLogging) {
             logger.info("Starting game in room " + room.id);
         });
 
+
+        // submit answer
+        socket.on('USER answer', function(msg) {
+            var room;
+
+            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === msg.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
+
+                if (data !== undefined) {
+
+                    broadcastoptions(room.id, 'GAME voting', {
+                        answers: data.answers
+                    });
+
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'vote'
+                    });
+                }
+
+            });
+        });
+
+        // submit a vote
+        socket.on('USER vote', function(msg) {
+            var room;
+
+            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === msg.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
+
+                // if (data!=undefined) {
+
+                //     broadcastroom(room.id, 'ROUTING', {
+                //         location: 'vote'
+                //     });
+
+                //     broadcastroom(room.id, 'GAME voting', {
+                //         answers: data.answers
+                //     });
+                // }
+
+            });
+        });
+
         //When a client disconnect, we remove him from the room he was in
         //the user still remembers what room his was in however,
         //so that he can join again
@@ -323,15 +379,39 @@ module.exports = function(port, enableLogging) {
         }
 
     });
-
-    // emit event and data to all players in a certain room
-    // that is passed as an argument
-    // -> used to send a new join and new leave event
-    // with the data as the new list of players in the room
+    
+    /*
+    emit event and data to all players in a certain room
+    that is passed as an argument
+    -> used to send a new join and new leave event
+    with the data as the new list of players in the room
+    */
     function broadcastroom(room, event, data) {
         users.forEach(function(user) {
             if (user.roomId === room) {
                 user.socket.emit(event, data);
+            }
+        });
+    }
+
+    /*
+        Sends to every user in a room a list of submitted answers to a question
+        excluding the answer that the user themselves submitting
+        preventing them from voting for them selves
+    */
+    function broadcastoptions(room, event, data) {
+        users.forEach(function(user) {
+            var toSend = [];
+            if (user.roomId === room) {
+                data.answers.forEach(function(ans) {
+                    if (ans.playerId !== user.uId) {
+                        var field = {
+                            ans: ans.answerText
+                        };
+                        toSend.push(field);
+                    }
+                });
+                user.socket.emit(event, toSend);
             }
         });
     }

@@ -3,11 +3,13 @@
 	<div id="game-lobby-container" class="namestuff">
 		<h2>{{roundQuestion()}} <h2>
 		<h3>
-			<ul>
-				<li ng-repeat="answer in userHand()">
-					{{answer}}
-				</li>
-			</ul>
+			<form name="PickAnswerForm" ng-submit="submitAnswer(enteredAnswer)">
+				<div ng-repeat="answer in userHand()" >
+					<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer}}"> {{answer}}</label><br>
+				</div>
+				<br>
+				<button type="submit">Submit Answer</button>
+			</form>
 		</h3>
 	</div>
 </div>

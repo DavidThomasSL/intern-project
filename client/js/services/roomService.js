@@ -5,6 +5,10 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
     var gameInProgress = false;
     var errorMessage = "";
 
+    //--------------------
+    //PUBLIC API
+    //-------------------
+
     function createRoom(playerId) {
         socket.emit("ROOM create", {
             playerId: playerId
@@ -33,6 +37,10 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
     function getRoomId() {
         return roomId;
     }
+
+    //----------------------
+    //SOCKET EVENT LISTENERS
+    //-=-----------------
 
     function getGameInProgess(){
         return gameInProgress;
