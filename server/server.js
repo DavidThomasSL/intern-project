@@ -330,7 +330,7 @@ module.exports = function(port, enableLogging) {
 
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
 
-                if (data!=undefined) {
+                if (data !== undefined) {
 
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'results'

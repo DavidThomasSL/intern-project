@@ -28,5 +28,8 @@
   },
   "scripts": {
     "test": "grunt ci-test"
+  },
+  "devDependencies": {
+    "grunt-auto-install": "^0.2.4"
   }
 }

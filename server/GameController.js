@@ -234,7 +234,7 @@ module.exports = function(data) {
 					ans: answer.answerText,
 					playerVote: answer.playersVote,
 					playerPoints: points
-				}
+				};
 				results.push(result);
 			});
 

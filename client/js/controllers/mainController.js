@@ -11,6 +11,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     $scope.answers = gameService.getAnswers;
     $scope.results = gameService.getResults;
     $scope.finalresults = gameService.getFinalResults;
+
     $scope.finishGame = function() {
         gameService.finishGame($scope.roomId());
     };
