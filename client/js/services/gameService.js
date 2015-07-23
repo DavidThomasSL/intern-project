@@ -3,7 +3,6 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	var currentQuestion = "";
 	var round = -1;
 	var answers = [];
-	var voteOptions = [];
 
     //--------------------
     //PUBLIC API
