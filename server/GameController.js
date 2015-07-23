@@ -20,7 +20,7 @@ module.exports = function(data) {
 		Called by the server when a game starts
 	*/
 	var initialize = function(usersInRoom, callback) {
-		round = 0;
+		roundCount = 0;
 
 		path.join(__dirname, './BlackWhiteCards.json');
 
@@ -59,6 +59,24 @@ module.exports = function(data) {
 					round: roundCount
 				});
 			}
+		});
+	};
+
+	var newRound = function(callback) {
+		roundCount += 1;
+		var round = {
+			count: roundCount,
+			question: getRoundQuestion(),
+			answers: []
+		};
+
+		rounds.push(round);
+
+		//return this round information back to the server
+		callback({
+			players: players,
+			roundQuestion: round.question,
+			round: roundCount
 		});
 	};
 
@@ -201,8 +219,6 @@ module.exports = function(data) {
 				results.push(result);
 			});
 
-			//console.log(results);
-
 			// newRound();
 			callback({
 				res: results
@@ -249,6 +265,7 @@ module.exports = function(data) {
 	return {
 		initialize: initialize,
 		submitAnswer: submitAnswer,
-		submitVote: submitVote
+		submitVote: submitVote,
+		newRound: newRound
 	};
 };

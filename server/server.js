@@ -222,6 +222,47 @@ module.exports = function(port, enableLogging) {
         });
 
 
+        socket.on('GAME next round', function(data) {
+            var room;
+
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === data.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.gameController.newRound( function(data) {
+
+                broadcastroom(room.id, 'ROUTING', {
+                    location: 'question'
+                });
+                broadcastroom(room.id, 'GAME question', {
+                    question: data.roundQuestion,
+                    round: data.round
+                });
+                // broadcastroom(room.id, 'ROOM details', {
+                //     roomId: room.id,
+                //     usersInRoom: room.usersInRoom,
+                //     gameInProgress: room.gameInProgress
+                // });
+
+                //Send each user in the room their individual hand (delt by the GameController)
+                data.players.forEach(function(player) {
+                    users.forEach(function(user) {
+                        if (player.uId === user.uId) {
+                            user.socket.emit('USER hand', {
+                                hand: player.hand
+                            });
+                        }
+                    });
+                });
+
+            });
+
+            logger.info("Starting new round in room " + room.id);
+        });
+
         // submit answer
         socket.on('USER answer', function(msg) {
             var room;
