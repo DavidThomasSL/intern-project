@@ -227,7 +227,12 @@ module.exports = function(port, enableLogging) {
             logger.debug("Starting game in room " + room.id);
         });
 
-
+        /*
+        Starts new round:
+        call function in gameController to start new round
+        callback will return a new question which will be broadcasted to eveyone in the game
+        each player will be send his updated hand
+        */
         socket.on('GAME next round', function(data) {
             var room;
 
@@ -243,6 +248,7 @@ module.exports = function(port, enableLogging) {
                 broadcastroom(room.id, 'ROUTING', {
                     location: 'question'
                 });
+
                 broadcastroom(room.id, 'GAME question', {
                     question: data.roundQuestion,
                     round: data.round
@@ -264,9 +270,12 @@ module.exports = function(port, enableLogging) {
             logger.info("Starting new round in room " + room.id);
         });
 
+    /*
+    call function in gameController to finish the game
+    callback will return the final scores (as data.res)
+    */
         socket.on('GAME finish', function(data) {
             var room;
-
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === data.roomId) {
@@ -289,14 +298,15 @@ module.exports = function(port, enableLogging) {
             logger.info("Finishing game in room " + room.id);
         });
 
-        // submit answer
+        /*
+         submit answer
+        callback will return the answers submitted when everyone has submitted
+         */
         socket.on('USER answer', function(msg) {
             var room;
 
             console.log("going to wait");
             socket.emit('ROUTING', { location: 'wait' });
-
-            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === msg.roomId) {
@@ -308,6 +318,11 @@ module.exports = function(port, enableLogging) {
 
                 if (data !== undefined) {
 
+                    /*
+                    broadcastoptions will reformat the answers as data.ans
+                    and everyone in the room will be send all of the answers submitted
+                    but their own so they can't vote for themselves
+                    */
                     broadcastoptions(room.id, 'GAME voting', {
                         answers: data.answers
                     });
@@ -320,13 +335,15 @@ module.exports = function(port, enableLogging) {
             });
         });
 
-        // submit a vote
+        /*
+        submit a vote
+        callback will return the results after everyone has voted:
+        who submitted what answer, who voted for them, their score after the round
+        */
         socket.on('USER vote', function(msg) {
             var room;
 
             socket.emit('ROUTING', { location: 'wait' });
-
-            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === msg.roomId) {
