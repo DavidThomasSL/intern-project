@@ -247,7 +247,7 @@ module.exports = function(port, enableLogging) {
 
                 if (data.allPlayersSubmitted === true) {
                     console.log("All players submitted answers");
-                    broadcastoptions(room.id, 'GAME voting', {
+                    broadcastoptions(room.id, 'GAME answers', {
                         answers: data.answers
                     });
 

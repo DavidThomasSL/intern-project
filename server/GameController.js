@@ -165,7 +165,10 @@ module.exports = function(data) {
 				answers: currentRound.answers
 			});
 		} else {
-			callback({allPlayersSubmitted: false});
+			callback({
+				allPlayersSubmitted: false,
+				answers: currentRound.answers
+			});
 		}
 	};
 
