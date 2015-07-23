@@ -8,6 +8,7 @@ module.exports = function(data) {
 	var blackCards = [];
 	var whiteCards = [];
 	var rounds = [];
+	var POINTS_PER_VOTE = 50;
 
 	//Number of white cards a user should always have
 	var HANDSIZE = 7;
@@ -124,7 +125,10 @@ module.exports = function(data) {
 
 	/*
 		submit the answer and change the used card with another one in players
+
 	 */
+	 //TODO change this to a promise with a reject clause
+
 	var submitAnswer = function(playerId, answer, callback) {
 
 		var ans = {
@@ -189,7 +193,7 @@ module.exports = function(data) {
 		console.log("added vote");
 		players.forEach (function(player){
 			if (player.uId === playerId ) {
-				player.points += 50 ;
+				player.points += POINTS_PER_VOTE ;
 			}
 		});
 	};

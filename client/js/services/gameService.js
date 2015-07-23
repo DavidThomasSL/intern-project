@@ -4,6 +4,10 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	var round = -1;
 	var answers = [];
 
+    //--------------------
+    //PUBLIC API
+    //-------------------
+    
 	function getRoundQuestion() {
 		return currentQuestion;
 	}
@@ -15,6 +19,11 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	function getAnswers() {
 		return answers;
 	}
+
+
+    //----------------------
+    //SOCKET EVENT LISTENERS
+    //-=-----------------
 
 	socket.on('GAME question', function(data) {
 		console.log("got question " + data.question);
