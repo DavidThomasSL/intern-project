@@ -1,10 +1,3 @@
-<div class="jumbotron">
-  <div class="lead">
-    <h1>Clonage</h1>
-    <p>Round 1</p>
-  </div>
-  <p class="username">{{getUserName()}}</p>
-</div>
 <div class="container">
   <div class="header clearfix">
     <div class="row instructions">
@@ -22,15 +15,18 @@
   </div>
   <div id="user-hand-container">
     <div class="row">
-      <div class="col-md-6 text-center" ng-repeat="answer in userHand()">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            {{answer}}
+      <form name="PickAnswerForm" ng-submit="submitAnswer(enteredAnswer)">
+        <div class="col-md-6 text-center" ng-repeat="answer in userHand()">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              {{answer}}
+              <input type="radio" ng-model="$parent.enteredAnswer" value="{{answer}}">
+            </div>
           </div>
         </div>
-      </div>
+        <button type="submit">Submit Answer</button><br>
+      </form>
     </div>
-
   </div>
   </div> <!-- /container -->
 </div>

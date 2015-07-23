@@ -1,10 +1,3 @@
-<div class="jumbotron">
-  <div class="lead">
-    <h1>Clonage</h1>
-    <p>Room Lobby</p>
-  </div>
-  <p class="username">{{getUserName()}}</p>
-</div>
 <div class="container">
   <div class="header clearfix">
     <div class="row instructions">
@@ -28,7 +21,14 @@
     <div class="row">
       <div class="col-md-12 text-center">
         <button type="button" class="btn btn-lg btn-primary" ng-click="startGame()" ng-disabled="getRoomUserCount() < 2">Start Game</button>
-         <span ng-show="getRoomUserCount() < 2">You need at least 2 players to start!</span>
+      </div>
+    </div>
+    <div class="row text-center">
+      <span ng-show="getRoomUserCount() < 2">You need at least 2 players to start!</span>
+    </div>
+    <div class="row" style="margin-top: 20px">
+      <div class="col-md-12 text-center">
+        <button type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()" >Exit Room</button>
       </div>
     </div>
   </div>
