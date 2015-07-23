@@ -60,7 +60,7 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		round = data.round;
 	});
 
-	socket.on('GAME voting', function(data) {
+	socket.on('GAME chosenAnswers', function(data) {
 		answers = data;
 	});
 

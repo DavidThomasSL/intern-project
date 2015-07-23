@@ -290,7 +290,7 @@ module.exports = function(port, enableLogging) {
         });
 
         // submit answer
-        socket.on('USER answer', function(msg) {
+        socket.on('USER submitChoice', function(msg) {
             var room;
 
             console.log("going to wait");
@@ -308,7 +308,7 @@ module.exports = function(port, enableLogging) {
 
                 if (data !== undefined) {
 
-                    broadcastoptions(room.id, 'GAME voting', {
+                    broadcastoptions(room.id, 'GAME chosenAnswers', {
                         answers: data.answers
                     });
 
