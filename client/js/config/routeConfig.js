@@ -2,19 +2,19 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
     function($routeProvider, $locationProvider) {
         $routeProvider
             .when('/', {
-                templateUrl: '/templates/setname.html'
+                templateUrl: '/templates/set_name.html'
             })
             .when('/joining', {
-                templateUrl: '/templates/joining.html'
+                templateUrl: '/templates/join_create_room.html'
             })
             .when('/room/', {
-                templateUrl: '/templates/room.html'
+                templateUrl: '/templates/room_lobby.html'
             })
             .when('/question/', {
-                templateUrl: '/templates/question.html'
+                templateUrl: '/templates/game_question.html'
             })
             .when('/vote/', {
-                templateUrl: '/templates/vote.html'
+                templateUrl: '/templates/vote_favourite.html'
             })
             .when('/wait/', {
                 templateUrl: '/templates/wait.html'
