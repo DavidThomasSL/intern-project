@@ -12,9 +12,10 @@
 			<div class="col-md-4 text-center" ng-repeat="answer in answers()">
 				<div class="panel panel-default white-card">
 					<div class="panel-body">
-						{{answer.ans}}
-						<div class="submit-ans-button">
-							<button class="btn btn-warning" ng-model="answer" ng-click="submitVote(answer.ans)">Favourite</button>
+						{{answer.answerText}}
+						<div ng-if="getUserId() === answer.playerId"->Your answer</div>
+						<div class="submit-ans-button" ng-hide="getUserId() === answer.playerId">
+							<button class="btn btn-warning" ng-model="answer" ng-click="submitVote(answer.answerText)">Favourite</button>
 						</div>
 					</div>
 				</div>

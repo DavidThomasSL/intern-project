@@ -73,6 +73,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     function emitChoice(answer) {
     socket.emit('USER submitChoice', {
             playerId: user.uId,
+            playerName: user.name,
             answer: answer,
             roomId: user.roomId
         });
@@ -82,6 +83,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     function emitVote(answer) {
         socket.emit('USER vote', {
             playerId: user.uId,
+            playerName: user.name,
             answer: answer,
             roomId: user.roomId
         });

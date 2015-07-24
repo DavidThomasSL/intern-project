@@ -5,13 +5,13 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	var answers = [];
 	var playerRoundResults = [];
 	var finalresults = [];
-	var answerCounter = 0;
+	var voteCounter = 0;
 	var maxRounds = 8; //variable holding the number of rounds wanted
 
 
-    //--------------------
-    //PUBLIC API
-    //-------------------
+	//--------------------
+	//PUBLIC API
+	//-------------------
 
 	function getRoundQuestion() {
 		return currentQuestion;
@@ -22,7 +22,9 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	}
 
 	function startGame(roomId) {
-		socket.emit("GAME start", {roomId: roomId});
+		socket.emit("GAME start", {
+			roomId: roomId
+		});
 	}
 
 	//get all answers submitted
@@ -30,10 +32,9 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		return answers;
 	}
 
-	function getAnswerCounter() {
-		return answerCounter;
+	function getCurrentVotes() {
+		return voteCounter;
 	}
-
 
 	//get results of voting
 	function getPlayerRoundResults() {
@@ -48,24 +49,29 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 
 	//load next round or finish the game if that was the last round
 	function nextRound(roomId) {
-		if ( round !== maxRounds ) {
-			round++ ;
-			socket.emit("GAME next round", {roomId: roomId});
-		}
-		else {
-			socket.emit("GAME finish", {roomId: roomId});
+		if (round !== maxRounds) {
+			round++;
+			socket.emit("GAME next round", {
+				roomId: roomId
+			});
+		} else {
+			socket.emit("GAME finish", {
+				roomId: roomId
+			});
 		}
 	}
 
 	//tell server to finish the game
 	function finishGame(roomId) {
-		socket.emit("GAME finish", {roomId: roomId});
+		socket.emit("GAME finish", {
+			roomId: roomId
+		});
 	}
 
 
-    //----------------------
-    //SOCKET EVENT LISTENERS
-    //-=-----------------
+	//----------------------
+	//SOCKET EVENT LISTENERS
+	//-=-----------------
 
 	socket.on('GAME question', function(data) {
 		// console.log("got question " + data.question);
@@ -74,22 +80,19 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	});
 
 	//load all answers in order to begin voting
-	socket.on('GAME chosenAnswers', function(data) {
-		answers = data;
+	socket.on('GAME answers', function(data) {
+		answers = data.answers;
 	});
 
 	//after each round get the results of voting
 	socket.on('GAME playerRoundResults', function(data) {
 		playerRoundResults = data.results;
+		voteCounter = data.voteNumber;
 	});
 
 	//when game finished load the final scores into finalresults variable
 	socket.on('GAME finish', function(data) {
 		finalresults = data.results;
-	});
-
-	socket.on('GAME numOfChoicesSubmitted', function(data) {
-		answerCounter = data;
 	});
 
 	return {
@@ -101,7 +104,7 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		getFinalResults: getFinalResults,
 		nextRound: nextRound,
 		finishGame: finishGame,
-		getAnswerCounter: getAnswerCounter
+		getCurrentVotes: getCurrentVotes
 	};
 
 }]);
