@@ -114,24 +114,11 @@ module.exports = function(port, enableLogging) {
             check if that room exisits, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            var foundRoom = false;
             rooms.forEach(function(room) {
                 if (room.id === msg.roomId) {
-                    foundRoom = true;
-                    if (room.gameInProgress) {
-                        socket.emit('ROOM error', {
-                            msg: "Game already in progress"
-                        });
-                    } else {
-                        putUserInRoom(msg.roomId);
-                    }
+                    putUserInRoom(msg.roomId);
                 }
             });
-            if (foundRoom === false) {
-                socket.emit('ROOM error', {
-                    msg: "Room not found"
-                });
-            }
         });
 
 
@@ -270,10 +257,10 @@ module.exports = function(port, enableLogging) {
             logger.info("Starting new round in room " + room.id);
         });
 
-    /*
-    call function in gameController to finish the game
-    callback will return the final scores (as data.res)
-    */
+        /*
+        call function in gameController to finish the game
+        callback will return the final scores (as data.res)
+        */
         socket.on('GAME finish', function(data) {
             var room;
 
@@ -300,10 +287,10 @@ module.exports = function(port, enableLogging) {
 
         // submit answer
         socket.on('USER submitChoice', function(msg) {
-        /*
-         submit answer
-        callback will return the answers submitted when everyone has submitted
-         */
+            /*
+             submit answer
+            callback will return the answers submitted and if everyone has submitted
+             */
             var room;
 
             socket.emit('ROUTING', {
@@ -316,32 +303,17 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
+            room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
 
-
-            room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
-
-                broadcastroom(room.id, 'GAME numOfChoicesSubmitted', {
-                    number: data.answers.length
+                //sends the list of answers each time someone submits one
+                broadcastroom(room.id, 'GAME answers', {
+                    answers: data.answers
                 });
-
-                console.log("number of answers submitted = " + data.answers.length);
-
                 if (data.allChoicesSubmitted === true) {
-
-                    /*
-                    broadcastoptions will reformat the answers as data.ans
-                    and everyone in the room will be send all of the answers submitted
-                    but their own so they can't vote for themselves
-                    */
-                    broadcastoptions(room.id, 'GAME chosenAnswers', {
-                        answers: data.answers
-                    });
-
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'vote'
                     });
                 }
-
             });
         });
 
@@ -365,16 +337,19 @@ module.exports = function(port, enableLogging) {
 
 
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
+                //send room the vote data after each vote
+                broadcastroom(room.id, 'GAME playerRoundResults', {
+                    results: data.res,
+                    voteNumber: data.voteNumber
+                });
 
-                if (data !== undefined) {
-
+                if (data.allVotesSubmitted === true) {
+                    //moving all players to the results page
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'results'
                     });
 
-                    broadcastroom(room.id, 'GAME playerRoundResults', {
-                        results: data.res
-                    });
+
                 }
 
             });

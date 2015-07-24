@@ -45,20 +45,10 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
         return gameInProgress;
     }
 
-    function getErrorMessage(){
-        if(errorMessage !== ""){
-            return errorMessage;
-        }
-    }
-
     socket.on("ROOM details", function(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
         gameInProgress = data.gameInProgress;
-    });
-
-    socket.on("ROOM error", function(data) {
-        errorMessage = data.msg;
     });
 
     return {
@@ -69,7 +59,6 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
         getGameInProgress: getGameInProgess,
-        getErrorMessage: getErrorMessage
     };
 
 }]);

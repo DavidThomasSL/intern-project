@@ -6,7 +6,8 @@
 		<h3>
 			<form name="VoteAnswerForm" ng-submit="nextRound()">
 					<ul ng-repeat="result in getPlayerRoundResults()" >
-						<li>{{result.player}} : {{result.ans}} -> {{result.playerVote.length * 50}}<br><h4>{{result.playerPoints}}</h4>
+						<li>{{result.playerName}}'s answer - {{result.ans}}<br>
+						 {{result.playerVote.length}} votes, {{result.playerVote.length*50}} points<br><h4>Total :{{result.playerPoints}}</h4>
 						</li>
 					</ul>
 				<br>
