@@ -34,7 +34,7 @@ module.exports = function(data) {
 				//set up each user
 				var cards = JSON.parse(data);
 				blackCardsMaster = cards.blackCards.filter(function(card){
-					return (card.pick === 1)
+					return (card.pick === 1);
 				});
 				whiteCardsMaster = cards.whiteCards;
 				blackCardsCurrent = blackCardsMaster.slice(0);
