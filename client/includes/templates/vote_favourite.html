@@ -17,7 +17,7 @@
 							<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer.answerText}}"> {{answer.answerText}}</label><br>			</div>
 ======= -->
 			<div class="col-md-4 text-center" ng-repeat="answer in answers()">
-				<div class="panel panel-default white-card" ng-hide"getUserId() === answer.playerId">
+				<div class="panel panel-default white-card" ng-hide="getUserId() === answer.playerId">
 					<div class="panel-body">
 						{{answer.answerText}}
 						<div class="submit-ans-button">
