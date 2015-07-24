@@ -1,20 +1,21 @@
-<!--THE REAL GAME STUFF -->
-<div class="animate-switch">
-	<div id="game-lobby-container" class="namestuff">
-	<h5>Votes are in:</h5>
-		<h2>{{roundQuestion()}} <h2>
-		<h3>
-			<form name="VoteAnswerForm" ng-submit="nextRound()">
-					<ul ng-repeat="result in getPlayerRoundResults()" >
-						<li>{{result.playerName}}'s answer - {{result.ans}}<br>
-						 {{result.playerVote.length}} votes, {{result.playerVote.length*50}} points<br><h4>Total :{{result.playerPoints}}</h4>
-						</li>
-					</ul>
-				<br>
-				<button type="submit">Next Round</button>
-			</form>
-			<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
-			<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
-		</h3>
+<div class="container">
+	<div class="header clearfix">
+		<h2> Votes are in: </h2>
 	</div>
+	<div>
+		<form name="resultsForm" ng-submit="nextRound()">
+				<ul ng-repeat="result in getPlayerRoundResults()" class="list-group">
+					<li class="list-group-item">
+						{{result.playerName}}'s answer - {{result.ans}}<br>
+						{{result.playerVote.length}} vote(s), {{result.playerVote.length*50}} points<br>
+						Current total :{{result.playerPoints}}
+					</li>
+				</ul>
+			<br>
+			<button type="submit" class="btn btn-default">Next Round</button>
+		</form>
+	<div>
+	<button type="button" class="btn btn-default" ng-click="leaveRoom()">Quit Game</button>
+	<button type="button" class="btn btn-default" ng-click="finishGame()">Finish Game</button>
 </div>
+
