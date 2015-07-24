@@ -302,7 +302,7 @@ module.exports = function(port, enableLogging) {
         socket.on('USER submitChoice', function(msg) {
         /*
          submit answer
-        callback will return the answers submitted when everyone has submitted
+        callback will return the answers submitted and if everyone has submitted
          */
             var room;
 
@@ -316,12 +316,9 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-
-
             room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
 
                 //sends the list of answers each time someone submits one
-
                 broadcastroom(room.id, 'GAME answers', {
                     answers: data.answers
                 });
