@@ -264,11 +264,17 @@ module.exports = function(data) {
 
 			// newRound();
 			callback({
-				res: results
+				res: results,
+				allVotesSubmitted : true,
+				voteNumber : 0 //resetting the votes for the next round
+			});
+		} else {
+			callback({
+				res: null,
+				allVotesSubmitted : false,
+				voteNumber: countVotes(currentRound)
 			});
 		}
-
-		console.log(currentRound.answers);
 	};
 
 
