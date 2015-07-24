@@ -318,7 +318,7 @@ module.exports = function(port, enableLogging) {
 
 
 
-            room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
+            room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
 
                 broadcastroom(room.id, 'GAME numOfChoicesSubmitted', {
                     number: data.answers.length
