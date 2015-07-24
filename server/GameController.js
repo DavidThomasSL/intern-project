@@ -175,6 +175,8 @@ module.exports = function(data) {
 				});
 				var index = Math.floor((Math.random() * whiteCardsCurrent.length));
 				card = whiteCardsCurrent[index];
+				whiteCardsCurrent.splice(index, 1);
+				//removing dealt card from card list
 				player.hand.push(card);
 			}
 		});
