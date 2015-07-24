@@ -41,7 +41,6 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		return playerRoundResults;
 	}
 
-
 	//get final scores after the game finished
 	function getFinalResults() {
 		console.log(finalresults);
