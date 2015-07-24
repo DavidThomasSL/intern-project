@@ -219,7 +219,6 @@ describe('Clonage App', function() {
 		var element2;
 		var roomId;
 
-
 			// Create a new user on another browser who creates a room
 			// must create a new user and join that room
 
@@ -232,18 +231,17 @@ describe('Clonage App', function() {
 			browser2 = browser.forkNewDriverInstance(false, true);
 			element2 = browser2.element;
 
+			//in browser 2 submit name, create room
 			browser2.get('/');
 			browser2.waitForAngular();
-
-
 			element2(by.id('name-input-box')).sendKeys('Alice');
 			element2(by.id('name-submit-button')).click();
 			browser2.waitForAngular();
 			element2(by.id('create-room-button')).click();
 
+			//get room id
 			element2(by.binding('roomId')).getText().then(function(text) {
 				roomId = text.split(" ")[2];
-
 			});
 
 			browser.executeScript('window.sessionStorage.clear();');
@@ -252,6 +250,7 @@ describe('Clonage App', function() {
 			clonageSignup.get();
 			clonageSignup.submitName('John');
 
+
 		});
 
 		afterEach(function() {
@@ -259,43 +258,228 @@ describe('Clonage App', function() {
 		});
 
 		it('can start the game', function() {
-
-
 			clonageRoomJoinPage.joinRoom(roomId);
-
+			browser.waitForAngular();
 			expect(browser.getCurrentUrl()).toMatch(/\/room/);
-			expect(element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Alice');
-			expect(element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
+			browser.element(by.buttonText("Start Game")).click();
+			browser.waitForAngular();
+			expect(browser.getCurrentUrl()).toMatch(/\/question/);
+		});
+
+		it('can see a question', function() {
+			clonageRoomJoinPage.joinRoom(roomId);
+			browser.waitForAngular();
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
 			browser.element(by.buttonText("Start Game")).click();
 			browser.waitForAngular();
 			expect(browser.getCurrentUrl()).toMatch(/\/question/);
 
+			expect(element(by.id('roundQuestion')).getText().length).not.toEqual(0);
 		});
 
-		// it('if other use joins quits in the room user can see that without updating', function() {
+		it('can see possible answer cards', function() {
+			clonageRoomJoinPage.joinRoom(roomId);
+			browser.waitForAngular();
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+			browser.element(by.buttonText("Start Game")).click();
+			browser.waitForAngular();
+			expect(browser.getCurrentUrl()).toMatch(/\/question/);
 
-		// 	clonageRoomJoinPage.joinRoom(roomId);
-		// 	browser2.element(by.buttonText("Exit Room")).click();
-		// 	browser2.waitForAngular();
+			expect(element.all(by.repeater("answer in userHand()")).count()).toEqual(7);
 
-		// 	expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(1);
-		// });
+		});
+	});
 
-		// it('if other use joins room in the room user can see that without updating', function() {
+	describe('When playing a game', function() {
+		var clonageSignup;
+		var clonageRoomJoinPage;
+		var clonageStartGame;
+		var browser2;
+		var element2;
+		var roomId;
 
-		// 	clonageRoomJoinPage.joinRoom(roomId);
-		// 	browser2.element(by.buttonText("Go Back")).click();
-		// 	browser2.element(by.id('room-input-box')).sendKeys(roomId);
-		// 	browser2.element(by.id('room-join-button')).click();
-		// 	browser2.waitForAngular();
+			// Create a new user on another browser who creates a room
+			// must create a new user and join that room
 
-		// 	expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
-		// });
+		beforeEach(function() {
+
+			clonageSignup = new ClonageSignupPage();
+			clonageRoomJoinPage = new ClonageRoomJoinPage();
+
+			browser2 = browser.forkNewDriverInstance(false, true);
+			element2 = browser2.element;
+
+			//in browser 2 submit name, create room
+			browser2.get('/');
+			browser2.waitForAngular();
+			element2(by.id('name-input-box')).sendKeys('Alice');
+			element2(by.id('name-submit-button')).click();
+			browser2.waitForAngular();
+			element2(by.id('create-room-button')).click();
+
+			//get room id
+			element2(by.binding('roomId')).getText().then(function(text) {
+				roomId = text.split(" ")[2];
+			});
+
+			browser.executeScript('window.sessionStorage.clear();');
+			browser.executeScript('window.localStorage.clear();');
+
+			clonageSignup.get();
+			clonageSignup.submitName('John');
+			// cloneStartGame = new ClonageStartGamePage();
+		});
+
+		afterEach(function() {
+			browser2.close();
+		});
+
+		it('can submit an answer', function() {
+			clonageRoomJoinPage.joinRoom(roomId);
+			browser.waitForAngular();
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+			browser.element(by.buttonText("Start Game")).click();
+			browser.waitForAngular();
+			expect(browser.getCurrentUrl()).toMatch(/\/question/);
+
+			var rows = element.all(by.repeater("answer in userHand()"));
+			rows.first().element(by.id("answer")).click();
+
+			browser.element(by.buttonText("Submit Answer")).click();
+	 		browser.waitForAngular();
+	 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
+		});
+
+		it('can be redirected to a voting page once everyone submitted', function() {
+			clonageRoomJoinPage.joinRoom(roomId);
+			browser.waitForAngular();
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+			browser.element(by.buttonText("Start Game")).click();
+			browser.waitForAngular();
+			expect(browser.getCurrentUrl()).toMatch(/\/question/);
+			var rows = element.all(by.repeater("answer in userHand()"));
+			rows.first().element(by.id("answer")).click();
+			browser.element(by.buttonText("Submit Answer")).click();
+	 		browser.waitForAngular();
+	 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
+
+	 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
+			var rows2 = element2.all(by.repeater("answer in userHand()"));
+			rows2.first().element2(by.id("answer")).click();
+			browser2.element2(by.buttonText("Submit Answer")).click();
+	 		browser2.waitForAngular();
+	 		expect(browser2.getCurrentUrl()).toMatch(/\/vote/);
+		});
+	});
+	describe('When playing a game', function() {
+		var clonageSignup;
+		var clonageRoomJoinPage;
+		var clonageStartGame;
+		var clonageSignup2;
+		var clonageRoomJoinPage2;
+		var clonageStartGame2;
+		var browser2;
+		var element2;
+		var roomId;
+		var playGame;
+		var playGame2;
+
+			// Create a new user on another browser who creates a room
+			// must create a new user and join that room
+
+		beforeEach(function() {
+
+			clonageSignup = new ClonageSignupPage(browser);
+			clonageRoomJoinPage = new ClonageRoomJoinPage(browser);
+
+	 		browser2 = browser.forkNewDriverInstance(false, true);
+	 		element2 = browser2.element;
+
+			clonageSignup2 = new ClonageSignupPage(browser2);
+	 		clonageRoomJoinPage2 = new ClonageRoomJoinPage(browser2);
+	 		cloneStartGame2 = new ClonageStartGamePage(browser2);
+			clonageSignup2.get();
+	 		clonageSignup2.submitName('Alice');
+	 		clonageRoomJoinPage2.createRoom();
+
+	 		element2(by.binding('roomId')).getText().then(function(text) {
+				roomId = text.split(" ")[2];
+			});
+
+			browser.executeScript('window.sessionStorage.clear();');
+	 		browser.executeScript('window.localStorage.clear();');
+
+			clonageSignup.get();
+	 		clonageSignup.submitName('John');
+
+
+		});
+
+		 afterEach(function() {
+			browser2.close();
+		});
+
+		it('can submit an answer', function() {
+			clonageRoomJoinPage.joinRoom(roomId);
+
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+			playGame = new ClonagePlayGamePage(browser);
+			playGame.submitAnswer();
+			expect(browser.getCurrentUrl()).toMatch(/\/wait/);
+		});
+
+		it('can be redirected to a voting page once everyone submitted', function() {
+		 	clonageRoomJoinPage.joinRoom(roomId);
+
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+			playGame = new ClonagePlayGamePage(browser);
+			playGame.submitAnswer();
+
+			playGame = new ClonagePlayGamePage(browser2);
+			playGame.submitAnswer();
+	 		browser2.waitForAngular();
+	 		expect(browser2.getCurrentUrl()).toMatch(/\/vote/);
+		});
+
+		it('can see what everyone submitted ( except for my answer )', function() {
+		 	clonageRoomJoinPage.joinRoom(roomId);
+
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+			playGame = new ClonagePlayGamePage(browser);
+			playGame.submitAnswer();
+
+			playGame = new ClonagePlayGamePage(browser2);
+			playGame.submitAnswer();
+	 		browser2.waitForAngular();
+	 		expect(element2.all(by.repeater("answer in answers()")).count()).toEqual(1);
+		});
+
+		it('can vote for an answer', function() {
+		 	clonageRoomJoinPage.joinRoom(roomId);
+
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+			playGame = new ClonagePlayGamePage(browser);
+			playGame.submitAnswer();
+
+			playGame = new ClonagePlayGamePage(browser2);
+			playGame.submitAnswer();
+	 		browser2.waitForAngular();
+
+	 		playGame.submitVote();
+	 		expect(browser2.getCurrentUrl()).toMatch(/\/wait/);
+		});
 	});
 
 });
 
-var ClonageSignupPage = function() {
+
+var ClonageSignupPage = function(browser) {
+
+	element = browser.element;
 
 	var nameInputBox = element(by.id('name-input-box'));
 	var nameSubmitButton = element(by.id('name-submit-button'));
@@ -315,7 +499,9 @@ var ClonageSignupPage = function() {
 	};
 };
 
-var ClonageRoomJoinPage = function() {
+var ClonageRoomJoinPage = function(browser) {
+
+	element = browser.element;
 
 	var createRoomButton = element(by.id('create-room-button'));
 	var roomInputBox = element(by.id('room-input-box'));
@@ -325,8 +511,47 @@ var ClonageRoomJoinPage = function() {
 		createRoomButton.click();
 	};
 
+	this.getRoomId = function() {
+		var room;
+		browser.element(by.binding('roomId')).getText().then(function(text) {
+ 			room = text.split(" ")[2];
+ 		});
+ 		return room;
+	};
+
 	this.joinRoom = function(roomId) {
 		roomInputBox.sendKeys(roomId);
 		roomJoinButton.click();
+	};
+};
+
+var ClonageStartGamePage = function(browser) {
+
+	element = browser.element;
+
+	this.startGame = function() {
+		expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		element(by.buttonText("Start Game")).click();
+	};
+};
+
+var ClonagePlayGamePage = function(browser) {
+
+	element = browser.element;
+
+	this.submitAnswer = function() {
+		expect(browser.getCurrentUrl()).toMatch(/\/question/);
+		var rows = element.all(by.repeater("answer in userHand()"));
+		rows.first().element(by.id("answer")).click();
+		browser.element(by.buttonText("Submit Answer")).click();
+ 		browser.waitForAngular();
+	};
+
+	this.submitVote = function() {
+		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
+		var rows = element.all(by.repeater("answer in answers()"));
+		rows.first().element(by.id("answer")).click();
+		browser.element(by.buttonText("Submit Vote")).click();
+ 		browser.waitForAngular();
 	};
 };

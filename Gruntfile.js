@@ -79,7 +79,7 @@ module.exports = function(grunt) {
                     closeTag: '<!-- end client/js tags -->'
                 },
                 src: [
-                    'client/js/**/*.js',
+                    'client/Angular/**/*.js',
                 ],
                 dest: 'client/index.html'
             }

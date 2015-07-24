@@ -6,7 +6,7 @@
 		<h3>
 			<form name="VoteAnswerForm" ng-submit="submitVote(enteredAnswer)">
 				<div ng-repeat="answer in answers()" >
-					<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer.ans}}"> {{answer.ans}}</label><br>
+					<label><input type="radio" id="answer" ng-model="$parent.enteredAnswer" value="{{answer.ans}}"> {{answer.ans}}</label><br>
 				</div>
 				<br>
 				<button type="submit">Submit Vote</button>
