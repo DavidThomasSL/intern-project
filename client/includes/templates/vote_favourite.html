@@ -1,16 +1,3 @@
-<!--THE REAL GAME STUFF -->
-<!-- <h2>{{roundQuestion()}} <h2>
-<h3>
-<form name="PickAnswerForm" ng-submit="submitAnswer(enteredAnswer)">
-			<div ng-repeat="answer in userHand()" >
-						<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer}}"> {{answer}}</label><br>
-			</div>
-			<br>
-			<button type="submit">Submit Answer</button><br>
-</form>
-<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
-<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
-</h3> -->
 <div class="container">
 	<div class="header clearfix">
 		<div class="row instructions">
@@ -22,19 +9,26 @@
 	</div>
 	<div class="row signup-container" id="question-responses-container">
 		<div class="row">
+<!-- <<<<<<< HEAD
 			<form name="VoteAnswerForm" ng-submit="submitVote(enteredAnswer)">
 				<div class="col-md-6 text-center" ng-repeat="answer in answers()">
 					<div class="panel panel-default">
 						<div class="panel-body" ng-hide="getUserId() === answer.playerId">
 							<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer.answerText}}"> {{answer.answerText}}</label><br>			</div>
+======= -->
+			<div class="col-md-4 text-center" ng-repeat="answer in answers()">
+				<div class="panel panel-default white-card" ng-hide"getUserId() === answer.playerId">
+					<div class="panel-body">
+						{{answer.answerText}}
+						<div class="submit-ans-button">
+							<button class="btn btn-warning" ng-model="answer" ng-click="submitVote(answer.answerText)">Favourite</button>
+<!-- >>>>>>> dev -->
 						</div>
 					</div>
-					<br>
-					<button type="submit">Submit Vote</button><br>
-				</form>
+				</div>
 			</div>
-			<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
-			<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
 		</div>
-		</div> <!-- /container -->
-	</div>
+		<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
+		<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
+	</div> <!-- /container -->
+</div>

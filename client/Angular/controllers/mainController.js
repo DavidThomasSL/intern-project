@@ -40,6 +40,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
 
     //function call to submit a vote for the funniest answer
     $scope.submitVote = function(enteredAnswer) {
+        console.log(enteredAnswer);
         userService.submitVote(enteredAnswer);
     };
 
