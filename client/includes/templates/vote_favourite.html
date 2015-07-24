@@ -9,19 +9,17 @@
 	</div>
 	<div class="row signup-container" id="question-responses-container">
 		<div class="row">
-			<form name="VoteAnswerForm" ng-submit="submitVote(enteredAnswer)">
-				<div class="col-md-4 text-center" ng-repeat="answer in answers()">
-					<div class="panel panel-default white-card">
-						<div class="panel-body">
-							{{answer.ans}}
-							<div class="submit-ans-button">
-								<button class="btn btn-warning" type="button" ng-click="$parent.enteredAnswer = answer.ans">Favourite</button>
-							</div>
+			<div class="col-md-4 text-center" ng-repeat="answer in answers()">
+				<div class="panel panel-default white-card">
+					<div class="panel-body">
+						{{answer.answerText}}
+						<div ng-if="getUserId() === answer.playerId"->Your answer</div>
+						<div class="submit-ans-button" ng-hide="getUserId() === answer.playerId">
+							<button class="btn btn-warning" ng-model="answer" ng-click="submitVote(answer.answerText)">Favourite</button>
 						</div>
 					</div>
 				</div>
-				<button type="submit">Submit Vote</button>
-			</form>
+			</div>
 		</div>
 		<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
 		<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
