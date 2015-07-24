@@ -20,7 +20,7 @@ module.exports = function(grunt) {
         },
         protractor: {
             options: {
-                configFile: 'test/conf.js',
+                configFile: 'test/protractor/ptor.conf.js',
                 args: {
                     "verbose": "true"
                 }
