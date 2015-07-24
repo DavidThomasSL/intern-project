@@ -15,6 +15,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     $scope.waitingAnswerCounter = gameService.getAnswerCounter;
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
 
+
     //get results after each round which involves: what each player submitted, who voted for their answer, and their score after the round
     //in order to calculate the points after the round multiply 50 with the number of votes
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;

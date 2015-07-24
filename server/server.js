@@ -320,28 +320,16 @@ module.exports = function(port, enableLogging) {
 
             room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
 
-                broadcastroom(room.id, 'GAME numOfChoicesSubmitted', {
-                    number: data.answers.length
+                //sends the list of answers each time someone submits one
+
+                broadcastroom(room.id, 'GAME answers', {
+                    answers: data.answers
                 });
-
-                console.log("number of answers submitted = " + data.answers.length);
-
                 if (data.allChoicesSubmitted === true) {
-
-                    /*
-                    broadcastoptions will reformat the answers as data.ans
-                    and everyone in the room will be send all of the answers submitted
-                    but their own so they can't vote for themselves
-                    */
-                    broadcastoptions(room.id, 'GAME chosenAnswers', {
-                        answers: data.answers
-                    });
-
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'vote'
                     });
                 }
-
             });
         });
 

@@ -25,8 +25,8 @@
 			<form name="VoteAnswerForm" ng-submit="submitVote(enteredAnswer)">
 				<div class="col-md-6 text-center" ng-repeat="answer in answers()">
 					<div class="panel panel-default">
-						<div class="panel-body">
-							<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer.ans}}"> {{answer.ans}}</label><br>						</div>
+						<div class="panel-body" ng-hide="getUserId() === answer.playerId">
+							<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer.answerText}}"> {{answer.answerText}}</label><br>			</div>
 						</div>
 					</div>
 					<br>
