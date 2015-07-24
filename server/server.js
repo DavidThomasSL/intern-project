@@ -227,7 +227,12 @@ module.exports = function(port, enableLogging) {
             logger.debug("Starting game in room " + room.id);
         });
 
-
+        /*
+        Starts new round:
+        call function in gameController to start new round
+        callback will return a new question which will be broadcasted to eveyone in the game
+        each player will be send his updated hand
+        */
         socket.on('GAME next round', function(data) {
             var room;
 
@@ -238,11 +243,12 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            room.gameController.newRound( function(data) {
+            room.gameController.newRound(function(data) {
 
                 broadcastroom(room.id, 'ROUTING', {
                     location: 'question'
                 });
+
                 broadcastroom(room.id, 'GAME question', {
                     question: data.roundQuestion,
                     round: data.round
@@ -264,9 +270,12 @@ module.exports = function(port, enableLogging) {
             logger.info("Starting new round in room " + room.id);
         });
 
+    /*
+    call function in gameController to finish the game
+    callback will return the final scores (as data.res)
+    */
         socket.on('GAME finish', function(data) {
             var room;
-
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === data.roomId) {
@@ -274,7 +283,7 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            room.gameController.finishGame( function(data) {
+            room.gameController.finishGame(function(data) {
 
                 broadcastroom(room.id, 'ROUTING', {
                     location: 'endGame'
@@ -290,13 +299,16 @@ module.exports = function(port, enableLogging) {
         });
 
         // submit answer
-        socket.on('USER answer', function(msg) {
+        socket.on('USER submitChoice', function(msg) {
+        /*
+         submit answer
+        callback will return the answers submitted when everyone has submitted
+         */
             var room;
 
-            console.log("going to wait");
-            socket.emit('ROUTING', { location: 'wait' });
-
-            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
+            socket.emit('ROUTING', {
+                location: 'waitQuestion'
+            });
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === msg.roomId) {
@@ -304,11 +316,24 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
+
+
             room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
 
-                if (data !== undefined) {
+                broadcastroom(room.id, 'GAME numOfChoicesSubmitted', {
+                    number: data.answers.length
+                });
 
-                    broadcastoptions(room.id, 'GAME voting', {
+                console.log("number of answers submitted = " + data.answers.length);
+
+                if (data.allChoicesSubmitted === true) {
+
+                    /*
+                    broadcastoptions will reformat the answers as data.ans
+                    and everyone in the room will be send all of the answers submitted
+                    but their own so they can't vote for themselves
+                    */
+                    broadcastoptions(room.id, 'GAME chosenAnswers', {
                         answers: data.answers
                     });
 
@@ -320,13 +345,17 @@ module.exports = function(port, enableLogging) {
             });
         });
 
-        // submit a vote
+        /*
+        submit a vote
+        callback will return the results after everyone has voted:
+        who submitted what answer, who voted for them, their score after the round
+        */
         socket.on('USER vote', function(msg) {
             var room;
 
-            socket.emit('ROUTING', { location: 'wait' });
-
-            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
+            socket.emit('ROUTING', {
+                location: 'waitVote'
+            });
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === msg.roomId) {
@@ -343,7 +372,7 @@ module.exports = function(port, enableLogging) {
                         location: 'results'
                     });
 
-                    broadcastroom(room.id, 'GAME results', {
+                    broadcastroom(room.id, 'GAME playerRoundResults', {
                         results: data.res
                     });
                 }

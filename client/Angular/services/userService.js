@@ -14,10 +14,12 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         });
     }
 
-    function submitAnswer(enteredAnswer) {
-        emitAnswer(enteredAnswer);
+    //call function that emits to server the answer that was just submitted
+    function submitChoice(enteredAnswer) {
+        emitChoice(enteredAnswer);
     }
 
+    //call function that emits to server the vote that was just submitted
     function submitVote(enteredAnswer) {
         emitVote(enteredAnswer);
     }
@@ -67,14 +69,16 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     //INTERNAL HELPER FUNCTIONS
     //-----------------
 
-    function emitAnswer(answer) {
-        socket.emit('USER answer', {
+    //emit the answer that was just submitted: who submitted what and what room they are in
+    function emitChoice(answer) {
+    socket.emit('USER submitChoice', {
             playerId: user.uId,
             answer: answer,
             roomId: user.roomId
         });
     }
 
+    //emit the vote that was just submitted: who voted for what and what room they are in
     function emitVote(answer) {
         socket.emit('USER vote', {
             playerId: user.uId,
@@ -94,7 +98,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         getUserName: getUserName,
         getUserId: getUserId,
         getUserHand: getUserHand,
-        submitAnswer: submitAnswer,
+        submitChoice: submitChoice,
         submitVote: submitVote
     };
 
