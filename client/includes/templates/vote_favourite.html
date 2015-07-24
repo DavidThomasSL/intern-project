@@ -9,20 +9,12 @@
 	</div>
 	<div class="row signup-container" id="question-responses-container">
 		<div class="row">
-<!-- <<<<<<< HEAD
-			<form name="VoteAnswerForm" ng-submit="submitVote(enteredAnswer)">
-				<div class="col-md-6 text-center" ng-repeat="answer in answers()">
-					<div class="panel panel-default">
-						<div class="panel-body" ng-hide="getUserId() === answer.playerId">
-							<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer.answerText}}"> {{answer.answerText}}</label><br>			</div>
-======= -->
 			<div class="col-md-4 text-center" ng-repeat="answer in answers()">
 				<div class="panel panel-default white-card" ng-hide="getUserId() === answer.playerId">
 					<div class="panel-body">
 						{{answer.answerText}}
 						<div class="submit-ans-button">
 							<button class="btn btn-warning" ng-model="answer" ng-click="submitVote(answer.answerText)">Favourite</button>
-<!-- >>>>>>> dev -->
 						</div>
 					</div>
 				</div>
