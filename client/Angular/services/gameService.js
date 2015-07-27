@@ -32,7 +32,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	//get all answers submitted
 	function getAnswers() {
-		console.log(answers);
 		return answers;
 	}
 
@@ -80,20 +79,15 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	*/
 
 	function recieveQuestion(data) {
-		console.log("got question " + data.question);
 		currentQuestion = data.question;
 		round = data.round;
 	}
 
 	function setChosenAnswers(data) {
-		console.log("set chosenAnswers");
-		console.log(data.answers);
 		answers = data.answers;
 	}
 
 	function setPlayerRoundResults(data) {
-		console.log("player round results");
-		console.log(data);
 		playerRoundResults = data.results;
 		voteCounter = data.voteNumber;
 	}

@@ -23,7 +23,6 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		var newListener = {};
 		newListener.listenerCallbacks = listenerCallbacks;
 		newListener.name = listenerName;
-		console.log("Registered listener");
 		listenerList.push(newListener);
 	}
 
@@ -40,7 +39,6 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 			if (listener.name === "USER") {
 				listener.listenerCallbacks.forEach(function(listenerCallback) {
 					if (listenerCallback.eventName === "connect") {
-						console.log("FOUND THE USER, DOING REGISTER");
 						listenerCallback.eventAction(data);
 					}
 				});
