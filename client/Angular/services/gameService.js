@@ -3,13 +3,15 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	var currentQuestion = "";
 	var round = -1;
 	var answers = [];
-	var results = [];
+	var playerRoundResults = [];
 	var finalresults = [];
-	var maxRounds = 2; //variable holding the number of rounds wanted
+	var voteCounter = 0;
+	var maxRounds = 8; //variable holding the number of rounds wanted
 
-    //--------------------
-    //PUBLIC API
-    //-------------------
+
+	//--------------------
+	//PUBLIC API
+	//-------------------
 
 	function getRoundQuestion() {
 		return currentQuestion;
@@ -20,7 +22,9 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	}
 
 	function startGame(roomId) {
-		socket.emit("GAME start", {roomId: roomId});
+		socket.emit("GAME start", {
+			roomId: roomId
+		});
 	}
 
 	//get all answers submitted
@@ -28,9 +32,13 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		return answers;
 	}
 
+	function getCurrentVotes() {
+		return voteCounter;
+	}
+
 	//get results of voting
-	function getResults() {
-		return results;
+	function getPlayerRoundResults() {
+		return playerRoundResults;
 	}
 
 	//get final scores after the game finished
@@ -41,39 +49,45 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 
 	//load next round or finish the game if that was the last round
 	function nextRound(roomId) {
-		if ( round !== maxRounds ) {
-			round++ ;
-			socket.emit("GAME next round", {roomId: roomId});
-		}
-		else {
-			socket.emit("GAME finish", {roomId: roomId});
+		if (round !== maxRounds) {
+			round++;
+			socket.emit("GAME next round", {
+				roomId: roomId
+			});
+		} else {
+			socket.emit("GAME finish", {
+				roomId: roomId
+			});
 		}
 	}
 
 	//tell server to finish the game
 	function finishGame(roomId) {
-		socket.emit("GAME finish", {roomId: roomId});
+		socket.emit("GAME finish", {
+			roomId: roomId
+		});
 	}
 
 
-    //----------------------
-    //SOCKET EVENT LISTENERS
-    //-=-----------------
+	//----------------------
+	//SOCKET EVENT LISTENERS
+	//-=-----------------
 
 	socket.on('GAME question', function(data) {
-		console.log("got question " + data.question);
+		// console.log("got question " + data.question);
 		currentQuestion = data.question;
 		round = data.round;
 	});
 
 	//load all answers in order to begin voting
-	socket.on('GAME voting', function(data) {
-		answers = data;
+	socket.on('GAME answers', function(data) {
+		answers = data.answers;
 	});
 
 	//after each round get the results of voting
-	socket.on('GAME results', function(data) {
-		results = data.results;
+	socket.on('GAME playerRoundResults', function(data) {
+		playerRoundResults = data.results;
+		voteCounter = data.voteNumber;
 	});
 
 	//when game finished load the final scores into finalresults variable
@@ -86,10 +100,11 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 		getRoundQuestion: getRoundQuestion,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
-		getResults: getResults,
+		getPlayerRoundResults: getPlayerRoundResults,
 		getFinalResults: getFinalResults,
 		nextRound: nextRound,
-		finishGame: finishGame
+		finishGame: finishGame,
+		getCurrentVotes: getCurrentVotes
 	};
 
 }]);

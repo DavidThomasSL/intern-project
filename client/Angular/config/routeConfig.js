@@ -16,14 +16,17 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
             .when('/vote/', {
                 templateUrl: '/includes/templates/vote_favourite.html'
             })
-            .when('/wait/', {
-                templateUrl: '/includes/templates/wait.html'
+            .when('/waitVote/', {
+                templateUrl: '/includes/templates/wait_vote.html'
             })
             .when('/results/', {
                 templateUrl: '/includes/templates/results.html'
             })
             .when('/endGame/', {
                 templateUrl: '/includes/templates/endGame.html'
+            })
+            .when('/waitQuestion', {
+                templateUrl: '/includes/templates/wait_question.html'
             })
             .otherwise({
                 templateUrl: '/includes/templates/setname.html'

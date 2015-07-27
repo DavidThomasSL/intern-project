@@ -1,16 +1,3 @@
-<!--THE REAL GAME STUFF -->
-<!-- <h2>{{roundQuestion()}} <h2>
-<h3>
-<form name="PickAnswerForm" ng-submit="submitAnswer(enteredAnswer)">
-			<div ng-repeat="answer in userHand()" >
-						<label><input type="radio" ng-model="$parent.enteredAnswer" value="{{answer}}"> {{answer}}</label><br>
-			</div>
-			<br>
-			<button type="submit">Submit Answer</button><br>
-</form>
-<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
-<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
-</h3> -->
 <div class="container">
 	<div class="header clearfix">
 		<div class="row instructions">
@@ -23,18 +10,22 @@
 	<div class="row signup-container" id="question-responses-container">
 		<div class="row">
 			<form name="VoteAnswerForm" ng-submit="submitVote(enteredAnswer)">
-				<div class="col-md-6 text-center" ng-repeat="answer in answers()">
-					<div class="panel panel-default">
+				<div class="col-md-4 text-center" ng-repeat="answer in answers()">
+					<div class="panel panel-default white-card">
 						<div class="panel-body">
-							<label><input type="radio" id="answer" ng-model="$parent.enteredAnswer" value="{{answer.ans}}"> {{answer.ans}}</label><br>						</div>
+							{{answer.answerText}}
+							<div ng-if="getUserId() === answer.playerId"->Your answer</div>
+							<div class="submit-ans-button" ng-hide="getUserId() === answer.playerId">
+								<button class="btn btn-warning" type="button" ng-click="$parent.enteredAnswer = answer.answerText">Favourite</button>
+							</div>
 						</div>
 					</div>
-					<br>
-					<button type="submit">Submit Vote</button><br>
-				</form>
-			</div>
-			<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
-			<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
+				</div>
+				<button type="submit">Submit Vote</button>
+			</form>
 		</div>
-		</div> <!-- /container -->
 	</div>
+	<button type="button" class="btn btn-danger" ng-click="leaveRoom()">Quit Game</button>
+	<button type="button" class="btn btn-default" ng-click="finishGame()">Finish Game</button>
+	</div> <!-- /container -->
+</div>

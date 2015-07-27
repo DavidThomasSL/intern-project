@@ -15,8 +15,8 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     }
 
     //call function that emits to server the answer that was just submitted
-    function submitAnswer(enteredAnswer) {
-        emitAnswer(enteredAnswer);
+    function submitChoice(enteredAnswer) {
+        emitChoice(enteredAnswer);
     }
 
     //call function that emits to server the vote that was just submitted
@@ -53,8 +53,6 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         user = msg.user;
         $sessionStorage.userId = user.uId;
         $sessionStorage.roomId = user.roomId;
-        console.log("Got user details from server " + user.uId);
-        console.log(user);
     });
 
     socket.on("USER room join", function(data) {
@@ -65,8 +63,6 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
 
     socket.on('USER hand', function(data) {
         gameHand = data.hand;
-        console.log("got game hand");
-        console.log(gameHand);
     });
 
     //-------------------
@@ -74,9 +70,10 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     //-----------------
 
     //emit the answer that was just submitted: who submitted what and what room they are in
-    function emitAnswer(answer) {
-        socket.emit('USER answer', {
+    function emitChoice(answer) {
+    socket.emit('USER submitChoice', {
             playerId: user.uId,
+            playerName: user.name,
             answer: answer,
             roomId: user.roomId
         });
@@ -86,6 +83,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
     function emitVote(answer) {
         socket.emit('USER vote', {
             playerId: user.uId,
+            playerName: user.name,
             answer: answer,
             roomId: user.roomId
         });
@@ -102,7 +100,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', function(socket,
         getUserName: getUserName,
         getUserId: getUserId,
         getUserHand: getUserHand,
-        submitAnswer: submitAnswer,
+        submitChoice: submitChoice,
         submitVote: submitVote
     };
 

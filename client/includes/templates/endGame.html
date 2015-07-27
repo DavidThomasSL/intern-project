@@ -4,8 +4,9 @@
 	<h5>Results are in:</h5>
 		<h2>GAME OVER <h2>
 		<h3>
+			<h4> Final Scores </h4>
 			<ul ng-repeat="result in finalresults()" >
-				<li><h4>{{result.player}}   ---  {{result.score}}</h4>
+				<li><h4>{{result.playerName}}   ---  {{result.score}}</h4>
 				</li>
 			</ul>
 			<br/><input type="submit" ng-click="leaveRoom()" value="Finish">

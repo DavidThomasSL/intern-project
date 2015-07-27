@@ -97,6 +97,22 @@ body, html {
   font-size: 90px;
 }
 
+.white-card {
+   position: relative;
+  min-height: 150px;
+  font-size: 17px;
+}
+.submit-ans-button {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+}
+
+.submit-ans-button .btn {
+  width: 100%
+}
 
 .header .btn {
   padding: 14px 24px;
