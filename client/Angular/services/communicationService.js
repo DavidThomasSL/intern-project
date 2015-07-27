@@ -16,18 +16,17 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 	/*
 		Adds a new key value pair of a listener (a service who wants to recieve messages from the socket layer)
 		and that listener's local scope.
-
 		When a message comes on the socket layer,
-		the $scope of the relevant listener is used to pass the message on
+		the message is passed to the callback provided by the service when it registered
 	*/
 	function registerListener(listenerName, listenerCallbacks) {
 		var newListener = {};
 		newListener.listenerCallbacks = listenerCallbacks;
 		newListener.name = listenerName;
 		console.log("Registered listener");
-		console.log(newListener);
 		listenerList.push(newListener);
 	}
+
 
 	//--------------------------
 	//SOCKET EVENT LISTENERS
@@ -35,8 +34,7 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 	// Call the callback associated with that eventName for that listener
 	//------------------------
 
-
-	//This sets of the user registeration sequence, very message, do not normally use
+	//This sets of the user registeration sequence, very messy, do not normally use
 	socket.on('connect', function(data) {
 		listenerList.forEach(function(listener) {
 			if (listener.name === "USER") {
@@ -51,43 +49,44 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 	});
 
 	socket.on("USER details", function(data) {
-		listenerList.forEach(function(listener) {
-			if (listener.name === "USER") {
-				listener.listenerCallbacks.forEach(function(listenerCallback) {
-					if (listenerCallback.eventName === "details") {
-						console.log("FOUND THE USER, DOING REGISTER");
-						listenerCallback.eventAction(data);
-					}
-				});
-			}
-		});
+		setListenerEventAction("USER details");
+		onMessageFunction(data);
 	});
 
 	socket.on("USER room join", function(data) {
-		listenerList.forEach(function(listener) {
-			if (listener.name === "USER") {
-				listener.listenerCallbacks.forEach(function(listenerCallback) {
-					if (listenerCallback.eventName === "room join") {
-						console.log("FOUND THE USER, DOING REGISTER");
-						listenerCallback.eventAction(data);
-					}
-				});
-			}
-		});
+		setListenerEventAction("USER room join");
+		onMessageFunction(data);
 	});
 
 	socket.on("USER hand", function(data) {
+		setListenerEventAction("USER hand");
+		onMessageFunction(data);
+	});
+
+	/*
+		Takes an event name, sent by the server
+		Finds which listenerService the event is for
+		Sets the onMessageFucntion to be the required callback for the listenerService event
+		as set when it registered
+	*/
+
+	function setListenerEventAction(event) {
+
+		var splitEvent = event.split(" ");
+		var eventService = splitEvent[0];
+		var eventName = splitEvent.slice(1);
+		eventName = eventName.toString();
+
 		listenerList.forEach(function(listener) {
-			if (listener.name === "USER") {
+			if (listener.name === eventService) {
 				listener.listenerCallbacks.forEach(function(listenerCallback) {
-					if (listenerCallback.eventName === "hand") {
-						console.log("FOUND THE USER, DOING REGISTER");
-						listenerCallback.eventAction(data);
+					if (listenerCallback.eventName === eventName) {
+						onMessageFunction = listenerCallback.eventAction;
 					}
 				});
 			}
 		});
-	});
+	}
 
 	return {
 		sendMessage: sendMessage,

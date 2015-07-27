@@ -1,5 +1,5 @@
-ClonageApp.service('userService', ['socket', '$sessionStorage', 'communicationService',
-    function(socket, $sessionStorage, communicationService) {
+ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
+    function($sessionStorage, communicationService) {
 
 
         /*
@@ -38,7 +38,7 @@ ClonageApp.service('userService', ['socket', '$sessionStorage', 'communicationSe
         function setName(name) {
             sendMessage('USER set name', {
                 name: name
-            });
+            }, function(){});
         }
 
         /*
