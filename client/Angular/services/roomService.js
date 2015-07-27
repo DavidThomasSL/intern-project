@@ -24,7 +24,7 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
     }
 
     function getUsersInRoom() {
-        console.log(usersInRoom);
+        // console.log(usersInRoom);
         return usersInRoom;
     }
 

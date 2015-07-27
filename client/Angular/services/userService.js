@@ -38,7 +38,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         function setName(name) {
             sendMessage('USER set name', {
                 name: name
-            }, function(){});
+            }, function() {});
         }
 
         /*
@@ -57,7 +57,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             }, function() {
                 console.log("sent user registeration request");
             });
-
         }
 
         function setUserDetails(data) {
@@ -65,7 +64,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             $sessionStorage.userId = user.uId;
             $sessionStorage.roomId = user.roomId;
             console.log("Got user details from server CORRECTLY" + user.uId);
-            console.log(user);
         }
 
         function joinRoom(data) {
@@ -102,16 +100,11 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             eventAction: setHand
         }]);
 
-
         /*
         -------------------
         INTERNAL HELPER FUNCTIONS
         -----------------
         */
-
-        function sendMessage(eventName, data, callback) {
-            communicationService.sendMessage(eventName, data, callback);
-        }
 
         //emit the answer that was just submitted: who submitted what and what room they are in
         function emitChoice(answer) {
@@ -129,6 +122,13 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
                 answer: answer,
                 roomId: user.roomId
             });
+        }
+
+        function sendMessage(eventName, data, callback) {
+            if( callback === undefined){
+                callback = function(){};
+            }
+            communicationService.sendMessage(eventName, data, callback);
         }
 
         return {

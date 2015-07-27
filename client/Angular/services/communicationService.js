@@ -63,6 +63,32 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
+	socket.on("GAME question", function(data) {
+		setListenerEventAction("GAME question");
+		onMessageFunction(data);
+	});
+
+	socket.on("GAME chosenAnswers", function(data) {
+		setListenerEventAction("GAME chosenAnswers");
+		onMessageFunction(data);
+	});
+
+	socket.on("GAME playerRoundResults", function(data) {
+		setListenerEventAction("GAME playerRoundResults");
+		onMessageFunction(data);
+	});
+
+	socket.on("GAME finish", function(data) {
+		setListenerEventAction("GAME finish");
+		onMessageFunction(data);
+	});
+
+	socket.on("GAME numOfChoicesSubmitted", function(data) {
+		setListenerEventAction("GAME numOfChoicesSubmitted");
+		onMessageFunction(data);
+	});
+
+
 	/*
 		Takes an event name, sent by the server
 		Finds which listenerService the event is for
@@ -75,7 +101,7 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		var splitEvent = event.split(" ");
 		var eventService = splitEvent[0];
 		var eventName = splitEvent.slice(1);
-		eventName = eventName.toString();
+		eventName = eventName.join(" ");
 
 		listenerList.forEach(function(listener) {
 			if (listener.name === eventService) {
