@@ -13,9 +13,10 @@
 				<div class="col-md-4 text-center" ng-repeat="answer in answers()">
 					<div class="panel panel-default white-card">
 						<div class="panel-body">
-							{{answer.ans}}
-							<div class="submit-ans-button">
-								<button class="btn btn-warning" type="button" ng-click="$parent.enteredAnswer = answer.ans">Favourite</button>
+							{{answer.answerText}}
+							<div ng-if="getUserId() === answer.playerId"->Your answer</div>
+							<div class="submit-ans-button" ng-hide="getUserId() === answer.playerId">
+								<button class="btn btn-warning" type="button" ng-click="$parent.enteredAnswer = answer.answerText">Favourite</button>
 							</div>
 						</div>
 					</div>
@@ -23,7 +24,7 @@
 				<button type="submit">Submit Vote</button>
 			</form>
 		</div>
-		<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
-		<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
+	<button type="button" class="btn btn-danger" ng-click="leaveRoom()">Quit Game</button>
+	<button type="button" class="btn btn-default" ng-click="finishGame()">Finish Game</button>
 	</div> <!-- /container -->
 </div>
