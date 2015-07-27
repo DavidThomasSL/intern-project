@@ -146,6 +146,7 @@ describe('Clonage App', function() {
 
 	});
 
+
 	describe('When joining an existing room', function() {
 
 		var clonageSignup;
@@ -185,8 +186,8 @@ describe('Clonage App', function() {
 		afterEach(function() {
 
 			browser2.close();
-
 		});
+
 
 		it('can join an existing room and go into the lobby and see other users in the room', function() {
 
@@ -201,25 +202,27 @@ describe('Clonage App', function() {
 
 		});
 
-		it('if other use joins room in the room user can see that without refreshing', function() {
-
-			clonageRoomJoinPage.joinRoom(roomId);
-
-			browser2.waitForAngular();
-			expect(element2.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
-
-		});
-
-		// it('if other user quits in the room user can see that without refreshing', function() {
+		// it('if other user quits in the room user can see that without updating', function() {
 
 		// 	clonageRoomJoinPage.joinRoom(roomId);
-		// 	browser.waitForAngular();
-		// 	element2(by.buttonText("Exit Room")).click();
-		// 	browser2.waitForAngular();
+		// 	browser2.element(by.buttonText("Go Back")).click();
 
-		// 	browser.waitForAngular();
-		// 	expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(1);
+		// 	browser2.waitForAngular();
+		// 	expect(element2.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+
 		// });
+
+		it('if other use joins room in the room user can see that without updating', function() {
+
+			clonageRoomJoinPage.joinRoom(roomId);
+			browser2.element(by.buttonText("Go Back")).click();
+			browser2.element(by.id('room-input-box')).sendKeys(roomId);
+			browser2.element(by.id('room-join-button')).click();
+			browser2.waitForAngular();
+
+			expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+		});
+
 	});
 
 	describe('When starting a game', function() {
