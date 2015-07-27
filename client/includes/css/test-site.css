@@ -150,6 +150,7 @@ body, html {
   margin-top: 60px;
 }
 
+
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
     .jumbotron {
@@ -207,5 +208,5 @@ body, html {
     to {opacity: 0;}
 }
 
-.ng-enter           { animation: fadeIn 0.2s both ease-in; animation-delay: 0.2s;}
+.ng-enter           { animation: fadeIn 0.2s both ease-in;}
 .ng-leave           { animation: fadeOut 0.2s both ease-in;}

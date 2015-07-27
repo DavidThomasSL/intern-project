@@ -10,7 +10,7 @@
 	<div class="row signup-container" id="question-responses-container">
 		<div class="row">
 			<form name="VoteAnswerForm" ng-submit="submitVote(enteredAnswer)">
-				<div class="col-md-4 text-center" ng-repeat="answer in answers()">
+				<div class="col-md-4 text-center" ng-repeat="answer in answers() | orderBy:'answerText'">
 					<div class="panel panel-default white-card">
 						<div class="panel-body">
 							{{answer.answerText}}
