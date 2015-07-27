@@ -7,7 +7,7 @@
 				<ul ng-repeat="result in getPlayerRoundResults()" class="list-group">
 					<li class="list-group-item">
 						{{result.playerName}}'s answer - {{result.ans}}<br>
-						{{result.playerVote.length}} vote(s), {{result.playerVote.length*50}} points<br>
+						Vote(s): {{result.playerVote}}, {{result.playerVote.length*50}} points<br>
 						Current total :{{result.playerPoints}}
 					</li>
 				</ul>
