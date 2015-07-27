@@ -116,7 +116,9 @@ module.exports = function(port, enableLogging) {
         socket.on('ROOM join', function(msg) {
             rooms.forEach(function(room) {
                 if (room.id === msg.roomId) {
-                    putUserInRoom(msg.roomId);
+                    if(room.gameInProgress === false){
+                        putUserInRoom(msg.roomId);
+                    }
                 }
             });
         });
