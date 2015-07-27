@@ -44,6 +44,7 @@ module.exports = function(data) {
 
 				usersInRoom.forEach(function(user) {
 					setupPlayer(user);
+					console.log("current user name is " + user.name);
 				});
 
 				var round = {
@@ -111,6 +112,7 @@ module.exports = function(data) {
 
 		var player = {
 			uId: user.uId,
+			name : user.username,
 			hand: dealUserHand(),
 			points: 0
 		};
@@ -191,9 +193,6 @@ module.exports = function(data) {
 	 //TODO change this to a promise with a reject clause
 
 	var submitAnswer = function(playerId, playerName, answer, callback) {
-
-		assignName(playerId, playerName);
-		//for now just using the submit answer message to assign name of each player for final results
 
 		var ans = {
 			playerId: playerId,
