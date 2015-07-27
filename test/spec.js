@@ -411,6 +411,149 @@ describe('Clonage App', function() {
 		});
 	});
 
+describe('After each round', function() {
+
+		var clonageSignup;
+		var clonageRoomJoinPage;
+		var clonageStartGame;
+		var clonageSignup2;
+		var clonageRoomJoinPage2;
+		var clonageStartGame2;
+		var browser2;
+		var element2;
+		var roomId;
+		var playGame;
+		var playGame2;
+
+		// Create a new user on another browser who creates a room
+		// must create a new user and join that room
+
+		beforeEach(function() {
+
+			clonageSignup = new ClonageSignupPage(browser);
+			clonageRoomJoinPage = new ClonageRoomJoinPage(browser);
+
+	 		browser2 = browser.forkNewDriverInstance(false, true);
+	 		element2 = browser2.element;
+
+			clonageSignup2 = new ClonageSignupPage(browser2);
+	 		clonageRoomJoinPage2 = new ClonageRoomJoinPage(browser2);
+	 		cloneStartGame2 = new ClonageStartGamePage(browser2);
+			clonageSignup2.get();
+	 		clonageSignup2.submitName('Alice');
+	 		clonageRoomJoinPage2.createRoom();
+	 		element2(by.binding('roomId')).getText().then(function(text) {
+				roomId = text.split(" ")[2];
+			});
+
+			browser.executeScript('window.sessionStorage.clear();');
+	 		browser.executeScript('window.localStorage.clear();');
+
+			clonageSignup.get();
+	 		clonageSignup.submitName('John');
+
+		});
+
+		 afterEach(function() {
+
+			browser2.close();
+
+		});
+
+		it('can be redirected to a results page', function() {
+
+			clonageRoomJoinPage.joinRoom(roomId);
+
+			browser.waitForAngular();
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+
+			playGame = new ClonagePlayGamePage(browser);
+			playGame2 = new ClonagePlayGamePage(browser2);
+
+			playGame.submitAnswer();
+			playGame2.submitAnswer();
+
+	 		playGame.submitVote();
+			playGame2.submitVote();
+
+			browser2.waitForAngular();
+			expect(browser2.getCurrentUrl()).toMatch(/\/results/);
+
+		});
+
+		it('can see who submitted what answers', function() {
+
+			clonageRoomJoinPage.joinRoom(roomId);
+
+			browser.waitForAngular();
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+
+			playGame = new ClonagePlayGamePage(browser);
+			playGame2 = new ClonagePlayGamePage(browser2);
+
+			playGame.submitAnswer();
+			playGame2.submitAnswer();
+
+	 		playGame.submitVote();
+			playGame2.submitVote();
+
+			browser2.waitForAngular();
+			expect(browser2.getCurrentUrl()).toMatch(/\/results/);
+			expect(element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.playerName')).getText()).toContain('John');
+	 		expect(element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.playerName')).getText()).toContain('Alice');
+
+		});
+
+		it('can be assigned points if someone voted for my answer', function() {
+
+			clonageRoomJoinPage.joinRoom(roomId);
+
+			browser.waitForAngular();
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+
+			playGame = new ClonagePlayGamePage(browser);
+			playGame2 = new ClonagePlayGamePage(browser2);
+
+			playGame.submitAnswer();
+			playGame2.submitAnswer();
+
+	 		playGame.submitVote();
+			playGame2.submitVote();
+
+			browser2.waitForAngular();
+			expect(browser2.getCurrentUrl()).toMatch(/\/results/);
+			expect(element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.playerName')).getText()).toContain('points');
+	 		expect(element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.playerName')).getText()).toContain('points');
+
+		});
+
+		it('can start a new round', function() {
+
+			clonageRoomJoinPage.joinRoom(roomId);
+
+			browser.waitForAngular();
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+
+			playGame = new ClonagePlayGamePage(browser);
+			playGame2 = new ClonagePlayGamePage(browser2);
+
+			playGame.submitAnswer();
+			playGame2.submitAnswer();
+
+	 		playGame.submitVote();
+			playGame2.submitVote();
+
+			browser2.waitForAngular();
+			browser2.element(by.buttonText("Next Round")).click();
+			browser2.waitForAngular();
+			expect(browser2.getCurrentUrl()).toMatch(/\/question/);
+
+		});
+	});
 });
 
 
