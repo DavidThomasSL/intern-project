@@ -6,7 +6,6 @@ ClonageApp.service('RoutingService', ['$location', 'communicationService', funct
     }]);
 
     function handleRouting(msg) {
-        console.log("sending user to room");
 
         switch (msg.location) {
             case 'room':

@@ -103,10 +103,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		finalresults = data.results;
 	}
 
-	function setNumOfChoicesSubmitted(data) {
-		answerCounter = data;
-	}
-
 	/*
     ---------------
         REGISTERING COMMUNCATION API WITH LAYER
@@ -127,9 +123,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}, {
 		eventName: "finish",
 		eventAction: gameFinish
-	}, {
-		eventName: "numOfChoicesSubmitted",
-		eventAction: setNumOfChoicesSubmitted
 	}]);
 
 	/*

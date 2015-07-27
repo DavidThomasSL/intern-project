@@ -83,9 +83,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     communicationService.registerListener("ROOM", [{
         eventName: "details",
         eventAction: setRoomDetails
-    }, {
-        eventName: "error",
-        eventAction: setError
     }]);
 
     /*

@@ -68,7 +68,8 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
-	socket.on("GAME chosenAnswers", function(data) {
+	socket.on("GAME answers", function(data) {
+		console.log("got game chosenAnswers");
 		setListenerEventAction("GAME chosenAnswers");
 		onMessageFunction(data);
 	});
@@ -83,20 +84,11 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
-	socket.on("GAME numOfChoicesSubmitted", function(data) {
-		setListenerEventAction("GAME numOfChoicesSubmitted");
-		onMessageFunction(data);
-	});
-
 	socket.on("ROOM details", function(data) {
 		setListenerEventAction("ROOM details");
 		onMessageFunction(data);
 	});
 
-	socket.on("ROOM error", function(data) {
-		setListenerEventAction("ROOM error");
-		onMessageFunction(data);
-	});
 
 	socket.on("ROUTING", function(data) {
 		setListenerEventAction("ROUTING");
