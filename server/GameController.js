@@ -44,7 +44,6 @@ module.exports = function(data) {
 
 				usersInRoom.forEach(function(user) {
 					setupPlayer(user);
-					console.log("current user name is " + user.name);
 				});
 
 				var round = {
