@@ -4,13 +4,13 @@
 	</div>
 	<div class="text-center">
 		<form name="resultsForm" ng-submit="nextRound()">
-			<ul ng-repeat="result in getPlayerRoundResults()" class="list-group">
-				<li class="list-group-item">
-					{{result.playerName}}'s answer - {{result.ans}}<br>
-					{{result.playerVote.length}} vote(s), {{result.playerVote.length*50}} points<br>
-					Current total :{{result.playerPoints}}
-				</li>
-			</ul>
+				<ul ng-repeat="result in getPlayerRoundResults()" class="list-group">
+					<li class="list-group-item">
+						{{result.playerName}}'s answer - <div style="font-weight: bold; display: inline">{{result.ans}}</div><br>
+						Vote(s): <div ng-repeat="player in result.playerVote" style="font-style: italic; display: inline">{{player}} </div>, {{result.playerVote.length*50}} points<br>
+						Current total :{{result.playerPoints}}
+					</li>
+				</ul>
 			<br>
 			<div class ="row">
 				<div class="col-md-12 text-center">

@@ -120,13 +120,6 @@ module.exports = function(data) {
 	};
 
 	/*
-		Given a userId, get their hand of white cards they have at this point in the game
-	*/
-	var getUserHand = function(userId) {
-
-	};
-
-	/*
 		Returns a random questions
 	*/
 	var getRoundQuestion = function() {
@@ -226,6 +219,16 @@ module.exports = function(data) {
 		});
 	};
 
+	var getName = function (playerId) {
+		var name;
+		players.forEach(function(pl){
+			if(parseInt(pl.uId) === parseInt(playerId)){
+				name = pl.name;
+			}
+		});
+		return name;
+	};
+
 		/*
 		submit the vote and change the used card with another one in players
 	 */
@@ -235,7 +238,7 @@ module.exports = function(data) {
 
 		currentRound.answers.forEach(function(option){
 			if(option.answerText === answer) {
-				option.playersVote.push(playerId);
+				option.playersVote.push(getName(playerId));
 				addPoints(option.playerId);
 			}
 		});
