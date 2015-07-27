@@ -1,34 +1,39 @@
-ClonageApp.service('RoutingService', ['socket', '$location', function(socket, $location) {
+ClonageApp.service('RoutingService', ['$location', 'communicationService', function($location, communicationService) {
 
-    socket.on("ROUTING", function(msg) {
+    communicationService.registerListener("ROUTING", [{
+        eventName: "",
+        eventAction: handleRouting
+    }]);
+
+    function handleRouting(msg) {
         console.log("sending user to room");
 
-        switch(msg.location){
-            case 'room' :
+        switch (msg.location) {
+            case 'room':
                 $location.path('/room');
                 break;
-            case 'joining' :
+            case 'joining':
                 $location.path('/joining');
                 break;
-            case 'question' :
+            case 'question':
                 $location.path('/question');
                 break;
-            case 'vote' :
+            case 'vote':
                 $location.path('/vote');
                 break;
-            case 'waitVote' :
+            case 'waitVote':
                 $location.path('/waitVote');
                 break;
-            case 'results' :
+            case 'results':
                 $location.path('/results');
                 break;
-            case 'endGame' :
+            case 'endGame':
                 $location.path('/endGame');
                 break;
-            case 'waitQuestion' :
+            case 'waitQuestion':
                 $location.path('/waitQuestion');
         }
-    });
+    }
 
     return null;
 }]);

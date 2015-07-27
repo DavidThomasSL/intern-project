@@ -14,6 +14,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var answerCounter = 0;
 	var maxRounds = 8; //variable holding the number of rounds wanted
 
+	console.log(communicationService);
 
 	function getRoundQuestion() {
 		return currentQuestion;

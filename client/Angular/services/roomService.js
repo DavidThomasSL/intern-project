@@ -1,30 +1,39 @@
-ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket, $sessionStorage) {
+ClonageApp.service('roomService', ['communicationService', '$sessionStorage', function(communicationService, $sessionStorage) {
+
+    /*
+    --------------------
+        PUBLIC API
+        These are functions exposed by the service to the outside work i.e controllers,
+        and others who who use this service
+    -------------------
+    */
 
     var roomId = -1;
     var usersInRoom = [];
     var gameInProgress = false;
     var errorMessage = "";
 
-    //--------------------
-    //PUBLIC API
-    //-------------------
-
     function createRoom(playerId) {
-        socket.emit("ROOM create", {
+        sendMessage("ROOM create", {
             playerId: playerId
         });
+        // socket.emit("ROOM create", {
+        //     playerId: playerId
+        // });
 
     }
 
     function joinRoom(roomId) {
-        socket.emit('ROOM join', {
+        sendMessage('ROOM join', {
             roomId: roomId
         });
+        // socket.emit('ROOM join', {
+        //     roomId: roomId
+        // });
         errorMessage = "";
     }
 
     function getUsersInRoom() {
-        // console.log(usersInRoom);
         return usersInRoom;
     }
 
@@ -42,25 +51,63 @@ ClonageApp.service('roomService', ['socket', '$sessionStorage', function(socket,
     //SOCKET EVENT LISTENERS
     //-=-----------------
 
-    function getGameInProgess(){
+    function getGameInProgess() {
         return gameInProgress;
     }
 
-    function getErrorMessage(){
-        if(errorMessage !== ""){
+    function getErrorMessage() {
+        if (errorMessage !== "") {
             return errorMessage;
         }
     }
 
-    socket.on("ROOM details", function(data) {
+    /*
+    ---------------
+        COMMUNCATION LAYER API
+        These are functions called by the communcation
+        service when it recives a message for the user service
+    ---------------
+    */
+
+    function setRoomDetails(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
         gameInProgress = data.gameInProgress;
-    });
+    }
 
-    socket.on("ROOM error", function(data) {
+    function setError(data) {
         errorMessage = data.msg;
-    });
+    }
+
+    /*
+    ---------------
+        REGISTERING COMMUNCATION API WITH LAYER
+        Must register the user service with the communcation service,
+        and provide an api to call back when recieving an event
+    ----------------
+    */
+
+    console.log(communicationService);
+    communicationService.registerListener("ROOM", [{
+        eventName: "details",
+        eventAction: setRoomDetails
+    }, {
+        eventName: "error",
+        eventAction: setError
+    }]);
+
+    /*
+    -------------------
+    INTERNAL HELPER FUNCTIONS
+    -----------------
+    */
+
+    function sendMessage(eventName, data, callback) {
+        if (callback === undefined) {
+            callback = function() {};
+        }
+        communicationService.sendMessage(eventName, data, callback);
+    }
 
     return {
         createRoom: createRoom,

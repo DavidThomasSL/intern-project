@@ -88,6 +88,21 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
+	socket.on("ROOM details", function(data) {
+		setListenerEventAction("ROOM details");
+		onMessageFunction(data);
+	});
+
+	socket.on("ROOM error", function(data) {
+		setListenerEventAction("ROOM error");
+		onMessageFunction(data);
+	});
+
+	socket.on("ROUTING", function(data) {
+		setListenerEventAction("ROUTING");
+		onMessageFunction(data);
+	});
+
 
 	/*
 		Takes an event name, sent by the server

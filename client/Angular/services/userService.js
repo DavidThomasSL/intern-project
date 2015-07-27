@@ -54,8 +54,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         function registerUser() {
             sendMessage('USER register', {
                 token: $sessionStorage.userId
-            }, function() {
-                console.log("sent user registeration request");
             });
         }
 
@@ -63,7 +61,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             user = data.user;
             $sessionStorage.userId = user.uId;
             $sessionStorage.roomId = user.roomId;
-            console.log("Got user details from server CORRECTLY" + user.uId);
         }
 
         function joinRoom(data) {
@@ -125,8 +122,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         function sendMessage(eventName, data, callback) {
-            if( callback === undefined){
-                callback = function(){};
+            if (callback === undefined) {
+                callback = function() {};
             }
             communicationService.sendMessage(eventName, data, callback);
         }
