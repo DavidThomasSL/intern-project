@@ -1,7 +1,7 @@
 <div class="container">
   <div class="header clearfix">
     <div class="row instructions">
-      <div >
+      <div id="roundQuestion">
         <h1>{{roundQuestion()}}</h1>
         <h3 class="panel-title">Submit your favourite answer to this question</h3>
       </div>
@@ -9,16 +9,19 @@
   </div>
   <div id="user-hand-container">
     <div class="row">
+    <form name="PickAnswerForm" ng-submit="submitAnswer(enteredAnswer)">
       <div class="col-md-4 text-center" ng-repeat="answer in userHand()">
         <div class="panel panel-default white-card">
           <div class="panel-body">
             {{answer}}
             <div class="submit-ans-button">
-              <button class="btn btn-primary" ng-model="answer" ng-click="submitAnswer(answer)">Select</button>
+              <button class="btn btn-primary" type="button" id="answer" ng-click="$parent.enteredAnswer = answer">Select</button>
             </div>
           </div>
         </div>
       </div>
+      <button type="submit">Submit Answer</button>
+      </form>
     </div>
   </div>
 </div>
