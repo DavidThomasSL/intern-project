@@ -33,7 +33,9 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards;
+				blackCardsMaster = cards.blackCards.filter(function(card){
+					return (card.pick === 1);
+				});
 				whiteCardsMaster = cards.whiteCards;
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);
@@ -109,6 +111,7 @@ module.exports = function(data) {
 
 		var player = {
 			uId: user.uId,
+			name : user.username,
 			hand: dealUserHand(),
 			points: 0
 		};
@@ -189,9 +192,6 @@ module.exports = function(data) {
 	 //TODO change this to a promise with a reject clause
 
 	var submitAnswer = function(playerId, playerName, answer, callback) {
-
-		assignName(playerId, playerName);
-		//for now just using the submit answer message to assign name of each player for final results
 
 		var ans = {
 			playerId: playerId,
