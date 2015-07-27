@@ -17,19 +17,12 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         sendMessage("ROOM create", {
             playerId: playerId
         });
-        // socket.emit("ROOM create", {
-        //     playerId: playerId
-        // });
-
     }
 
     function joinRoom(roomId) {
         sendMessage('ROOM join', {
             roomId: roomId
         });
-        // socket.emit('ROOM join', {
-        //     roomId: roomId
-        // });
         errorMessage = "";
     }
 
@@ -41,9 +34,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         sendMessage("ROOM leave", {
             roomId: roomId
         });
-        // socket.emit('ROOM leave', {
-        //     roomId: roomId
-        // });
     }
 
     function getRoomId() {
@@ -90,7 +80,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     ----------------
     */
 
-    console.log(communicationService);
     communicationService.registerListener("ROOM", [{
         eventName: "details",
         eventAction: setRoomDetails
@@ -120,7 +109,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
         getGameInProgress: getGameInProgess,
-        getErrorMessage: getErrorMessage
     };
 
 }]);

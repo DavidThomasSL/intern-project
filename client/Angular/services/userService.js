@@ -107,6 +107,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         function emitChoice(answer) {
             sendMessage('USER submitChoice', {
                 playerId: user.uId,
+                playerName: user.name,
                 answer: answer,
                 roomId: user.roomId
             });
@@ -116,6 +117,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         function emitVote(answer) {
             sendMessage('USER vote', {
                 playerId: user.uId,
+                playerName: user.name,
                 answer: answer,
                 roomId: user.roomId
             });
