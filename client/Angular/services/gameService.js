@@ -51,7 +51,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	//load next round or finish the game if that was the last round
 	function nextRound(roomId) {
-		if (round !== maxRounds) {
+		if (round < maxRounds) {
 			round++;
 			sendMessage("GAME next round", {
 				roomId: roomId
@@ -78,23 +78,26 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	---------------
 	*/
 
-	function recieveQuestion(data) {
+	function _recieveQuestion(data) {
 		currentQuestion = data.question;
 		round = data.round;
 	}
 
-	function setChosenAnswers(data) {
+	function _setChosenAnswers(data) {
 		answers = data.answers;
 	}
 
-	function setPlayerRoundResults(data) {
+	function _setPlayerRoundResults(data) {
 		playerRoundResults = data.results;
 		voteCounter = data.voteNumber;
 	}
 
-
-	function gameFinish(data) {
+	function _gameFinish(data) {
 		finalresults = data.results;
+	}
+
+	function _setMaxRounds(num) {
+		maxRounds = num;
 	}
 
 	/*
@@ -107,16 +110,16 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	communicationService.registerListener("GAME", [{
 		eventName: "question",
-		eventAction: recieveQuestion
+		eventAction: _recieveQuestion
 	}, {
 		eventName: "chosenAnswers",
-		eventAction: setChosenAnswers
+		eventAction: _setChosenAnswers
 	}, {
 		eventName: "playerRoundResults",
-		eventAction: setPlayerRoundResults
+		eventAction: _setPlayerRoundResults
 	}, {
 		eventName: "finish",
-		eventAction: gameFinish
+		eventAction: _gameFinish
 	}]);
 
 	/*
@@ -141,7 +144,12 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		getFinalResults: getFinalResults,
 		nextRound: nextRound,
 		finishGame: finishGame,
-		getCurrentVotes: getCurrentVotes
+		getCurrentVotes: getCurrentVotes,
+		_recieveQuestion: _recieveQuestion,
+		_setChosenAnswers: _setChosenAnswers,
+		_setPlayerRoundResults: _setPlayerRoundResults,
+		_gameFinish: _gameFinish,
+		_setMaxRounds,_setMaxRounds
 	};
 
 }]);
