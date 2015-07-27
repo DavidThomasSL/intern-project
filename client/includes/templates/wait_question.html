@@ -1,8 +1,10 @@
-<div class="animate-switch">
-	<div id="game-lobby-container" class="namestuff">
-	<h2>Waiting for other players to submit choices....</h2>
-	<h3>{{ waitingAnswerCounter().number; }} / {{getUsersInRoom().length}} answers submitted</h3>
-	<br/><input type="submit" ng-click="leaveRoom()" value="Quit Game">
-	<br/><input type="submit" ng-click="finishGame()" value="Finish Game">
-	</div>
+<div class="container">
+  <div class="header clearfix">
+      <div>
+        <h2>Waiting for other players to submit choices....</h1>
+        <h3>{{ answers().length }} / {{getUsersInRoom().length}} answers submitted</h3>
+    </div>
+  </div>
+	<button type="button" class="btn btn-danger" ng-click="leaveRoom()">Quit Game</button>
+	<button type="button" class="btn btn-default" ng-click="finishGame()">Finish Game</button>
 </div>

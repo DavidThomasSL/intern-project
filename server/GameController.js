@@ -33,7 +33,9 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards;
+				blackCardsMaster = cards.blackCards.filter(function(card){
+					return (card.pick === 1);
+				});
 				whiteCardsMaster = cards.whiteCards;
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);
@@ -87,9 +89,11 @@ module.exports = function(data) {
 
 		players.forEach(function(pl){
 			var result = {
-				player: pl.uId,
+				playerId: pl.uId,
+				playerName : pl.name,
 				score: pl.points
 			};
+			console.log(result);
 			results.push(result);
 		});
 
@@ -107,6 +111,7 @@ module.exports = function(data) {
 
 		var player = {
 			uId: user.uId,
+			name : user.username,
 			hand: dealUserHand(),
 			points: 0
 		};
@@ -173,6 +178,8 @@ module.exports = function(data) {
 				});
 				var index = Math.floor((Math.random() * whiteCardsCurrent.length));
 				card = whiteCardsCurrent[index];
+				whiteCardsCurrent.splice(index, 1);
+				//removing dealt card from card list
 				player.hand.push(card);
 			}
 		});
@@ -184,10 +191,11 @@ module.exports = function(data) {
 	 */
 	 //TODO change this to a promise with a reject clause
 
-	var submitAnswer = function(playerId, answer, callback) {
+	var submitAnswer = function(playerId, playerName, answer, callback) {
 
 		var ans = {
 			playerId: playerId,
+			playerName: playerName,
 			answerText: answer,
 			playersVote: []
 		};
@@ -208,6 +216,14 @@ module.exports = function(data) {
 				allChoicesSubmitted : false
 			});
 		}
+	};
+
+	var assignName = function (playerId, playerName) {
+		players.forEach(function(pl){
+			if(pl.name === undefined && pl.uId === playerId){
+				pl.name = playerName;
+			}
+		});
 	};
 
 		/*
@@ -237,7 +253,8 @@ module.exports = function(data) {
 					}
 				});
 				var result = {
-					player: answer.playerId,
+					playerId: answer.playerId,
+					playerName: answer.playerName,
 					ans: answer.answerText,
 					playerVote: answer.playersVote,
 					playerPoints: points
@@ -247,11 +264,17 @@ module.exports = function(data) {
 
 			// newRound();
 			callback({
-				res: results
+				res: results,
+				allVotesSubmitted : true,
+				voteNumber : 0 //resetting the votes for the next round
+			});
+		} else {
+			callback({
+				res: null,
+				allVotesSubmitted : false,
+				voteNumber: countVotes(currentRound)
 			});
 		}
-
-		console.log(currentRound.answers);
 	};
 
 
