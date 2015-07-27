@@ -1,8 +1,6 @@
 ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
     function($sessionStorage, communicationService) {
 
-
-
         /*
         --------------------
             PUBLIC API
