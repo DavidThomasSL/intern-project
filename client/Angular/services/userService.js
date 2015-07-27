@@ -2,6 +2,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
     function($sessionStorage, communicationService) {
 
 
+
         /*
         --------------------
             PUBLIC API
@@ -38,7 +39,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         function setName(name) {
             sendMessage('USER set name', {
                 name: name
-            }, function() {});
+            });
         }
 
         /*
@@ -96,6 +97,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             eventName: "hand",
             eventAction: setHand
         }]);
+
 
         /*
         -------------------
