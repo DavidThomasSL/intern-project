@@ -146,6 +146,9 @@ body, html {
   margin: 30px 20px 100px 20px;
 }
 
+.bottom-buttons {
+  margin-top: 60px;
+}
 
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */

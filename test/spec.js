@@ -429,10 +429,12 @@ var ClonageSignupPage = function(browser) {
 	this.submitName = function(name) {
 		nameInputBox.sendKeys(name);
 		nameSubmitButton.click();
+		browser.waitForAngular();
 	};
 
 	this.refresh = function() {
 		this.get();
+		browser.waitForAngular();
 	};
 };
 
@@ -446,6 +448,7 @@ var ClonageRoomJoinPage = function(browser) {
 
 	this.createRoom = function() {
 		createRoomButton.click();
+		browser.waitForAngular();
 	};
 
 	this.getRoomId = function() {
@@ -453,12 +456,14 @@ var ClonageRoomJoinPage = function(browser) {
 		browser.element(by.binding('roomId')).getText().then(function(text) {
  			room = text.split(" ")[2];
  		});
+ 		browser.waitForAngular();
  		return room;
 	};
 
 	this.joinRoom = function(roomId) {
 		roomInputBox.sendKeys(roomId);
 		roomJoinButton.click();
+		browser.waitForAngular();
 	};
 };
 
@@ -469,6 +474,7 @@ var ClonageStartGamePage = function(browser) {
 	this.startGame = function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
 		element(by.buttonText("Start Game")).click();
+		browser.waitForAngular();
 	};
 };
 
