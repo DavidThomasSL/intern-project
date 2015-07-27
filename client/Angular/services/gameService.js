@@ -1,4 +1,10 @@
-ClonageApp.service('gameService', ['socket', function(socket) {
+ClonageApp.service('gameService', ['communicationService', function(communicationService) {
+
+	/*--------------------
+	//PUBLIC API
+	 	These are functions exposed by the service to the outside work i.e controllers,
+	    and others who who use this service
+	//-------------------	*/
 
 	var currentQuestion = "";
 	var round = -1;
@@ -9,9 +15,6 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	var maxRounds = 8; //variable holding the number of rounds wanted
 
 
-	//--------------------
-	//PUBLIC API
-	//-------------------
 
 	function getRoundQuestion() {
 		return currentQuestion;
@@ -22,7 +25,7 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	}
 
 	function startGame(roomId) {
-		socket.emit("GAME start", {
+		sendMessage("GAME start", {
 			roomId: roomId
 		});
 	}
@@ -43,7 +46,6 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 
 	//get final scores after the game finished
 	function getFinalResults() {
-		console.log(finalresults);
 		return finalresults;
 	}
 
@@ -51,11 +53,11 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 	function nextRound(roomId) {
 		if (round !== maxRounds) {
 			round++;
-			socket.emit("GAME next round", {
+			sendMessage("GAME next round", {
 				roomId: roomId
 			});
 		} else {
-			socket.emit("GAME finish", {
+			sendMessage("GAME finish", {
 				roomId: roomId
 			});
 		}
@@ -63,37 +65,72 @@ ClonageApp.service('gameService', ['socket', function(socket) {
 
 	//tell server to finish the game
 	function finishGame(roomId) {
-		socket.emit("GAME finish", {
+		sendMessage("GAME finish", {
 			roomId: roomId
 		});
 	}
 
+	/*
+	---------------
+	    COMMUNCATION LAYER API
+	    These are functions called by the communcation
+	    service when it recives a message for the user service
+	---------------
+	*/
 
-	//----------------------
-	//SOCKET EVENT LISTENERS
-	//-=-----------------
-
-	socket.on('GAME question', function(data) {
-		// console.log("got question " + data.question);
+	function recieveQuestion(data) {
 		currentQuestion = data.question;
 		round = data.round;
-	});
+	}
 
-	//load all answers in order to begin voting
-	socket.on('GAME answers', function(data) {
+	function setChosenAnswers(data) {
 		answers = data.answers;
-	});
+	}
 
-	//after each round get the results of voting
-	socket.on('GAME playerRoundResults', function(data) {
+	function setPlayerRoundResults(data) {
 		playerRoundResults = data.results;
 		voteCounter = data.voteNumber;
-	});
+	}
 
-	//when game finished load the final scores into finalresults variable
-	socket.on('GAME finish', function(data) {
+
+	function gameFinish(data) {
 		finalresults = data.results;
-	});
+	}
+
+	/*
+    ---------------
+        REGISTERING COMMUNCATION API WITH LAYER
+        Must register the user service with the communcation service,
+        and provide an api to call back when recieving an event
+    ----------------
+     */
+
+	communicationService.registerListener("GAME", [{
+		eventName: "question",
+		eventAction: recieveQuestion
+	}, {
+		eventName: "chosenAnswers",
+		eventAction: setChosenAnswers
+	}, {
+		eventName: "playerRoundResults",
+		eventAction: setPlayerRoundResults
+	}, {
+		eventName: "finish",
+		eventAction: gameFinish
+	}]);
+
+	/*
+    -------------------
+    INTERNAL HELPER FUNCTIONS
+    -----------------
+    */
+
+	function sendMessage(eventName, data, callback) {
+		if (callback === undefined) {
+			callback = function() {};
+		}
+		communicationService.sendMessage(eventName, data, callback);
+	}
 
 	return {
 		startGame: startGame,
