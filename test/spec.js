@@ -131,7 +131,7 @@ describe('Clonage App', function() {
 
 	});
 
-	describe('When joining an exsiting room', function() {
+	describe('When joining and exiting a room', function() {
 		var clonageSignup;
 		var clonageRoomJoinPage;
 		var browser2;
@@ -177,7 +177,7 @@ describe('Clonage App', function() {
 			browser2.close();
 		});
 
-		it('can join an extisting room and go into the lobby and see other users in the room', function() {
+		it('can join an existing room and go into the lobby and see other users in the room', function() {
 
 
 			clonageRoomJoinPage.joinRoom(roomId);
@@ -191,25 +191,25 @@ describe('Clonage App', function() {
 			expect(element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
 		});
 
-		it('if other use joins quits in the room user can see that without updating', function() {
+		it('if other user quits in the room user can see that without updating', function() {
 
 			clonageRoomJoinPage.joinRoom(roomId);
-			browser2.element(by.buttonText("Exit Room")).click();
+			browser2.element(by.buttonText("Go Back")).click();
 			browser2.waitForAngular();
 
 			expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(1);
 		});
 
-		// it('if other use joins room in the room user can see that without updating', function() {
+		it('if other use joins room in the room user can see that without updating', function() {
 
-		// 	clonageRoomJoinPage.joinRoom(roomId);
-		// 	browser2.element(by.buttonText("Go Back")).click();
-		// 	browser2.element(by.id('room-input-box')).sendKeys(roomId);
-		// 	browser2.element(by.id('room-join-button')).click();
-		// 	browser2.waitForAngular();
+			clonageRoomJoinPage.joinRoom(roomId);
+			browser2.element(by.buttonText("Go Back")).click();
+			browser2.element(by.id('room-input-box')).sendKeys(roomId);
+			browser2.element(by.id('room-join-button')).click();
+			browser2.waitForAngular();
 
-		// 	expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
-		// });
+			expect(element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+		});
 	});
 
 });

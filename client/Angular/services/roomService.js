@@ -38,9 +38,12 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     }
 
     function leaveRoom() {
-        socket.emit('ROOM leave', {
+        sendMessage("ROOM leave", {
             roomId: roomId
         });
+        // socket.emit('ROOM leave', {
+        //     roomId: roomId
+        // });
     }
 
     function getRoomId() {
