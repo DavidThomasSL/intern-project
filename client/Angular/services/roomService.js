@@ -62,13 +62,13 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     ---------------
     */
 
-    function setRoomDetails(data) {
+    function _setRoomDetails(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
         gameInProgress = data.gameInProgress;
     }
 
-    function setError(data) {
+    function _setError(data) {
         errorMessage = data.msg;
     }
 
@@ -82,7 +82,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
 
     communicationService.registerListener("ROOM", [{
         eventName: "details",
-        eventAction: setRoomDetails
+        eventAction: _setRoomDetails
     }]);
 
     /*
@@ -106,6 +106,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
         getGameInProgress: getGameInProgess,
+        _setRoomDetails: _setRoomDetails
     };
 
 }]);

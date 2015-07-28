@@ -39,6 +39,15 @@ describe("Testing User Service", function() {
 		};
 	});
 
+	it("Should be defined", function() {
+		expect(userService).toBeDefined();
+	});
+
+	it("Registers itself with the communicationService", function() {
+		expect(mockCommunicationService.name).toEqual("USER");
+		expect(mockCommunicationService.events[0]).toEqual({eventName: 'connect', eventAction: jasmine.any(Function)});
+	});
+
 	it("register user sends a message to the communicationService with no userId if not set", function() {
 		spyOn(mockCommunicationService, 'sendMessage');
 		userService._registerUser();
@@ -120,8 +129,6 @@ describe("Testing User Service", function() {
 			roomId: "B00B5"
 		}, jasmine.any(Function));
 	});
-
-
 
 	it("setName calls communicationService", function() {
 		spyOn(mockCommunicationService, 'sendMessage');

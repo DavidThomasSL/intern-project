@@ -1,16 +1,3 @@
-// describe('Unit: MainController', function() {
-
-// 	var app;
-
-// 	beforeEach(function() {
-// 		app = angular.module('ClonageApp');
-// 	});
-
-// 	it("should be real", function() {
-// 		expect(app).not.toBeNull();
-// 	});
-// });
-
 describe("Testing Game Service", function() {
 
 	var mockCommunicationService = {
@@ -20,7 +7,6 @@ describe("Testing Game Service", function() {
 		},
 		sendMessage: function() {}
 	};
-
 
 	beforeEach(function() {
 		angular.module('btford.socket-io', []);
@@ -34,6 +20,11 @@ describe("Testing Game Service", function() {
 	beforeEach(inject(function(_gameService_) {
 		gameService = _gameService_;
 	}));
+
+	it("Registers itself with the communicationService", function() {
+		expect(mockCommunicationService.name).toEqual("GAME");
+		expect(mockCommunicationService.events[0]).toEqual({eventName: 'question', eventAction: jasmine.any(Function)});
+	});
 
 	it("start game calls send message", function() {
 		spyOn(mockCommunicationService, 'sendMessage');
@@ -111,10 +102,6 @@ describe("Testing Game Service", function() {
 		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
 	});
 
-	it("Registers itself with the communicationService", function() {
-		expect(mockCommunicationService.events).not.toBeNull();
-	});
-
 	it("communicationService can call events in the Game Service", function() {
 
 		var listenerEvent;
@@ -127,8 +114,6 @@ describe("Testing Game Service", function() {
 
 		listenerEvent({question: "", round: 5});
 		expect(gameService.getCurrentRound()).toBe(5);
-
 	});
-
 
 });
