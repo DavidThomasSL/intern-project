@@ -21,8 +21,17 @@
                 <div class="lead">
                     <h1>Clonage</h1>
                 </div>
-                <p class="rank">#{{rank()}}</p>
+                <p class="rank">#{{rank()}}<button ng-click="toggle = !toggle" ng-show="gameInProgress">&#9776;</button></p>
                 <p class="username">{{getUserName()}}</p>
+
+            </div>
+            <div class="sidebar" ng-show="toggle" ng-animate="sidebar">
+
+                <h4> Current Scores :</h4>
+                <ul ng-repeat="score in currentscores() | orderBy: '-points'" >
+                    <li><h4>{{score.playerName}}   :  {{score.points}} points</h4>
+                    </li>
+                </ul>
             </div>
             <div ng-view >
             </div ng-view>
