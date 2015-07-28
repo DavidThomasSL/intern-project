@@ -23,6 +23,9 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     //current results will hold all players scores at the current time in the game
     $scope.currentscores = gameService.getCurrentScores;
 
+    //current rank for each user
+    $scope.rank = userService.getRank;
+
     //call function to finish the game in a certain room if players wanted to finish game
     $scope.finishGame = function() {
         gameService.finishGame($scope.roomId());

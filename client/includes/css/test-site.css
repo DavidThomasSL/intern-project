@@ -91,6 +91,16 @@ body, html {
   margin-bottom: 10px;
 }
 
+.jumbotron .rank {
+  padding: 40px 120px 0px 120px;
+  color: white;
+  font-size: 25px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  margin-bottom: 10px;
+}
+
 .jumbotron h1 {
   float: left;
   color: white;

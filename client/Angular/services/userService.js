@@ -13,6 +13,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         var user = {};
         var gameHand = {};
+        var rank = "N/A" ;
 
         //call function that emits to server the answer that was just submitted
         function submitChoice(enteredAnswer) {
@@ -40,6 +41,10 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             sendMessage('USER set name', {
                 name: name
             });
+        }
+
+        function getRank() {
+            return rank;
         }
 
         /*
@@ -138,7 +143,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             getUserId: getUserId,
             getUserHand: getUserHand,
             submitChoice: submitChoice,
-            submitVote: submitVote
+            submitVote: submitVote,
+            getRank: getRank
         };
 
     }
