@@ -26,6 +26,32 @@ body, html {
   line-height: 40px;
 }
 
+.sidebar {
+  position: absolute;
+  background-color: black;
+  opacity: 0.5;
+  color: white;
+  text-align: center;
+  height: 100%;
+  width: 300px;
+  font-size: 30px;
+}
+
+.sidebar-show-setup, .sidebar-hide-setup {
+  -webkit-transition:all linear 0.3s;
+  -moz-transition:all linear 0.3s;
+  -ms-transition:all linear 0.3s;
+  -o-transition:all linear 0.3s;
+  transition:all linear 0.3s;
+}
+
+.sidebar-show-setup { opacity:0; height: 0; }
+.sidebar-show-setup.sidebar-show-start { opacity:1; height: 100%; width:115px ;}
+
+.sidebar-hide-setup { opacity:1; height: 0; }
+.sidebar-hide-setup.sidebar-hide-start { opacity:0; height: 100%; width:115px ;}
+
+
 /* Custom page footer */
 .footer {
   /*position: absolute;
@@ -56,7 +82,7 @@ body, html {
 /* Main marketing message and sign up button */
 .jumbotron {
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   height: 380px;
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
