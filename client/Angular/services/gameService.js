@@ -149,7 +149,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
 		_gameFinish: _gameFinish,
-		_setMaxRounds,_setMaxRounds
+		_setMaxRounds: _setMaxRounds
 	};
 
 }]);

@@ -4,6 +4,28 @@
 module.exports = function(config) {
     config.set({
 
+
+
+        // you can define custom flags
+        customLaunchers: {
+            'PhantomJS_custom': {
+                base: 'PhantomJS',
+                options: {
+                    windowName: 'my-window',
+                    settings: {
+                        webSecurityEnabled: false
+                    },
+                },
+                flags: ['--load-images=true'],
+                debug: true
+            }
+        },
+
+        phantomjsLauncher: {
+            // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
+            exitOnResourceError: true
+        },
+
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '../../',
 
@@ -59,8 +81,7 @@ module.exports = function(config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome'],
-
+        browsers: ['PhantomJS', 'PhantomJS_custom'],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
