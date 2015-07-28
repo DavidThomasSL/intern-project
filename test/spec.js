@@ -496,6 +496,9 @@ describe('After each round', function() {
 			playGame.submitAnswer();
 			playGame2.submitAnswer();
 
+			browser.waitForAngular();
+			browser2.waitForAngular();
+
 	 		playGame.submitVote();
 			playGame2.submitVote();
 
@@ -519,6 +522,8 @@ describe('After each round', function() {
 
 			playGame.submitAnswer();
 			playGame2.submitAnswer();
+
+			browser2.waitForAngular();
 
 	 		playGame.submitVote();
 			playGame2.submitVote();
@@ -544,6 +549,8 @@ describe('After each round', function() {
 			playGame.submitAnswer();
 			playGame2.submitAnswer();
 
+			browser2.waitForAngular();
+
 	 		playGame.submitVote();
 			playGame2.submitVote();
 
@@ -557,33 +564,33 @@ describe('After each round', function() {
 });
 
 
-var ClonageSignupPage = function(browser) {
+var ClonageSignupPage = function(browserInstance) {
 
-	element = browser.element;
+	var element = browserInstance.element;
 
 	var nameInputBox = element(by.id('name-input-box'));
 	var nameSubmitButton = element(by.id('name-submit-button'));
 
 	this.get = function() {
-		browser.get('/');
-		browser.waitForAngular();
+		browserInstance.get('/');
+		browserInstance.waitForAngular();
 	};
 
 	this.submitName = function(name) {
 		nameInputBox.sendKeys(name);
 		nameSubmitButton.click();
-		browser.waitForAngular();
+		browserInstance.waitForAngular();
 	};
 
 	this.refresh = function() {
 		this.get();
-		browser.waitForAngular();
+		browserInstance.waitForAngular();
 	};
 };
 
-var ClonageRoomJoinPage = function(browser) {
+var ClonageRoomJoinPage = function(browserInstance) {
 
-	element = browser.element;
+	var element = browserInstance.element;
 
 	var createRoomButton = element(by.id('create-room-button'));
 	var roomInputBox = element(by.id('room-input-box'));
@@ -591,53 +598,68 @@ var ClonageRoomJoinPage = function(browser) {
 
 	this.createRoom = function() {
 		createRoomButton.click();
-		browser.waitForAngular();
+		browserInstance.waitForAngular();
 	};
 
 	this.getRoomId = function() {
 		var room;
-		browser.element(by.binding('roomId')).getText().then(function(text) {
+		browserInstance.element(by.binding('roomId')).getText().then(function(text) {
  			room = text.split(" ")[2];
  		});
- 		browser.waitForAngular();
+ 		browserInstance.waitForAngular();
  		return room;
 	};
 
 	this.joinRoom = function(roomId) {
 		roomInputBox.sendKeys(roomId);
 		roomJoinButton.click();
-		browser.waitForAngular();
+		browserInstance.waitForAngular();
 	};
 };
 
-var ClonageStartGamePage = function(browser) {
+var ClonageStartGamePage = function(browserInstance) {
 
-	element = browser.element;
+	var element = browserInstance.element;
 
 	this.startGame = function() {
-		expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		expect(browserInstance.getCurrentUrl()).toMatch(/\/room/);
 		element(by.buttonText("Start Game")).click();
-		browser.waitForAngular();
+		browserInstance.waitForAngular();
 	};
 };
 
-var ClonagePlayGamePage = function(browser) {
+var ClonagePlayGamePage = function(browserInstance) {
 
-	element = browser.element;
+	var element = browserInstance.element;
 
 	this.submitAnswer = function() {
-		expect(browser.getCurrentUrl()).toMatch(/\/question/);
-		var rows = element.all(by.repeater("answer in userHand()"));
+
+		browserInstance.waitForAngular();
+
+		//expect(browser.getCurrentUrl()).toMatch(/\/question/);
+		var rows = element.all(by.exactRepeater("answer in userHand()"));
+
+		browserInstance.waitForAngular();
+
 		rows.first().element(by.id("answer")).click();
-		browser.element(by.buttonText("Submit Answer")).click();
- 		browser.waitForAngular();
+
+		//var submitAnswerButtons = element.all(by.id("answer"));
+		//submitAnswerButtons.first().click();
+		browserInstance.element(by.buttonText("Submit Answer")).click();
+ 		browserInstance.waitForAngular();
 	};
 
 	this.submitVote = function() {
-		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
-		var rows = element.all(by.repeater("answer in answers()"));
-		rows.first().element(by.id("answer")).click();
-		browser.element(by.buttonText("Submit Vote")).click();
- 		browser.waitForAngular();
+		expect(browserInstance.getCurrentUrl()).toMatch(/\/vote/);
+
+
+		//var rows = element.all(by.exactRepeater("answer in answers()"));
+		//rows.first().element(by.id("answer")).click();
+
+		var submitVoteButtons = element.all(by.id("answer"));
+		submitVoteButtons.first().click();
+
+		browserInstance.element(by.buttonText("Submit Vote")).click();
+ 		browserInstance.waitForAngular();
 	};
 };
