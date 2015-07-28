@@ -363,6 +363,20 @@ describe('Clonage App', function() {
 
 		});
 
+		it('can see my ranking', function() {
+
+			clonageRoomJoinPage.joinRoom(roomId);
+
+			browser.waitForAngular();
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+
+			playGame = new ClonagePlayGamePage(browser);
+			browser.waitForAngular();
+			expect(element(by.css('.rank')).getText()).toContain('#');
+
+		});
+
 		it('can be redirected to a voting page once everyone submitted', function() {
 
 			clonageRoomJoinPage.joinRoom(roomId);
