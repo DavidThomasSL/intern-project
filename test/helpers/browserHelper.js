@@ -5,7 +5,6 @@ module.exports = function(browserInstance) {
 	var getHomepage = function(){
 		browserInstance.get('/');
 		browserInstance.waitForAngular();
-		console.log("refreshing");
 	};
 
 	var submitName = function(name) {
@@ -26,7 +25,6 @@ module.exports = function(browserInstance) {
 		browserInstance.executeScript('window.localStorage.clear();');
 		browserInstance.waitForAngular();
 	};
-
 
 	return {
 		getHomepage: getHomepage,
