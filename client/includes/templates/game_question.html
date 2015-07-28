@@ -16,18 +16,22 @@
   </div>
   <div id="user-hand-container">
     <div class="row">
-    <form name="PickAnswerForm" ng-submit="submitAnswer(enteredAnswer)">
-      <div class="col-md-4 text-center" ng-repeat="answer in userHand()">
-        <div class="panel panel-default white-card">
-          <div class="panel-body">
-            {{answer}}
-            <div class="submit-ans-button">
-              <button class="btn btn-primary" type="button" id="answer" ng-click="$parent.enteredAnswer = answer">Select</button>
+      <form name="PickAnswerForm" ng-submit="submitAnswer(enteredAnswer)">
+        <div class="col-md-4 text-center" ng-repeat="answer in userHand()">
+          <div class="panel panel-default white-card">
+            <div class="panel-body">
+              {{answer}}
+              <div class="submit-ans-button">
+                <button class="btn btn-primary" type="button" id="answer" ng-click="$parent.enteredAnswer = answer">Select</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <button type="submit">Submit Answer</button>
+        <div class = "row">
+          <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-lg btn-success" ng-disabled="!enteredAnswer">Submit Answer</button>
+          </div>
+        </div>
       </form>
     </div>
   </div>

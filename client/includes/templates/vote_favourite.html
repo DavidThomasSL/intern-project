@@ -10,22 +10,30 @@
 	<div class="row signup-container" id="question-responses-container">
 		<div class="row">
 			<form name="VoteAnswerForm" ng-submit="submitVote(enteredAnswer)">
-				<div class="col-md-4 text-center" ng-repeat="answer in answers()">
+				<div class="col-md-4 text-center" ng-repeat="answer in answers() | orderBy:'answerText'">
 					<div class="panel panel-default white-card">
 						<div class="panel-body">
 							{{answer.answerText}}
-							<div ng-if="getUserId() === answer.playerId"->Your answer</div>
-							<div class="submit-ans-button" ng-hide="getUserId() === answer.playerId">
-								<button class="btn btn-warning" type="button" id="answer" ng-click="$parent.enteredAnswer = answer.answerText">Favourite</button>
+							<div ng-if="getUserId() === answer.playerId" style="font-style: italic">Your answer</div>
+							<div class="submit-ans-button" ng-if="getUserId() !== answer.playerId">
+								<button class="btn btn-warning" type="button" id="answer" ng-click="$root.enteredAnswer = answer.answerText">Favourite</button>
 							</div>
 						</div>
 					</div>
 				</div>
-				<button type="submit">Submit Vote</button>
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<button type="submit" class="btn btn-lg btn-success" ng-disabled="!enteredAnswer">Submit Vote</button>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>
-	<button type="button" class="btn btn-danger" ng-click="leaveRoom()">Quit Game</button>
-	<button type="button" class="btn btn-default" ng-click="finishGame()">Finish Game</button>
+	<div class = "row bottom-buttons">
+		<div class="col-md-12 text-center">
+			<button type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()">Quit Game</button>
+			<button type="button" class="btn btn-lg btn-warning" ng-click="finishGame()">Finish Game</button>
+		</div>
+	</div>
 	</div> <!-- /container -->
 </div>
