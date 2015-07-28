@@ -8,7 +8,6 @@ describe('When registering as a user', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\//);
 		firstClonageUser.getIndex();
 		firstClonageUser.submitName("Tom");
-		console.log("inside user spec");
 		expect(element(by.id('signup-container')).isPresent()).toBe(false);
 		expect(element(by.id('room-join-container')).isPresent()).toBe(true);
 		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
@@ -16,7 +15,6 @@ describe('When registering as a user', function() {
 	});
 
 	it('users name is shown on the joining room page', function() {
-		firstClonageUser.submitName("Tom");
 		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
 		expect(element(by.binding('getUserName')).getText()).toBe('Tom');
 		expect(element(by.id('room-input-box')).isPresent()).toBe(true);
@@ -24,7 +22,6 @@ describe('When registering as a user', function() {
 
 	it('on refresh, name is remebered and user goes straight to joining a room', function() {
 
-		firstClonageUser.submitName("Tom");
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
 		expect(element(by.binding('getUserName')).getText()).toBe('Tom');
@@ -36,7 +33,7 @@ describe('When registering as a user', function() {
 
 		firstClonageUser.clearLocalStorage();
 		firstClonageUser.refresh();
-
+		firstClonageUser.getIndex();
 		expect(element(by.id('signup-container')).isDisplayed()).toBe(true);
 		expect(element(by.id('room-join-container')).isPresent()).toBe(false);
 

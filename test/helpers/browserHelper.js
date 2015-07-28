@@ -2,13 +2,6 @@ module.exports = function(browserInstance) {
 
 	var element = browserInstance.element;
 
-	var resetSession = function() {
-		browserInstance.executeScript('window.sessionStorage.clear();');
-		browserInstance.executeScript('window.localStorage.clear();');
-		browserInstance.waitForAngular();
-		getIndex();
-	};
-
 	var getIndex = function(){
 		browserInstance.get('/');
 		browserInstance.waitForAngular();
@@ -53,6 +46,5 @@ module.exports = function(browserInstance) {
 		clearLocalStorage: clearLocalStorage,
 		createRoom: createRoom,
 		getRoomId: getRoomId,
-		resetSession: resetSession
 	};
 };
