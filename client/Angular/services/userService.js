@@ -136,7 +136,9 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             submitChoice: submitChoice,
             submitVote: submitVote,
             _setUserDetails: _setUserDetails,
-            _setHand: _setHand
+            _setHand: _setHand,
+            _joinRoom: _joinRoom,
+            _registerUser: _registerUser
         };
 
     }

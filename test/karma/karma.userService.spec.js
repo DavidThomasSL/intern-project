@@ -1,8 +1,6 @@
 describe("Testing User Service", function() {
 
-	var mockStorageService = {
-		userID: undefined
-	};
+	var mockStorageService = {};
 
 	var messageSent;
 
@@ -17,11 +15,7 @@ describe("Testing User Service", function() {
 		}
 	};
 
-	var testUser = {
-		uId: 1,
-		name: "bob",
-		roomId: "B00B5"
-	};
+	var testUser;
 
 	beforeEach(function() {
 		angular.module('btford.socket-io', []);
@@ -37,10 +31,51 @@ describe("Testing User Service", function() {
 		userService = _userService_;
 	}));
 
-	it("can set userDetails with internal function from communicationService", function() {
+	beforeEach(function() {
+		//reset the user object for each test, otherwise he mutates over time as the userService added data to the user object
+		testUser = {
+			uId: 1,
+			name: "bob"
+		};
+	});
+
+	it("register user sends a message to the communicationService with no userId if not set", function() {
+		spyOn(mockCommunicationService, 'sendMessage');
+		userService._registerUser();
+
+		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER register", {
+			token: undefined
+		}, jasmine.any(Function));
+	});
+
+	it("register user sends a message to the communicationService with userId if has been set in storage", function() {
+		spyOn(mockCommunicationService, 'sendMessage');
+
+		mockStorageService.userId = 1;
+
+		userService._registerUser();
+
+		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER register", {
+			token: 1
+		}, jasmine.any(Function));
+	});
+
+	it("can set userDetails in session storage with internal function _setUserDetails from communicationService, ", function() {
+
 		userService._setUserDetails({
 			user: testUser
 		});
+
+		expect(mockStorageService.userId).toEqual(1);
+	});
+
+	it("can set roomId in session storage with internal function _joinRoom", function() {
+
+		userService._joinRoom({
+			roomId: "B00B5"
+		});
+
+		expect(mockStorageService.roomId).toBe("B00B5");
 	});
 
 	it("submitChoice calls communicationService with correct data", function() {
@@ -49,6 +84,11 @@ describe("Testing User Service", function() {
 		userService._setUserDetails({
 			user: testUser
 		});
+
+		userService._joinRoom({
+			roomId: "B00B5"
+		});
+
 		userService.submitChoice("answer");
 
 		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER submitChoice", {
@@ -62,9 +102,15 @@ describe("Testing User Service", function() {
 	it("submitVote calls communicationService with correct data", function() {
 		spyOn(mockCommunicationService, 'sendMessage');
 
+
 		userService._setUserDetails({
 			user: testUser
 		});
+
+		userService._joinRoom({
+			roomId: "B00B5"
+		});
+
 		userService.submitVote("answer");
 
 		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER vote", {
@@ -74,6 +120,8 @@ describe("Testing User Service", function() {
 			roomId: "B00B5"
 		}, jasmine.any(Function));
 	});
+
+
 
 	it("setName calls communicationService", function() {
 		spyOn(mockCommunicationService, 'sendMessage');
