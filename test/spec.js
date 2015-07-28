@@ -523,6 +523,31 @@ describe('Clonage App', function() {
 
 		});
 
+		it('can see who voted for my answer', function() {
+
+			clonageRoomJoinPage.joinRoom(roomId);
+
+			browser.waitForAngular();
+			clonageStartGame = new ClonageStartGamePage(browser);
+			clonageStartGame.startGame();
+
+			playGame = new ClonagePlayGamePage(browser);
+			playGame2 = new ClonagePlayGamePage(browser2);
+
+			playGame.submitAnswer();
+			playGame2.submitAnswer();
+
+			browser2.waitForAngular();
+
+			playGame.submitVote();
+			playGame2.submitVote();
+
+			browser2.waitForAngular();
+			expect(browser2.getCurrentUrl()).toMatch(/\/results/);
+			expect(element.all(by.repeater('player in result.playerVote')).get(0).getText()).toContain('Alice');
+
+		});
+
 		it('can be assigned points if someone voted for my answer', function() {
 
 			clonageRoomJoinPage.joinRoom(roomId);
