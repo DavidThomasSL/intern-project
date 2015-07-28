@@ -8,6 +8,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-auto-install');
     grunt.loadNpmTasks('grunt-script-link-tags');
+    grunt.loadNpmTasks('grunt-karma');
 
     var testOutputLocation = process.env.CIRCLE_TEST_REPORTS || "test_output";
     var artifactsLocation = "build_artifacts";
@@ -65,7 +66,10 @@ module.exports = function(grunt) {
                 options: {
                     spawn: false // for grunt-contrib-watch v0.5.0+, "nospawn: true" for lower versions. Without this option specified express won't be reloaded
                 }
-            }
+            },
+            karma: {
+                tasks: ['karma:unit:run']
+            },
         },
         auto_install: {
             local: {}
@@ -83,6 +87,17 @@ module.exports = function(grunt) {
                 ],
                 dest: 'client/index.html'
             }
+        },
+        karma: {
+            unit: {
+                configFile: 'test/karma/karma.conf.js',
+                autoWatch: true
+            },
+            continuous: {
+                configFile: 'test/karma/karma.conf.js',
+                singleRun: true,
+                browsers: ['Chrome']
+            },
         }
     });
 
@@ -93,7 +108,7 @@ module.exports = function(grunt) {
     grunt.registerTask("check", ["jshint"]);
     grunt.registerTask("install", "auto_install");
     grunt.registerTask("test", ["check", "e2e-test"]);
-    grunt.registerTask("ci-test", ["check", "ci-e2e-test"]);
+    grunt.registerTask("ci-test", ["check", "ci-e2e-test", "karma:continuous"]);
     grunt.registerTask("scripts", "tags");
     grunt.registerTask("default", ['tags', 'test']);
 };
