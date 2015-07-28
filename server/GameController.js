@@ -58,7 +58,8 @@ module.exports = function(data) {
 					var score = {
 						playerId: pl.uId,
 						playerName : pl.name,
-						points: pl.points
+						points: pl.points,
+						rank: pl.rank
 					};
 					scores.push(score);
 				});
@@ -84,12 +85,14 @@ module.exports = function(data) {
 
 		rounds.push(round);
 
+		setRank();
 		var scores = [];
 		players.forEach(function(pl){
 			var score = {
 				playerId: pl.uId,
 				playerName : pl.name,
-				points: pl.points
+				points: pl.points,
+				rank: pl.rank
 			};
 			scores.push(score);
 		});
@@ -103,6 +106,15 @@ module.exports = function(data) {
 		});
 	};
 
+	var setRank = function() {
+		players.sort(function(a, b) {
+			return parseInt(b.points) - parseInt(a.points);
+		});
+		for (var i = 0 ; i <= players.length-1 ; i++) {
+			players[i].rank = i+1 ;
+		}
+	};
+
 	//finish game and send back final scores
 	var finishGame = function(callback) {
 
@@ -112,9 +124,9 @@ module.exports = function(data) {
 			var result = {
 				playerId: pl.uId,
 				playerName : pl.name,
-				score: pl.points
+				score: pl.points,
+				rank: pl.rank
 			};
-			console.log(result);
 			results.push(result);
 		});
 
@@ -134,7 +146,8 @@ module.exports = function(data) {
 			uId: user.uId,
 			name : user.username,
 			hand: dealUserHand(),
-			points: 0
+			points: 0,
+			rank: ""
 		};
 
 		players.push(player);

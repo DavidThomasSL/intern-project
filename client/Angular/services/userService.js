@@ -13,7 +13,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         var user = {};
         var gameHand = {};
-        var rank = "N/A" ;
+        var rank = "" ;
 
         //call function that emits to server the answer that was just submitted
         function submitChoice(enteredAnswer) {
@@ -45,6 +45,14 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         function getRank() {
             return rank;
+        }
+
+        function setRank(scores) {
+            scores.forEach(function(score) {
+                if (score.playerId === user.uId) {
+                    rank = score.rank ;
+                }
+            });
         }
 
         /*
@@ -144,7 +152,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             getUserHand: getUserHand,
             submitChoice: submitChoice,
             submitVote: submitVote,
-            getRank: getRank
+            getRank: getRank,
+            setRank: setRank
         };
 
     }
