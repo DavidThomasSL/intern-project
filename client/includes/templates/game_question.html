@@ -1,4 +1,11 @@
 <div class="container">
+<div>
+<h4> Current Scores :</h4>
+      <ul ng-repeat="score in currentscores() | orderBy: '-points'" >
+        <li><h4>{{score.playerName}}   :  {{score.points}} points</h4>
+        </li>
+      </ul>
+</div>
   <div class="header clearfix">
     <div class="row instructions">
       <div id="roundQuestion">

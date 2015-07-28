@@ -51,14 +51,24 @@ module.exports = function(data) {
 					question: getRoundQuestion(),
 					answers: []
 				};
-
 				rounds.push(round);
+
+				var scores = [];
+				players.forEach(function(pl){
+					var score = {
+						playerId: pl.uId,
+						playerName : pl.name,
+						points: pl.points
+					};
+					scores.push(score);
+				});
 
 				//return this game information back to the server
 				callback({
 					players: players,
 					roundQuestion: round.question,
-					round: roundCount
+					round: roundCount,
+					scores: scores
 				});
 			}
 		});
@@ -74,11 +84,22 @@ module.exports = function(data) {
 
 		rounds.push(round);
 
+		var scores = [];
+		players.forEach(function(pl){
+			var score = {
+				playerId: pl.uId,
+				playerName : pl.name,
+				points: pl.points
+			};
+			scores.push(score);
+		});
+
 		//return this round information back to the server
 		callback({
 			players: players,
 			roundQuestion: round.question,
-			round: roundCount
+			round: roundCount,
+			scores: scores
 		});
 	};
 

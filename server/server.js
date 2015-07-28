@@ -190,7 +190,8 @@ module.exports = function(port, enableLogging) {
                 });
                 broadcastroom(room.id, 'GAME question', {
                     question: data.roundQuestion,
-                    round: data.round
+                    round: data.round,
+                    scores: data.scores
                 });
                 broadcastroom(room.id, 'ROOM details', {
                     roomId: room.id,
@@ -238,7 +239,8 @@ module.exports = function(port, enableLogging) {
 
                 broadcastroom(room.id, 'GAME question', {
                     question: data.roundQuestion,
-                    round: data.round
+                    round: data.round,
+                    scores: data.scores
                 });
 
                 //Send each user in the room their individual hand (delt by the GameController)
