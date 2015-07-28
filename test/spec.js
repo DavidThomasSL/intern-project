@@ -477,6 +477,7 @@ describe('After each round', function() {
 	 		playGame.submitVote();
 			playGame2.submitVote();
 
+			browser2.waitForAngular();
 			expect(browser2.getCurrentUrl()).toMatch(/\/results/);
 
 		});
@@ -495,9 +496,13 @@ describe('After each round', function() {
 			playGame.submitAnswer();
 			playGame2.submitAnswer();
 
+			browser.waitForAngular();
+			browser2.waitForAngular();
+
 	 		playGame.submitVote();
 			playGame2.submitVote();
 
+			browser2.waitForAngular();
 			expect(browser2.getCurrentUrl()).toMatch(/\/results/);
 			expect(element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.playerName')).getText()).toContain('John');
 	 		expect(element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.playerName')).getText()).toContain('Alice');
@@ -518,9 +523,12 @@ describe('After each round', function() {
 			playGame.submitAnswer();
 			playGame2.submitAnswer();
 
+			browser2.waitForAngular();
+
 	 		playGame.submitVote();
 			playGame2.submitVote();
 
+			browser2.waitForAngular();
 			expect(browser2.getCurrentUrl()).toMatch(/\/results/);
 			expect(element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.playerName')).getText()).toContain('points');
 	 		expect(element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.playerName')).getText()).toContain('points');
@@ -541,9 +549,12 @@ describe('After each round', function() {
 			playGame.submitAnswer();
 			playGame2.submitAnswer();
 
+			browser2.waitForAngular();
+
 	 		playGame.submitVote();
 			playGame2.submitVote();
 
+			browser2.waitForAngular();
 			browser2.element(by.buttonText("Next Round")).click();
 			browser2.waitForAngular();
 			expect(browser2.getCurrentUrl()).toMatch(/\/question/);
@@ -622,17 +633,22 @@ var ClonagePlayGamePage = function(browserInstance) {
 	var element = browserInstance.element;
 
 	this.submitAnswer = function() {
-		expect(browser.getCurrentUrl()).toMatch(/\/question/);
+
+		browserInstance.waitForAngular();
+
+		//expect(browser.getCurrentUrl()).toMatch(/\/question/);
 		var rows = element.all(by.exactRepeater("answer in userHand()"));
 		browserInstance.waitForAngular();
 		rows.first().element(by.id("answer")).click();
+
 		browserInstance.element(by.buttonText("Submit Answer")).click();
  		browserInstance.waitForAngular();
 	};
 
 	this.submitVote = function() {
 
-		expect(browserInstance.getCurrentUrl()).toMatch(/\/vote/);
+		//expect(browserInstance.getCurrentUrl()).toMatch(/\/vote/);
+
 		var submitVoteButtons = element.all(by.id("answer"));
 		submitVoteButtons.first().click();
 

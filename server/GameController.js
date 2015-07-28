@@ -245,7 +245,6 @@ module.exports = function(data) {
 
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
-			console.log("everyone voted!");
 
 			var results = [];
 			currentRound.answers.forEach(function(answer){
@@ -285,7 +284,6 @@ module.exports = function(data) {
 	add 50 points to player -> called on each vote
 	*/
 	var addPoints = function(playerId) {
-		console.log("added vote");
 		players.forEach (function(player){
 			if (player.uId === playerId ) {
 				player.points += POINTS_PER_VOTE ;
