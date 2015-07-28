@@ -2,7 +2,14 @@ module.exports = function(browserInstance) {
 
 	var element = browserInstance.element;
 
-	var getHomepage = function(){
+	var resetSession = function() {
+		browserInstance.executeScript('window.sessionStorage.clear();');
+		browserInstance.executeScript('window.localStorage.clear();');
+		browserInstance.waitForAngular();
+		getIndex();
+	};
+
+	var getIndex = function(){
 		browserInstance.get('/');
 		browserInstance.waitForAngular();
 	};
@@ -26,10 +33,26 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var createRoom = function(){
+		var createRoomButton = element(by.id('create-room-button'));
+		createRoomButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var getRoomId = function() {
+		return element(by.binding('roomId')).getText();
+		// .then(function(text) {
+		// 	return text;
+		// });
+	};
+
 	return {
-		getHomepage: getHomepage,
+		getIndex: getIndex,
 		submitName: submitName,
 		refresh: refresh,
-		clearLocalStorage: clearLocalStorage
+		clearLocalStorage: clearLocalStorage,
+		createRoom: createRoom,
+		getRoomId: getRoomId,
+		resetSession: resetSession
 	};
 };

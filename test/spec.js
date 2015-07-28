@@ -1,13 +1,10 @@
 var clonageUser = require("./helpers/browserHelper.js");
 
-describe('Clonage App', function() {
-
-	beforeEach(function() {
-		browser.get('/');
-		browser.waitForAngular();
-	});
+describe('initalTests', function() {
 
 	it('should have a title', function() {
+		browser.get('/');
+		browser.waitForAngular();
 		expect(browser.getTitle()).toEqual('CLONAGE');
 	});
 
@@ -16,65 +13,6 @@ describe('Clonage App', function() {
 	});
 
 });
-
-// 	describe('When creating a room', function() {
-
-// 		var clonageSignup;
-// 		var clonageRoomJoinPage;
-// 		var roomId;
-
-// 		beforeEach(function() {
-
-// 			clonageSignup = new ClonageSignupPage(browser);
-// 			clonageRoomJoinPage = new ClonageRoomJoinPage(browser);
-
-// 		});
-
-// 		it('user can create a new room and are automatically put into it', function() {
-
-// 			clonageSignup.submitName("Ben");
-// 			clonageRoomJoinPage.createRoom();
-
-// 			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
-// 			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
-// 			expect(browser.getCurrentUrl()).toMatch(/\/room/);
-// 			element(by.binding('roomId')).getText().then(function(text) {
-// 				roomId = text;
-// 			});
-
-// 		});
-
-// 		it('users in a lobby can see the room code', function() {
-
-// 			expect(browser.getCurrentUrl()).toMatch(/\/room/);
-// 			expect(element(by.binding('roomId')).getText().then(function(text) {
-// 				roomId = text.split(" ")[2];
-// 				return roomId.length;
-// 			})).toBe(5);
-
-// 		});
-
-// 		it('user can see themselves in the room', function() {
-
-// 			expect(browser.getCurrentUrl()).toMatch(/\/room/);
-// 			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
-// 			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
-
-// 			expect(element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Ben');
-
-// 		});
-
-// 		it('on refresh the user is put back in the room lobby', function() {
-
-// 			browser.refresh();
-// 			expect(element(by.id('room-join-container')).isPresent()).toBe(false);
-// 			expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
-// 			expect(browser.getCurrentUrl()).toMatch(/\/room/);
-
-// 		});
-
-// 	});
-
 
 // 	describe('When joining an existing room', function() {
 

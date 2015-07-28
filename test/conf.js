@@ -1,6 +1,10 @@
 exports.config = {
 	seleniumAddress: 'http://localhost:4444/wd/hub',
-	specs: ['*.js',],
+	specs: ['spec.js',
+		'userInitialiseSpec.js',
+		'userRegisteredSpec.js',
+		'roomCreateSpec.js'
+		],
 	baseUrl: 'http://localhost:8080/',
 	params: {
 		name: 'CLONAGE'

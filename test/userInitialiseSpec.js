@@ -2,15 +2,13 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When registering as a user', function() {
 
-	var firstClonageUser;
-
-	beforeEach(function() {
-		firstClonageUser = new clonageUser(browser);
-		firstClonageUser.getHomepage();
-	});
+	var firstClonageUser = new clonageUser(browser);
 
 	it('can enter a name and move to joining a room', function() {
+		expect(browser.getCurrentUrl()).toMatch(/\//);
+		firstClonageUser.getIndex();
 		firstClonageUser.submitName("Tom");
+		console.log("inside user spec");
 		expect(element(by.id('signup-container')).isPresent()).toBe(false);
 		expect(element(by.id('room-join-container')).isPresent()).toBe(true);
 		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
