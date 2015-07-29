@@ -1,5 +1,6 @@
 exports.config = {
 	seleniumAddress: 'http://localhost:4444/wd/hub',
+
 	specs: [ //comment out lines here to test specific sections
 		'initalSpec.js',
 		'userInitialiseSpec.js',

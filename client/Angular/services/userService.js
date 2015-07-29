@@ -1,8 +1,6 @@
 ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
     function($sessionStorage, communicationService) {
 
-
-
         /*
         --------------------
             PUBLIC API
@@ -13,16 +11,16 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         var user = {};
         var gameHand = {};
-        var rank = "" ;
+        var rank = "";
 
         //call function that emits to server the answer that was just submitted
         function submitChoice(enteredAnswer) {
-            emitChoice(enteredAnswer);
+            _emitChoice(enteredAnswer);
         }
 
         //call function that emits to server the vote that was just submitted
         function submitVote(enteredAnswer) {
-            emitVote(enteredAnswer);
+            _emitVote(enteredAnswer);
         }
 
         function getUserName() {
@@ -50,7 +48,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         function setRank(scores) {
             scores.forEach(function(score) {
                 if (score.playerId === user.uId) {
-                    rank = score.rank ;
+                    rank = score.rank;
                 }
             });
         }
@@ -65,28 +63,26 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         //Called by the communication service, when socket.io initially connects
         //MAGIC, DON'T TRY TO UNDERSTAND
-        function registerUser() {
+        function _registerUser() {
             sendMessage('USER register', {
                 token: $sessionStorage.userId
             });
         }
 
-        function setUserDetails(data) {
+        function _setUserDetails(data) {
             user = data.user;
             $sessionStorage.userId = user.uId;
             $sessionStorage.roomId = user.roomId;
         }
 
-        function joinRoom(data) {
+        function _joinRoom(data) {
             $sessionStorage.roomId = data.roomId;
             user.roomId = data.roomId;
             userInRoom = true;
         }
 
-        function setHand(data) {
+        function _setHand(data) {
             gameHand = data.hand;
-            console.log("got game hand CORRECTLY");
-            console.log(gameHand);
         }
 
         /*
@@ -99,16 +95,16 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         communicationService.registerListener("USER", [{
             eventName: "connect",
-            eventAction: registerUser
+            eventAction: _registerUser
         }, {
             eventName: "details",
-            eventAction: setUserDetails
+            eventAction: _setUserDetails
         }, {
             eventName: "room join",
-            eventAction: joinRoom
+            eventAction: _joinRoom
         }, {
             eventName: "hand",
-            eventAction: setHand
+            eventAction: _setHand
         }]);
 
 
@@ -119,7 +115,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         */
 
         //emit the answer that was just submitted: who submitted what and what room they are in
-        function emitChoice(answer) {
+        function _emitChoice(answer) {
             sendMessage('USER submitChoice', {
                 playerId: user.uId,
                 playerName: user.name,
@@ -129,7 +125,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         //emit the vote that was just submitted: who voted for what and what room they are in
-        function emitVote(answer) {
+        function _emitVote(answer) {
             sendMessage('USER vote', {
                 playerId: user.uId,
                 playerName: user.name,
@@ -153,7 +149,11 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             submitChoice: submitChoice,
             submitVote: submitVote,
             getRank: getRank,
-            setRank: setRank
+            setRank: setRank,
+            _setUserDetails: _setUserDetails,
+            _setHand: _setHand,
+            _joinRoom: _joinRoom,
+            _registerUser: _registerUser
         };
 
     }
