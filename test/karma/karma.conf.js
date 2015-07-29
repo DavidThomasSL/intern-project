@@ -43,7 +43,7 @@ module.exports = function(config) {
             "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-animate.js",
             "node_modules/angular-mocks/angular-mocks.js",
             "client/Angular/**/*.js",
-            "test/karma/*.js"
+            "test/karma/*.js",
         ],
 
 

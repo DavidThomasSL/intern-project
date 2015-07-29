@@ -47,49 +47,49 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 	});
 
 	socket.on("USER details", function(data) {
-		setListenerEventAction("USER details");
+		_setListenerEventAction("USER details");
 		onMessageFunction(data);
 	});
 
 	socket.on("USER room join", function(data) {
-		setListenerEventAction("USER room join");
+		_setListenerEventAction("USER room join");
 		onMessageFunction(data);
 	});
 
 	socket.on("USER hand", function(data) {
-		setListenerEventAction("USER hand");
+		_setListenerEventAction("USER hand");
 		onMessageFunction(data);
 	});
 
 	socket.on("GAME question", function(data) {
-		setListenerEventAction("GAME question");
+		_setListenerEventAction("GAME question");
 		onMessageFunction(data);
 	});
 
 	socket.on("GAME answers", function(data) {
 		console.log("got game chosenAnswers");
-		setListenerEventAction("GAME chosenAnswers");
+		_setListenerEventAction("GAME chosenAnswers");
 		onMessageFunction(data);
 	});
 
 	socket.on("GAME playerRoundResults", function(data) {
-		setListenerEventAction("GAME playerRoundResults");
+		_setListenerEventAction("GAME playerRoundResults");
 		onMessageFunction(data);
 	});
 
 	socket.on("GAME finish", function(data) {
-		setListenerEventAction("GAME finish");
+		_setListenerEventAction("GAME finish");
 		onMessageFunction(data);
 	});
 
 	socket.on("ROOM details", function(data) {
-		setListenerEventAction("ROOM details");
+		_setListenerEventAction("ROOM details");
 		onMessageFunction(data);
 	});
 
 
 	socket.on("ROUTING", function(data) {
-		setListenerEventAction("ROUTING");
+		_setListenerEventAction("ROUTING");
 		onMessageFunction(data);
 	});
 
@@ -101,7 +101,15 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		as set when it registered
 	*/
 
-	function setListenerEventAction(event) {
+	function _getListenerList() {
+		return listenerList;
+	}
+
+	function _getOnMessageFunction() {
+		return onMessageFunction;
+	}
+
+	function _setListenerEventAction(event) {
 
 		var splitEvent = event.split(" ");
 		var eventService = splitEvent[0];
@@ -121,7 +129,10 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 
 	return {
 		sendMessage: sendMessage,
-		registerListener: registerListener
+		registerListener: registerListener,
+		_getListenerList: _getListenerList,
+		_setListenerEventAction: _setListenerEventAction,
+		_getOnMessageFunction: _getOnMessageFunction
 	};
 
 }]);
