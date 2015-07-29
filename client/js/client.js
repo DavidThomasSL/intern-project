@@ -1,1 +1,0 @@
-var ClonageApp = angular.module("ClonageApp", ['ngStorage', 'ngRoute', 'btford.socket-io']);

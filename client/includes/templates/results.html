@@ -1,0 +1,30 @@
+<div class="container">
+	<div class="header clearfix text-center">
+		<h2> Votes are in: </h2>
+	</div>
+	<div class="text-center">
+		<form name="resultsForm" ng-submit="nextRound()">
+			<ul ng-repeat="result in getPlayerRoundResults()" class="list-group">
+				<li class="list-group-item">
+					{{result.playerName}}'s answer - <div style="font-weight: bold; display: inline">{{result.ans}}</div><br>
+					Vote(s): <div ng-repeat="player in result.playerVote" style="font-style: italic; display: inline">{{player}} </div>, {{result.playerVote.length*50}} points<br>
+					Current total :{{result.playerPoints}}
+				</li>
+			</ul>
+			<br>
+			<div class ="row">
+				<div class="col-md-12 text-center">
+					<button id="next-round-button" type="submit" class="btn btn-lg btn-primary">Next Round</button>
+				</div>
+			</div>
+		</form>
+		<div>
+			<div class = "row bottom-buttons">
+				<div class="col-md-12 text-center">
+<!-- 					<button type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()">Quit Game</button>
+ -->					<button  id="finish-game-button" type="button" class="btn btn-lg btn-warning" ng-click="finishGame()">Finish Game</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

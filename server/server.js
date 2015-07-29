@@ -114,24 +114,13 @@ module.exports = function(port, enableLogging) {
             check if that room exisits, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            var foundRoom = false;
             rooms.forEach(function(room) {
                 if (room.id === msg.roomId) {
-                    foundRoom = true;
-                    if (room.gameInProgress) {
-                        socket.emit('ROOM error', {
-                            msg: "Game already in progress"
-                        });
-                    } else {
+                    if(room.gameInProgress === false){
                         putUserInRoom(msg.roomId);
                     }
                 }
             });
-            if (foundRoom === false) {
-                socket.emit('ROOM error', {
-                    msg: "Room not found"
-                });
-            }
         });
 
 
@@ -203,7 +192,8 @@ module.exports = function(port, enableLogging) {
                 });
                 broadcastroom(room.id, 'GAME question', {
                     question: data.roundQuestion,
-                    round: data.round
+                    round: data.round,
+                    scores: data.scores
                 });
                 broadcastroom(room.id, 'ROOM details', {
                     roomId: room.id,
@@ -227,7 +217,12 @@ module.exports = function(port, enableLogging) {
             logger.debug("Starting game in room " + room.id);
         });
 
-
+        /*
+        Starts new round:
+        call function in gameController to start new round
+        callback will return a new question which will be broadcasted to eveyone in the game
+        each player will be send his updated hand
+        */
         socket.on('GAME next round', function(data) {
             var room;
 
@@ -238,14 +233,16 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            room.gameController.newRound( function(data) {
+            room.gameController.newRound(function(data) {
 
                 broadcastroom(room.id, 'ROUTING', {
                     location: 'question'
                 });
+
                 broadcastroom(room.id, 'GAME question', {
                     question: data.roundQuestion,
-                    round: data.round
+                    round: data.round,
+                    scores: data.scores
                 });
 
                 //Send each user in the room their individual hand (delt by the GameController)
@@ -264,9 +261,12 @@ module.exports = function(port, enableLogging) {
             logger.info("Starting new round in room " + room.id);
         });
 
+        /*
+        call function in gameController to finish the game
+        callback will return the final scores (as data.res)
+        */
         socket.on('GAME finish', function(data) {
             var room;
-
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === data.roomId) {
@@ -274,7 +274,7 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            room.gameController.finishGame( function(data) {
+            room.gameController.finishGame(function(data) {
 
                 broadcastroom(room.id, 'ROUTING', {
                     location: 'endGame'
@@ -290,12 +290,16 @@ module.exports = function(port, enableLogging) {
         });
 
         // submit answer
-        socket.on('USER answer', function(msg) {
+        socket.on('USER submitChoice', function(msg) {
+            /*
+             submit answer
+            callback will return the answers submitted and if everyone has submitted
+             */
             var room;
 
-            socket.emit('ROUTING', { location: 'wait' });
-
-            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
+            socket.emit('ROUTING', {
+                location: 'waitQuestion'
+            });
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === msg.roomId) {
@@ -303,29 +307,31 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            room.gameController.submitAnswer(msg.playerId, msg.answer, function(data) {
+            room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
 
-                if (data !== undefined) {
-
-                    broadcastoptions(room.id, 'GAME voting', {
-                        answers: data.answers
-                    });
-
+                //sends the list of answers each time someone submits one
+                broadcastroom(room.id, 'GAME answers', {
+                    answers: data.answers
+                });
+                if (data.allChoicesSubmitted === true) {
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'vote'
                     });
                 }
-
             });
         });
 
-        // submit a vote
+        /*
+        submit a vote
+        callback will return the results after everyone has voted:
+        who submitted what answer, who voted for them, their score after the round
+        */
         socket.on('USER vote', function(msg) {
             var room;
 
-            socket.emit('ROUTING', { location: 'wait' });
-
-            // logger.info("submitted answer " + msg.playerId + " : " + msg.answer + ", room:" + msg.roomId);
+            socket.emit('ROUTING', {
+                location: 'waitVote'
+            });
 
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === msg.roomId) {
@@ -335,16 +341,19 @@ module.exports = function(port, enableLogging) {
 
 
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
+                //send room the vote data after each vote
+                broadcastroom(room.id, 'GAME playerRoundResults', {
+                    results: data.res,
+                    voteNumber: data.voteNumber
+                });
 
-                if (data !== undefined) {
-
+                if (data.allVotesSubmitted === true) {
+                    //moving all players to the results page
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'results'
                     });
 
-                    broadcastroom(room.id, 'GAME results', {
-                        results: data.res
-                    });
+
                 }
 
             });
