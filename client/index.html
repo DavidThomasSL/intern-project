@@ -27,25 +27,27 @@
 
             </div>
 
-            <!-- sidebar -->
-            <div class="sidebar" ng-show="toggle" ng-class="{'slide-out': toggle}">
-                <div style="width: 95%; margin-left: 2%">
-                    <div class="header clearfix text-center"><br>
-                        <h4 style="color: white"> Current Scores :</h4>
-                    </div>
-                    <div class="text-center">
-                        <ul ng-repeat="score in currentscores() | orderBy: '-points'" class="list-group">
-                            <li class="list-group-item">
-                            <div style="font-weight: bold">{{score.playerName}}
-                            </div>
-                            <div style="font-style: italic">{{score.points}} points</div></li>
-                        </ul>
+            <div class="content">
+                <!-- sidebar -->
+                <div class="sidebar" ng-show="toggle" ng-class="{'slide-out': toggle}">
+                    <div style="width: 95%; margin-left: 2%">
+                        <div class="header clearfix text-center"><br>
+                            <h4 style="color: black"> Current Scores :</h4>
+                        </div>
+                        <div class="text-center">
+                            <ul ng-repeat="score in currentscores() | orderBy: '-points'" class="list-group">
+                                <li class="list-group-item">
+                                <div style="font-weight: bold">{{score.playerName}}
+                                </div>
+                                <div style="font-style: italic">{{score.points}} points</div></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div ng-view ng-class="{ largeWidth: !toggle, smallWidth: toggle }">
-            </div ng-view>
+                <div ng-view ng-class="{ largeWidth: !toggle, smallWidth: toggle }">
+                </div ng-view>
+            </div>
 
         </div>
         <footer class="footer text-center">
