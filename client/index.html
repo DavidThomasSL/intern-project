@@ -21,12 +21,13 @@
                 <div class="lead">
                     <h1>Clonage</h1>
                 </div>
+                <p class="rank">#{{rank()}}</p>
                 <p class="username">{{getUserName()}}</p>
             </div>
-            <div ng-view>
+            <div ng-view >
             </div ng-view>
         </div>
-        <footer class="footer">
+        <footer class="footer text-center">
             <p>&copy; <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a></p>
         </footer>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.js"></script>
@@ -35,7 +36,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-animate.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://cdn.rawgit.com/btford/angular-socket-io/v0.7.0/socket.min.js"></script>
-
         <!-- start client/js tags -->
         <script src="Angular/ClonageApp.js"></script>
         <script src="Angular/config/routeConfig.js"></script>

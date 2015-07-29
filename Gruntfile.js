@@ -107,7 +107,7 @@ module.exports = function(grunt) {
     grunt.registerTask('ci-e2e-test', ['express:prod', 'selenium_start', 'protractor:e2e']);
     grunt.registerTask("check", ["jshint"]);
     grunt.registerTask("install", "auto_install");
-    grunt.registerTask("test", ["check", "e2e-test"]);
+    grunt.registerTask("test", ["check", "e2e-test", "karma:continuous"]);
     grunt.registerTask("ci-test", ["check", "ci-e2e-test", "karma:continuous"]);
     grunt.registerTask("scripts", "tags");
     grunt.registerTask("default", ['tags', 'test']);

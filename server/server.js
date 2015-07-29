@@ -116,7 +116,9 @@ module.exports = function(port, enableLogging) {
         socket.on('ROOM join', function(msg) {
             rooms.forEach(function(room) {
                 if (room.id === msg.roomId) {
-                    putUserInRoom(msg.roomId);
+                    if(room.gameInProgress === false){
+                        putUserInRoom(msg.roomId);
+                    }
                 }
             });
         });
@@ -190,7 +192,8 @@ module.exports = function(port, enableLogging) {
                 });
                 broadcastroom(room.id, 'GAME question', {
                     question: data.roundQuestion,
-                    round: data.round
+                    round: data.round,
+                    scores: data.scores
                 });
                 broadcastroom(room.id, 'ROOM details', {
                     roomId: room.id,
@@ -238,7 +241,8 @@ module.exports = function(port, enableLogging) {
 
                 broadcastroom(room.id, 'GAME question', {
                     question: data.roundQuestion,
-                    round: data.round
+                    round: data.round,
+                    scores: data.scores
                 });
 
                 //Send each user in the room their individual hand (delt by the GameController)

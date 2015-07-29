@@ -10,11 +10,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var round = -1;
 	var answers = [];
 	var playerRoundResults = [];
-	var finalresults = [];
+	var currentscores = [];
 	var voteCounter = 0;
 	var maxRounds = 8; //variable holding the number of rounds wanted
-
-
 
 	function getRoundQuestion() {
 		return currentQuestion;
@@ -45,8 +43,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	//get final scores after the game finished
-	function getFinalResults() {
-		return finalresults;
+	function getCurrentScores() {
+		return currentscores;
 	}
 
 	//load next round or finish the game if that was the last round
@@ -81,6 +79,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	function _recieveQuestion(data) {
 		currentQuestion = data.question;
 		round = data.round;
+		currentscores = data.scores;
 	}
 
 	function _setChosenAnswers(data) {
@@ -93,7 +92,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	function _gameFinish(data) {
-		finalresults = data.results;
+		currentscores = data.results;
 	}
 
 	function _setMaxRounds(num) {
@@ -141,7 +140,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
-		getFinalResults: getFinalResults,
+		getCurrentScores: getCurrentScores,
 		nextRound: nextRound,
 		finishGame: finishGame,
 		getCurrentVotes: getCurrentVotes,

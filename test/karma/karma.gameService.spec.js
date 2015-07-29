@@ -92,7 +92,7 @@ describe("Testing Game Service", function() {
 		gameService._gameFinish({
 			results: "results"
 		});
-		expect(gameService.getFinalResults()).toEqual("results");
+		expect(gameService.getCurrentScores()).toEqual("results");
 	});
 
 	it("finishGame calls send message when no rounds left", function() {

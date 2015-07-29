@@ -11,6 +11,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         var user = {};
         var gameHand = {};
+        var rank = "";
 
         //call function that emits to server the answer that was just submitted
         function submitChoice(enteredAnswer) {
@@ -37,6 +38,18 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         function setName(name) {
             sendMessage('USER set name', {
                 name: name
+            });
+        }
+
+        function getRank() {
+            return rank;
+        }
+
+        function setRank(scores) {
+            scores.forEach(function(score) {
+                if (score.playerId === user.uId) {
+                    rank = score.rank;
+                }
             });
         }
 
@@ -135,6 +148,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             getUserHand: getUserHand,
             submitChoice: submitChoice,
             submitVote: submitVote,
+            getRank: getRank,
+            setRank: setRank,
             _setUserDetails: _setUserDetails,
             _setHand: _setHand,
             _joinRoom: _joinRoom,

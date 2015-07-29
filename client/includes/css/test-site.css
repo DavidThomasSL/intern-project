@@ -2,7 +2,7 @@
 body, html {
   position: relative;
   padding-bottom: 20px;
-  height: 100%
+  height: 100%;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -91,6 +91,16 @@ body, html {
   margin-bottom: 10px;
 }
 
+.jumbotron .rank {
+  padding: 40px 120px 0px 120px;
+  color: white;
+  font-size: 25px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  margin-bottom: 10px;
+}
+
 .jumbotron h1 {
   float: left;
   color: white;
@@ -146,6 +156,10 @@ body, html {
   margin: 30px 20px 100px 20px;
 }
 
+.bottom-buttons {
+  margin-top: 60px;
+}
+
 
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
@@ -186,7 +200,7 @@ body, html {
 
 /* scale up */
 @keyframes scaleUp {
-    from    { opacity: 0.3; -webkit-transform: scale(0.8); }
+    from    { opacity: 0.3; -webkit-transform: scale(0.8); transform : scale(0.8);}
 }
 
 /* slide in from the bottom */
@@ -194,5 +208,15 @@ body, html {
     to      { transform: translateX(-100%); }
 }
 
-.ng-enter           { animation: scaleUp 0.5s both ease-in; z-index: 8888; }
-.ng-leave           { animation: slideOutLeft 0.5s both ease-in; z-index: 9999; }
+@keyframes fadeIn {
+    from  {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeOut {
+    from {opacity:1;}
+    to {opacity: 0;}
+}
+
+.ng-enter           { animation: fadeIn 0.2s both ease-in;}
+.ng-leave           { animation: fadeOut 0.2s both ease-in;}
