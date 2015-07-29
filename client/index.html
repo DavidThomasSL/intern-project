@@ -29,8 +29,8 @@
 
             <!-- sidebar -->
             <div class="sidebar" ng-show="toggle" ng-animate="sidebar">
-                <div class="sidebar container" style="width: 300px">
-                    <div class="header clearfix text-center">
+                <div style="width: 95%; margin-left: 2%">
+                    <div class="header clearfix text-center"><br>
                         <h4 style="color: white"> Current Scores :</h4>
                     </div>
                     <div class="text-center">
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div ng-view >
+            <div ng-view ng-class="{ largeWidth: !toggle, smallWidth: toggle }">
             </div ng-view>
 
         </div>

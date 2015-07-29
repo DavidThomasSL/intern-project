@@ -36,23 +36,18 @@ body, html {
   top: 380px;
   bottom: 0px;
   left: 0px;
-  font-size: 30px;
+  font-size: 5%;
 }
 
-.sidebar-show-setup, .sidebar-hide-setup {
-  -webkit-transition:all linear 0.3s;
-  -moz-transition:all linear 0.3s;
-  -ms-transition:all linear 0.3s;
-  -o-transition:all linear 0.3s;
-  transition:all linear 0.3s;
+.largeWidth {
+  width: 100%;
 }
 
-.sidebar-show-setup { opacity:0; height: 0; }
-.sidebar-show-setup.sidebar-show-start { opacity:1; height: 100%; width:115px ;}
-
-.sidebar-hide-setup { opacity:1; height: 0; }
-.sidebar-hide-setup.sidebar-hide-start { opacity:0; height: 100%; width:115px ;}
-
+.smallWidth {
+  width: 84%;
+  right: 0px;
+  margin-left: 16%;
+}
 
 /* Custom page footer */
 .footer {
