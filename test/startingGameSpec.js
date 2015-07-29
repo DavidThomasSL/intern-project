@@ -38,6 +38,6 @@ describe('When starting a game', function() {
 		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(7);
 
 		firstClonageUser.clearUser();
-		secondClonageUser.clearUser();
+		browser2.close();
 	});
 });

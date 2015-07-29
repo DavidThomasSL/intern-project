@@ -1,13 +1,14 @@
 var clonageUser = require("./helpers/browserHelper.js");
 
-var roomId;
-
-var browser2 = browser.forkNewDriverInstance(false, true);
-
-var firstClonageUser = new clonageUser(browser);
-var secondClonageUser = new clonageUser(browser2);
 
 describe('When joining an existing room', function() {
+
+	var roomId;
+
+	var browser2 = browser.forkNewDriverInstance(false, true);
+
+	var firstClonageUser = new clonageUser(browser);
+	var secondClonageUser = new clonageUser(browser2);
 
 	it('can join an existing room and go into the lobby and see other users in the room', function() {
 
@@ -45,6 +46,6 @@ describe('When joining an existing room', function() {
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
 
 		firstClonageUser.clearUser();
-		secondClonageUser.clearUser();
+		browser2.close();
 	});
 });

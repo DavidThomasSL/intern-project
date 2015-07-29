@@ -62,6 +62,39 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var submitFirstAnswer = function() {
+		var rows = element.all(by.exactRepeater("answer in userHand()"));
+		browserInstance.waitForAngular();
+		rows.first().element(by.id("answer")).click();
+		browserInstance.element(by.id("submit-answer-button")).click();
+		browserInstance.waitForAngular();
+	};
+
+	var submitFirstVote = function() {
+		var submitVoteButtons = element.all(by.id("answer"));
+		submitVoteButtons.first().click();
+		browserInstance.element(by.id("submit-vote-button")).click();
+		browserInstance.waitForAngular();
+	};
+
+	var startNewRound = function() {
+		var newRoundButton = element(by.id('next-round-button'));
+		newRoundButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var finishGame = function() {
+		var finishGameButton = element(by.id('finish-game-button'));
+		finishGameButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var backToStart = function() {
+		var backToStartButton = element(by.id('back-to-start-button'));
+		backToStartButton.click();
+		browserInstance.waitForAngular();
+	};
+
 	return {
 		element: element,
 		clearUser: clearUser,
@@ -73,6 +106,11 @@ module.exports = function(browserInstance) {
 		joinRoom: joinRoom,
 		leaveLobby: leaveLobby,
 		getRoomId: getRoomId,
-		startGame: startGame
+		startGame: startGame,
+		submitFirstAnswer: submitFirstAnswer,
+		submitFirstVote: submitFirstVote,
+		startNewRound: startNewRound,
+		finishGame: finishGame,
+		backToStart: backToStart
 	};
 };
