@@ -2,34 +2,51 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
     function($routeProvider, $locationProvider) {
         $routeProvider
             .when('/', {
-                templateUrl: '/includes/templates/signup/set_name.html'
+                templateUrl: '/includes/templates/signup/set_name.html',
+                controller: 'signupController'
             })
             .when('/joining', {
-                templateUrl: '/includes/templates/signup/join_create_room.html'
+                templateUrl: '/includes/templates/signup/join_create_room.html',
+                controller: 'roomController'
+
             })
             .when('/room/', {
-                templateUrl: '/includes/templates/room/room_lobby.html'
+                templateUrl: '/includes/templates/room/room_lobby.html',
+                controller: 'roomController'
             })
             .when('/question/', {
-                templateUrl: '/includes/templates/game/game_question.html'
+                templateUrl: '/includes/templates/game/game_question.html',
+                controller: 'gameController'
+
             })
             .when('/vote/', {
-                templateUrl: '/includes/templates/game/vote_favourite.html'
+                templateUrl: '/includes/templates/game/vote_favourite.html',
+                controller: 'gameController'
+
             })
             .when('/waitVote/', {
-                templateUrl: '/includes/templates/game/wait_vote.html'
+                templateUrl: '/includes/templates/game/wait_vote.html',
+                controller: 'gameController'
+
             })
             .when('/results/', {
-                templateUrl: '/includes/templates/game/results.html'
+                templateUrl: '/includes/templates/game/results.html',
+                controller: 'gameController'
+
             })
             .when('/endGame/', {
-                templateUrl: '/includes/templates/game/endGame.html'
+                templateUrl: '/includes/templates/game/endGame.html',
+                controller: 'gameController'
+
             })
             .when('/waitQuestion', {
-                templateUrl: '/includes/templates/game/wait_question.html'
+                templateUrl: '/includes/templates/game/wait_question.html',
+                controller: 'gameController'
+
             })
             .otherwise({
-                templateUrl: '/includes/templates/game/setname.html'
+                templateUrl: '/includes/templates/game/setname.html',
+
             });
 
     }
