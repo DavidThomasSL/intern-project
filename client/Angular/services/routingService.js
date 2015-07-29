@@ -2,11 +2,10 @@ ClonageApp.service('RoutingService', ['$location', 'communicationService', funct
 
     communicationService.registerListener("ROUTING", [{
         eventName: "",
-        eventAction: handleRouting
+        eventAction: _handleRouting
     }]);
 
-    function handleRouting(msg) {
-
+    function _handleRouting(msg) {
         switch (msg.location) {
             case 'room':
                 $location.path('/room');
@@ -34,5 +33,7 @@ ClonageApp.service('RoutingService', ['$location', 'communicationService', funct
         }
     }
 
-    return null;
+    return {
+        _handleRouting: _handleRouting
+    };
 }]);

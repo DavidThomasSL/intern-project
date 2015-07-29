@@ -26,6 +26,41 @@ body, html {
   line-height: 40px;
 }
 
+.sidebar {
+  -moz-transition: left .1s;
+  -webkit-transition: left .1s;
+  -o-transition: left .1s;
+  transition: left .1s;
+  position: absolute;
+  background-color: white;
+  /*opacity: 0.2;*/
+  color: black;
+  text-align: center;
+  width: 16%;
+  top: 380px;
+  bottom: 0;
+  left: -300px;
+  font-size: 120%;
+}
+
+.slide-out {
+    -moz-transition: left 1s;
+    -webkit-transition: left 1s;
+    -o-transition: left 1s;
+    transition: left 1s;
+    left: 0px;
+}
+
+.largeWidth {
+  width: 100%;
+}
+
+.smallWidth {
+  width: 84%;
+  right: 0px;
+  margin-left: 16%;
+}
+
 /* Custom page footer */
 .footer {
   /*position: absolute;
@@ -56,7 +91,7 @@ body, html {
 /* Main marketing message and sign up button */
 .jumbotron {
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   height: 380px;
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
@@ -89,6 +124,17 @@ body, html {
   bottom: 0px;
   right: 0px;
   margin-bottom: 10px;
+}
+
+.jumbotron .menu-button {
+  padding: 0px 0px 0px 25px;
+  bottom: 0px;
+  left: 0px;
+  background: transparent;
+  border: none !important;
+  position: absolute;
+  font-size: 50px;
+  color: white;
 }
 
 .jumbotron .rank {
@@ -174,7 +220,7 @@ body, html {
 
     }
     .jumbotron .lead {
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
 
     .jumbotron h1 {
