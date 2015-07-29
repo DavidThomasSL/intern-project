@@ -26,7 +26,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
         scores = gameService.getCurrentScores();
         userService.setRank(scores);
         return scores;
-    };
+    }
 
     //get user rank
     $scope.rank = userService.getRank;

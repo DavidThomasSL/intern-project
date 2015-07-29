@@ -2,34 +2,34 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
     function($routeProvider, $locationProvider) {
         $routeProvider
             .when('/', {
-                templateUrl: '/includes/templates/set_name.html'
+                templateUrl: '/includes/templates/signup/set_name.html'
             })
             .when('/joining', {
-                templateUrl: '/includes/templates/join_create_room.html'
+                templateUrl: '/includes/templates/signup/join_create_room.html'
             })
             .when('/room/', {
-                templateUrl: '/includes/templates/room_lobby.html'
+                templateUrl: '/includes/templates/room/room_lobby.html'
             })
             .when('/question/', {
-                templateUrl: '/includes/templates/game_question.html'
+                templateUrl: '/includes/templates/game/game_question.html'
             })
             .when('/vote/', {
-                templateUrl: '/includes/templates/vote_favourite.html'
+                templateUrl: '/includes/templates/game/vote_favourite.html'
             })
             .when('/waitVote/', {
-                templateUrl: '/includes/templates/wait_vote.html'
+                templateUrl: '/includes/templates/game/wait_vote.html'
             })
             .when('/results/', {
-                templateUrl: '/includes/templates/results.html'
+                templateUrl: '/includes/templates/game/results.html'
             })
             .when('/endGame/', {
-                templateUrl: '/includes/templates/endGame.html'
+                templateUrl: '/includes/templates/game/endGame.html'
             })
             .when('/waitQuestion', {
-                templateUrl: '/includes/templates/wait_question.html'
+                templateUrl: '/includes/templates/game/wait_question.html'
             })
             .otherwise({
-                templateUrl: '/includes/templates/setname.html'
+                templateUrl: '/includes/templates/game/setname.html'
             });
 
     }
