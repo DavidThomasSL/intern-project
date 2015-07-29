@@ -2,6 +2,12 @@ module.exports = function(browserInstance) {
 
 	var element = browserInstance.element;
 
+	var clearUser = function(){
+		clearLocalStorage();
+		refresh();
+		getIndex();
+	};
+
 	var getIndex = function(){
 		browserInstance.get('/');
 		browserInstance.waitForAngular();
@@ -32,19 +38,41 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var joinRoom = function(roomId) {
+		var joinRoomButton = element(by.id('room-join-button'));
+		var roomCodeBox = element(by.id('room-input-box'));
+		roomCodeBox.sendKeys(roomId);
+		joinRoomButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var leaveLobby = function() {
+		var leaveLobbyButton = element(by.id('leave-lobby-button'));
+		leaveLobbyButton.click();
+		browserInstance.waitForAngular();
+	};
+
 	var getRoomId = function() {
 		return element(by.binding('roomId')).getText();
-		// .then(function(text) {
-		// 	return text;
-		// });
+	};
+
+	var startGame = function() {
+		var startGameButton = element(by.id('start-game-button'));
+		startGameButton.click();
+		browserInstance.waitForAngular();
 	};
 
 	return {
+		element: element,
+		clearUser: clearUser,
 		getIndex: getIndex,
 		submitName: submitName,
 		refresh: refresh,
 		clearLocalStorage: clearLocalStorage,
 		createRoom: createRoom,
+		joinRoom: joinRoom,
+		leaveLobby: leaveLobby,
 		getRoomId: getRoomId,
+		startGame: startGame
 	};
 };

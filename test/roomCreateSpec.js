@@ -6,7 +6,6 @@ describe('When creating a room', function() {
 
 	it('user can create a new room and are automatically put into it', function() {
 
-		firstClonageUser = new clonageUser(browser);
 		firstClonageUser.getIndex();
 		expect(browser.getCurrentUrl()).toMatch(/\//);
 		firstClonageUser.submitName('Tom');
@@ -44,6 +43,7 @@ describe('When creating a room', function() {
 		expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
 
+		firstClonageUser.clearUser();
 	});
 
 });

@@ -1,9 +1,11 @@
 exports.config = {
 	seleniumAddress: 'http://localhost:4444/wd/hub',
-	specs: ['spec.js',
+	specs: ['initalSpec.js',
 		'userInitialiseSpec.js',
 		'userRegisteredSpec.js',
-		'roomCreateSpec.js'
+		'roomCreateSpec.js',
+		'joinRoomSpec.js',
+		'startingGameSpec.js'
 		],
 	baseUrl: 'http://localhost:8080/',
 	params: {

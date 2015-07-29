@@ -37,5 +37,6 @@ describe('When registering as a user', function() {
 		expect(element(by.id('signup-container')).isDisplayed()).toBe(true);
 		expect(element(by.id('room-join-container')).isPresent()).toBe(false);
 
+		firstClonageUser.clearUser();
 	});
 });

@@ -10,5 +10,7 @@ describe('As a registered user', function() {
 		expect(element(by.id('signup-container')).isPresent()).toBe(false);
 		expect(element(by.id('room-join-container')).isDisplayed()).toBe(true);
 		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
+
+		firstClonageUser.clearUser();
 	});
 });
