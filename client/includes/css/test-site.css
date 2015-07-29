@@ -27,6 +27,10 @@ body, html {
 }
 
 .sidebar {
+  -moz-transition: left .1s;
+  -webkit-transition: left .1s;
+  -o-transition: left .1s;
+  transition: left .1s;
   position: absolute;
   background-color: black;
   opacity: 0.5;
@@ -35,8 +39,17 @@ body, html {
   width: 16%;
   top: 380px;
   bottom: 0px;
-  left: 0px;
+  left: -300px;
   font-size: 120%;
+}
+
+.slide-out {
+    -moz-transition: left 1s;
+    -webkit-transition: left 1s;
+    -o-transition: left 1s;
+    transition: left 1s;
+    left: 0px;
+
 }
 
 .largeWidth {
