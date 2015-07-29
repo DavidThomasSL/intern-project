@@ -95,6 +95,12 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var activateSidebar = function() {
+		var sidebarButton = element(by.id('sidebar-button'));
+		sidebarButton.click();
+		browserInstance.waitForAngular();
+	};
+
 	return {
 		element: element,
 		clearUser: clearUser,
@@ -111,6 +117,7 @@ module.exports = function(browserInstance) {
 		submitFirstVote: submitFirstVote,
 		startNewRound: startNewRound,
 		finishGame: finishGame,
-		backToStart: backToStart
+		backToStart: backToStart,
+		activateSidebar: activateSidebar
 	};
 };

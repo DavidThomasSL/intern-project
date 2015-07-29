@@ -38,16 +38,19 @@ describe('When playing a game', function() {
 	});
 
 	it('can see what everyone submitted', function() {
+
 		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2);
 		expect(secondClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2);
 
 	});
 
 	it('can vote for an answer', function() {
+
 		firstClonageUser.submitFirstVote();
 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
 
 		firstClonageUser.clearUser();
 		browser2.close();
+
 	});
 });
