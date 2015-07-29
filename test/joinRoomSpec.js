@@ -1,6 +1,5 @@
 var clonageUser = require("./helpers/browserHelper.js");
 
-
 describe('When joining an existing room', function() {
 
 	var roomId;

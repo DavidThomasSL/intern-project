@@ -4,7 +4,7 @@ describe('When starting a game', function() {
 
 	var roomId;
 
-	browser2 = browser.forkNewDriverInstance(false, true);
+	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
 	var secondClonageUser = new clonageUser(browser2);
