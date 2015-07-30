@@ -206,6 +206,10 @@ body, html {
   margin-top: 60px;
 }
 
+.card-text-container {
+  margin-bottom: 20px;
+}
+
 
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
