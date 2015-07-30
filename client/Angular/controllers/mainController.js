@@ -1,13 +1,14 @@
-ClonageApp.controller("MainController", function($scope, userService, roomService, RoutingService, gameService, $location, $sessionStorage) {
+ClonageApp.controller("MainController", function($scope, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $timeout) {
 
     $scope.$storage = $sessionStorage;
     $scope.getUserName = userService.getUserName;
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.roomId = roomService.getRoomId;
-    $scope.roundQuestion = gameService.getRoundQuestion;
+
     $scope.userHand = userService.getUserHand;
     $scope.getUserId = userService.getUserId;
     $scope.gameInProgress = roomService.getGameInProgress;
+    $scope.counter = 30;
 
     //get all answers submitted in order to visualise them on the voting page
     $scope.answers = gameService.getAnswers;
@@ -20,6 +21,11 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
 
     //get final scores for all players when the game finishes
     $scope.finalresults = gameService.getCurrentScores;
+
+
+    $scope.roundQuestion = function() {
+        gameService.getRoundQuestion();
+    }
 
     //current results will hold all players scores at the current time in the game
     $scope.currentscores = function() {
@@ -81,5 +87,26 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
         var num = roomService.getUsersInRoom();
         return num.length;
     };
+
+
+    var startCountdown = function() {
+
+        var timerCount = 30;
+
+        var countDown = function() {
+            if (timerCount < 0) {
+                console.log('Time is up!');
+            } else {
+
+                $scope.counter = timerCount ;
+                timerCount-= 1 ;
+                $timeout(countDown, 1000);
+
+            }
+        };
+        countDown();
+    };
+
+    startCountdown();
 
 });
