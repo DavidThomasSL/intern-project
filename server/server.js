@@ -94,6 +94,16 @@ module.exports = function(port, enableLogging) {
             putUserInJoining();
         });
 
+        socket.on('USER set profile', function(data){
+            // console.log(data.name);
+            // console.log(data.image);
+            user.name = data.name;
+            user.image = data.image;
+            logger.debug("User set name as: " + data.name);
+            sendUserDetails();
+            putUserInJoining();
+        });
+
         //create room, assign id, add current player and return room id to player
         socket.on('ROOM create', function(msg) {
 
@@ -454,6 +464,7 @@ module.exports = function(port, enableLogging) {
             user.name = undefined;
             user.roomId = "";
             user.socket = socket;
+            user.image = undefined;
             users.push(user);
             uId++;
             return user;

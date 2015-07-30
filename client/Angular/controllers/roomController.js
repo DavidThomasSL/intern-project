@@ -2,7 +2,7 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
 
     $scope.getUserName = userService.getUserName;
     $scope.getUsersInRoom = roomService.getUsersInRoom; //List all the users in the lobby
-    $scope.roomId = roomService.getRoomId;                  //Display room code in lobby
+    $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getUserId = userService.getUserId; //Display user icon on card in lobby
     $scope.getUsersInRoom = roomService.getUsersInRoom;
 
@@ -33,5 +33,28 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
     $scope.startGame = function() {
         gameService.startGame($scope.roomId());
     };
+
+    $scope.setCanvas = function() {
+        $scope.userImage = userService.getUserImage();
+
+        $scope.canvas = $scope.canvas = new fabric.Canvas('user-canvas-room');
+
+        $scope.canvas.loadFromJSON($scope.userImage);
+    };
+
+    $scope.$watch(function() {
+        return userService.getUserImage();
+    }, function(newVal, oldVal) {
+        console.log(oldVal);
+        console.log(newVal);
+        $scope.userImage = userService.getUserImage();
+        $scope.canvas.loadFromDatalessJSON($scope.userImage, function() {
+            console.log("was chnaged");
+            $scope.canvas.renderAll();
+        });
+
+    }, true);
+
+    $scope.setCanvas();
 
 });
