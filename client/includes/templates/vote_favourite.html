@@ -1,22 +1,21 @@
 <div class="container">
-	<div class="header clearfix">
-		<div class="row instructions">
-			<div >
-				<h1>{{roundQuestion()}}</h1>
-				<h3>Vote for your favourite answer to this question</h3>
-			</div>
-		</div>
-	</div>
-	<div class="row signup-container" id="question-responses-container">
-		<div class="row">
-			<div class="col-md-4 text-center" ng-repeat="answer in answers() | orderBy:'answerText'">
-				<div class="card-text-container">
-					<button class="btn btn-warning btn-lg btn-block" type="button" id="answer" ng-click="submitVote(answer.answerText)" ng-disabled="getUserId() === answer.playerId">{{answer.answerText}}
-					<div ng-if="getUserId() === answer.playerId"> <i>(Your answer)</i>
-					</div>
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="header clearfix">
+        <div class="row instructions">
+            <div >
+                <h1>{{roundQuestion()}}</h1>
+                <h3>Vote for your favourite answer to this question</h3>
+            </div>
+        </div>
+    </div>
+    <div class="row signup-container" id="question-responses-container">
+        <div class="row">
+            <div class="col-md-4 text-center" ng-repeat="answer in answers() | orderBy:'answerText'">
+                <div class="card-text-container">
+                    <button ng-if="getUserId() === answer.playerId" class="btn btn-warning btn-lg btn-block" type="button" id="ownAnswer" ng-disabled="true"> {{answer.answerText}} <i>(Your answer)</i></button>
+                    <button ng-if="getUserId() !== answer.playerId" class="btn btn-warning btn-lg btn-block" type="button" id="answer" ng-click="submitVote(answer.answerText)" ng-disabled="getUserId() === answer.playerId">{{answer.answerText}}</button>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
