@@ -3,6 +3,7 @@ body, html {
   position: relative;
   padding-bottom: 20px;
   height: 100%;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -27,10 +28,10 @@ body, html {
 }
 
 .sidebar {
-  -moz-transition: left .1s;
-  -webkit-transition: left .1s;
-  -o-transition: left .1s;
-  transition: left .1s;
+  -moz-transition: left .2s;
+  -webkit-transition: left .2s;
+  -o-transition: left .2s;
+  transition: left .2s;
   position: absolute;
   background-color: white;
   /*opacity: 0.2;*/
@@ -44,10 +45,10 @@ body, html {
 }
 
 .slide-out {
-    -moz-transition: left 1s;
-    -webkit-transition: left 1s;
-    -o-transition: left 1s;
-    transition: left 1s;
+    -moz-transition: left 0.2s;
+    -webkit-transition: left 0.2s;
+    -o-transition: left 0.2s;
+    transition: left 0.2s;
     left: 0px;
 }
 
@@ -116,6 +117,7 @@ body, html {
   font-size: 25px;
 }
 
+
 .jumbotron .username {
   padding: 120px 40px 0px 0px;
   color: white;
@@ -153,21 +155,12 @@ body, html {
   font-size: 90px;
 }
 
+
+
 .white-card {
    position: relative;
   min-height: 150px;
   font-size: 17px;
-}
-.submit-ans-button {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px;
-}
-
-.submit-ans-button .btn {
-  width: 100%
 }
 
 .header .btn {
@@ -180,30 +173,26 @@ body, html {
   text-align: center;
 }
 
-#question-text .panel-title {
-  font-size: 15px;
-}
-
-#question-text .panel-body {
-  font-size: 30px;
-}
-
-
 .name-submit-container {
   margin-top: 30px;
   margin-bottom: 100px;
 }
 
-#join-create-container {
-  margin: 20px 20px 100px 20px;
-}
-
-#romm-lobby-users-container {
-  margin: 30px 20px 100px 20px;
-}
-
 .bottom-buttons {
   margin-top: 60px;
+}
+
+.card-text-container {
+  margin-bottom: 20px;
+}
+
+/*used to let text wrap on buttons for smaller screens*/
+.card-text-button {
+  white-space: normal;
+}
+
+.table th {
+  text-align: center;
 }
 
 

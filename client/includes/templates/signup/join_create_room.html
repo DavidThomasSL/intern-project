@@ -1,31 +1,31 @@
 <div class="container">
-  <div class="header clearfix">
-    <div class="row instructions">
-      <div class="col-xs-10 col-xs-offset-1 col-md-10 col-md-offset-1">
-        <h1>Enter a Room</h1>
-        <p>Choose to eithe create a new room, which you can then invite others into, or join an exisiting room, if you know the room code.</p>
-      </div>
-    </div>
-  </div>
-  <div class="row" id="room-join-container" id="room-join-container" >
-    <div class="col-md-6  text-center" style="margin-bottom: 30px;">
-      <button type="button" class="btn btn-lg btn-primary" id="create-room-button" ng-click="createRoom()">Create New Room</button>
-      <p style="margin-top: 20px">Create a brand new game room. You can then tell your friends the unique ROOM CODE, which they can use to join your room</p>
-    </div>
-    <div class="col-md-6  text-center">
-      <form class="form-inline" name="roomSubmissionForm" ng-submit="joinRoom(enteredRoomId)">
-        <button type="submit" id="room-join-button" class="btn btn-lg  btn-success" style="margin-bottom: 20px" ng-disabled="roomSubmissionForm.enteredRoomId.$invalid">Join Exisiting Room</button>
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon">#</div>
-            <input type="text" class="form-control" id="room-input-box" name="enteredRoomId" placeholder="CODE" ng-model="enteredRoomId" ng-minlength="5" required>
-          </div>
-          <div class="input-group">
-            <span ng-show="roomSubmissionForm.enteredRoomId.$invalid">enter 5 digit room code</span>
-          </div>
+    <div class="header clearfix">
+        <div class="row instructions">
+            <div class="col-xs-10 col-xs-offset-1 col-md-10 col-md-offset-1">
+                <h1>Enter a Room</h1>
+                <p>Choose to eithe create a new room, which you can then invite others into, or join an exisiting room, if you know the room code.</p>
+            </div>
         </div>
-      </form>
-      <p style="margin-top: 20px">If you know the ROOM CODE of an existing room, you can join it, if the game has not started yet.</p>
     </div>
-  </div>
+    <div class="row" id="room-join-container">
+        <div class="col-md-6  text-center" style="margin-bottom: 30px;">
+            <button type="button" class="btn btn-lg btn-primary" id="create-room-button" ng-click="createRoom()">Create New Room</button>
+            <p style="margin-top: 20px">Create a brand new game room. You can then tell your friends the unique ROOM CODE, which they can use to join your room</p>
+        </div>
+        <div class="col-md-6  text-center">
+            <form class="form-inline" name="roomSubmissionForm" ng-submit="joinRoom(enteredRoomId)">
+                <button type="submit" id="room-join-button" class="btn btn-lg  btn-success" style="margin-bottom: 20px" ng-disabled="roomSubmissionForm.enteredRoomId.$invalid">Join Exisiting Room</button>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">#</div>
+                        <input type="text" class="form-control" id="room-input-box" name="enteredRoomId" placeholder="CODE" ng-model="enteredRoomId" ng-minlength="5" required>
+                    </div>
+                    <div class="input-group">
+                        <span ng-show="roomSubmissionForm.enteredRoomId.$invalid">enter 5 digit room code</span>
+                    </div>
+                </div>
+            </form>
+            <p style="margin-top: 20px">If you know the ROOM CODE of an existing room, you can join it, if the game has not started yet.</p>
+        </div>
+    </div>
 </div>

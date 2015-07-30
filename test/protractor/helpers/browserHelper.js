@@ -64,16 +64,13 @@ module.exports = function(browserInstance) {
 
 	var submitFirstAnswer = function() {
 		var rows = element.all(by.exactRepeater("answer in userHand()"));
-		browserInstance.waitForAngular();
 		rows.first().element(by.id("answer")).click();
-		browserInstance.element(by.id("submit-answer-button")).click();
 		browserInstance.waitForAngular();
 	};
 
 	var submitFirstVote = function() {
 		var submitVoteButtons = element.all(by.id("answer"));
 		submitVoteButtons.first().click();
-		browserInstance.element(by.id("submit-vote-button")).click();
 		browserInstance.waitForAngular();
 	};
 
