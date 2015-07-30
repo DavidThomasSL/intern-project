@@ -3,6 +3,7 @@ body, html {
   position: relative;
   padding-bottom: 20px;
   height: 100%;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -208,6 +209,10 @@ body, html {
 
 .card-text-container {
   margin-bottom: 20px;
+}
+
+.table th {
+  text-align: center;
 }
 
 

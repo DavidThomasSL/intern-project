@@ -13,6 +13,8 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <!-- Custom styles for this template -->
         <link rel="stylesheet" href="/includes/css/test-site.css" >
+        <!---Google's Roboto Font -->
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     </head>
     <body ng-app="ClonageApp" ng-controller="MainController">
         <!--COntent goes here -->
@@ -21,12 +23,9 @@
                 <div class="lead">
                     <h1>Clonage</h1>
                 </div>
-
                 <p class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle" ng-show="gameInProgress()">&#9776;</button>
                 <p class="username">{{getUserName()}}</p>
-
             </div>
-
             <div class="content">
                 <!-- sidebar -->
                 <div class="sidebar" ng-show="toggle" ng-class="{'slide-out': toggle}">
@@ -37,42 +36,39 @@
                         <div class="text-center">
                             <ul ng-repeat="score in currentscores() | orderBy: '-points'" class="list-group">
                                 <li class="list-group-item">
-                                <div style="font-weight: bold">{{score.playerName}}
-                                </div>
-                                <div style="font-style: italic">{{score.points}} points</div></li>
-                            </ul>
+                                    <div style="font-weight: bold">{{score.playerName}}
+                                    </div>
+                                    <div style="font-style: italic">{{score.points}} points</div></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+                    <div ng-view ng-class="{ largeWidth: !toggle, smallWidth: toggle }">
+                    </div ng-view>
                 </div>
-
-                <div ng-view ng-class="{ largeWidth: !toggle, smallWidth: toggle }">
-                </div ng-view>
             </div>
-
-        </div>
-        <footer class="footer text-center">
-            <p>&copy; <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a></p>
-        </footer>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-route.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-animate.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="https://cdn.rawgit.com/btford/angular-socket-io/v0.7.0/socket.min.js"></script>
-        <!-- start client/js tags -->
-        <script src="Angular/ClonageApp.js"></script>
-        <script src="Angular/config/routeConfig.js"></script>
-        <script src="Angular/controllers/gameController.js"></script>
-        <script src="Angular/controllers/mainController.js"></script>
-        <script src="Angular/controllers/roomController.js"></script>
-        <script src="Angular/controllers/signupController.js"></script>
-        <script src="Angular/controllers/storage.js"></script>
-        <script src="Angular/services/communicationService.js"></script>
-        <script src="Angular/services/gameService.js"></script>
-        <script src="Angular/services/roomService.js"></script>
-        <script src="Angular/services/routingService.js"></script>
-        <script src="Angular/services/socketService.js"></script>
-        <script src="Angular/services/userService.js"></script>
-        <!-- end client/js tags -->
-    </body>
-</html>
+            <footer class="footer text-center">
+                <p>&copy; <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a></p>
+            </footer>
+            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.js"></script>
+            <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-route.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-animate.js"></script>
+            <script src="/socket.io/socket.io.js"></script>
+            <script src="https://cdn.rawgit.com/btford/angular-socket-io/v0.7.0/socket.min.js"></script>
+            <!-- start client/js tags -->
+            <script src="Angular/ClonageApp.js"></script>
+            <script src="Angular/config/routeConfig.js"></script>
+            <script src="Angular/controllers/gameController.js"></script>
+            <script src="Angular/controllers/mainController.js"></script>
+            <script src="Angular/controllers/roomController.js"></script>
+            <script src="Angular/controllers/signupController.js"></script>
+            <script src="Angular/services/communicationService.js"></script>
+            <script src="Angular/services/gameService.js"></script>
+            <script src="Angular/services/roomService.js"></script>
+            <script src="Angular/services/routingService.js"></script>
+            <script src="Angular/services/socketService.js"></script>
+            <script src="Angular/services/userService.js"></script>
+            <!-- end client/js tags -->
+        </body>
+    </html>

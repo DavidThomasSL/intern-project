@@ -2,7 +2,6 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
 
     $scope.getUserName = userService.getUserName;
 
-
     //current results will hold all players scores at the current time in the game
     $scope.currentscores = function() {
         scores = gameService.getCurrentScores();
