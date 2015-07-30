@@ -23,7 +23,7 @@
                 <div class="lead">
                     <h1>Clonage</h1>
                 </div>
-                <p class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle" ng-show="gameInProgress()">&#9776;</button>
+                <p class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">&#9776;</button>
                 <p class="username">{{getUserName()}}</p>
             </div>
             <div class="content">
@@ -34,8 +34,8 @@
                             <h4 style="color: black"> Current Scores :</h4>
                         </div>
                         <div class="text-center">
-                            <ul ng-repeat="score in currentscores() | orderBy: '-points'" class="list-group">
-                                <li class="list-group-item">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="score in currentscores() | orderBy: '-points'">
                                     <div style="font-weight: bold">{{score.playerName}}
                                     </div>
                                     <div style="font-style: italic">{{score.points}} points</div></li>

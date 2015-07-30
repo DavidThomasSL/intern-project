@@ -28,10 +28,10 @@ body, html {
 }
 
 .sidebar {
-  -moz-transition: left .1s;
-  -webkit-transition: left .1s;
-  -o-transition: left .1s;
-  transition: left .1s;
+  -moz-transition: left .2s;
+  -webkit-transition: left .2s;
+  -o-transition: left .2s;
+  transition: left .2s;
   position: absolute;
   background-color: white;
   /*opacity: 0.2;*/
@@ -45,10 +45,10 @@ body, html {
 }
 
 .slide-out {
-    -moz-transition: left 1s;
-    -webkit-transition: left 1s;
-    -o-transition: left 1s;
-    transition: left 1s;
+    -moz-transition: left 0.2s;
+    -webkit-transition: left 0.2s;
+    -o-transition: left 0.2s;
+    transition: left 0.2s;
     left: 0px;
 }
 
@@ -159,17 +159,6 @@ body, html {
   min-height: 150px;
   font-size: 17px;
 }
-.submit-ans-button {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px;
-}
-
-.submit-ans-button .btn {
-  width: 100%
-}
 
 .header .btn {
   padding: 14px 24px;
@@ -180,15 +169,6 @@ body, html {
 .header .instructions {
   text-align: center;
 }
-
-#question-text .panel-title {
-  font-size: 15px;
-}
-
-#question-text .panel-body {
-  font-size: 30px;
-}
-
 
 .name-submit-container {
   margin-top: 30px;
@@ -209,6 +189,11 @@ body, html {
 
 .card-text-container {
   margin-bottom: 20px;
+}
+
+/*used to let text wrap on buttons for smaller screens*/
+.card-text-button {
+  white-space: normal;
 }
 
 .table th {
