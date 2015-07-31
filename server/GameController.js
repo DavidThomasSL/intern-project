@@ -24,6 +24,34 @@ module.exports = function(data) {
         _3 : round _, votes are in
     */
     var GameState = '0';
+    var GameStateHasChanged = false
+	var count = 30;
+
+    function startTimer () {
+
+    	GameStateHasChanged = false;
+
+	    count = 30;
+
+		var counter = setInterval(timer, 1000); //1000 will  run it every 1 second
+
+	function timer() {
+
+		count --;
+		if ( count <= 0 ) {
+			clearInterval(counter);
+			if ( GameStateHasChanged === true ) {
+
+			     //counter ended, do something here
+			    return;
+			}
+			else console.log("changing gameState");
+
+		}
+		console.log(count);
+	  //Do code for showing the number of seconds here
+	}
+}
 
 	/*
 		Called by the server when a game starts
@@ -42,6 +70,8 @@ module.exports = function(data) {
 
 				//round 1 started in phase 1 of the game: players are submitting their choices
 				updateGameState();
+
+				startTimer();
 
 				//set up each user
 				var cards = JSON.parse(data);
@@ -353,6 +383,7 @@ module.exports = function(data) {
 		} else if ( GameState === rounds.length + '3' ) {
 			GameState = (rounds.length+1) + '1';
 		}
+		GameStateHasChanged = true ;
 	};
 
 	// TO DO : check game state before every move!
