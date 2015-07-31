@@ -14,13 +14,18 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     $scope.rank = userService.getRank;
 
 
-    var startCountdown = function() {
+    $scope.startCountdown = function(page) {
 
         var timerCount = 30;
 
         var countDown = function() {
-            if (timerCount < 0) {
-                console.log('Time is up!');
+            if (timerCount === 0) {
+                if(page === "answer") {
+                    userService.submitChoice("");
+                } else if (page === "vote") {
+                    userService.submitVote("");
+                }
+
             } else {
 
                 $scope.counter = timerCount ;
@@ -31,7 +36,4 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
         };
         countDown();
     };
-
-    startCountdown();
-
 });

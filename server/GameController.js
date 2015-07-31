@@ -16,6 +16,15 @@ module.exports = function(data) {
 	//Number of white cards a user should always have
 	var HANDSIZE = 7;
 
+    /*
+    GameState:
+        0 : game hasn't started yet
+        _1 : game started, round _, everyone has to submit a choice
+        _2 : round _, everyone has to submit a vote
+        _3 : round _, votes are in
+    */
+    var GameState = '0';
+
 	/*
 		Called by the server when a game starts
 	*/
@@ -30,6 +39,9 @@ module.exports = function(data) {
 				console.log(err);
 				throw err;
 			} else {
+
+				//round 1 started in phase 1 of the game: players are submitting their choices
+				updateGameState();
 
 				//set up each user
 				var cards = JSON.parse(data);
@@ -77,6 +89,8 @@ module.exports = function(data) {
 
 	var newRound = function(callback) {
 		roundCount += 1;
+		updateGameState();
+
 		var round = {
 			count: roundCount,
 			question: getRoundQuestion(),
@@ -117,6 +131,8 @@ module.exports = function(data) {
 
 	//finish game and send back final scores
 	var finishGame = function(callback) {
+
+		updateGameState();
 
 		var results = [];
 
@@ -220,6 +236,8 @@ module.exports = function(data) {
 
 	var submitAnswer = function(playerId, playerName, answer, callback) {
 
+		//TO DO: before submitting check that the player hasn't submitted yet
+
 		var ans = {
 			playerId: playerId,
 			playerName: playerName,
@@ -233,6 +251,10 @@ module.exports = function(data) {
 
 		//check if everyone submitted
 		if (currentRound.answers.length === players.length) {
+
+			// update game state to voting stage of the current round
+			updateGameState();
+
 			callback({
 				answers: currentRound.answers,
 				allChoicesSubmitted : true
@@ -268,6 +290,8 @@ module.exports = function(data) {
 	 */
 	var submitVote = function(playerId, answer, callback) {
 
+		// TO DO : before submitting a vote check that the player hasn't already submitted one
+
 		var currentRound = rounds[rounds.length-1];
 
 		currentRound.answers.forEach(function(option){
@@ -279,6 +303,9 @@ module.exports = function(data) {
 
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
+
+			// update game state to current round finished - seeing voting results
+			updateGameState();
 
 			var results = [];
 			currentRound.answers.forEach(function(answer){
@@ -311,6 +338,22 @@ module.exports = function(data) {
 				voteNumber: countVotes(currentRound)
 			});
 		}
+	};
+
+	/*
+	update to the next GameState depending on the current state
+	*/
+	var updateGameState = function() {
+		if ( GameState === '0' ) {
+			GameState = '11'
+		} else if ( GameState === rounds.length + '1' ) {
+			GameState = rounds.length + '2';
+		} else if ( GameState === rounds.length + '2' ) {
+			GameState = rounds.length + '3';
+		} else if ( GameState === rounds.length + '3' ) {
+			GameState = (rounds.length+1) + '1';
+		}
+		console.log ("game state updated to : "+ GameState );
 	};
 
 
