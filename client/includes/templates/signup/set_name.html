@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="header clearfix">
+        <div class="row instructions">
+            <div >
+                <h1>What's your name?</h1>
+                <p>This is will be your name for others to see during the game.</p>
+            </div>
+        </div>
+    </div>
+    <div class="row signup-container" id="signup-container">
+        <form class="form-horizontal" ng-submit="submitName(nameSubmissionForm)">
+            <div class="row">
+                <div class="input-group col-md-offset-3 col-md-6 col-xs-4 col-xs-offset-4" >
+                    <input type="text" class="form-control" id="name-input-box" placeholder="Your Name" ng-model="nameSubmissionForm.enteredName" autofocus required novalidate>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center" style="margin-top: 10px">
+                    <div class="">
+                        <button type="submit" id="name-submit-button" class="btn btn-lg btn-primary">Set Name</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
