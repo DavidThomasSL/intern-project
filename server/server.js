@@ -526,6 +526,8 @@ module.exports = function(port, enableLogging) {
         return false;
     }
 
+
+
     server.listen(port, function() {
         var addr = server.address();
 

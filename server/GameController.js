@@ -353,7 +353,6 @@ module.exports = function(data) {
 		} else if ( GameState === rounds.length + '3' ) {
 			GameState = (rounds.length+1) + '1';
 		}
-		console.log ("game state updated to : "+ GameState );
 	};
 
 
