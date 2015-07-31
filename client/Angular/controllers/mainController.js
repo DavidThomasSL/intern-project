@@ -2,6 +2,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
+    $scope.currentRound = gameService.getCurrentRound;
 
     //current results will hold all players scores at the current time in the game
     $scope.currentscores = function() {

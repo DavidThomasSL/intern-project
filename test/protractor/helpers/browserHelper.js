@@ -62,6 +62,12 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var ready = function() {
+		var readyButton = element(by.id('ready-button'));
+		readyButton.click();
+		browserInstance.waitForAngular();
+	};
+
 	var submitFirstAnswer = function() {
 		var rows = element.all(by.exactRepeater("answer in userHand()"));
 		rows.first().element(by.id("answer")).click();

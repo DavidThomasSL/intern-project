@@ -25,13 +25,14 @@
         <br>
         <div class ="row">
             <div class="col-md-12 text-center">
-                <button id="next-round-button" type="submit" class="btn btn-lg btn-primary" ng-click="nextRound()">Next Round</button>
+                <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+                <p>Next round will start when everyone is ready</p>
+                <p>You are {{ roomReadyToggle ? 'ready' : 'not ready' }}</p>
             </div>
         </div>
         <div>
             <div class = "row bottom-buttons">
                 <div class="col-md-12 text-center">
-                    <button  id="finish-game-button" type="button" class="btn btn-lg btn-warning" ng-click="finishGame()">Finish Game</button>
                 </div>
             </div>
         </div>

@@ -21,16 +21,22 @@ describe('After ending the game', function() {
 		firstClonageUser.getRoomId().then(function(text) {
 			roomId = text.split(" ")[2];
 			secondClonageUser.joinRoom(roomId);
-			firstClonageUser.startGame();
+			firstClonageUser.ready();
+			secondClonageUser.ready();
 		});
 
-		firstClonageUser.submitFirstAnswer();
-		secondClonageUser.submitFirstAnswer();
+		for (var i = 0; i < 3; i++) {
+			firstClonageUser.submitFirstAnswer();
+			secondClonageUser.submitFirstAnswer();
 
-		firstClonageUser.submitFirstVote();
-		secondClonageUser.submitFirstVote();
+			firstClonageUser.submitFirstVote();
+			secondClonageUser.submitFirstVote();
 
-		firstClonageUser.finishGame();
+			firstClonageUser.ready();
+			firstClonageUser.ready();
+		}
+
+
 
 		expect(browser.getCurrentUrl()).toMatch(/\/endGame/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);

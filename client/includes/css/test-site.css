@@ -127,6 +127,16 @@ body, html {
   margin-bottom: 10px;
 }
 
+.jumbotron .current-round {
+  padding: 120px 40px 0px 0px;
+  color: white;
+  font-size: 25px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  margin-bottom: 40px;
+}
+
 .jumbotron .menu-button {
   padding: 0px 0px 0px 25px;
   bottom: 0px;
@@ -197,6 +207,10 @@ body, html {
   background-color: green;
 }
 
+.ready-state-on {
+
+}
+
 
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
@@ -255,5 +269,5 @@ body, html {
     to {opacity: 0;}
 }
 
-.ng-enter           { animation: fadeIn 0.2s both ease-in;}
-.ng-leave           { animation: fadeOut 0.2s both ease-in;}
+/*.ng-enter           { animation: fadeIn 0.2s both ease-in;}
+.ng-leave           { animation: fadeOut 0.2s both ease-in;}*/

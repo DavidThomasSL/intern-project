@@ -21,7 +21,8 @@ describe('After each round', function() {
 		firstClonageUser.getRoomId().then(function(text) {
 			roomId = text.split(" ")[2];
 			secondClonageUser.joinRoom(roomId);
-			firstClonageUser.startGame();
+			firstClonageUser.ready();
+			secondClonageUser.ready();
 		});
 
 		firstClonageUser.submitFirstAnswer();
@@ -63,7 +64,8 @@ describe('After each round', function() {
 
 	it('can start a new round', function() {
 
-		firstClonageUser.startNewRound();
+		firstClonageUser.ready();
+		secondClonageUser.ready();
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
 

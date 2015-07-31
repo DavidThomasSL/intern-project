@@ -28,12 +28,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		});
 	}
 
-	function startGame(roomId) {
-		sendMessage("GAME start", {
-			roomId: roomId
-		});
-	}
-
 	//get all answers submitted
 	function getAnswers() {
 		return answers;
@@ -51,27 +45,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	//get final scores after the game finished
 	function getCurrentScores() {
 		return currentscores;
-	}
-
-	//load next round or finish the game if that was the last round
-	function nextRound(roomId) {
-		if (round < maxRounds) {
-			round++;
-			sendMessage("GAME next round", {
-				roomId: roomId
-			});
-		} else {
-			sendMessage("GAME finish", {
-				roomId: roomId
-			});
-		}
-	}
-
-	//tell server to finish the game
-	function finishGame(roomId) {
-		sendMessage("GAME finish", {
-			roomId: roomId
-		});
 	}
 
 	/*
@@ -141,14 +114,11 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	return {
-		startGame: startGame,
 		getRoundQuestion: getRoundQuestion,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
 		getCurrentScores: getCurrentScores,
-		nextRound: nextRound,
-		finishGame: finishGame,
 		getCurrentVotes: getCurrentVotes,
 		sendReadyStatus: sendReadyStatus,
 		_recieveQuestion: _recieveQuestion,
