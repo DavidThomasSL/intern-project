@@ -116,7 +116,7 @@ module.exports = function(port, enableLogging) {
         socket.on('ROOM join', function(msg) {
             rooms.forEach(function(room) {
                 if (room.id === msg.roomId) {
-                    if(room.gameInProgress === false){
+                    if (room.gameInProgress === false) {
                         putUserInRoom(msg.roomId);
                     }
                 }
@@ -167,17 +167,49 @@ module.exports = function(port, enableLogging) {
 
         });
 
-        /*
-            Called by the GameService
-            Creates a new gamecontroller, adds the current room to it
-            gamecontroller starts whirring
-        */
-        socket.on('GAME start', function(data) {
+
+        socket.on('GAME ready status', function(data) {
+            var readyCounter = 0;
+
             var room;
-
-
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === data.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+            room.usersInRoom.forEach(function(iteratedUser) {
+                if (iteratedUser.uId === user.uId) {
+                    iteratedUser.readyToProceed = (!iteratedUser.readyToProceed);
+                }
+            });
+
+            broadcastroom(room.id, 'ROOM details', {
+                roomId: room.id,
+                usersInRoom: room.usersInRoom,
+                gameInProgress: room.gameInProgress
+            });
+
+            var readyCounter = 0;
+            room.usersInRoom.forEach(function(iteratedUser) {
+                if (iteratedUser.readyToProceed ===true) {
+                    readyCounter++;
+                }
+            });
+
+            if (readyCounter === room.usersInRoom.length) {
+                if (!room.gameInProgress) {
+                    startGameInRoom(room.id);
+                } else {
+                    startNextRoundInRoom(room.id);
+                }
+            }
+        });
+
+        function startGameInRoom(roomid) {
+            var room;
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === roomId) {
                     room = otherRoom;
                 }
             });
@@ -213,22 +245,14 @@ module.exports = function(port, enableLogging) {
                 });
 
             });
-
             logger.debug("Starting game in room " + room.id);
-        });
 
-        /*
-        Starts new round:
-        call function in gameController to start new round
-        callback will return a new question which will be broadcasted to eveyone in the game
-        each player will be send his updated hand
-        */
-        socket.on('GAME next round', function(data) {
+        }
+
+        function startNextRoundInRoom(roomid) {
             var room;
-
-
             rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === data.roomId) {
+                if (otherRoom.id === roomId) {
                     room = otherRoom;
                 }
             });
@@ -259,6 +283,38 @@ module.exports = function(port, enableLogging) {
             });
 
             logger.info("Starting new round in room " + room.id);
+        }
+
+
+        /*
+            Called by the GameService
+            Creates a new gamecontroller, adds the current room to it
+            gamecontroller starts whirring
+        */
+        socket.on('GAME start', function(data) {
+            var room;
+
+
+
+        });
+
+        /*
+        Starts new round:
+        call function in gameController to start new round
+        callback will return a new question which will be broadcasted to eveyone in the game
+        each player will be send his updated hand
+        */
+        socket.on('GAME next round', function(data) {
+            var room;
+
+
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === data.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+
         });
 
         /*
@@ -399,7 +455,8 @@ module.exports = function(port, enableLogging) {
 
                     room.usersInRoom.push({
                         uId: user.uId,
-                        username: user.name
+                        username: user.name,
+                        readyToProceed: false
                     });
 
                     user.roomId = roomId;

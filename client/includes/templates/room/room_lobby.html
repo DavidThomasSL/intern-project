@@ -10,7 +10,7 @@
     <div id="room-lobby-container">
         <div class="row">
             <div class="col-md-6 text-center" ng-repeat="user in getUsersInRoom()">
-                <div class="panel panel-default">
+                <div class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
                     <div class="panel-body">
                         {{user.username}}
                         <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left: 20px"></span>
@@ -20,7 +20,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-center">
-                <button id="start-game-button" type="button" class="btn btn-lg btn-primary" ng-click="startGame()" ng-disabled="getRoomUserCount() < 2">Start Game</button>
+                <button id="start-game-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus()" ng-disabled="getRoomUserCount() < 2">Ready</button>
             </div>
         </div>
         <div class="row text-center">

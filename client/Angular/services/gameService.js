@@ -22,6 +22,12 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		return round;
 	}
 
+	function sendReadyStatus(roomId) {
+		sendMessage("GAME ready status", {
+			roomId: roomId
+		});
+	}
+
 	function startGame(roomId) {
 		sendMessage("GAME start", {
 			roomId: roomId
@@ -144,6 +150,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		nextRound: nextRound,
 		finishGame: finishGame,
 		getCurrentVotes: getCurrentVotes,
+		sendReadyStatus: sendReadyStatus,
 		_recieveQuestion: _recieveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,

@@ -192,6 +192,11 @@ body, html {
   text-align: center;
 }
 
+.player-ready {
+  color : white;
+  background-color: green;
+}
+
 
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
