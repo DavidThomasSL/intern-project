@@ -117,7 +117,6 @@ body, html {
   font-size: 25px;
 }
 
-
 .jumbotron .username {
   padding: 120px 40px 0px 0px;
   color: white;
@@ -155,8 +154,6 @@ body, html {
   font-size: 90px;
 }
 
-
-
 .white-card {
    position: relative;
   min-height: 150px;
@@ -176,6 +173,14 @@ body, html {
 .name-submit-container {
   margin-top: 30px;
   margin-bottom: 100px;
+}
+
+#join-create-container {
+  margin: 20px 20px 100px 20px;
+}
+
+#romm-lobby-users-container {
+  margin: 30px 20px 100px 20px;
 }
 
 .bottom-buttons {
