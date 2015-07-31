@@ -355,6 +355,8 @@ module.exports = function(data) {
 		}
 	};
 
+	// TO DO : check game state before every move!
+
 
 	/*
 	add 50 points to player -> called on each vote

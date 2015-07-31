@@ -20,11 +20,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
 
         var countDown = function() {
             if (timerCount === 0) {
-                if(page === "answer") {
-                    userService.submitChoice("");
-                } else if (page === "vote") {
-                    userService.submitVote("");
-                }
+
 
             } else {
 
