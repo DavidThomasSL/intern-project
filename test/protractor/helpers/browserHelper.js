@@ -121,6 +121,7 @@ module.exports = function(browserInstance) {
 		startNewRound: startNewRound,
 		finishGame: finishGame,
 		backToStart: backToStart,
-		activateSidebar: activateSidebar
+		activateSidebar: activateSidebar,
+		ready: ready
 	};
 };

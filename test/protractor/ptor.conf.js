@@ -5,12 +5,12 @@ exports.config = {
 		'initalSpec.js',
 		'userInitialiseSpec.js',
 		'userRegisteredSpec.js',
-		//'roomCreateSpec.js',
-		//'joinRoomSpec.js',
-		//'startingGameSpec.js',
-		//'playingGameSpec.js',
-		//'afterRoundSpec.js',
-		//'afterGameSpec.js'
+		'roomCreateSpec.js',
+		'joinRoomSpec.js',
+		'startingGameSpec.js',
+		'playingGameSpec.js',
+		'afterRoundSpec.js',
+		'afterGameSpec.js'
 		],
 	baseUrl: 'http://localhost:8080/',
 	params: {

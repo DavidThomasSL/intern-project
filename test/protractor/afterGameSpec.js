@@ -25,6 +25,8 @@ describe('After ending the game', function() {
 			secondClonageUser.ready();
 		});
 
+
+		//change value here if we change the number of rounds
 		for (var i = 0; i < 3; i++) {
 			firstClonageUser.submitFirstAnswer();
 			secondClonageUser.submitFirstAnswer();
@@ -33,7 +35,7 @@ describe('After ending the game', function() {
 			secondClonageUser.submitFirstVote();
 
 			firstClonageUser.ready();
-			firstClonageUser.ready();
+			secondClonageUser.ready();
 		}
 
 
@@ -44,10 +46,10 @@ describe('After ending the game', function() {
 	});
 	it('can see players scores', function() {
 
-		expect(firstClonageUser.element.all(by.repeater('result in finalresults()')).get(0).element(by.binding('result.score')).getText()).toContain('50');
-		expect(firstClonageUser.element.all(by.repeater('result in finalresults()')).get(1).element(by.binding('result.score')).getText()).toContain('50');
-		expect(secondClonageUser.element.all(by.repeater('result in finalresults()')).get(0).element(by.binding('result.score')).getText()).toContain('50');
-		expect(secondClonageUser.element.all(by.repeater('result in finalresults()')).get(1).element(by.binding('result.score')).getText()).toContain('50');
+		expect(firstClonageUser.element.all(by.repeater('result in finalresults()')).get(0).element(by.binding('result.points')).getText()).toContain('50');
+		expect(firstClonageUser.element.all(by.repeater('result in finalresults()')).get(1).element(by.binding('result.points')).getText()).toContain('50');
+		expect(secondClonageUser.element.all(by.repeater('result in finalresults()')).get(0).element(by.binding('result.points')).getText()).toContain('50');
+		expect(secondClonageUser.element.all(by.repeater('result in finalresults()')).get(1).element(by.binding('result.points')).getText()).toContain('50');
 	});
 
 	it('can see players names', function() {
