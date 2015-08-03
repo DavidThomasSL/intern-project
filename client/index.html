@@ -36,10 +36,10 @@
                         </div>
                         <div class="text-center">
                             <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="score in currentscores() | orderBy: '-points'">
-                                    <div style="font-weight: bold">{{score.playerName}}
+                                <li class="list-group-item" ng-repeat="currentResult in currentResults() | orderBy: '-playerPoints'">
+                                    <div style="font-weight: bold">{{currentResult.playerName}}
                                     </div>
-                                    <div style="font-style: italic">{{score.points}} points</div></li>
+                                    <div style="font-style: italic">{{currentResult.playerPoints}} points</div></li>
                                 </ul>
                             </div>
                         </div>

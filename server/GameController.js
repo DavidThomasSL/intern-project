@@ -257,6 +257,7 @@ module.exports = function(data) {
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
 
+			setRank();
 			var results = [];
 			currentRound.answers.forEach(function(answer){
 				var points;
@@ -265,12 +266,19 @@ module.exports = function(data) {
 						points = pl.points;
 					}
 				});
+				var rank;
+				players.forEach(function(pl){
+					if (pl.uId === answer.playerId) {
+						rank = pl.rank;
+					}
+				});
 				var result = {
 					playerId: answer.playerId,
 					playerName: answer.playerName,
 					ans: answer.answerText,
 					playerVote: answer.playersVote,
-					playerPoints: points
+					playerPoints: points,
+					playerRank: rank
 				};
 				results.push(result);
 			});

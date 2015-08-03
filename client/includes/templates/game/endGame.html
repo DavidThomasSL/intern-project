@@ -9,9 +9,9 @@
                 <th>Player</th>
                 <th>Score</th>
             </tr>
-            <tr ng-repeat="result in finalresults() | orderBy:'-score'">
+            <tr ng-repeat="result in currentResults() | orderBy:'-score'">
                 <td>{{result.playerName}}</td>
-                <td>{{result.points}}</td>
+                <td>{{result.playerPoints}}</td>
             </tr>
         </table>
         <button id="back-to-start-button" type="button" class="btn btn-lg btn-primary" ng-click="leaveRoom()">Finish</button>

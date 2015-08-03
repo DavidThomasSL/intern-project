@@ -353,12 +353,12 @@ module.exports = function(port, enableLogging) {
                     voteNumber: data.voteNumber
                 });
 
+
                 if (data.allVotesSubmitted === true) {
                     //moving all players to the results page
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'results'
                     });
-
 
                 }
 

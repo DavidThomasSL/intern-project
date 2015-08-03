@@ -68,14 +68,6 @@ describe("Testing Game Service", function() {
 		expect(gameService.getCurrentVotes()).toEqual(2);
 	});
 
-	it("getFinalResults gets final results", function() {
-		//set the round question
-		gameService._gameFinish({
-			results: "results"
-		});
-		expect(gameService.getCurrentScores()).toEqual("results");
-	});
-
 	it("communicationService can call events in the Game Service", function() {
 
 		var listenerEvent;

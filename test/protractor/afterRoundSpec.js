@@ -57,7 +57,7 @@ describe('After each round', function() {
 	it('can see all player scores and ranking in the game', function() {
 
 		firstClonageUser.activateSidebar();
-		expect(firstClonageUser.element.all(by.repeater("score in currentscores()")).count()).toEqual(2);
+		expect(firstClonageUser.element.all(by.repeater("currentResult in currentResults()")).count()).toEqual(2);
 
 	});
 
