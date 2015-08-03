@@ -23,7 +23,9 @@
                 <div class="lead">
                     <h1>Clonage</h1>
                 </div>
-                <p class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">&#9776;</button>
+                <div ng-hide="rank() === ''">
+                    <p class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">&#9776;</button>
+                </div>
                 <p class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}}</p>
                 <p class="username">{{getUserName()}}</p>
             </div>
@@ -36,10 +38,10 @@
                         </div>
                         <div class="text-center">
                             <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="currentResult in currentResults() | orderBy: '-playerPoints'">
-                                    <div style="font-weight: bold">{{currentResult.playerName}}
+                                <li class="list-group-item" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'">
+                                    <div style="font-weight: bold">{{currentResult.player.name}}
                                     </div>
-                                    <div style="font-style: italic">{{currentResult.playerPoints}} points</div></li>
+                                    <div style="font-style: italic">{{currentResult.player.points}} points</div></li>
                                 </ul>
                             </div>
                         </div>
