@@ -168,6 +168,9 @@ module.exports = function(port, enableLogging) {
         });
 
 
+        /*
+            Called every time a player toggles their ready status
+        */
         socket.on('GAME ready status', function(data) {
             var room;
             rooms.forEach(function(otherRoom) {
@@ -176,6 +179,8 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
+
+            //Goes through users in room and toggles their ready status on the server
             room.usersInRoom.forEach(function(iteratedUser) {
                 if (iteratedUser.uId === user.uId) {
                     iteratedUser.readyToProceed = (!iteratedUser.readyToProceed);
@@ -188,6 +193,8 @@ module.exports = function(port, enableLogging) {
                 gameInProgress: room.gameInProgress
             });
 
+
+            //counts up how many players in the room are ready
             var readyCounter = 0;
             room.usersInRoom.forEach(function(iteratedUser) {
                 if (iteratedUser.readyToProceed === true) {
@@ -195,12 +202,16 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
+            //if enough people are ready
             if (readyCounter === room.usersInRoom.length) {
+                // if the game hasn't started yet, start the game
                 if (!room.gameInProgress) {
                     startGameInRoom(room.id);
                 } else {
+                // if the game has already started, move onto the next round
                     startNextRoundInRoom(room.id);
                 }
+                //after moving players on, set all their ready statuses back to 'not ready'
                 room.usersInRoom.forEach(function(iteratedUser) {
                     iteratedUser.readyToProceed = false;
                 });
