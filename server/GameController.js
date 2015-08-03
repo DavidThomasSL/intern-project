@@ -205,7 +205,7 @@ module.exports = function(data) {
 			if (pl.uId === playerId) {
 				player = pl;
 			}
-		})
+		});
 
 		// Build the submitted answer
 		var ans = {
