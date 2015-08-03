@@ -1,19 +1,19 @@
 <div class="container">
-	<div id="end-game-container" class="text-center">
-		<div class="row">
-			<h2> Game Over </h2>
-			<h3> Final Scores </h3>
-		</div>
-		<table class="table table-striped">
-			<tr>
-				<th>Player</th>
-				<th>Score</th>
-			</tr>
-			<tr ng-repeat="result in finalresults() | orderBy:'-score'">
-				<td>{{result.playerName}}</td>
-				<td>{{result.score}}</td>
-			</tr>
-		</table>
-		<button id="back-to-start-button" type="button" class="btn btn-lg btn-primary" ng-click="leaveRoom()">Finish</button>
-	</div>
+    <div id="end-game-container" class="text-center">
+        <div class="row">
+            <h2> Game Over </h2>
+            <h3> Final Scores </h3>
+        </div>
+        <table class="table table-striped">
+            <tr>
+                <th>Player</th>
+                <th>Score</th>
+            </tr>
+            <tr ng-repeat="result in currentResults() | orderBy:'-score'">
+                <td>{{result.playerName}}</td>
+                <td>{{result.playerPoints}}</td>
+            </tr>
+        </table>
+        <button id="back-to-start-button" type="button" class="btn btn-lg btn-primary" ng-click="leaveRoom()">Finish</button>
+    </div>
 </div>

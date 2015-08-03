@@ -4,7 +4,8 @@ var path = require('path');
 module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
-	var roundCount = 0;
+	var roundCount = 1;
+	var maxRounds = 3;
 	var rounds = [];
 	var POINTS_PER_VOTE = 50;
 	var blackCardsMaster = [];
@@ -20,7 +21,7 @@ module.exports = function(data) {
 		Called by the server when a game starts
 	*/
 	var initialize = function(usersInRoom, callback) {
-		roundCount = 0;
+		roundCount = 1;
 
 		path.join(__dirname, './BlackWhiteCards.json');
 
@@ -76,7 +77,11 @@ module.exports = function(data) {
 	};
 
 	var newRound = function(callback) {
+		var gameOver = (roundCount >= maxRounds);
 		roundCount += 1;
+		if (gameOver) {
+			roundCount = -1;
+		}
 		var round = {
 			count: roundCount,
 			question: getRoundQuestion(),
@@ -102,7 +107,8 @@ module.exports = function(data) {
 			players: players,
 			roundQuestion: round.question,
 			round: roundCount,
-			scores: scores
+			scores: scores,
+			gameIsOver: gameOver
 		});
 	};
 
@@ -113,27 +119,6 @@ module.exports = function(data) {
 		for (var i = 0 ; i <= players.length-1 ; i++) {
 			players[i].rank = i+1 ;
 		}
-	};
-
-	//finish game and send back final scores
-	var finishGame = function(callback) {
-
-		var results = [];
-
-		players.forEach(function(pl){
-			var result = {
-				playerId: pl.uId,
-				playerName : pl.name,
-				score: pl.points,
-				rank: pl.rank
-			};
-			results.push(result);
-		});
-
-		// newRound();
-		callback({
-			res: results
-		});
 	};
 
 	/*
@@ -245,14 +230,6 @@ module.exports = function(data) {
 		}
 	};
 
-	var assignName = function (playerId, playerName) {
-		players.forEach(function(pl){
-			if(pl.name === undefined && pl.uId === playerId){
-				pl.name = playerName;
-			}
-		});
-	};
-
 	var getName = function (playerId) {
 		var name;
 		players.forEach(function(pl){
@@ -280,6 +257,7 @@ module.exports = function(data) {
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
 
+			setRank();
 			var results = [];
 			currentRound.answers.forEach(function(answer){
 				var points;
@@ -288,12 +266,19 @@ module.exports = function(data) {
 						points = pl.points;
 					}
 				});
+				var rank;
+				players.forEach(function(pl){
+					if (pl.uId === answer.playerId) {
+						rank = pl.rank;
+					}
+				});
 				var result = {
 					playerId: answer.playerId,
 					playerName: answer.playerName,
 					ans: answer.answerText,
 					playerVote: answer.playersVote,
-					playerPoints: points
+					playerPoints: points,
+					playerRank: rank
 				};
 				results.push(result);
 			});
@@ -341,6 +326,5 @@ module.exports = function(data) {
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
 		newRound: newRound,
-		finishGame: finishGame
 	};
 };

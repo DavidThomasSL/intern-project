@@ -116,7 +116,7 @@ module.exports = function(port, enableLogging) {
         socket.on('ROOM join', function(msg) {
             rooms.forEach(function(room) {
                 if (room.id === msg.roomId) {
-                    if(room.gameInProgress === false){
+                    if (room.gameInProgress === false) {
                         putUserInRoom(msg.roomId);
                     }
                 }
@@ -167,17 +167,61 @@ module.exports = function(port, enableLogging) {
 
         });
 
+
         /*
-            Called by the GameService
-            Creates a new gamecontroller, adds the current room to it
-            gamecontroller starts whirring
+            Called every time a player toggles their ready status
         */
-        socket.on('GAME start', function(data) {
+        socket.on('GAME ready status', function(data) {
             var room;
-
-
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === data.roomId) {
+                    room = otherRoom;
+                }
+            });
+
+
+            //Goes through users in room and toggles their ready status on the server
+            room.usersInRoom.forEach(function(iteratedUser) {
+                if (iteratedUser.uId === user.uId) {
+                    iteratedUser.readyToProceed = (!iteratedUser.readyToProceed);
+                }
+            });
+
+            broadcastroom(room.id, 'ROOM details', {
+                roomId: room.id,
+                usersInRoom: room.usersInRoom,
+                gameInProgress: room.gameInProgress
+            });
+
+
+            //counts up how many players in the room are ready
+            var readyCounter = 0;
+            room.usersInRoom.forEach(function(iteratedUser) {
+                if (iteratedUser.readyToProceed === true) {
+                    readyCounter++;
+                }
+            });
+
+            //if enough people are ready
+            if (readyCounter === room.usersInRoom.length) {
+                // if the game hasn't started yet, start the game
+                if (!room.gameInProgress) {
+                    startGameInRoom(room.id);
+                } else {
+                // if the game has already started, move onto the next round
+                    startNextRoundInRoom(room.id);
+                }
+                //after moving players on, set all their ready statuses back to 'not ready'
+                room.usersInRoom.forEach(function(iteratedUser) {
+                    iteratedUser.readyToProceed = false;
+                });
+            }
+        });
+
+        function startGameInRoom(roomid) {
+            var room;
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === roomId) {
                     room = otherRoom;
                 }
             });
@@ -213,81 +257,54 @@ module.exports = function(port, enableLogging) {
                 });
 
             });
-
             logger.debug("Starting game in room " + room.id);
-        });
+        }
 
-        /*
-        Starts new round:
-        call function in gameController to start new round
-        callback will return a new question which will be broadcasted to eveyone in the game
-        each player will be send his updated hand
-        */
-        socket.on('GAME next round', function(data) {
+        function startNextRoundInRoom(roomid) {
             var room;
-
-
             rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === data.roomId) {
+                if (otherRoom.id === roomId) {
                     room = otherRoom;
                 }
             });
 
             room.gameController.newRound(function(data) {
-
-                broadcastroom(room.id, 'ROUTING', {
-                    location: 'question'
-                });
-
-                broadcastroom(room.id, 'GAME question', {
-                    question: data.roundQuestion,
-                    round: data.round,
-                    scores: data.scores
-                });
-
-                //Send each user in the room their individual hand (delt by the GameController)
-                data.players.forEach(function(player) {
-                    users.forEach(function(user) {
-                        if (player.uId === user.uId) {
-                            user.socket.emit('USER hand', {
-                                hand: player.hand
-                            });
-                        }
+                if (data.gameIsOver === true) {
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'endGame'
                     });
-                });
 
-            });
+                    broadcastroom(room.id, 'GAME question', {
+                        question: data.roundQuestion,
+                        round: data.round,
+                        scores: data.scores
+                    });
+                } else { //ending the game after the we reach the round limit
 
-            logger.info("Starting new round in room " + room.id);
-        });
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'question'
+                    });
 
-        /*
-        call function in gameController to finish the game
-        callback will return the final scores (as data.res)
-        */
-        socket.on('GAME finish', function(data) {
-            var room;
+                    broadcastroom(room.id, 'GAME question', {
+                        question: data.roundQuestion,
+                        round: data.round,
+                        scores: data.scores
+                    });
 
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === data.roomId) {
-                    room = otherRoom;
+                    //Send each user in the room their individual hand (delt by the GameController)
+                    data.players.forEach(function(player) {
+                        users.forEach(function(user) {
+                            if (player.uId === user.uId) {
+                                user.socket.emit('USER hand', {
+                                    hand: player.hand
+                                });
+                            }
+                        });
+                    });
                 }
             });
-
-            room.gameController.finishGame(function(data) {
-
-                broadcastroom(room.id, 'ROUTING', {
-                    location: 'endGame'
-                });
-
-                broadcastroom(room.id, 'GAME finish', {
-                    results: data.res
-                });
-
-            });
-
-            logger.info("Finishing game in room " + room.id);
-        });
+            logger.info("Starting new round in room " + room.id);
+        }
 
         // submit answer
         socket.on('USER submitChoice', function(msg) {
@@ -347,12 +364,12 @@ module.exports = function(port, enableLogging) {
                     voteNumber: data.voteNumber
                 });
 
+
                 if (data.allVotesSubmitted === true) {
                     //moving all players to the results page
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'results'
                     });
-
 
                 }
 
@@ -399,7 +416,8 @@ module.exports = function(port, enableLogging) {
 
                     room.usersInRoom.push({
                         uId: user.uId,
-                        username: user.name
+                        username: user.name,
+                        readyToProceed: false
                     });
 
                     user.roomId = roomId;
