@@ -379,6 +379,9 @@ module.exports = function(port, enableLogging) {
 
                 if (room.id === user.roomId) {
 
+                    //setting player's connectedToServer flag to false
+                    room.gameController.disconnectPlayer (user.uId);
+
                     room.usersInRoom = room.usersInRoom.filter(function(usersInRoom) {
                         return usersInRoom.uId !== user.uId;
                     });
@@ -391,6 +394,7 @@ module.exports = function(port, enableLogging) {
                     logger.debug("Removing player from room" + room.id);
                 }
             });
+
         });
 
         /*
