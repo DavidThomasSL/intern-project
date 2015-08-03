@@ -35,6 +35,7 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
 
     $scope.leaveRoom = function() {
         roomService.leaveRoom();
+        gameService.clearGameData();
     };
 
 });

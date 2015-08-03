@@ -4,7 +4,7 @@ var path = require('path');
 module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
-	var roundCount = 1;
+	var roundCount = 0;
 	var maxRounds = 3;
 	var rounds = [];
 	var POINTS_PER_VOTE = 50;
@@ -24,7 +24,6 @@ module.exports = function(data) {
 		Called by the server when a game starts
 	*/
 	var initialize = function(usersInRoom, callback) {
-		roundCount = 1;
 
 		path.join(__dirname, './BlackWhiteCards.json');
 
@@ -44,47 +43,30 @@ module.exports = function(data) {
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);
 
-				//TODO : stop game if we don't have enough inital white cards (HANDSIZE * number of players)
-
 				usersInRoom.forEach(function(user) {
 					setupPlayer(user);
 				});
 
-				var round = {
-					count: roundCount,
-					question: getRoundQuestion(),
-					answers: []
-				};
-				rounds.push(round);
-
-				var scores = [];
-				players.forEach(function(pl) {
-					var score = {
-						playerId: pl.uId,
-						playerName: pl.name,
-						points: pl.points,
-						rank: pl.rank
-					};
-					scores.push(score);
-				});
-
-				//return this game information back to the server
-				callback({
-					players: players,
-					roundQuestion: round.question,
-					round: roundCount,
-					scores: scores
-				});
+				callback();
 			}
 		});
 	};
 
+	/*
+		Moves the gameController to the next round
+		FInd out if the game is over or should continue
+
+		Returns to the server new round information
+	*/
 	var newRound = function(callback) {
+
 		var gameOver = (roundCount >= maxRounds);
+
 		roundCount += 1;
 		if (gameOver) {
 			roundCount = -1;
 		}
+
 		var round = {
 			count: roundCount,
 			question: getRoundQuestion(),
@@ -93,24 +75,11 @@ module.exports = function(data) {
 
 		rounds.push(round);
 
-		setRank();
-		var scores = [];
-		players.forEach(function(pl) {
-			var score = {
-				playerId: pl.uId,
-				playerName: pl.name,
-				points: pl.points,
-				rank: pl.rank
-			};
-			scores.push(score);
-		});
-
 		//return this round information back to the server
 		callback({
 			players: players,
 			roundQuestion: round.question,
 			round: roundCount,
-			scores: scores,
 			gameIsOver: gameOver
 		});
 	};
@@ -259,17 +228,12 @@ module.exports = function(data) {
 		var currentRound = rounds[rounds.length - 1];
 		var results = [];
 
-
 		// Add points and voting user's name to answer
 		// Create result "leagueTable" object
 		currentRound.answers.forEach(function(answer) {
 			if (answer.answerText === votedForText) {
 				answer.playersVote.push(getName(playerId));
-				addPoints(answer.player.uId);
 			}
-
-			// Update every player's rank in the room
-			setRank();
 
 			//Build result object for each answer submitted
 			players.forEach(function(pl) {
@@ -291,8 +255,20 @@ module.exports = function(data) {
 
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
+
+			//add the points to the players for each vote they received
+			currentRound.answers.forEach(function(answer) {
+				for (var i = 0; i < answer.playersVote.length; i++) {
+					addPoints(answer.player.uId);
+				}
+			});
+
+			// Update every player's rank in the room
+			setRank();
+
 			allVotesSubmitted = true;
 			voteNumber = 0;
+
 		} else {
 			voteNumber = countVotes(currentRound);
 			allVotesSubmitted = false;

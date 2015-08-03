@@ -113,12 +113,15 @@ module.exports = function(port, enableLogging) {
 
         /*
             Given a user id and a room id,
-            check if that room exisits, and add the player if they are not already in it
+            check if that room exists, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
             rooms.forEach(function(room) {
                 if (room.id === msg.roomId) {
-                    if (room.gameInProgress === false) {
+
+                    // Can only join if the gameController has not been set up
+                    // i.e game has not started yet
+                    if (room.gameController === undefined) {
                         putUserInRoom(msg.roomId);
                     }
                 }
@@ -241,60 +244,32 @@ module.exports = function(port, enableLogging) {
             room.gameController = new GameController(broadcastroom, broadcastToId);
             room.gameInProgress = true;
 
+            // Set up the gameController
+            // Will start the first round once initialized
             room.gameController.initialize(room.usersInRoom, function(data) {
-
-                broadcastroom(room.id, 'ROUTING', {
-                    location: 'question'
-                });
-                broadcastroom(room.id, 'GAME question', {
-                    question: data.roundQuestion,
-                    round: data.round,
-                    scores: data.scores
-                });
-                broadcastroom(room.id, 'ROOM details', {
-                    roomId: room.id,
-                    usersInRoom: room.usersInRoom,
-                    gameInProgress: room.gameInProgress
-                });
-
-                //Send each user in the room their individual hand (delt by the GameController)
-                data.players.forEach(function(player) {
-                    users.forEach(function(user) {
-                        if (player.uId === user.uId) {
-                            user.socket.emit('USER hand', {
-                                hand: player.hand
-                            });
-                        }
-                    });
-                });
-
+                startNextRoundInRoom(room.id);
+                logger.debug("Starting game in room " + room.id);
             });
-
-            logger.debug("Starting game in room " + room.id);
         }
 
+        /*
+            Starts a new round for players in room
+            IF there are more rounds, send the new question out
+            If there are no more rounds, game over.
+        */
         function startNextRoundInRoom(roomId) {
 
             var room = getRoomFromId(roomId);
 
-            // rooms.forEach(function(otherRoom) {
-            //     if (otherRoom.id === roomId) {
-            //         room = otherRoom;
-            //     }
-            // });
-
             room.gameController.newRound(function(data) {
                 if (data.gameIsOver === true) {
+
+                    // Show the end game page if no rounds left
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'endGame'
                     });
 
-                    broadcastroom(room.id, 'GAME question', {
-                        question: data.roundQuestion,
-                        round: data.round,
-                        scores: data.scores
-                    });
-                } else { //ending the game after the we reach the round limit
+                } else {
 
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'question'
@@ -303,7 +278,6 @@ module.exports = function(port, enableLogging) {
                     broadcastroom(room.id, 'GAME question', {
                         question: data.roundQuestion,
                         round: data.round,
-                        scores: data.scores
                     });
 
                     //Send each user in the room their individual hand (delt by the GameController)
@@ -317,8 +291,10 @@ module.exports = function(port, enableLogging) {
                         });
                     });
                 }
+
+                logger.info("Starting new round in room " + room.id);
+
             });
-            logger.info("Starting new round in room " + room.id);
         }
 
         // submit answer
@@ -345,6 +321,7 @@ module.exports = function(port, enableLogging) {
                 broadcastroom(room.id, 'GAME answers', {
                     answers: data.answers
                 });
+
                 if (data.allChoicesSubmitted === true) {
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'vote'
@@ -394,9 +371,11 @@ module.exports = function(port, enableLogging) {
             });
         });
 
-        //When a client disconnect, we remove him from the room he was in
-        //the user still remembers what room his was in however,
-        //so that he can join again
+        /*
+            When a client disconnect, we remove him from the room he was in
+            the user still remembers what room his was in however,
+            so that he can join again
+        */
         socket.on('disconnect', function() {
             logger.debug("Disconnecting player");
 

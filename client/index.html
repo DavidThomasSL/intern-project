@@ -25,8 +25,8 @@
                 </div>
                 <div ng-hide="rank() === ''">
                     <p class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">&#9776;</button>
-                    <p class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}}</p>
                 </div>
+                <p class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}}</p>
                 <p class="username">{{getUserName()}}</p>
             </div>
             <div class="content">

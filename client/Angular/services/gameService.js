@@ -37,6 +37,12 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		return voteCounter;
 	}
 
+	// Clears local game data when the user leaves the game
+	function clearGameData() {
+		playerRoundResults = null;
+		round = -1;
+	}
+
 	//get results of voting
 	function getPlayerRoundResults() {
 		return playerRoundResults;
@@ -66,7 +72,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	function _recieveQuestion(data) {
 		currentQuestion = data.question;
 		round = data.round;
-/*		currentscores = data.scores;*/
 	}
 
 	function _setChosenAnswers(data) {
@@ -94,7 +99,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		eventName: "question",
 		eventAction: _recieveQuestion
 	}, {
-		eventName: "chosenAnswers",
+		eventName: "answers",
 		eventAction: _setChosenAnswers
 	}, {
 		eventName: "playerRoundResults",
@@ -125,7 +130,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		_recieveQuestion: _recieveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
-		_setMaxRounds: _setMaxRounds
+		_setMaxRounds: _setMaxRounds,
+		clearGameData: clearGameData
 	};
 
 }]);
