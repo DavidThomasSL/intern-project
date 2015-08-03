@@ -124,22 +124,6 @@ module.exports = function(data) {
 		}
 	};
 
-	/*
-		Sets up a player with a user id, a new hand and 0 points
-		Adds them to the player list
-	*/
-	var setupPlayer = function(user) {
-
-		var player = {
-			uId: user.uId,
-			name: user.username,
-			hand: dealUserHand(),
-			points: 0,
-			rank: ""
-		};
-
-		players.push(player);
-	};
 
 	/*
 		Returns a random questions
@@ -201,47 +185,57 @@ module.exports = function(data) {
 	};
 
 	/*
-		submit the answer and change the used card with another one in players
+		Submit a user answer to a question
+
+		Adds the user's answer to the round answers, with their details,
+		the answer text and an (empty) list of who voted for it.
+
+		Updates the users hand to give them a new card
+
+		Checks if everyone has submitted their answers, and if tells the server to route them
+		to next stage
 
 	 */
-	//TODO change this to a promise with a reject clause
+	var submitAnswer = function(playerId, playerName, answerText, callback) {
 
-	var submitAnswer = function(playerId, playerName, answer, callback) {
+		var player;
 
+		//FInd the player who submmited this
+		players.forEach(function(pl) {
+			if (pl.uId === playerId) {
+				player = pl;
+			}
+		})
+
+		// Build the submitted answer
 		var ans = {
-			playerId: playerId,
-			playerName: playerName,
-			answerText: answer,
+			player: player,
+			answerText: answerText,
 			playersVote: []
 		};
 
+		//Get the current round object, which will hold all the answers for that round
 		var currentRound = rounds[rounds.length - 1];
 		currentRound.answers.push(ans);
-		updateHand(playerId, answer);
 
-		//check if everyone submitted
+		//Update this players hand with a new card, as they have just played one
+		updateHand(playerId, answerText);
+
+		//check if everyone submitted and sends back all the currently submitted answers
+		var allChoicesSubmitted;
 		if (currentRound.answers.length === players.length) {
-			callback({
-				answers: currentRound.answers,
-				allChoicesSubmitted: true
-			});
+			allChoicesSubmitted = true;
 		} else {
-			callback({
-				answers: currentRound.answers,
-				allChoicesSubmitted: false
-			});
+			allChoicesSubmitted = false;
 		}
+
+		callback({
+			answers: currentRound.answers,
+			allChoicesSubmitted: allChoicesSubmitted
+		});
+
 	};
 
-	var getName = function(playerId) {
-		var name;
-		players.forEach(function(pl) {
-			if (parseInt(pl.uId) === parseInt(playerId)) {
-				name = pl.name;
-			}
-		});
-		return name;
-	};
 
 	/*
 		Submit a user vote for an snwer
@@ -268,7 +262,7 @@ module.exports = function(data) {
 		currentRound.answers.forEach(function(answer) {
 			if (answer.answerText === votedForText) {
 				answer.playersVote.push(getName(playerId));
-				addPoints(answer.playerId);
+				addPoints(answer.player.uId);
 			}
 
 			// Update every player's rank in the room
@@ -276,7 +270,7 @@ module.exports = function(data) {
 
 			//Build result object for each answer submitted
 			players.forEach(function(pl) {
-				if (pl.uId === answer.playerId) {
+				if (pl.uId === answer.player.uId) {
 
 					var result = {
 						player: pl,
@@ -322,7 +316,7 @@ module.exports = function(data) {
 	};
 
 	/*
-	count the overall votes in this round
+		count the overall votes in this round
 	*/
 	var countVotes = function(currentRound) {
 		var votes = 0;
@@ -330,6 +324,33 @@ module.exports = function(data) {
 			votes += option.playersVote.length;
 		});
 		return votes;
+	};
+
+	var getName = function(playerId) {
+		var name;
+		players.forEach(function(pl) {
+			if (parseInt(pl.uId) === parseInt(playerId)) {
+				name = pl.name;
+			}
+		});
+		return name;
+	};
+
+	/*
+		Sets up a player with a user id, a new hand and 0 points
+		Adds them to the player list
+	*/
+	var setupPlayer = function(user) {
+
+		var player = {
+			uId: user.uId,
+			name: user.username,
+			hand: dealUserHand(),
+			points: 0,
+			rank: ""
+		};
+
+		players.push(player);
 	};
 
 	return {

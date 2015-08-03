@@ -38,8 +38,6 @@ describe('After ending the game', function() {
 			secondClonageUser.ready();
 		}
 
-
-
 		expect(browser.getCurrentUrl()).toMatch(/\/endGame/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
 
