@@ -94,7 +94,9 @@ module.exports = function(port, enableLogging) {
             putUserInJoining();
         });
 
-        //create room, assign id, add current player and return room id to player
+        /*
+            create room, assign id, add current player and return room id to player
+        */
         socket.on('ROOM create', function(msg) {
 
             roomId = makeid();
@@ -169,56 +171,64 @@ module.exports = function(port, enableLogging) {
 
 
         /*
+            Either Starts the game or moves to the next round
+
             Called every time a player toggles their ready status
+            Called in the room lobby or between rounds
+
+            If everyone in the room has said they are ready, moves to the next gamestage
+            toggles the user calls this event either ready or not ready, with a readyToProceedFlag
         */
         socket.on('GAME ready status', function(data) {
-            var room;
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === data.roomId) {
-                    room = otherRoom;
-                }
-            });
 
+            var readyCounter = 0;
 
-            //Goes through users in room and toggles their ready status on the server
+            // Get the room
+            var room = getRoomFromId(data.roomId);
+
+            // Goes through users in room and toggles their ready status on the server
             room.usersInRoom.forEach(function(iteratedUser) {
                 if (iteratedUser.uId === user.uId) {
                     iteratedUser.readyToProceed = (!iteratedUser.readyToProceed);
                 }
             });
 
+            // Broadcast the room details so every user can see who is ready and who isn't
             broadcastroom(room.id, 'ROOM details', {
                 roomId: room.id,
                 usersInRoom: room.usersInRoom,
                 gameInProgress: room.gameInProgress
             });
 
-
-            //counts up how many players in the room are ready
-            var readyCounter = 0;
+            // Get number of users ready in room
             room.usersInRoom.forEach(function(iteratedUser) {
                 if (iteratedUser.readyToProceed === true) {
                     readyCounter++;
                 }
             });
 
-            //if enough people are ready
+            // Either start a room game or mov to the next round
+            // If enough people are ready
             if (readyCounter === room.usersInRoom.length) {
-                // if the game hasn't started yet, start the game
-                if (!room.gameInProgress) {
-                    startGameInRoom(room.id);
-                } else {
-                // if the game has already started, move onto the next round
-                    startNextRoundInRoom(room.id);
-                }
+
                 //after moving players on, set all their ready statuses back to 'not ready'
                 room.usersInRoom.forEach(function(iteratedUser) {
                     iteratedUser.readyToProceed = false;
                 });
+
+                // if the game hasn't started yet, start the game
+                if (!room.gameInProgress) {
+                    startGameInRoom(room.id);
+                } else {
+                    // if the game has already started, move onto the next round
+                    startNextRoundInRoom(room.id);
+                }
+            } else {
+                // Not everyone is ready, do nothing
             }
         });
 
-        function startGameInRoom(roomid) {
+        function startGameInRoom(roomId) {
             var room;
             rooms.forEach(function(otherRoom) {
                 if (otherRoom.id === roomId) {
@@ -260,13 +270,15 @@ module.exports = function(port, enableLogging) {
             logger.debug("Starting game in room " + room.id);
         }
 
-        function startNextRoundInRoom(roomid) {
-            var room;
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === roomId) {
-                    room = otherRoom;
-                }
-            });
+        function startNextRoundInRoom(roomId) {
+
+            var room = getRoomFromId(roomId);
+
+            // rooms.forEach(function(otherRoom) {
+            //     if (otherRoom.id === roomId) {
+            //         room = otherRoom;
+            //     }
+            // });
 
             room.gameController.newRound(function(data) {
                 if (data.gameIsOver === true) {
@@ -402,18 +414,21 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-                    Puts a user into a room
-                    Tells the user and the room that a change has occured
-                    Tells the routing service to move to the room page
-                    Tell all other users in the room that a player has joined
+            Puts a user into a room
+            Tells the user and the room that a change has occured
+            Tells the routing service to move to the room page
+            Tell all other users in the room that a player has joined
         */
         function putUserInRoom(roomId) {
             logger.debug("putting user in room");
             var joined = false;
 
+
+            // Find The room
             rooms.forEach(function(room) {
                 if (room.id === roomId) {
 
+                    // Add the user to the room
                     room.usersInRoom.push({
                         uId: user.uId,
                         username: user.name,
@@ -422,11 +437,13 @@ module.exports = function(port, enableLogging) {
 
                     user.roomId = roomId;
 
+                    // Tell the user they have joined
                     socket.emit('USER room join', {
                         success: true,
                         roomId: room.id
                     });
 
+                    // Route them to the room lobby
                     socket.emit('ROUTING', {
                         location: 'room'
                     });
@@ -463,6 +480,19 @@ module.exports = function(port, enableLogging) {
             socket.emit('ROUTING', {
                 location: 'joining'
             });
+        }
+
+        /*
+            Given a room ID finds the room in the rooms list
+        */
+        function getRoomFromId(roomId) {
+            var room;
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === roomId) {
+                    room = otherRoom;
+                }
+            });
+            return room;
         }
 
         //Creates a new user
