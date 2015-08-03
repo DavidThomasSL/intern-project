@@ -43,8 +43,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	function getPlayerCurrentRank(playerId) {
-
-		var returnValue = -1;
+		var returnValue = "";
 
 		if (playerRoundResults !== null) {
 			playerRoundResults.forEach(function(playerResult) {
@@ -53,6 +52,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 				}
 			});
 		}
+
 		return returnValue;
 	}
 	/*

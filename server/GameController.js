@@ -115,6 +115,9 @@ module.exports = function(data) {
 		});
 	};
 
+	/*
+		Gives a rank to every player in the game based on their points total
+	*/
 	var setRank = function() {
 		players.sort(function(a, b) {
 			return parseInt(b.points) - parseInt(a.points);
