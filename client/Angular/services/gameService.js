@@ -47,9 +47,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		var returnValue = -1;
 
 		if (playerRoundResults !== null) {
-			playerRoundResults.forEach(function(result) {
-				if (playerId === result.playerId) {
-					returnValue = result.playerRank
+			playerRoundResults.forEach(function(playerResult) {
+				if (playerId === playerResult.player.uId) {
+					returnValue = playerResult.player.rank
 				}
 			});
 		}

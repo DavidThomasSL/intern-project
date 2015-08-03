@@ -67,7 +67,6 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 	});
 
 	socket.on("GAME answers", function(data) {
-		console.log("got game chosenAnswers");
 		_setListenerEventAction("GAME chosenAnswers");
 		onMessageFunction(data);
 	});

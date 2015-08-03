@@ -228,15 +228,17 @@ module.exports = function(port, enableLogging) {
             }
         });
 
-        function startGameInRoom(roomId) {
-            var room;
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === roomId) {
-                    room = otherRoom;
-                }
-            });
+        /*
+            Starts a new game for the room
 
-            room.gameController = new GameController();
+            Creates a gameController for the room, and ititialises it
+            Once initalised, starts the first round of the game
+        */
+        function startGameInRoom(roomId) {
+
+            var room = getRoomFromId(roomId);
+
+            room.gameController = new GameController(broadcastroom, broadcastToId);
             room.gameInProgress = true;
 
             room.gameController.initialize(room.usersInRoom, function(data) {
@@ -267,6 +269,7 @@ module.exports = function(port, enableLogging) {
                 });
 
             });
+
             logger.debug("Starting game in room " + room.id);
         }
 
@@ -351,9 +354,9 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-        submit a vote
-        callback will return the results after everyone has voted:
-        who submitted what answer, who voted for them, their score after the round
+            submit a vote
+            callback will return the results after everyone has voted:
+            who submitted what answer, who voted for them, their score after the round
         */
         socket.on('USER vote', function(msg) {
             var room;
@@ -368,8 +371,11 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-
+            // Submits the vote information to the game controller
+            // If all votes are submitted, move user to results page
+            // Otherwise they just get the current round results
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
+
                 //send room the vote data after each vote
                 broadcastroom(room.id, 'GAME playerRoundResults', {
                     results: data.res,
@@ -510,15 +516,26 @@ module.exports = function(port, enableLogging) {
     });
 
     /*
-    emit event and data to all players in a certain room
-    that is passed as an argument
-    -> used to send a new join and new leave event
-    with the data as the new list of players in the room
+        emit event and data to all players in a certain room
+        that is passed as an argument
+        -> used to send a new join and new leave event
+        with the data as the new list of players in the room
     */
     function broadcastroom(room, event, data) {
         users.forEach(function(user) {
             if (user.roomId === room) {
                 user.socket.emit(event, data);
+            }
+        });
+    }
+
+    /*
+        Emits a message to user with the the given id
+    */
+    function broadcastToId(broadcastId, eventName, data) {
+        users.forEach(function(user) {
+            if (broadcastId === user.uId) {
+                user.socket.emit(eventName, data);
             }
         });
     }

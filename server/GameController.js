@@ -12,6 +12,9 @@ module.exports = function(data) {
 	var whiteCardsMaster = [];
 	var blackCardsCurrent = [];
 	var whiteCardsCurrent = [];
+
+	// Message Functions pass in on creation from the server
+	// Allows the gameController to send messages via to server to clients
 	//deal from current arrays, when card it dealt remove it to stop player getting same cards
 
 	//Number of white cards a user should always have
@@ -34,7 +37,7 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards.filter(function(card){
+				blackCardsMaster = cards.blackCards.filter(function(card) {
 					return (card.pick === 1);
 				});
 				whiteCardsMaster = cards.whiteCards;
@@ -55,10 +58,10 @@ module.exports = function(data) {
 				rounds.push(round);
 
 				var scores = [];
-				players.forEach(function(pl){
+				players.forEach(function(pl) {
 					var score = {
 						playerId: pl.uId,
-						playerName : pl.name,
+						playerName: pl.name,
 						points: pl.points,
 						rank: pl.rank
 					};
@@ -92,10 +95,10 @@ module.exports = function(data) {
 
 		setRank();
 		var scores = [];
-		players.forEach(function(pl){
+		players.forEach(function(pl) {
 			var score = {
 				playerId: pl.uId,
-				playerName : pl.name,
+				playerName: pl.name,
 				points: pl.points,
 				rank: pl.rank
 			};
@@ -116,8 +119,8 @@ module.exports = function(data) {
 		players.sort(function(a, b) {
 			return parseInt(b.points) - parseInt(a.points);
 		});
-		for (var i = 0 ; i <= players.length-1 ; i++) {
-			players[i].rank = i+1 ;
+		for (var i = 0; i <= players.length - 1; i++) {
+			players[i].rank = i + 1;
 		}
 	};
 
@@ -129,7 +132,7 @@ module.exports = function(data) {
 
 		var player = {
 			uId: user.uId,
-			name : user.username,
+			name: user.username,
 			hand: dealUserHand(),
 			points: 0,
 			rank: ""
@@ -182,7 +185,7 @@ module.exports = function(data) {
 	update a users hand by replacing the used card with a new random one
 	*/
 	var updateHand = function(userId, usedCard) {
-		players.forEach(function(player){
+		players.forEach(function(player) {
 			if (player.uId === userId) {
 				player.hand = player.hand.filter(function(card) {
 					if (card !== usedCard)
@@ -201,7 +204,7 @@ module.exports = function(data) {
 		submit the answer and change the used card with another one in players
 
 	 */
-	 //TODO change this to a promise with a reject clause
+	//TODO change this to a promise with a reject clause
 
 	var submitAnswer = function(playerId, playerName, answer, callback) {
 
@@ -212,7 +215,7 @@ module.exports = function(data) {
 			playersVote: []
 		};
 
-		var currentRound = rounds[rounds.length-1];
+		var currentRound = rounds[rounds.length - 1];
 		currentRound.answers.push(ans);
 		updateHand(playerId, answer);
 
@@ -220,92 +223,100 @@ module.exports = function(data) {
 		if (currentRound.answers.length === players.length) {
 			callback({
 				answers: currentRound.answers,
-				allChoicesSubmitted : true
+				allChoicesSubmitted: true
 			});
 		} else {
 			callback({
 				answers: currentRound.answers,
-				allChoicesSubmitted : false
+				allChoicesSubmitted: false
 			});
 		}
 	};
 
-	var getName = function (playerId) {
+	var getName = function(playerId) {
 		var name;
-		players.forEach(function(pl){
-			if(parseInt(pl.uId) === parseInt(playerId)){
+		players.forEach(function(pl) {
+			if (parseInt(pl.uId) === parseInt(playerId)) {
 				name = pl.name;
 			}
 		});
 		return name;
 	};
 
-		/*
-		submit the vote and change the used card with another one in players
+	/*
+		Submit a user vote for an snwer
+
+		Answers are the submissiions from users
+		Gets the answer this vote is for
+		Add points to the player who submitted that answer
+		Adds the voting user's name to the list of people who voted for this answer
+
+		If everyone has submitted a vote, will return with All Votes submitted as true,
+		which is checked by the server in the callback.
+
+		Return results, an array of objects for each answer that has been submitted
+		The result object holds who submitted it, voted for it, the voters rank and points
 	 */
-	var submitVote = function(playerId, answer, callback) {
+	var submitVote = function(playerId, votedForText, callback) {
 
-		var currentRound = rounds[rounds.length-1];
+		var currentRound = rounds[rounds.length - 1];
+		var results = [];
 
-		currentRound.answers.forEach(function(option){
-			if(option.answerText === answer) {
-				option.playersVote.push(getName(playerId));
-				addPoints(option.playerId);
+
+		// Add points and voting user's name to answer
+		// Create result "leagueTable" object
+		currentRound.answers.forEach(function(answer) {
+			if (answer.answerText === votedForText) {
+				answer.playersVote.push(getName(playerId));
+				addPoints(answer.playerId);
 			}
+
+			// Update every player's rank in the room
+			setRank();
+
+			//Build result object for each answer submitted
+			players.forEach(function(pl) {
+				if (pl.uId === answer.playerId) {
+
+					var result = {
+						player: pl,
+						answerText: answer.answerText,
+						playersWhoVotedForThis: answer.playersVote,
+					};
+
+					results.push(result);
+				}
+			});
 		});
+
+		var allVotesSubmitted;
+		var voteNumber;
 
 		//check if everyone voted
 		if (countVotes(currentRound) === players.length) {
-
-			setRank();
-			var results = [];
-			currentRound.answers.forEach(function(answer){
-				var points;
-				players.forEach(function(pl){
-					if (pl.uId === answer.playerId) {
-						points = pl.points;
-					}
-				});
-				var rank;
-				players.forEach(function(pl){
-					if (pl.uId === answer.playerId) {
-						rank = pl.rank;
-					}
-				});
-				var result = {
-					playerId: answer.playerId,
-					playerName: answer.playerName,
-					ans: answer.answerText,
-					playerVote: answer.playersVote,
-					playerPoints: points,
-					playerRank: rank
-				};
-				results.push(result);
-			});
-
-			// newRound();
-			callback({
-				res: results,
-				allVotesSubmitted : true,
-				voteNumber : 0 //resetting the votes for the next round
-			});
+			allVotesSubmitted = true;
+			voteNumber = 0;
 		} else {
-			callback({
-				res: null,
-				allVotesSubmitted : false,
-				voteNumber: countVotes(currentRound)
-			});
+			voteNumber = countVotes(currentRound);
+			allVotesSubmitted = false;
 		}
+
+		callback({
+			res: results,
+			allVotesSubmitted: allVotesSubmitted,
+			voteNumber: countVotes(currentRound)
+		});
+
 	};
 
 
 	/*
-	add 50 points to player -> called on each vote
+		add 50 points to player -> called on each vote
 	*/
 	var addPoints = function(playerId) {
-		players.forEach (function(player){
-			if (player.uId === playerId ) {
-				player.points += POINTS_PER_VOTE ;
+		players.forEach(function(player) {
+			if (player.uId === playerId) {
+				player.points += POINTS_PER_VOTE;
 			}
 		});
 	};
@@ -314,11 +325,11 @@ module.exports = function(data) {
 	count the overall votes in this round
 	*/
 	var countVotes = function(currentRound) {
-		var votes = 0 ;
-		currentRound.answers.forEach(function(option){
+		var votes = 0;
+		currentRound.answers.forEach(function(option) {
 			votes += option.playersVote.length;
 		});
-		return votes ;
+		return votes;
 	};
 
 	return {

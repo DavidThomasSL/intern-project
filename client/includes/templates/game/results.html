@@ -12,14 +12,14 @@
                 <th>Voted by</th>
                 <th>Points</th>
             </tr>
-            <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playerVote.length'">
-                <td>{{result.ans}}</td>
-                <td>{{result.playerName}}</td>
-                <td>{{result.playerVote.length}}</td>
+            <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
+                <td>{{result.answerText}}</td>
+                <td>{{result.player.name}}</td>
+                <td>{{result.playersWhoVotedForThis.length}}</td>
                 <td>
-                    <div ng-repeat="player in result.playerVote">{{player}}</div>
+                    <div ng-repeat="player in result.playersWhoVotedForThis">{{player}}</div>
                 </td>
-                <td>+{{result.playerVote.length*50}}</td>
+                <td>+{{result.playersWhoVotedForThis.length*50}}</td>
             </tr>
         </table>
         <br>
