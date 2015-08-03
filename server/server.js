@@ -103,7 +103,6 @@ module.exports = function(port, enableLogging) {
             var room = {
                 id: roomId,
                 usersInRoom: [],
-                gameInProgress: false
             };
 
             rooms.push(room);
@@ -151,7 +150,6 @@ module.exports = function(port, enableLogging) {
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
                         usersInRoom: room.usersInRoom,
-                        gameInProgress: room.gameInProgress
                     });
                 }
             });
@@ -200,7 +198,6 @@ module.exports = function(port, enableLogging) {
             broadcastroom(room.id, 'ROOM details', {
                 roomId: room.id,
                 usersInRoom: room.usersInRoom,
-                gameInProgress: room.gameInProgress
             });
 
             // Get number of users ready in room
@@ -220,7 +217,7 @@ module.exports = function(port, enableLogging) {
                 });
 
                 // if the game hasn't started yet, start the game
-                if (!room.gameInProgress) {
+                if (room.gameController === undefined) {
                     startGameInRoom(room.id);
                 } else {
                     // if the game has already started, move onto the next round
@@ -242,7 +239,6 @@ module.exports = function(port, enableLogging) {
             var room = getRoomFromId(roomId);
 
             room.gameController = new GameController(broadcastroom, broadcastToId);
-            room.gameInProgress = true;
 
             // Set up the gameController
             // Will start the first round once initialized
@@ -390,7 +386,6 @@ module.exports = function(port, enableLogging) {
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
                         usersInRoom: room.usersInRoom,
-                        gameInProgress: room.gameInProgress
                     });
 
                     logger.debug("Removing player from room" + room.id);
@@ -437,7 +432,6 @@ module.exports = function(port, enableLogging) {
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
                         usersInRoom: room.usersInRoom,
-                        gameInProgress: room.gameInProgress
                     });
 
                     logger.debug("User " + user.uId + " joined room " + roomId);
@@ -455,10 +449,6 @@ module.exports = function(port, enableLogging) {
             });
             user.socket = socket;
 
-        }
-
-        function sendGameDetails(gameController) {
-            socket.emit('GAME details', gameController.getGameDetails());
         }
 
         function putUserInJoining() {

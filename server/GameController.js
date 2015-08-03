@@ -228,8 +228,7 @@ module.exports = function(data) {
 		var currentRound = rounds[rounds.length - 1];
 		var results = [];
 
-		// Add points and voting user's name to answer
-		// Create result "leagueTable" object
+		// Add the user's vote to the answer
 		currentRound.answers.forEach(function(answer) {
 			if (answer.answerText === votedForText) {
 				answer.playersVote.push(getName(playerId));
