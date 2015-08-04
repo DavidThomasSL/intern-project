@@ -168,7 +168,8 @@ module.exports = function(data) {
 
 		//check if everyone submitted and sends back all the currently submitted answers
 		var allChoicesSubmitted;
-		if (currentRound.answers.length === players.length) {
+
+		if (currentRound.answers.length === getNumOfConnectedPlayers()) {
 			// change gametsate to the next stage
 			GAMESTATE = POSSIBLE_GAMESTATES['VOTING'];
 			allChoicesSubmitted = true;
@@ -228,7 +229,7 @@ module.exports = function(data) {
 		var voteNumber;
 
 		//check if everyone voted
-		if (countVotes(currentRound) === players.length) {
+		if (countVotes(currentRound) === getNumOfConnectedPlayers()) {
 
 			//add the points to the players for each vote they received
 			currentRound.answers.forEach(function(answer) {
@@ -307,6 +308,15 @@ module.exports = function(data) {
 		return inRoom;
 	}
 
+	var getNumOfConnectedPlayers = function() {
+		var counter = 0;
+		players.forEach(function(player) {
+			if (player.connectedToServer) {
+				counter++;
+			}
+		});
+		return counter;
+	};
 
 	/*
 		add 50 points to player -> called on each vote
@@ -402,10 +412,23 @@ module.exports = function(data) {
 			name: user.username,
 			hand: dealUserHand(),
 			points: 0,
-			rank: ""
+			rank: "",
+			connectedToServer: true
 		};
 
 		players.push(player);
+	};
+
+	var disconnectPlayer = function(playerId) {
+		var player;
+
+		//Find the player who submmited this
+		players.forEach(function(pl) {
+			if (pl.uId === playerId) {
+				player = pl;
+			}
+		});
+		player.connectedToServer = false;
 	};
 
 	return {
@@ -414,6 +437,7 @@ module.exports = function(data) {
 		submitVote: submitVote,
 		newRound: newRound,
 		checkIfUserInGame: checkIfUserInGame,
-		getInfoForReconnectingUser: getInfoForReconnectingUser
+		getInfoForReconnectingUser: getInfoForReconnectingUser,
+		disconnectPlayer: disconnectPlayer
 	};
 };
