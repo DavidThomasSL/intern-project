@@ -69,7 +69,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	---------------
 	*/
 
-	function _recieveQuestion(data) {
+	function _receiveQuestion(data) {
 		currentQuestion = data.question;
 		round = data.round;
 	}
@@ -97,7 +97,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	communicationService.registerListener("GAME", [{
 		eventName: "question",
-		eventAction: _recieveQuestion
+		eventAction: _receiveQuestion
 	}, {
 		eventName: "answers",
 		eventAction: _setChosenAnswers
@@ -127,7 +127,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		getCurrentVotes: getCurrentVotes,
 		getPlayerCurrentRank: getPlayerCurrentRank,
 		sendReadyStatus: sendReadyStatus,
-		_recieveQuestion: _recieveQuestion,
+		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
 		_setMaxRounds: _setMaxRounds,

@@ -1,4 +1,4 @@
-ClonageApp.controller("MainController", function($scope, userService, roomService, RoutingService, gameService, $location, $sessionStorage) {
+ClonageApp.controller("MainController", function($scope, userService, roomService, gameService,errorService,  toastr) {
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
@@ -16,5 +16,12 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
         var rank = gameService.getPlayerCurrentRank(playerId);
         return rank;
     }
+
+    function displayErrorMessage(errorMessage) {
+        console.log("IM HEAR")
+        toastr.error(errorMessage);
+    }
+
+    errorService.registerErrorListener(displayErrorMessage)
 
 });

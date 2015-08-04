@@ -128,6 +128,10 @@ module.exports = function(port, enableLogging) {
                     // i.e game has not started yet
                     if (room.gameController === undefined) {
                         putUserInRoom(msg.roomId);
+                    } else {
+                        socket.emit("ERROR message", {
+                            errorText: "Cannot join the room, game already started"
+                        });
                     }
                 }
             });
@@ -411,6 +415,7 @@ module.exports = function(port, enableLogging) {
             logger.debug("putting user in room " + user.name + user.uId);
             var joined = false;
             var userAlreadyInRoom = false;
+            var errorText = "";
 
             // Find The room
             rooms.forEach(function(room) {
@@ -419,9 +424,10 @@ module.exports = function(port, enableLogging) {
                 if (room.id === roomId) {
 
                     room.usersInRoom.forEach(function(userInRoom) {
-                        if (usersInRoom.uId === user.uId) {
+                        if (userInRoom.uId === user.uId) {
                             //USER IS ALREADY IN THIS ROOM, THEY CANNOT JOIN
                             userAlreadyInRoom = true;
+                            errorText = "already in room";
                         }
                     })
 
@@ -462,6 +468,10 @@ module.exports = function(port, enableLogging) {
             });
 
             if (!joined) {
+                socket.emit("ERROR message", {
+                    errorText: "Cannot join the room " + errorText
+                });
+
                 logger.warn("User " + user.name + " could not join room " + roomId);
             }
         }
