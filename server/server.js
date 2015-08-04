@@ -89,7 +89,6 @@ module.exports = function(port, enableLogging) {
             }
 
             logger.debug("Final registered details of user are: ");
-            console.log(user);
 
         });
 
@@ -121,20 +120,7 @@ module.exports = function(port, enableLogging) {
             check if that room exists, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            rooms.forEach(function(room) {
-                if (room.id === msg.roomId) {
-
-                    // Can only join if the gameController has not been set up
-                    // i.e game has not started yet
-                    if (room.gameController === undefined) {
-                        putUserInRoom(msg.roomId);
-                    } else {
-                        socket.emit("ERROR message", {
-                            errorText: "Cannot join the room, game already started"
-                        });
-                    }
-                }
-            });
+            putUserInRoom(msg.roomId);
         });
 
 
@@ -412,27 +398,39 @@ module.exports = function(port, enableLogging) {
         */
         function putUserInRoom(roomId) {
 
-            logger.debug("putting user in room " + user.name + user.uId);
+            logger.debug("trying to put user in room " + user.name + user.uId);
+
+            var roomFound = false;
             var joined = false;
             var userAlreadyInRoom = false;
-            var errorText = "";
+            var gameInProgress = true;
 
-            // Find The room
+            var errorText = "room does not exist";
+
+            // Try to put the user in the correct room
             rooms.forEach(function(room) {
                 // Only join the room if user not already in ANY room
                 // Handles user pressing join room multiple times
                 if (room.id === roomId) {
 
+                    roomFound = true;
+
+                    // Check if user in room
                     room.usersInRoom.forEach(function(userInRoom) {
                         if (userInRoom.uId === user.uId) {
                             //USER IS ALREADY IN THIS ROOM, THEY CANNOT JOIN
                             userAlreadyInRoom = true;
                             errorText = "already in room";
                         }
-                    })
+                    });
+
+                    // Check if room has a game in proress
+                    if (room.gameController === undefined) {
+                        gameInProgress = false;
+                    }
 
                     // Actaully put the user in the room
-                    if (userAlreadyInRoom === false) {
+                    if (userAlreadyInRoom === false && gameInProgress === false) {
 
                         // Add the user to the room
                         room.usersInRoom.push({
@@ -467,13 +465,23 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            if (!joined) {
-                socket.emit("ERROR message", {
-                    errorText: "Cannot join the room " + errorText
-                });
+            if (!roomFound) {
+                errorText = "code \"" + roomId + "\" does not match any existing room";
+            } else if (gameInProgress) {
+                errorText = "the game is already in progress";
+            } else if (userAlreadyInRoom) {
+                errorText = "you are already in that room!";
+            }
 
+            if (joined) {
+                logger.info("User " + user.name + " joined room " + roomId)
+            } else {
+                socket.emit("ERROR message", {
+                    errorText: "Cannot join the room, " + errorText
+                });
                 logger.warn("User " + user.name + " could not join room " + roomId);
             }
+
         }
 
         function sendUserDetails() {
