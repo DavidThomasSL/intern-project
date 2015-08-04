@@ -54,13 +54,14 @@ module.exports = function(port, enableLogging) {
                 var existingId = parseInt(msg.token);
 
                 //this user previosuly connected and has an id
-                logger.debug("user has joined previously");
 
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
                 });
 
-                //check if the user was founds
+                logger.debug("user has joined previously " + user.name + user.uId);
+
+                //check if the user was found
                 if (user.length !== 1) {
                     logger.warn("No user found with id, creating new user");
                     user = createNewUser();
@@ -70,20 +71,25 @@ module.exports = function(port, enableLogging) {
 
             } else {
                 //first time this user has joined
-                logger.debug("New user, creating new user");
                 user = createNewUser();
+                logger.debug("New user, creating new user " + user.name);
+
             }
 
             //can't send socket over socket, detach then reattach after sending
             sendUserDetails();
 
             if (user.roomId !== "") {
+                logger.debug("USer " + user.uId + "was in room " + user.roomId + " previously")
                 rooms.forEach(function(room) {
                     if (room.id === user.roomId) {
                         putUserInRoom(room.id);
                     }
                 });
             }
+
+            logger.debug("Final registered details of user are: ");
+            console.log(user);
 
         });
 
@@ -166,7 +172,7 @@ module.exports = function(port, enableLogging) {
                 location: 'joining'
             });
 
-            logger.debug("Removed user " + user.uId + " from room " + roomToLeave);
+            logger.debug("Removed user " + user.name + " from room " + roomToLeave);
 
         });
 
@@ -373,7 +379,7 @@ module.exports = function(port, enableLogging) {
             so that he can join again
         */
         socket.on('disconnect', function() {
-            logger.debug("Disconnecting player");
+            logger.debug("Disconnecting player " + user.name);
 
             rooms.forEach(function(room) {
 
@@ -398,48 +404,66 @@ module.exports = function(port, enableLogging) {
             Tells the user and the room that a change has occured
             Tells the routing service to move to the room page
             Tell all other users in the room that a player has joined
+            Does not put the user in if they are already put in it
         */
         function putUserInRoom(roomId) {
-            logger.debug("putting user in room");
-            var joined = false;
 
+            logger.debug("putting user in room " + user.name + user.uId);
+            var joined = false;
+            var userAlreadyInRoom = false;
 
             // Find The room
             rooms.forEach(function(room) {
+                // Only join the room if user not already in ANY room
+                // Handles user pressing join room multiple times
                 if (room.id === roomId) {
 
-                    // Add the user to the room
-                    room.usersInRoom.push({
-                        uId: user.uId,
-                        username: user.name,
-                        readyToProceed: false
-                    });
+                    room.usersInRoom.forEach(function(userInRoom) {
+                        if (usersInRoom.uId === user.uId) {
+                            //USER IS ALREADY IN THIS ROOM, THEY CANNOT JOIN
+                            userAlreadyInRoom = true;
+                        }
+                    })
 
-                    user.roomId = roomId;
+                    // Actaully put the user in the room
+                    if (userAlreadyInRoom === false) {
 
-                    // Tell the user they have joined
-                    socket.emit('USER room join', {
-                        success: true,
-                        roomId: room.id
-                    });
+                        // Add the user to the room
+                        room.usersInRoom.push({
+                            uId: user.uId,
+                            username: user.name,
+                            readyToProceed: false
+                        });
 
-                    // Route them to the room lobby
-                    socket.emit('ROUTING', {
-                        location: 'room'
-                    });
+                        user.roomId = roomId;
 
-                    //Update the room serveice of every user
-                    broadcastroom(room.id, 'ROOM details', {
-                        roomId: room.id,
-                        usersInRoom: room.usersInRoom,
-                    });
+                        // Tell the user they have joined
+                        socket.emit('USER room join', {
+                            success: true,
+                            roomId: room.id
+                        });
 
-                    logger.debug("User " + user.uId + " joined room " + roomId);
+                        // Route them to the room lobby
+                        socket.emit('ROUTING', {
+                            location: 'room'
+                        });
 
-                    joined = true;
+                        //Update the room serveice of every user
+                        broadcastroom(room.id, 'ROOM details', {
+                            roomId: room.id,
+                            usersInRoom: room.usersInRoom,
+                        });
 
+                        logger.debug("User " + user.name + " joined room " + roomId);
+
+                        joined = true;
+                    }
                 }
             });
+
+            if (!joined) {
+                logger.warn("User " + user.name + " could not join room " + roomId);
+            }
         }
 
         function sendUserDetails() {
@@ -467,6 +491,9 @@ module.exports = function(port, enableLogging) {
                     room = otherRoom;
                 }
             });
+            if (room === undefined) {
+                logger.error("Cannot find room " + roomId);
+            }
             return room;
         }
 
