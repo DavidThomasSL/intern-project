@@ -23,7 +23,7 @@ describe('When creating a room', function() {
 		expect(firstClonageUser.getRoomId().then(function(text) {
 			roomId = text.split(" ")[2];
 			return roomId.length;
-		})).toBe(5);
+		})).toBe(4);
 
 	});
 

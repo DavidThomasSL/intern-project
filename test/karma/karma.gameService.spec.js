@@ -35,7 +35,7 @@ describe("Testing Game Service", function() {
 
 	it("getRoundQuestion gets question", function() {
 		//set the round question
-		gameService._recieveQuestion({
+		gameService._receiveQuestion({
 			question: "test question?",
 			round: 1
 		});
@@ -44,7 +44,7 @@ describe("Testing Game Service", function() {
 
 	it("getRoundQuestion gets round", function() {
 		//set the round question
-		gameService._recieveQuestion({
+		gameService._receiveQuestion({
 			question: "test question?",
 			round: 1
 		});

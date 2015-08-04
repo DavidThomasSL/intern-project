@@ -19,7 +19,7 @@ describe('When joining an existing room', function() {
 		secondClonageUser.submitName('Alice');
 
 		firstClonageUser.getRoomId().then(function(text) {
-			roomId = text.split(" ")[2];
+			roomId = text.split(" ")[2]; //["ROOM", "CODE", "XKFLS"]
 			secondClonageUser.joinRoom(roomId);
 		});
 

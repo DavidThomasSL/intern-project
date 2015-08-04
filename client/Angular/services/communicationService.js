@@ -86,9 +86,13 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
-
 	socket.on("ROUTING", function(data) {
 		_setListenerEventAction("ROUTING");
+		onMessageFunction(data);
+	});
+
+	socket.on("ERROR message", function(data) {
+		_setListenerEventAction("ERROR message");
 		onMessageFunction(data);
 	});
 

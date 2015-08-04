@@ -54,13 +54,14 @@ module.exports = function(port, enableLogging) {
                 var existingId = parseInt(msg.token);
 
                 //this user previosuly connected and has an id
-                logger.debug("user has joined previously");
 
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
                 });
 
-                //check if the user was founds
+                logger.debug("user has joined previously " + user.name + user.uId);
+
+                //check if the user was found
                 if (user.length !== 1) {
                     logger.warn("No user found with id, creating new user");
                     user = createNewUser();
@@ -70,20 +71,24 @@ module.exports = function(port, enableLogging) {
 
             } else {
                 //first time this user has joined
-                logger.debug("New user, creating new user");
                 user = createNewUser();
+                logger.debug("New user, creating new user " + user.name);
+
             }
 
             //can't send socket over socket, detach then reattach after sending
             sendUserDetails();
 
             if (user.roomId !== "") {
+                logger.debug("USer " + user.uId + "was in room " + user.roomId + " previously");
                 rooms.forEach(function(room) {
                     if (room.id === user.roomId) {
                         putUserInRoom(room.id);
                     }
                 });
             }
+
+            logger.debug("Final registered details of user are: ");
 
         });
 
@@ -115,16 +120,7 @@ module.exports = function(port, enableLogging) {
             check if that room exists, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            rooms.forEach(function(room) {
-                if (room.id === msg.roomId) {
-
-                    // Can only join if the gameController has not been set up
-                    // i.e game has not started yet
-                    if (room.gameController === undefined) {
-                        putUserInRoom(msg.roomId);
-                    }
-                }
-            });
+            putUserInRoom(msg.roomId);
         });
 
 
@@ -166,7 +162,7 @@ module.exports = function(port, enableLogging) {
                 location: 'joining'
             });
 
-            logger.debug("Removed user " + user.uId + " from room " + roomToLeave);
+            logger.debug("Removed user " + user.name + " from room " + roomToLeave);
 
         });
 
@@ -238,7 +234,7 @@ module.exports = function(port, enableLogging) {
 
             var room = getRoomFromId(roomId);
 
-            room.gameController = new GameController(broadcastroom, broadcastToId);
+            room.gameController = new GameController();
 
             // Set up the gameController
             // Will start the first round once initialized
@@ -373,7 +369,7 @@ module.exports = function(port, enableLogging) {
             so that he can join again
         */
         socket.on('disconnect', function() {
-            logger.debug("Disconnecting player");
+            logger.debug("Disconnecting player " + user.name);
 
             rooms.forEach(function(room) {
 
@@ -398,15 +394,42 @@ module.exports = function(port, enableLogging) {
             Tells the user and the room that a change has occured
             Tells the routing service to move to the room page
             Tell all other users in the room that a player has joined
+            Does not put the user in if they are already put in it
         */
         function putUserInRoom(roomId) {
-            logger.debug("putting user in room");
+
+            logger.debug("trying to put user in room " + user.name + user.uId);
+
+            var roomFound = false;
             var joined = false;
+            var userAlreadyInRoom = false;
+            var gameInProgress = true;
 
+            var errorText = "room does not exist";
 
-            // Find The room
-            rooms.forEach(function(room) {
-                if (room.id === roomId) {
+            room = getRoomFromId(roomId);
+
+            if (room !== undefined) {
+
+                roomFound = true;
+
+                // Only join the room if user not already in ANY room
+                // Handles user pressing join room multiple times
+                room.usersInRoom.forEach(function(userInRoom) {
+                    if (userInRoom.uId === user.uId) {
+                        //USER IS ALREADY IN THIS ROOM, THEY CANNOT JOIN
+                        userAlreadyInRoom = true;
+                        errorText = "already in room";
+                    }
+                });
+
+                // Check if room has a game in proress
+                if (room.gameController === undefined) {
+                    gameInProgress = false;
+                }
+
+                // Actaully put the user in the room
+                if (userAlreadyInRoom === false && gameInProgress === false) {
 
                     // Add the user to the room
                     room.usersInRoom.push({
@@ -434,12 +457,28 @@ module.exports = function(port, enableLogging) {
                         usersInRoom: room.usersInRoom,
                     });
 
-                    logger.debug("User " + user.uId + " joined room " + roomId);
+                    logger.debug("User " + user.name + " joined room " + roomId);
 
                     joined = true;
-
                 }
-            });
+            }
+
+            if (!roomFound) {
+                errorText = "code \"" + roomId + "\" does not match any existing room";
+            } else if (gameInProgress) {
+                errorText = "the game is already in progress";
+            } else if (userAlreadyInRoom) {
+                errorText = "you are already in that room!";
+            }
+
+            if (joined) {
+                logger.info("User " + user.name + " joined room " + roomId);
+            } else {
+                socket.emit("ERROR message", {
+                    errorText: "Cannot join the room, " + errorText
+                });
+                logger.warn("User " + user.name + " could not join room " + roomId);
+            }
         }
 
         function sendUserDetails() {
@@ -448,7 +487,6 @@ module.exports = function(port, enableLogging) {
                 user: user
             });
             user.socket = socket;
-
         }
 
         function putUserInJoining() {
@@ -467,6 +505,9 @@ module.exports = function(port, enableLogging) {
                     room = otherRoom;
                 }
             });
+            if (room === undefined) {
+                logger.error("Cannot find room " + roomId);
+            }
             return room;
         }
 
@@ -499,48 +540,19 @@ module.exports = function(port, enableLogging) {
     }
 
     /*
-        Emits a message to user with the the given id
+        make an id for 5 letters until it is unique
+        used in create room
     */
-    function broadcastToId(broadcastId, eventName, data) {
-        users.forEach(function(user) {
-            if (broadcastId === user.uId) {
-                user.socket.emit(eventName, data);
-            }
-        });
-    }
-
-    /*
-        Sends to every user in a room a list of submitted answers to a question
-        excluding the answer that the user themselves submitting
-        preventing them from voting for them selves
-    */
-    function broadcastoptions(room, event, data) {
-        users.forEach(function(user) {
-            var toSend = [];
-            if (user.roomId === room) {
-                data.answers.forEach(function(ans) {
-                    if (ans.playerId !== user.uId) {
-                        var field = {
-                            ans: ans.answerText
-                        };
-                        toSend.push(field);
-                    }
-                });
-                user.socket.emit(event, toSend);
-            }
-        });
-    }
-
-    //make an id for 5 letters until it is unique
-    //used in create room
     function makeid() {
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         var used = true;
         var text;
+        var CODELENGTH = 4;
+
         while (used === true) {
             text = "";
             used = false;
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < CODELENGTH; i++) {
                 text += possible.charAt(Math.floor(Math.random() * possible.length));
             }
             used = checkId(text);

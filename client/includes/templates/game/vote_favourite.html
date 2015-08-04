@@ -12,7 +12,7 @@
             <div class="col-md-12 text-center" ng-repeat="answer in answers() | orderBy:'answerText'">
                 <div class="card-text-container">
                     <button ng-if="getUserId() === answer.player.uId" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true"> {{answer.answerText}} <i>(Your answer)</i></button>
-                    <button ng-if="getUserId() !== answer.player.uId" class="btn btn-warning btn-lg btn-block answerButton" type="button" id="answer" ng-click="submitVote(answer.answerText)">{{answer.answerText}}</button>
+                    <button ng-if="getUserId() !== answer.player.uId" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitVote(answer.answerText)">{{answer.answerText}}</button>
                     </button>
                 </div>
             </div>
