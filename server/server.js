@@ -299,16 +299,10 @@ module.exports = function(port, enableLogging) {
              submit answer
             callback will return the answers submitted and if everyone has submitted
              */
-            var room;
+            var room = getRoomFromId(msg.roomId);
 
             socket.emit('ROUTING', {
                 location: 'waitQuestion'
-            });
-
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === msg.roomId) {
-                    room = otherRoom;
-                }
             });
 
             room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
@@ -380,7 +374,7 @@ module.exports = function(port, enableLogging) {
                 if (room.id === user.roomId) {
 
                     //setting player's connectedToServer flag to false
-                    room.gameController.disconnectPlayer (user.uId);
+                    room.gameController.disconnectPlayer(user.uId);
 
                     room.usersInRoom = room.usersInRoom.filter(function(usersInRoom) {
                         return usersInRoom.uId !== user.uId;
@@ -444,9 +438,41 @@ module.exports = function(port, enableLogging) {
                         joined = true;
 
                         // Find out where to put this user, i.e where all the other players are
-                        room.gameController.getInfoForReconnectingUser(user.uId, function(routingInfo, data) {
-                            console.log(data.roundCount);
-                            console.log(data.currentRound);
+                        room.gameController.getInfoForReconnectingUser(user.uId, function(routingInfo, gameStateData) {
+                            console.log(gameStateData);
+                            console.log(gameStateData);
+
+                            //TODO FUUCCCCKKKK
+                            socket.emit('ROUTING', {
+                                location: routingInfo
+                            });
+
+                            gameStateData.forEach(function(data) {
+                                console.log(data);
+                                socket.emit(data.eventName, data.data);
+                            });
+
+                            // Add the user to the room
+                            room.usersInRoom.push({
+                                uId: user.uId,
+                                username: user.name,
+                                readyToProceed: false
+                            });
+
+                            user.roomId = roomId;
+
+                            // Tell the user they have joined
+                            socket.emit('USER room join', {
+                                success: true,
+                                roomId: room.id
+                            });
+
+                            //Update the room serveice of every user
+                            broadcastroom(room.id, 'ROOM details', {
+                                roomId: room.id,
+                                usersInRoom: room.usersInRoom,
+                            });
+
                         })
 
                     } else {

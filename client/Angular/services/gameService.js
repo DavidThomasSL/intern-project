@@ -30,6 +30,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	//get all answers submitted
 	function getAnswers() {
+		console.log("in get answers");
+		console.log(answers);
 		return answers;
 	}
 
@@ -75,6 +77,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	function _setChosenAnswers(data) {
+		console.log("chosen answers");
+		console.log(data.answers.length);
 		answers = data.answers;
 	}
 

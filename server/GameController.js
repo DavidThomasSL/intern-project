@@ -143,44 +143,48 @@ module.exports = function(data) {
 	 */
 	var submitAnswer = function(playerId, playerName, answerText, callback) {
 
-		var player;
+		var submittingPlayer = getPlayerFromId(playerId);
 
-		//FInd the player who submmited this
-		players.forEach(function(pl) {
-			if (pl.uId === playerId) {
-				player = pl;
-			}
-		});
-
-		// Build the submitted answer
-		var ans = {
-			player: player,
-			answerText: answerText,
-			playersVote: []
-		};
-
-		//Get the current round object, which will hold all the answers for that round
-		var currentRound = rounds[rounds.length - 1];
-		currentRound.answers.push(ans);
-
-		//Update this players hand with a new card, as they have just played one
-		updateHand(playerId, answerText);
-
-		//check if everyone submitted and sends back all the currently submitted answers
-		var allChoicesSubmitted;
-
-		if (currentRound.answers.length === getNumOfConnectedPlayers()) {
-			// change gametsate to the next stage
-			GAMESTATE = POSSIBLE_GAMESTATES['VOTING'];
-			allChoicesSubmitted = true;
+		if (submittingPlayer.hasSubmitted) {
+			//can't submit twice
 		} else {
-			allChoicesSubmitted = false;
+
+			submittingPlayer.hasSubmitted = true;
+
+			// Build the submitted answer
+			var ans = {
+				player: submittingPlayer,
+				answerText: answerText,
+				playersVote: []
+			};
+
+			//Get the current round object, which will hold all the answers for that round
+			var currentRound = rounds[rounds.length - 1];
+			currentRound.answers.push(ans);
+
+			//Update this players hand with a new card, as they have just played one
+			updateHand(playerId, answerText);
+
+			//check if everyone submitted and sends back all the currently submitted answers
+			var allChoicesSubmitted;
+
+			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
+				// change gametsate to the next stage
+				GAMESTATE = POSSIBLE_GAMESTATES['VOTING'];
+				setAllPlayersAbleToSubmit()
+
+				allChoicesSubmitted = true;
+			} else {
+				allChoicesSubmitted = false;
+			}
+
+			callback({
+				answers: currentRound.answers,
+				allChoicesSubmitted: allChoicesSubmitted
+			});
 		}
 
-		callback({
-			answers: currentRound.answers,
-			allChoicesSubmitted: allChoicesSubmitted
-		});
+
 
 	};
 
@@ -270,23 +274,66 @@ module.exports = function(data) {
 
 	*/
 	var getInfoForReconnectingUser = function(userId, callback) {
+
+		//GET round information
 		var routingInfo = "";
+		var gameData = {};
+		var userData = {};
+		var data = [];
+		var player;
+
+		var currentRound = rounds[roundCount - 1];
+
+		// Tell controller player is now active again
+		players.forEach(function(playerInGame) {
+			if (playerInGame.uId === userId) {
+				player = playerInGame
+			}
+		})
+
+		player.connectedToServer = true;
 
 		if (GAMESTATE === POSSIBLE_GAMESTATES['QUESTION']) {
-			routingInfo = "question";
+			if (player.hasSubmitted) {
+				routingInfo = "waitVote";
+
+				gameData = {
+					eventName: "GAME answers",
+					data: {
+						answers: currentRound.answers,
+					}
+				}
+
+				data.push(gameData);
+
+			} else {
+				routingInfo = "question";
+			}
+
+			gameData = {
+				eventName: "GAME question",
+				data: {
+					question: currentRound.question,
+					round: currentRound.count
+				}
+			}
+
+			userData = {
+				eventName: "USER hand",
+				data: {
+					hand: player.hand
+				}
+			}
+
+			data.push(userData);
+			data.push(gameData);
+
 		} else if (GAMESTATE === POSSIBLE_GAMESTATES['VOTING']) {
 			routingInfo = "vote";
 		} else if (GAMESTATE === POSSIBLE_GAMESTATES['ROUND_RESULTS']) {
 			routingInfo = "results";
 		} else if (GAMESTATE === POSSIBLE_GAMESTATES['FINAL_RESULTS']) {
 			routingInfo = "endGame";
-		}
-
-		var currentRound = rounds[roundCount - 1];
-
-		var data = {
-			roundCount: roundCount,
-			currentRound: currentRound
 		}
 
 		console.log(data);
@@ -317,6 +364,22 @@ module.exports = function(data) {
 		});
 		return counter;
 	};
+
+	var getPlayerFromId = function(playerId) {
+		var player;
+		players.forEach(function(pl) {
+			if (pl.uId === playerId) {
+				player = pl;
+			}
+		});
+		return player;
+	}
+
+	function setAllPlayersAbleToSubmit() {
+		players.forEach(function(player){
+			player.hasSubmitted = false;
+		});
+	}
 
 	/*
 		add 50 points to player -> called on each vote
@@ -411,6 +474,7 @@ module.exports = function(data) {
 			uId: user.uId,
 			name: user.username,
 			hand: dealUserHand(),
+			hasSubmitted: false,
 			points: 0,
 			rank: "",
 			connectedToServer: true
