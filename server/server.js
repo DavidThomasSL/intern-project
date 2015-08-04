@@ -44,6 +44,9 @@ module.exports = function(port, enableLogging) {
             they will respond that they have an id,
             and we retrieve their user information
             otherwise, create a new player
+
+            If they are in a room, they will be put back in,
+            if the game is in progress in the room, that will rejoin at the current game stage
         */
         socket.on('USER register', function(msg) {
 
@@ -79,6 +82,9 @@ module.exports = function(port, enableLogging) {
             //can't send socket over socket, detach then reattach after sending
             sendUserDetails();
 
+
+            // Check if the user was in a room
+            // If the room has a game in progress, they will re-join that game
             if (user.roomId !== "") {
                 logger.debug("USer " + user.uId + "was in room " + user.roomId + " previously");
                 rooms.forEach(function(room) {
@@ -163,9 +169,7 @@ module.exports = function(port, enableLogging) {
             });
 
             logger.debug("Removed user " + user.name + " from room " + roomToLeave);
-
         });
-
 
         /*
             Either Starts the game or moves to the next round
@@ -323,7 +327,7 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-            submit a vote
+            Submit a vote
             callback will return the results after everyone has voted:
             who submitted what answer, who voted for them, their score after the round
         */
@@ -426,10 +430,29 @@ module.exports = function(port, enableLogging) {
                 // Check if room has a game in proress
                 if (room.gameController === undefined) {
                     gameInProgress = false;
+                } else {
+                    // Check if user was in the game
+                    var userInGame = room.gameController.checkIfUserInGame(user.uId);
+                    if (userInGame) {
+
+                        //User was in the game, tell the game controller they're back, route them to the current stage
+                        console.log("think we're here now");
+                        joined = true;
+
+                        // Find out where to put this user, i.e where all the other players are
+                        room.gameController.getInfoForReconnectingUser(user.uId, function(routingInfo, data) {
+                            console.log(data.roundCount);
+                            console.log(data.currentRound);
+                        })
+
+                    } else {
+                        // Can't join a game in progress they wern't in
+                        gameInProgress = true;
+                    }
                 }
 
                 // Actaully put the user in the room
-                if (userAlreadyInRoom === false && gameInProgress === false) {
+                if (userAlreadyInRoom === false && gameInProgress === false && joined == false) {
 
                     // Add the user to the room
                     room.usersInRoom.push({

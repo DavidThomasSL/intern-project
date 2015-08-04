@@ -193,7 +193,7 @@ module.exports = function(data) {
 		Adds the voting user's name to the list of people who voted for this answer
 
 		If everyone has submitted a vote, will return with All Votes submitted as true,
-		which is checked by the server in the callback.
+			which is checked by the server in the callback.
 
 		Return results, an array of objects for each answer that has been submitted
 		The result object holds who submitted it, voted for it, the voters rank and points
@@ -258,6 +258,54 @@ module.exports = function(data) {
 		});
 
 	};
+
+	/*
+		Catches a reconnecting user up with the current game status
+
+		Sends the
+			routing information (what page are we on)
+			game information (game question, user hand)
+			round information (current votes, etc for table)
+
+	*/
+	var getInfoForReconnectingUser = function(userId, callback) {
+		var routingInfo = "";
+
+		if (GAMESTATE === POSSIBLE_GAMESTATES['QUESTION']) {
+			routingInfo = "question";
+		} else if (GAMESTATE === POSSIBLE_GAMESTATES['VOTING']) {
+			routingInfo = "vote";
+		} else if (GAMESTATE === POSSIBLE_GAMESTATES['ROUND_RESULTS']) {
+			routingInfo = "results";
+		} else if (GAMESTATE === POSSIBLE_GAMESTATES['FINAL_RESULTS']) {
+			routingInfo = "endGame";
+		}
+
+		var currentRound = rounds[roundCount - 1];
+
+		var data = {
+			roundCount: roundCount,
+			currentRound: currentRound
+		}
+
+		console.log(data);
+
+		callback(routingInfo, data);
+
+	}
+
+	/*
+		Given a user id, returns if that user is a player in this game
+	*/
+	var checkIfUserInGame = function(userId) {
+		var inRoom = false;
+		players.forEach(function(player) {
+			if (player.uId === userId) {
+				inRoom = true;
+			}
+		})
+		return inRoom;
+	}
 
 
 	/*
@@ -365,5 +413,7 @@ module.exports = function(data) {
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
 		newRound: newRound,
+		checkIfUserInGame: checkIfUserInGame,
+		getInfoForReconnectingUser: getInfoForReconnectingUser
 	};
 };
