@@ -407,63 +407,61 @@ module.exports = function(port, enableLogging) {
 
             var errorText = "room does not exist";
 
-            // Try to put the user in the correct room
-            rooms.forEach(function(room) {
+            room = getRoomFromId(roomId);
+
+            if (room !== undefined) {
+
+                roomFound = true;
+
                 // Only join the room if user not already in ANY room
                 // Handles user pressing join room multiple times
-                if (room.id === roomId) {
+                room.usersInRoom.forEach(function(userInRoom) {
+                    if (userInRoom.uId === user.uId) {
+                        //USER IS ALREADY IN THIS ROOM, THEY CANNOT JOIN
+                        userAlreadyInRoom = true;
+                        errorText = "already in room";
+                    }
+                });
 
-                    roomFound = true;
+                // Check if room has a game in proress
+                if (room.gameController === undefined) {
+                    gameInProgress = false;
+                }
 
-                    // Check if user in room
-                    room.usersInRoom.forEach(function(userInRoom) {
-                        if (userInRoom.uId === user.uId) {
-                            //USER IS ALREADY IN THIS ROOM, THEY CANNOT JOIN
-                            userAlreadyInRoom = true;
-                            errorText = "already in room";
-                        }
+                // Actaully put the user in the room
+                if (userAlreadyInRoom === false && gameInProgress === false) {
+
+                    // Add the user to the room
+                    room.usersInRoom.push({
+                        uId: user.uId,
+                        username: user.name,
+                        readyToProceed: false
                     });
 
-                    // Check if room has a game in proress
-                    if (room.gameController === undefined) {
-                        gameInProgress = false;
-                    }
+                    user.roomId = roomId;
 
-                    // Actaully put the user in the room
-                    if (userAlreadyInRoom === false && gameInProgress === false) {
+                    // Tell the user they have joined
+                    socket.emit('USER room join', {
+                        success: true,
+                        roomId: room.id
+                    });
 
-                        // Add the user to the room
-                        room.usersInRoom.push({
-                            uId: user.uId,
-                            username: user.name,
-                            readyToProceed: false
-                        });
+                    // Route them to the room lobby
+                    socket.emit('ROUTING', {
+                        location: 'room'
+                    });
 
-                        user.roomId = roomId;
+                    //Update the room serveice of every user
+                    broadcastroom(room.id, 'ROOM details', {
+                        roomId: room.id,
+                        usersInRoom: room.usersInRoom,
+                    });
 
-                        // Tell the user they have joined
-                        socket.emit('USER room join', {
-                            success: true,
-                            roomId: room.id
-                        });
+                    logger.debug("User " + user.name + " joined room " + roomId);
 
-                        // Route them to the room lobby
-                        socket.emit('ROUTING', {
-                            location: 'room'
-                        });
-
-                        //Update the room serveice of every user
-                        broadcastroom(room.id, 'ROOM details', {
-                            roomId: room.id,
-                            usersInRoom: room.usersInRoom,
-                        });
-
-                        logger.debug("User " + user.name + " joined room " + roomId);
-
-                        joined = true;
-                    }
+                    joined = true;
                 }
-            });
+            }
 
             if (!roomFound) {
                 errorText = "code \"" + roomId + "\" does not match any existing room";
