@@ -76,7 +76,6 @@ module.exports = function(data) {
 		if (gameOver) {
 
 			GAMESTATE = POSSIBLE_GAMESTATES['FINAL_RESULTS'];
-			// roundCount = -1;
 
 			data = {
 				gameIsOver: true
@@ -84,9 +83,9 @@ module.exports = function(data) {
 
 		} else {
 
+			// Create new round
 			roundCount += 1;
 
-			// Create new round
 			var round = {
 				count: roundCount,
 				question: getRoundQuestion(),
@@ -110,19 +109,6 @@ module.exports = function(data) {
 	};
 
 	/*
-		Gives a rank to every player in the game based on their points total
-	*/
-	var setRank = function() {
-		players.sort(function(a, b) {
-			return parseInt(b.points) - parseInt(a.points);
-		});
-		for (var i = 0; i <= players.length - 1; i++) {
-			players[i].rank = i + 1;
-		}
-	};
-
-
-	/*
 		Returns a random questions
 	*/
 	var getRoundQuestion = function() {
@@ -142,44 +128,6 @@ module.exports = function(data) {
 		return question.text;
 	};
 
-	/*
-		Gives a players an inital set of respones
-	*/
-	var dealUserHand = function() {
-
-		var hand = [];
-		for (var i = 0; i < HANDSIZE; i++) {
-
-			var index = Math.floor((Math.random() * whiteCardsCurrent.length));
-
-			var card = whiteCardsCurrent[index];
-			whiteCardsCurrent.splice(index, 1);
-			//removing dealt card from card list
-
-			hand.push(card);
-		}
-
-		return hand;
-	};
-
-	/*
-	update a users hand by replacing the used card with a new random one
-	*/
-	var updateHand = function(userId, usedCard) {
-		players.forEach(function(player) {
-			if (player.uId === userId) {
-				player.hand = player.hand.filter(function(card) {
-					if (card !== usedCard)
-						return card;
-				});
-				var index = Math.floor((Math.random() * whiteCardsCurrent.length));
-				card = whiteCardsCurrent[index];
-				whiteCardsCurrent.splice(index, 1);
-				//removing dealt card from card list
-				player.hand.push(card);
-			}
-		});
-	};
 
 	/*
 		Submit a user answer to a question
@@ -342,6 +290,57 @@ module.exports = function(data) {
 			}
 		});
 		return name;
+	};
+
+	/*
+		Gives a rank to every player in the game based on their points total
+	*/
+	var setRank = function() {
+		players.sort(function(a, b) {
+			return parseInt(b.points) - parseInt(a.points);
+		});
+		for (var i = 0; i <= players.length - 1; i++) {
+			players[i].rank = i + 1;
+		}
+	};
+
+	/*
+		Gives a players an inital set of respones
+	*/
+	var dealUserHand = function() {
+
+		var hand = [];
+		for (var i = 0; i < HANDSIZE; i++) {
+
+			var index = Math.floor((Math.random() * whiteCardsCurrent.length));
+
+			var card = whiteCardsCurrent[index];
+			whiteCardsCurrent.splice(index, 1);
+			//removing dealt card from card list
+
+			hand.push(card);
+		}
+
+		return hand;
+	};
+
+	/*
+	update a users hand by replacing the used card with a new random one
+	*/
+	var updateHand = function(userId, usedCard) {
+		players.forEach(function(player) {
+			if (player.uId === userId) {
+				player.hand = player.hand.filter(function(card) {
+					if (card !== usedCard)
+						return card;
+				});
+				var index = Math.floor((Math.random() * whiteCardsCurrent.length));
+				card = whiteCardsCurrent[index];
+				whiteCardsCurrent.splice(index, 1);
+				//removing dealt card from card list
+				player.hand.push(card);
+			}
+		});
 	};
 
 	/*
