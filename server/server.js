@@ -80,7 +80,7 @@ module.exports = function(port, enableLogging) {
             sendUserDetails();
 
             if (user.roomId !== "") {
-                logger.debug("USer " + user.uId + "was in room " + user.roomId + " previously")
+                logger.debug("USer " + user.uId + "was in room " + user.roomId + " previously");
                 rooms.forEach(function(room) {
                     if (room.id === user.roomId) {
                         putUserInRoom(room.id);
@@ -234,7 +234,7 @@ module.exports = function(port, enableLogging) {
 
             var room = getRoomFromId(roomId);
 
-            room.gameController = new GameController(broadcastroom, broadcastToId);
+            room.gameController = new GameController();
 
             // Set up the gameController
             // Will start the first round once initialized
@@ -472,14 +472,13 @@ module.exports = function(port, enableLogging) {
             }
 
             if (joined) {
-                logger.info("User " + user.name + " joined room " + roomId)
+                logger.info("User " + user.name + " joined room " + roomId);
             } else {
                 socket.emit("ERROR message", {
                     errorText: "Cannot join the room, " + errorText
                 });
                 logger.warn("User " + user.name + " could not join room " + roomId);
             }
-
         }
 
         function sendUserDetails() {
@@ -488,7 +487,6 @@ module.exports = function(port, enableLogging) {
                 user: user
             });
             user.socket = socket;
-
         }
 
         function putUserInJoining() {
@@ -542,48 +540,19 @@ module.exports = function(port, enableLogging) {
     }
 
     /*
-        Emits a message to user with the the given id
+        make an id for 5 letters until it is unique
+        used in create room
     */
-    function broadcastToId(broadcastId, eventName, data) {
-        users.forEach(function(user) {
-            if (broadcastId === user.uId) {
-                user.socket.emit(eventName, data);
-            }
-        });
-    }
-
-    /*
-        Sends to every user in a room a list of submitted answers to a question
-        excluding the answer that the user themselves submitting
-        preventing them from voting for them selves
-    */
-    function broadcastoptions(room, event, data) {
-        users.forEach(function(user) {
-            var toSend = [];
-            if (user.roomId === room) {
-                data.answers.forEach(function(ans) {
-                    if (ans.playerId !== user.uId) {
-                        var field = {
-                            ans: ans.answerText
-                        };
-                        toSend.push(field);
-                    }
-                });
-                user.socket.emit(event, toSend);
-            }
-        });
-    }
-
-    //make an id for 5 letters until it is unique
-    //used in create room
     function makeid() {
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         var used = true;
         var text;
+        var CODELENGTH = 4;
+
         while (used === true) {
             text = "";
             used = false;
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < CODELENGTH; i++) {
                 text += possible.charAt(Math.floor(Math.random() * possible.length));
             }
             used = checkId(text);

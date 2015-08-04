@@ -41,6 +41,7 @@ module.exports = function(config) {
             "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-route.js",
             "https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js",
             "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-animate.js",
+            "client/includes/toastr/release/angular-toastr.tpls.js",
             "node_modules/angular-mocks/angular-mocks.js",
             "client/Angular/**/*.js",
             "test/karma/*.js",
