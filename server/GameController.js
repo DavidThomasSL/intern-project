@@ -13,6 +13,15 @@ module.exports = function(data) {
 	var blackCardsCurrent = [];
 	var whiteCardsCurrent = [];
 
+	// Indicate what gamestate the gamecontroller is currently in
+	var POSSIBLE_GAMESTATES = {
+		'QUESTION': 1,
+		'VOTING': 2,
+		'ROUND_RESULTS': 3,
+		'FINAL_RESULTS': 4
+	};
+	var GAMESTATE;
+
 	// Message Functions pass in on creation from the server
 	// Allows the gameController to send messages via to server to clients
 	//deal from current arrays, when card it dealt remove it to stop player getting same cards
@@ -61,27 +70,43 @@ module.exports = function(data) {
 	var newRound = function(callback) {
 
 		var gameOver = (roundCount >= maxRounds);
+		var data;
 
-		roundCount += 1;
+		// Check if game over
 		if (gameOver) {
-			roundCount = -1;
+
+			GAMESTATE = POSSIBLE_GAMESTATES['FINAL_RESULTS'];
+			// roundCount = -1;
+
+			data = {
+				gameIsOver: true
+			}
+
+		} else {
+
+			roundCount += 1;
+
+			// Create new round
+			var round = {
+				count: roundCount,
+				question: getRoundQuestion(),
+				answers: []
+			};
+
+			rounds.push(round);
+
+			GAMESTATE = POSSIBLE_GAMESTATES['QUESTION'];
+
+			data = {
+				players: players,
+				roundQuestion: round.question,
+				round: roundCount,
+				gameIsOver: false
+			}
 		}
 
-		var round = {
-			count: roundCount,
-			question: getRoundQuestion(),
-			answers: []
-		};
-
-		rounds.push(round);
-
 		//return this round information back to the server
-		callback({
-			players: players,
-			roundQuestion: round.question,
-			round: roundCount,
-			gameIsOver: gameOver
-		});
+		callback(data);
 	};
 
 	/*
@@ -196,6 +221,8 @@ module.exports = function(data) {
 		//check if everyone submitted and sends back all the currently submitted answers
 		var allChoicesSubmitted;
 		if (currentRound.answers.length === players.length) {
+			// change gametsate to the next stage
+			GAMESTATE = POSSIBLE_GAMESTATES['VOTING'];
 			allChoicesSubmitted = true;
 		} else {
 			allChoicesSubmitted = false;
@@ -264,6 +291,9 @@ module.exports = function(data) {
 
 			// Update every player's rank in the room
 			setRank();
+
+			//change the gamestate to the next stage
+			GAMESTATE = POSSIBLE_GAMESTATES['ROUND_RESULTS'];
 
 			allVotesSubmitted = true;
 			voteNumber = 0;
