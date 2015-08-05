@@ -92,9 +92,6 @@ module.exports = function(data) {
 			} else {
 
 				//round 1 started in phase 1 of the game: players are submitting their choices
-				updateGameState();
-
-				startTimer();
 
 				//set up each user
 				var cards = JSON.parse(data);
@@ -156,6 +153,8 @@ module.exports = function(data) {
 				gameIsOver: false
 			};
 		}
+		callback(data);
+	};
 
 	/*
 		Returns a random questions

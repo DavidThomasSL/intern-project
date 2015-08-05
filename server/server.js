@@ -258,6 +258,7 @@ module.exports = function(port, enableLogging) {
             var room = getRoomFromId(roomId);
 
             room.gameController.newRound(function(data) {
+                console.log(data.gameIsOver);
                 if (data.gameIsOver === true) {
 
                     // Show the end game page if no rounds left
@@ -286,27 +287,29 @@ module.exports = function(port, enableLogging) {
                             }
                         });
                     });
+
+                    room.gameController.startTimer(function(data) {
+                        if (data.GameStateHasChanged === true)
+                            console.log('hahaa got itt');
+                        else {
+                            console.log("has not changed yeeeeeeet");
+
+                            broadcastroom(room.id, 'GAME answers', {
+                                answers: data.answers
+                            });
+
+                            broadcastroom(room.id, 'ROUTING', {
+                                location: 'vote'
+                            });
+                        }
+                    });
                 }
 
                 logger.info("Starting new round in room " + room.id);
 
             });
 
-            room.gameController.startTimer(function(data) {
-                if (data.GameStateHasChanged === true)
-                    console.log('hahaa got itt');
-                else {
-                    console.log("has not changed yeeeeeeet");
 
-                    broadcastroom(room.id, 'GAME answers', {
-                        answers: data.answers
-                    });
-
-                    broadcastroom(room.id, 'ROUTING', {
-                        location: 'vote'
-                    });
-                }
-            });
         }
 
         // submit answer
