@@ -44,6 +44,9 @@ module.exports = function(port, enableLogging) {
             they will respond that they have an id,
             and we retrieve their user information
             otherwise, create a new player
+
+            If they are in a room, they will be put back in,
+            if the game is in progress in the room, that will rejoin at the current game stage
         */
         socket.on('USER register', function(msg) {
 
@@ -79,6 +82,9 @@ module.exports = function(port, enableLogging) {
             //can't send socket over socket, detach then reattach after sending
             sendUserDetails();
 
+
+            // Check if the user was in a room
+            // If the room has a game in progress, they will re-join that game
             if (user.roomId !== "") {
                 logger.debug("USer " + user.uId + "was in room " + user.roomId + " previously");
                 rooms.forEach(function(room) {
@@ -163,9 +169,7 @@ module.exports = function(port, enableLogging) {
             });
 
             logger.debug("Removed user " + user.name + " from room " + roomToLeave);
-
         });
-
 
         /*
             Either Starts the game or moves to the next round
@@ -311,16 +315,10 @@ module.exports = function(port, enableLogging) {
              submit answer
             callback will return the answers submitted and if everyone has submitted
              */
-            var room;
+            var room = getRoomFromId(msg.roomId);
 
             socket.emit('ROUTING', {
                 location: 'waitQuestion'
-            });
-
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === msg.roomId) {
-                    room = otherRoom;
-                }
             });
 
             room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
@@ -339,7 +337,7 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-            submit a vote
+            Submit a vote
             callback will return the results after everyone has voted:
             who submitted what answer, who voted for them, their score after the round
         */
@@ -391,6 +389,12 @@ module.exports = function(port, enableLogging) {
 
                 if (room.id === user.roomId) {
 
+                    //setting player's connectedToServer flag to false
+                    if (room.gameController !== undefined) {
+                        room.gameController.disconnectPlayer(user.uId);
+                    }
+
+
                     room.usersInRoom = room.usersInRoom.filter(function(usersInRoom) {
                         return usersInRoom.uId !== user.uId;
                     });
@@ -403,6 +407,7 @@ module.exports = function(port, enableLogging) {
                     logger.debug("Removing player from room" + room.id);
                 }
             });
+
         });
 
         /*
@@ -442,10 +447,57 @@ module.exports = function(port, enableLogging) {
                 // Check if room has a game in proress
                 if (room.gameController === undefined) {
                     gameInProgress = false;
+                } else {
+                    // Check if user was in the game
+                    var userInGame = room.gameController.checkIfUserInGame(user.uId);
+                    if (userInGame) {
+
+                        //User was in the game, tell the game controller they're back, route them to the current stage
+                        joined = true;
+
+                        // Find out where to put this user, i.e where all the other players are
+                        room.gameController.getInfoForReconnectingUser(user.uId, function(routingInfo, gameStateData) {
+
+                            //TODO FUUCCCCKKKK
+                            socket.emit('ROUTING', {
+                                location: routingInfo
+                            });
+
+                            gameStateData.forEach(function(data) {
+                                socket.emit(data.eventName, data.data);
+                            });
+
+                            // Add the user to the room
+                            room.usersInRoom.push({
+                                uId: user.uId,
+                                username: user.name,
+                                readyToProceed: false
+                            });
+
+                            user.roomId = roomId;
+
+                            // Tell the user they have joined
+                            socket.emit('USER room join', {
+                                success: true,
+                                roomId: room.id
+                            });
+
+                            //Update the room serveice of every user
+                            broadcastroom(room.id, 'ROOM details', {
+                                roomId: room.id,
+                                usersInRoom: room.usersInRoom,
+                            });
+
+                        });
+
+                    } else {
+                        // Can't join a game in progress they wern't in
+                        gameInProgress = true;
+                    }
                 }
 
                 // Actaully put the user in the room
-                if (userAlreadyInRoom === false && gameInProgress === false) {
+                if (userAlreadyInRoom === false && gameInProgress === false && joined === false) {
 
                     // Add the user to the room
                     room.usersInRoom.push({
