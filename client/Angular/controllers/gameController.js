@@ -18,7 +18,6 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     //get final scores for all players when the game finishes
     $scope.finalresults = gameService.getCurrentScores;
 
-
     //call function to finish the game in a certain room if players wanted to finish game
     $scope.finishGame = function() {
         gameService.finishGame($scope.roomId());
@@ -36,13 +35,12 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
 
     //function call to submit a vote for the funniest answer
     $scope.submitVote = function(enteredAnswer) {
-        console.log(enteredAnswer);
         userService.submitVote(enteredAnswer);
     };
 
     $scope.leaveRoom = function() {
         roomService.leaveRoom();
+        gameService.clearGameData();
     };
-
 
 });

@@ -1,4 +1,4 @@
-describe("Testing Room Service Service", function() {
+describe("Testing Room Service", function() {
 
 	var mockCommunicationService = {
 		registerListener: function(name, events) {
@@ -75,19 +75,5 @@ describe("Testing Room Service Service", function() {
 		expect(roomService.getRoomId()).toEqual("ABCDE");
 
 	});
-
-	it("can set room details from _setRoomDetails and retrieve gameInProgress ", function() {
-		roomService._setRoomDetails({
-			roomId: "ABCDE",
-			usersInRoom: [1],
-			gameInProgress: false
-		});
-
-		expect(roomService.getGameInProgress()).toEqual(false);
-
-	});
-
-
-
 
 });

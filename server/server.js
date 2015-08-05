@@ -54,13 +54,14 @@ module.exports = function(port, enableLogging) {
                 var existingId = parseInt(msg.token);
 
                 //this user previosuly connected and has an id
-                logger.debug("user has joined previously");
 
                 user = users.filter(function(otherUser) {
                     return otherUser.uId === existingId;
                 });
 
-                //check if the user was founds
+                logger.debug("user has joined previously " + user.name + user.uId);
+
+                //check if the user was found
                 if (user.length !== 1) {
                     logger.warn("No user found with id, creating new user");
                     user = createNewUser();
@@ -70,20 +71,24 @@ module.exports = function(port, enableLogging) {
 
             } else {
                 //first time this user has joined
-                logger.debug("New user, creating new user");
                 user = createNewUser();
+                logger.debug("New user, creating new user " + user.name);
+
             }
 
             //can't send socket over socket, detach then reattach after sending
             sendUserDetails();
 
             if (user.roomId !== "") {
+                logger.debug("USer " + user.uId + "was in room " + user.roomId + " previously");
                 rooms.forEach(function(room) {
                     if (room.id === user.roomId) {
                         putUserInRoom(room.id);
                     }
                 });
             }
+
+            logger.debug("Final registered details of user are: ");
 
         });
 
@@ -94,14 +99,15 @@ module.exports = function(port, enableLogging) {
             putUserInJoining();
         });
 
-        //create room, assign id, add current player and return room id to player
+        /*
+            create room, assign id, add current player and return room id to player
+        */
         socket.on('ROOM create', function(msg) {
 
             roomId = makeid();
             var room = {
                 id: roomId,
                 usersInRoom: [],
-                gameInProgress: false
             };
 
             rooms.push(room);
@@ -111,16 +117,10 @@ module.exports = function(port, enableLogging) {
 
         /*
             Given a user id and a room id,
-            check if that room exisits, and add the player if they are not already in it
+            check if that room exists, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            rooms.forEach(function(room) {
-                if (room.id === msg.roomId) {
-                    if(room.gameInProgress === false){
-                        putUserInRoom(msg.roomId);
-                    }
-                }
-            });
+            putUserInRoom(msg.roomId);
         });
 
 
@@ -146,7 +146,6 @@ module.exports = function(port, enableLogging) {
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
                         usersInRoom: room.usersInRoom,
-                        gameInProgress: room.gameInProgress
                     });
                 }
             });
@@ -163,131 +162,132 @@ module.exports = function(port, enableLogging) {
                 location: 'joining'
             });
 
-            logger.debug("Removed user " + user.uId + " from room " + roomToLeave);
+            logger.debug("Removed user " + user.name + " from room " + roomToLeave);
 
         });
 
+
         /*
-            Called by the GameService
-            Creates a new gamecontroller, adds the current room to it
-            gamecontroller starts whirring
+            Either Starts the game or moves to the next round
+
+            Called every time a player toggles their ready status
+            Called in the room lobby or between rounds
+
+            If everyone in the room has said they are ready, moves to the next gamestage
+            toggles the user calls this event either ready or not ready, with a readyToProceedFlag
         */
-        socket.on('GAME start', function(data) {
-            var room;
+        socket.on('GAME ready status', function(data) {
 
+            var readyCounter = 0;
 
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === data.roomId) {
-                    room = otherRoom;
+            // Get the room
+            var room = getRoomFromId(data.roomId);
+
+            // Goes through users in room and toggles their ready status on the server
+            room.usersInRoom.forEach(function(iteratedUser) {
+                if (iteratedUser.uId === user.uId) {
+                    iteratedUser.readyToProceed = (!iteratedUser.readyToProceed);
                 }
             });
+
+            // Broadcast the room details so every user can see who is ready and who isn't
+            broadcastroom(room.id, 'ROOM details', {
+                roomId: room.id,
+                usersInRoom: room.usersInRoom,
+            });
+
+            // Get number of users ready in room
+            room.usersInRoom.forEach(function(iteratedUser) {
+                if (iteratedUser.readyToProceed === true) {
+                    readyCounter++;
+                }
+            });
+
+            // Either start a room game or mov to the next round
+            // If enough people are ready
+            if (readyCounter === room.usersInRoom.length) {
+
+                //after moving players on, set all their ready statuses back to 'not ready'
+                room.usersInRoom.forEach(function(iteratedUser) {
+                    iteratedUser.readyToProceed = false;
+                });
+
+                // if the game hasn't started yet, start the game
+                if (room.gameController === undefined) {
+                    startGameInRoom(room.id);
+                } else {
+                    // if the game has already started, move onto the next round
+                    startNextRoundInRoom(room.id);
+                }
+            } else {
+                // Not everyone is ready, do nothing
+            }
+        });
+
+        /*
+            Starts a new game for the room
+
+            Creates a gameController for the room, and ititialises it
+            Once initalised, starts the first round of the game
+        */
+        function startGameInRoom(roomId) {
+
+            var room = getRoomFromId(roomId);
 
             room.gameController = new GameController();
-            room.gameInProgress = true;
 
+            // Set up the gameController
+            // Will start the first round once initialized
             room.gameController.initialize(room.usersInRoom, function(data) {
-
-                broadcastroom(room.id, 'ROUTING', {
-                    location: 'question'
-                });
-                broadcastroom(room.id, 'GAME question', {
-                    question: data.roundQuestion,
-                    round: data.round,
-                    scores: data.scores
-                });
-                broadcastroom(room.id, 'ROOM details', {
-                    roomId: room.id,
-                    usersInRoom: room.usersInRoom,
-                    gameInProgress: room.gameInProgress
-                });
-
-                //Send each user in the room their individual hand (delt by the GameController)
-                data.players.forEach(function(player) {
-                    users.forEach(function(user) {
-                        if (player.uId === user.uId) {
-                            user.socket.emit('USER hand', {
-                                hand: player.hand
-                            });
-                        }
-                    });
-                });
-
+                startNextRoundInRoom(room.id);
+                logger.debug("Starting game in room " + room.id);
             });
-
-            logger.debug("Starting game in room " + room.id);
-        });
+        }
 
         /*
-        Starts new round:
-        call function in gameController to start new round
-        callback will return a new question which will be broadcasted to eveyone in the game
-        each player will be send his updated hand
+            Starts a new round for players in room
+            IF there are more rounds, send the new question out
+            If there are no more rounds, game over.
         */
-        socket.on('GAME next round', function(data) {
-            var room;
+        function startNextRoundInRoom(roomId) {
 
-
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === data.roomId) {
-                    room = otherRoom;
-                }
-            });
+            var room = getRoomFromId(roomId);
 
             room.gameController.newRound(function(data) {
+                if (data.gameIsOver === true) {
 
-                broadcastroom(room.id, 'ROUTING', {
-                    location: 'question'
-                });
-
-                broadcastroom(room.id, 'GAME question', {
-                    question: data.roundQuestion,
-                    round: data.round,
-                    scores: data.scores
-                });
-
-                //Send each user in the room their individual hand (delt by the GameController)
-                data.players.forEach(function(player) {
-                    users.forEach(function(user) {
-                        if (player.uId === user.uId) {
-                            user.socket.emit('USER hand', {
-                                hand: player.hand
-                            });
-                        }
+                    // Show the end game page if no rounds left
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'endGame'
                     });
-                });
 
-            });
+                } else {
 
-            logger.info("Starting new round in room " + room.id);
-        });
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'question'
+                    });
 
-        /*
-        call function in gameController to finish the game
-        callback will return the final scores (as data.res)
-        */
-        socket.on('GAME finish', function(data) {
-            var room;
+                    broadcastroom(room.id, 'GAME question', {
+                        question: data.roundQuestion,
+                        round: data.round,
+                    });
 
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === data.roomId) {
-                    room = otherRoom;
+                    //Send each user in the room their individual hand (delt by the GameController)
+                    data.players.forEach(function(player) {
+                        users.forEach(function(user) {
+                            if (player.uId === user.uId) {
+                                user.socket.emit('USER hand', {
+                                    hand: player.hand
+                                });
+                            }
+                        });
+                    });
                 }
-            });
 
-            room.gameController.finishGame(function(data) {
-
-                broadcastroom(room.id, 'ROUTING', {
-                    location: 'endGame'
-                });
-
-                broadcastroom(room.id, 'GAME finish', {
-                    results: data.res
-                });
+                logger.info("Starting new round in room " + room.id);
 
             });
-
-            logger.info("Finishing game in room " + room.id);
-        });
+        }
 
         // submit answer
         socket.on('USER submitChoice', function(msg) {
@@ -313,6 +313,7 @@ module.exports = function(port, enableLogging) {
                 broadcastroom(room.id, 'GAME answers', {
                     answers: data.answers
                 });
+
                 if (data.allChoicesSubmitted === true) {
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'vote'
@@ -322,9 +323,9 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-        submit a vote
-        callback will return the results after everyone has voted:
-        who submitted what answer, who voted for them, their score after the round
+            submit a vote
+            callback will return the results after everyone has voted:
+            who submitted what answer, who voted for them, their score after the round
         */
         socket.on('USER vote', function(msg) {
             var room;
@@ -339,13 +340,17 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-
+            // Submits the vote information to the game controller
+            // If all votes are submitted, move user to results page
+            // Otherwise they just get the current round results
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
+
                 //send room the vote data after each vote
                 broadcastroom(room.id, 'GAME playerRoundResults', {
                     results: data.res,
                     voteNumber: data.voteNumber
                 });
+
 
                 if (data.allVotesSubmitted === true) {
                     //moving all players to the results page
@@ -353,17 +358,18 @@ module.exports = function(port, enableLogging) {
                         location: 'results'
                     });
 
-
                 }
 
             });
         });
 
-        //When a client disconnect, we remove him from the room he was in
-        //the user still remembers what room his was in however,
-        //so that he can join again
+        /*
+            When a client disconnect, we remove him from the room he was in
+            the user still remembers what room his was in however,
+            so that he can join again
+        */
         socket.on('disconnect', function() {
-            logger.debug("Disconnecting player");
+            logger.debug("Disconnecting player " + user.name);
 
             rooms.forEach(function(room) {
 
@@ -376,7 +382,6 @@ module.exports = function(port, enableLogging) {
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
                         usersInRoom: room.usersInRoom,
-                        gameInProgress: room.gameInProgress
                     });
 
                     logger.debug("Removing player from room" + room.id);
@@ -385,30 +390,63 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-                    Puts a user into a room
-                    Tells the user and the room that a change has occured
-                    Tells the routing service to move to the room page
-                    Tell all other users in the room that a player has joined
+            Puts a user into a room
+            Tells the user and the room that a change has occured
+            Tells the routing service to move to the room page
+            Tell all other users in the room that a player has joined
+            Does not put the user in if they are already put in it
         */
         function putUserInRoom(roomId) {
-            logger.debug("putting user in room");
+
+            logger.debug("trying to put user in room " + user.name + user.uId);
+
+            var roomFound = false;
             var joined = false;
+            var userAlreadyInRoom = false;
+            var gameInProgress = true;
 
-            rooms.forEach(function(room) {
-                if (room.id === roomId) {
+            var errorText = "room does not exist";
 
+            room = getRoomFromId(roomId);
+
+            if (room !== undefined) {
+
+                roomFound = true;
+
+                // Only join the room if user not already in ANY room
+                // Handles user pressing join room multiple times
+                room.usersInRoom.forEach(function(userInRoom) {
+                    if (userInRoom.uId === user.uId) {
+                        //USER IS ALREADY IN THIS ROOM, THEY CANNOT JOIN
+                        userAlreadyInRoom = true;
+                        errorText = "already in room";
+                    }
+                });
+
+                // Check if room has a game in proress
+                if (room.gameController === undefined) {
+                    gameInProgress = false;
+                }
+
+                // Actaully put the user in the room
+                if (userAlreadyInRoom === false && gameInProgress === false) {
+
+                    // Add the user to the room
                     room.usersInRoom.push({
                         uId: user.uId,
-                        username: user.name
+                        username: user.name,
+                        readyToProceed: false
                     });
 
                     user.roomId = roomId;
 
+                    // Tell the user they have joined
                     socket.emit('USER room join', {
                         success: true,
                         roomId: room.id
                     });
 
+                    // Route them to the room lobby
                     socket.emit('ROUTING', {
                         location: 'room'
                     });
@@ -417,15 +455,30 @@ module.exports = function(port, enableLogging) {
                     broadcastroom(room.id, 'ROOM details', {
                         roomId: room.id,
                         usersInRoom: room.usersInRoom,
-                        gameInProgress: room.gameInProgress
                     });
 
-                    logger.debug("User " + user.uId + " joined room " + roomId);
+                    logger.debug("User " + user.name + " joined room " + roomId);
 
                     joined = true;
-
                 }
-            });
+            }
+
+            if (!roomFound) {
+                errorText = "code \"" + roomId + "\" does not match any existing room";
+            } else if (gameInProgress) {
+                errorText = "the game is already in progress";
+            } else if (userAlreadyInRoom) {
+                errorText = "you are already in that room!";
+            }
+
+            if (joined) {
+                logger.info("User " + user.name + " joined room " + roomId);
+            } else {
+                socket.emit("ERROR message", {
+                    errorText: "Cannot join the room, " + errorText
+                });
+                logger.warn("User " + user.name + " could not join room " + roomId);
+            }
         }
 
         function sendUserDetails() {
@@ -434,17 +487,28 @@ module.exports = function(port, enableLogging) {
                 user: user
             });
             user.socket = socket;
-
-        }
-
-        function sendGameDetails(gameController) {
-            socket.emit('GAME details', gameController.getGameDetails());
         }
 
         function putUserInJoining() {
             socket.emit('ROUTING', {
                 location: 'joining'
             });
+        }
+
+        /*
+            Given a room ID finds the room in the rooms list
+        */
+        function getRoomFromId(roomId) {
+            var room;
+            rooms.forEach(function(otherRoom) {
+                if (otherRoom.id === roomId) {
+                    room = otherRoom;
+                }
+            });
+            if (room === undefined) {
+                logger.error("Cannot find room " + roomId);
+            }
+            return room;
         }
 
         //Creates a new user
@@ -462,10 +526,10 @@ module.exports = function(port, enableLogging) {
     });
 
     /*
-    emit event and data to all players in a certain room
-    that is passed as an argument
-    -> used to send a new join and new leave event
-    with the data as the new list of players in the room
+        emit event and data to all players in a certain room
+        that is passed as an argument
+        -> used to send a new join and new leave event
+        with the data as the new list of players in the room
     */
     function broadcastroom(room, event, data) {
         users.forEach(function(user) {
@@ -476,37 +540,19 @@ module.exports = function(port, enableLogging) {
     }
 
     /*
-        Sends to every user in a room a list of submitted answers to a question
-        excluding the answer that the user themselves submitting
-        preventing them from voting for them selves
+        make an id for 5 letters until it is unique
+        used in create room
     */
-    function broadcastoptions(room, event, data) {
-        users.forEach(function(user) {
-            var toSend = [];
-            if (user.roomId === room) {
-                data.answers.forEach(function(ans) {
-                    if (ans.playerId !== user.uId) {
-                        var field = {
-                            ans: ans.answerText
-                        };
-                        toSend.push(field);
-                    }
-                });
-                user.socket.emit(event, toSend);
-            }
-        });
-    }
-
-    //make an id for 5 letters until it is unique
-    //used in create room
     function makeid() {
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         var used = true;
         var text;
+        var CODELENGTH = 4;
+
         while (used === true) {
             text = "";
             used = false;
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < CODELENGTH; i++) {
                 text += possible.charAt(Math.floor(Math.random() * possible.length));
             }
             used = checkId(text);

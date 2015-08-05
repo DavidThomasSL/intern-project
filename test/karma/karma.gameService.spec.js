@@ -26,35 +26,16 @@ describe("Testing Game Service", function() {
 		expect(mockCommunicationService.events[0]).toEqual({eventName: 'question', eventAction: jasmine.any(Function)});
 	});
 
-	it("start game calls send message", function() {
+	it("readying up calls send message", function() {
 		spyOn(mockCommunicationService, 'sendMessage');
 
-		gameService.startGame(1);
-		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
-	});
-
-	it("next round calls send message when more rounds left", function() {
-		spyOn(mockCommunicationService, 'sendMessage');
-
-		gameService.nextRound(1);
-		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
-	});
-
-	it("next round calls send message when no rounds left", function() {
-		gameService._setMaxRounds(2);
-		gameService._recieveQuestion({
-			question: "",
-			round: 10
-		});
-
-		spyOn(mockCommunicationService, 'sendMessage');
-		gameService.nextRound(5);
+		gameService.sendReadyStatus(1);
 		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
 	});
 
 	it("getRoundQuestion gets question", function() {
 		//set the round question
-		gameService._recieveQuestion({
+		gameService._receiveQuestion({
 			question: "test question?",
 			round: 1
 		});
@@ -63,7 +44,7 @@ describe("Testing Game Service", function() {
 
 	it("getRoundQuestion gets round", function() {
 		//set the round question
-		gameService._recieveQuestion({
+		gameService._receiveQuestion({
 			question: "test question?",
 			round: 1
 		});
@@ -85,21 +66,6 @@ describe("Testing Game Service", function() {
 			voteNumber: 2
 		});
 		expect(gameService.getCurrentVotes()).toEqual(2);
-	});
-
-	it("getFinalResults gets final results", function() {
-		//set the round question
-		gameService._gameFinish({
-			results: "results"
-		});
-		expect(gameService.getCurrentScores()).toEqual("results");
-	});
-
-	it("finishGame calls send message when no rounds left", function() {
-		spyOn(mockCommunicationService, 'sendMessage');
-
-		gameService.finishGame(5);
-		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
 	});
 
 	it("communicationService can call events in the Game Service", function() {

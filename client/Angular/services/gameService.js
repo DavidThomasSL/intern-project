@@ -22,8 +22,8 @@ ClonageApp.service('gameService', ['communicationService', '$timeout', function(
 		return round;
 	}
 
-	function startGame(roomId) {
-		sendMessage("GAME start", {
+	function sendReadyStatus(roomId) {
+		sendMessage("GAME ready status", {
 			roomId: roomId
 		});
 	}
@@ -37,37 +37,30 @@ ClonageApp.service('gameService', ['communicationService', '$timeout', function(
 		return voteCounter;
 	}
 
+	// Clears local game data when the user leaves the game
+	function clearGameData() {
+		playerRoundResults = null;
+		round = -1;
+	}
+
 	//get results of voting
 	function getPlayerRoundResults() {
 		return playerRoundResults;
 	}
 
-	//get final scores after the game finished
-	function getCurrentScores() {
-		return currentscores;
-	}
+	function getPlayerCurrentRank(playerId) {
+		var returnValue = "";
 
-	//load next round or finish the game if that was the last round
-	function nextRound(roomId) {
-		if (round < maxRounds) {
-			round++;
-			sendMessage("GAME next round", {
-				roomId: roomId
-			});
-		} else {
-			sendMessage("GAME finish", {
-				roomId: roomId
+		if (playerRoundResults !== null) {
+			playerRoundResults.forEach(function(playerResult) {
+				if (playerId === playerResult.player.uId) {
+					returnValue = playerResult.player.rank
+				}
 			});
 		}
-	}
 
-	//tell server to finish the game
-	function finishGame(roomId) {
-		sendMessage("GAME finish", {
-			roomId: roomId
-		});
+		return returnValue;
 	}
-
 
 
 	/*
@@ -78,10 +71,9 @@ ClonageApp.service('gameService', ['communicationService', '$timeout', function(
 	---------------
 	*/
 
-	function _recieveQuestion(data) {
+	function _receiveQuestion(data) {
 		currentQuestion = data.question;
 		round = data.round;
-		currentscores = data.scores;
 	}
 
 	function _setChosenAnswers(data) {
@@ -91,10 +83,6 @@ ClonageApp.service('gameService', ['communicationService', '$timeout', function(
 	function _setPlayerRoundResults(data) {
 		playerRoundResults = data.results;
 		voteCounter = data.voteNumber;
-	}
-
-	function _gameFinish(data) {
-		currentscores = data.results;
 	}
 
 	function _setMaxRounds(num) {
@@ -111,16 +99,13 @@ ClonageApp.service('gameService', ['communicationService', '$timeout', function(
 
 	communicationService.registerListener("GAME", [{
 		eventName: "question",
-		eventAction: _recieveQuestion
+		eventAction: _receiveQuestion
 	}, {
-		eventName: "chosenAnswers",
+		eventName: "answers",
 		eventAction: _setChosenAnswers
 	}, {
 		eventName: "playerRoundResults",
 		eventAction: _setPlayerRoundResults
-	}, {
-		eventName: "finish",
-		eventAction: _gameFinish
 	}]);
 
 	/*
@@ -137,20 +122,18 @@ ClonageApp.service('gameService', ['communicationService', '$timeout', function(
 	}
 
 	return {
-		startGame: startGame,
 		getRoundQuestion: getRoundQuestion,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
-		getCurrentScores: getCurrentScores,
-		nextRound: nextRound,
-		finishGame: finishGame,
 		getCurrentVotes: getCurrentVotes,
-		_recieveQuestion: _recieveQuestion,
+		getPlayerCurrentRank: getPlayerCurrentRank,
+		sendReadyStatus: sendReadyStatus,
+		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
-		_gameFinish: _gameFinish,
-		_setMaxRounds: _setMaxRounds
+		_setMaxRounds: _setMaxRounds,
+		clearGameData: clearGameData
 	};
 
 }]);

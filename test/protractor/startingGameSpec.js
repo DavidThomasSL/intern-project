@@ -21,7 +21,8 @@ describe('When starting a game', function() {
 		firstClonageUser.getRoomId().then(function(text) {
 			roomId = text.split(" ")[2];
 			secondClonageUser.joinRoom(roomId);
-			firstClonageUser.startGame();
+			firstClonageUser.ready();
+			secondClonageUser.ready();
 		});
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 

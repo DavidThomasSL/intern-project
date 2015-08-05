@@ -127,6 +127,16 @@ body, html {
   margin-bottom: 10px;
 }
 
+.jumbotron .current-round {
+  padding: 120px 40px 0px 0px;
+  color: white;
+  font-size: 25px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  margin-bottom: 40px;
+}
+
 .jumbotron .menu-button {
   padding: 0px 0px 0px 25px;
   bottom: 0px;
@@ -175,16 +185,17 @@ body, html {
   margin-bottom: 100px;
 }
 
-#join-create-container {
-  margin: 20px 20px 100px 20px;
-}
-
-#romm-lobby-users-container {
-  margin: 30px 20px 100px 20px;
-}
-
 .bottom-buttons {
   margin-top: 60px;
+}
+
+.player-ready {
+  color : white;
+  background-color: green;
+}
+
+.ready-state-on {
+
 }
 
 .card-text-container {
@@ -258,5 +269,5 @@ body, html {
     to {opacity: 0;}
 }
 
-.ng-enter           { animation: fadeIn 0.2s both ease-in;}
-.ng-leave           { animation: fadeOut 0.2s both ease-in;}
+/*.ng-enter           { animation: fadeIn 0.2s both ease-in;}
+.ng-leave           { animation: fadeOut 0.2s both ease-in;}*/
