@@ -1,4 +1,4 @@
-ClonageApp.controller("MainController", function($scope, userService, roomService, gameService,errorService,  toastr) {
+ClonageApp.controller("MainController", function($scope, $timeout, userService, roomService, gameService,errorService,  toastr) {
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
@@ -22,7 +22,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
         toastr.error(errorMessage);
     }
 
-    $scope.startCountdown = function(page) {
+    $scope.startCountdown = function() {
 
         var timerCount = 30;
 
