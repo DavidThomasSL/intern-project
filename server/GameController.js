@@ -31,7 +31,11 @@ module.exports = function(data) {
     var GameStateHasChanged = false
 	var count = 30;
 
+	var callBackReference = null;
+
     var startTimer = function(callback) {
+
+    	callBackReference = callback;
 
     	GameStateHasChanged = false;
 
@@ -40,23 +44,14 @@ module.exports = function(data) {
 		var counter = setInterval( function() {
 
 			count --;
+
 			if ( GameStateHasChanged === true) {
 				clearInterval(counter);
 			}
 
-			if ( count <= 0 ) {
-
+			else if ( count <= 0 ) {
 				clearInterval(counter);
-				if ( GameStateHasChanged === true ) {
-
-				     //counter ended, do something here
-				    return;
-				}
-				else {
-					console.log("changing gameState");
-				}
-
-				callback({
+				callBackReference({
 					GameStateHasChanged: GameStateHasChanged,
 					GameState: GameState,
 					answers: rounds[roundCount-1].answers
