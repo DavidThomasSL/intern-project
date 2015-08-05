@@ -75,11 +75,11 @@ module.exports = function(data) {
 		// Check if game over
 		if (gameOver) {
 
-			GAMESTATE = POSSIBLE_GAMESTATES['FINAL_RESULTS'];
+			GAMESTATE = POSSIBLE_GAMESTATES.FINAL_RESULTS;
 
 			data = {
 				gameIsOver: true
-			}
+			};
 
 		} else {
 
@@ -89,19 +89,20 @@ module.exports = function(data) {
 			var round = {
 				count: roundCount,
 				question: getRoundQuestion(),
-				answers: []
+				answers: [],
+				results: []
 			};
 
 			rounds.push(round);
 
-			GAMESTATE = POSSIBLE_GAMESTATES['QUESTION'];
+			GAMESTATE = POSSIBLE_GAMESTATES.QUESTION;
 
 			data = {
 				players: players,
 				roundQuestion: round.question,
 				round: roundCount,
 				gameIsOver: false
-			}
+			};
 		}
 
 		//return this round information back to the server
@@ -170,8 +171,8 @@ module.exports = function(data) {
 
 			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
 				// change gametsate to the next stage
-				GAMESTATE = POSSIBLE_GAMESTATES['VOTING'];
-				setAllPlayersAbleToSubmit()
+				GAMESTATE = POSSIBLE_GAMESTATES.VOTING;
+				setAllPlayersAbleToSubmit();
 
 				allChoicesSubmitted = true;
 			} else {
@@ -207,60 +208,73 @@ module.exports = function(data) {
 
 		var currentRound = rounds[rounds.length - 1];
 		var results = [];
+		currentRound.results = [];
 
-		// Add the user's vote to the answer
-		currentRound.answers.forEach(function(answer) {
-			if (answer.answerText === votedForText) {
-				answer.playersVote.push(getName(playerId));
+		var submittingPlayer = getPlayerFromId(playerId);
+
+		if (submittingPlayer.hasSubmitted) {
+			// Do nothing
+		} else {
+
+			submittingPlayer.hasSubmitted = true;
+			// Add the user's vote to the answer
+			currentRound.answers.forEach(function(answer) {
+				if (answer.answerText === votedForText) {
+					answer.playersVote.push(getName(playerId));
+				}
+
+				//Build result object for each answer submitted
+				players.forEach(function(pl) {
+					if (pl.uId === answer.player.uId) {
+
+						var result = {
+							player: pl,
+							answerText: answer.answerText,
+							playersWhoVotedForThis: answer.playersVote,
+						};
+
+						currentRound.results.push(result);
+					}
+				});
+			});
+
+			var allVotesSubmitted;
+			var voteNumber;
+
+			//check if everyone voted
+			if (countVotes(currentRound) === getNumOfConnectedPlayers()) {
+
+				//add the points to the players for each vote they received
+				currentRound.answers.forEach(function(answer) {
+					for (var i = 0; i < answer.playersVote.length; i++) {
+						addPoints(answer.player.uId);
+					}
+				});
+
+				// Update every player's rank in the room
+				setRank();
+
+				//change the gamestate to the next stage
+				GAMESTATE = POSSIBLE_GAMESTATES.ROUND_RESULTS;
+				setAllPlayersAbleToSubmit();
+
+				allVotesSubmitted = true;
+				voteNumber = 0;
+
+			} else {
+				voteNumber = countVotes(currentRound);
+				allVotesSubmitted = false;
 			}
 
-			//Build result object for each answer submitted
-			players.forEach(function(pl) {
-				if (pl.uId === answer.player.uId) {
-
-					var result = {
-						player: pl,
-						answerText: answer.answerText,
-						playersWhoVotedForThis: answer.playersVote,
-					};
-
-					results.push(result);
-				}
-			});
-		});
-
-		var allVotesSubmitted;
-		var voteNumber;
-
-		//check if everyone voted
-		if (countVotes(currentRound) === getNumOfConnectedPlayers()) {
-
-			//add the points to the players for each vote they received
-			currentRound.answers.forEach(function(answer) {
-				for (var i = 0; i < answer.playersVote.length; i++) {
-					addPoints(answer.player.uId);
-				}
+			callback({
+				res: currentRound.results,
+				allVotesSubmitted: allVotesSubmitted,
+				voteNumber: countVotes(currentRound)
 			});
 
-			// Update every player's rank in the room
-			setRank();
-
-			//change the gamestate to the next stage
-			GAMESTATE = POSSIBLE_GAMESTATES['ROUND_RESULTS'];
-
-			allVotesSubmitted = true;
-			voteNumber = 0;
-
-		} else {
-			voteNumber = countVotes(currentRound);
-			allVotesSubmitted = false;
 		}
 
-		callback({
-			res: results,
-			allVotesSubmitted: allVotesSubmitted,
-			voteNumber: countVotes(currentRound)
-		});
+
 
 	};
 
@@ -287,22 +301,22 @@ module.exports = function(data) {
 		// Tell controller player is now active again
 		players.forEach(function(playerInGame) {
 			if (playerInGame.uId === userId) {
-				player = playerInGame
+				player = playerInGame;
 			}
-		})
+		});
 
 		player.connectedToServer = true;
 
-		if (GAMESTATE === POSSIBLE_GAMESTATES['QUESTION']) {
+		if (GAMESTATE === POSSIBLE_GAMESTATES.QUESTION) {
 			if (player.hasSubmitted) {
-				routingInfo = "waitVote";
+				routingInfo = "waitQuestion";
 
 				gameData = {
 					eventName: "GAME answers",
 					data: {
 						answers: currentRound.answers,
 					}
-				}
+				};
 
 				data.push(gameData);
 
@@ -316,31 +330,112 @@ module.exports = function(data) {
 					question: currentRound.question,
 					round: currentRound.count
 				}
-			}
+			};
 
 			userData = {
 				eventName: "USER hand",
 				data: {
 					hand: player.hand
 				}
-			}
-
+			};
 			data.push(userData);
 			data.push(gameData);
 
-		} else if (GAMESTATE === POSSIBLE_GAMESTATES['VOTING']) {
-			routingInfo = "vote";
-		} else if (GAMESTATE === POSSIBLE_GAMESTATES['ROUND_RESULTS']) {
-			routingInfo = "results";
-		} else if (GAMESTATE === POSSIBLE_GAMESTATES['FINAL_RESULTS']) {
-			routingInfo = "endGame";
-		}
+		} else if (GAMESTATE === POSSIBLE_GAMESTATES.VOTING) {
+			if (player.hasSubmitted) {
 
-		console.log(data);
+				routingInfo = "waitVote";
+
+				gameData = {
+					eventName: "GAME playerRoundResults",
+					data: {
+						results: currentRound.results,
+						voteNumber: countVotes(currentRound)
+					}
+				};
+
+				data.push(gameData);
+
+			} else {
+				routingInfo = "vote";
+			}
+
+			answerData = {
+				eventName: "GAME answers",
+				data: {
+					answers: currentRound.answers
+				}
+			};
+
+			gameData = {
+				eventName: "GAME question",
+				data: {
+					question: currentRound.question,
+					round: currentRound.count
+				}
+			};
+
+			userData = {
+				eventName: "USER hand",
+				data: {
+					hand: player.hand
+				}
+			};
+			data.push(answerData);
+			data.push(userData);
+			data.push(gameData);
+		} else if (GAMESTATE === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+			routingInfo = "results";
+			questionData = {
+				eventName: "GAME question",
+				data: {
+					question: currentRound.question,
+					round: currentRound.count
+				}
+			};
+
+
+			gameData = {
+				eventName: "GAME playerRoundResults",
+				data: {
+					results: currentRound.results,
+					voteNumber: countVotes(currentRound)
+				}
+			};
+			userData = {
+				eventName: "USER hand",
+				data: {
+					hand: player.hand
+				}
+			};
+			data.push(questionData);
+			data.push(userData);
+			data.push(gameData);
+
+		} else if (GAMESTATE === POSSIBLE_GAMESTATES.FINAL_RESULTS) {
+			routingInfo = "endGame";
+
+			questionData = {
+				eventName: "GAME question",
+				data: {
+					question: currentRound.question,
+					round: currentRound.count
+				}
+			};
+			gameData = {
+				eventName: "GAME playerRoundResults",
+				data: {
+					results: currentRound.results,
+					voteNumber: countVotes(currentRound)
+				}
+			};
+			data.push(gameData);
+			data.push(questionData);
+		}
 
 		callback(routingInfo, data);
 
-	}
+	};
 
 	/*
 		Given a user id, returns if that user is a player in this game
@@ -351,9 +446,9 @@ module.exports = function(data) {
 			if (player.uId === userId) {
 				inRoom = true;
 			}
-		})
+		});
 		return inRoom;
-	}
+	};
 
 	var getNumOfConnectedPlayers = function() {
 		var counter = 0;
@@ -373,10 +468,10 @@ module.exports = function(data) {
 			}
 		});
 		return player;
-	}
+	};
 
 	function setAllPlayersAbleToSubmit() {
-		players.forEach(function(player){
+		players.forEach(function(player) {
 			player.hasSubmitted = false;
 		});
 	}

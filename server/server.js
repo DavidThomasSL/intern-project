@@ -374,7 +374,10 @@ module.exports = function(port, enableLogging) {
                 if (room.id === user.roomId) {
 
                     //setting player's connectedToServer flag to false
-                    room.gameController.disconnectPlayer(user.uId);
+                    if (room.gameController !== undefined) {
+                        room.gameController.disconnectPlayer(user.uId);
+                    }
+
 
                     room.usersInRoom = room.usersInRoom.filter(function(usersInRoom) {
                         return usersInRoom.uId !== user.uId;
@@ -434,13 +437,10 @@ module.exports = function(port, enableLogging) {
                     if (userInGame) {
 
                         //User was in the game, tell the game controller they're back, route them to the current stage
-                        console.log("think we're here now");
                         joined = true;
 
                         // Find out where to put this user, i.e where all the other players are
                         room.gameController.getInfoForReconnectingUser(user.uId, function(routingInfo, gameStateData) {
-                            console.log(gameStateData);
-                            console.log(gameStateData);
 
                             //TODO FUUCCCCKKKK
                             socket.emit('ROUTING', {
@@ -448,7 +448,6 @@ module.exports = function(port, enableLogging) {
                             });
 
                             gameStateData.forEach(function(data) {
-                                console.log(data);
                                 socket.emit(data.eventName, data.data);
                             });
 
@@ -473,7 +472,7 @@ module.exports = function(port, enableLogging) {
                                 usersInRoom: room.usersInRoom,
                             });
 
-                        })
+                        });
 
                     } else {
                         // Can't join a game in progress they wern't in
@@ -482,7 +481,7 @@ module.exports = function(port, enableLogging) {
                 }
 
                 // Actaully put the user in the room
-                if (userAlreadyInRoom === false && gameInProgress === false && joined == false) {
+                if (userAlreadyInRoom === false && gameInProgress === false && joined === false) {
 
                     // Add the user to the room
                     room.usersInRoom.push({
