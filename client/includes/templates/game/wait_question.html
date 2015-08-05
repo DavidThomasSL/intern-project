@@ -3,4 +3,6 @@
         <h2>Waiting for other players to submit choices....</h1>
         <h3>{{ answers().length }} / {{getUsersInRoom().length}} answers submitted</h3>
     </div>
+     <p ng-bind="counter"></p>
+    <div class="progress progress-striped active"> <div class="bar" style="width: {{counter}}%;"></div> </div>
 </div>
