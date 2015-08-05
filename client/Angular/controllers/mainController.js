@@ -18,7 +18,6 @@ ClonageApp.controller("MainController", function($scope, $timeout, userService, 
     }
 
     function displayErrorMessage(errorMessage) {
-        console.log("IM HEAR")
         toastr.error(errorMessage);
     }
 
