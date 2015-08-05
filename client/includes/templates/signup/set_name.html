@@ -2,8 +2,8 @@
   <div class="header clearfix">
     <div class="row instructions">
       <div >
-        <h1>What's your name?</h1>
-        <p>This is will be your name for others to see during the game.</p>
+        <h1>Who are you?</h1>
+        <p>Fill in your name and draw yourself an avatar! This is will be how others see you in the game.</p>
       </div>
     </div>
   </div>
@@ -16,10 +16,8 @@
           <input type="text" class="form-control" id="name-input-box" placeholder="Your Name" ng-model="nameSubmissionForm.enteredName" autofocus required novalidate>
         </div>
       </div>
-      <div class="row">
-        <div>
-          <canvas id='user-canvas' width='400' height='200' style="border:1px solid #000000;" />
-        </div>
+      <div class="row" style="margin-top: 20px;">
+        <user-image control="joinCanvasControl" ></user-image>
       </div>
       <div class="row">
         <div class="col-md-12 text-center" style="margin-top: 10px">

@@ -5,6 +5,8 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getUserId = userService.getUserId; //Display user icon on card in lobby
     $scope.getUsersInRoom = roomService.getUsersInRoom;
+    $scope.drawingEnabled = false; // Set whether the canvas can be drawn or not
+
 
 
     $scope.createRoom = function() {
@@ -34,6 +36,7 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
         gameService.startGame($scope.roomId());
     };
 
+
     $scope.setCanvas = function() {
         $scope.userImage = userService.getUserImage();
 
@@ -42,16 +45,28 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
         $scope.canvas.loadFromJSON($scope.userImage);
     };
 
+    // Scope given to the userCanvasDirective, which attaches a getCanvasData function to it
+    // This can be used to get the canvas data
+    $scope.roomCanvasControl = {
+        canCanvasDraw: function() {
+            return $scope.drawingEnabled;
+        },
+        getId: function() {
+            return 1;
+        }
+    };
+
+    // Gets the user image from the userService
+    // When it gets the images, places it onto the canvas
     $scope.$watch(function() {
         return userService.getUserImage();
     }, function(newVal, oldVal) {
-        console.log(oldVal);
-        console.log(newVal);
+
         $scope.userImage = userService.getUserImage();
-        $scope.canvas.loadFromDatalessJSON($scope.userImage, function() {
-            console.log("was chnaged");
-            $scope.canvas.renderAll();
-        });
+
+        $scope.roomCanvasControl.drawCanvasImage($scope.userImage);
+
+        $scope.roomCanvasControl.scaleCanvas(0.5,0.5);
 
     }, true);
 

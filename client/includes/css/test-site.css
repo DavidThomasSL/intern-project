@@ -195,6 +195,11 @@ body, html {
   text-align: center;
 }
 
+/* Center the fabric container in the page */
+.canvas-container {
+  margin: 0 auto;
+}
+
 
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
