@@ -31,31 +31,47 @@ module.exports = function(data) {
     var GameStateHasChanged = false
 	var count = 30;
 
-    function startTimer () {
+    var startTimer = function(callback) {
 
     	GameStateHasChanged = false;
 
 	    count = 30;
 
-		var counter = setInterval(timer, 1000); //1000 will  run it every 1 second
+		var counter = setInterval( function() {
 
-	function timer() {
-
-		count --;
-		if ( count <= 0 ) {
-			clearInterval(counter);
-			if ( GameStateHasChanged === true ) {
-
-			     //counter ended, do something here
-			    return;
+			count --;
+			if ( GameStateHasChanged === true) {
+				clearInterval(counter);
 			}
-			else console.log("changing gameState");
 
-		}
-		console.log(count);
-	  //Do code for showing the number of seconds here
-	}
-}
+			if ( count <= 0 ) {
+
+				clearInterval(counter);
+				if ( GameStateHasChanged === true ) {
+
+				     //counter ended, do something here
+				    return;
+				}
+				else {
+					console.log("changing gameState");
+				}
+
+				callback({
+					GameStateHasChanged: GameStateHasChanged,
+					GameState: GameState,
+					answers: rounds[roundCount-1].answers
+				});
+
+			}
+
+
+			console.log(count);
+		  //Do code for showing the number of seconds here
+		}, 1000); //1000 will  run it every 1 second
+
+
+
+	};
 
 	/*
 		Called by the server when a game starts
@@ -451,5 +467,7 @@ module.exports = function(data) {
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
 		newRound: newRound,
+		updateGameState: updateGameState,
+		startTimer: startTimer
 	};
 };

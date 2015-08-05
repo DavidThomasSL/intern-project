@@ -287,6 +287,22 @@ module.exports = function(port, enableLogging) {
                 logger.info("Starting new round in room " + room.id);
 
             });
+
+            room.gameController.startTimer(function(data) {
+                if (data.GameStateHasChanged === true)
+                    console.log('hahaa got itt');
+                else {
+                    console.log("has not changed yeeeeeeet");
+
+                    broadcastroom(room.id, 'GAME answers', {
+                        answers: data.answers
+                    });
+
+                    broadcastroom(room.id, 'ROUTING', {
+                        location: 'vote'
+                    });
+                }
+            });
         }
 
         // submit answer
