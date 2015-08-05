@@ -44,7 +44,7 @@ module.exports = function(data) {
 
     var startTimer = function(callback) {
 
-    	callBackReference = callback;
+    	//callBackReference = callback;
 
     	GameStateHasChanged = false;
 
@@ -59,12 +59,12 @@ module.exports = function(data) {
 			}
 
 			else if ( count <= 0 ) {
-				clearInterval(counter);
-				callBackReference({
-					GameStateHasChanged: GameStateHasChanged,
-					GameState: GameState,
-					answers: rounds[roundCount-1].answers
+
+				callback({
+					GameStateHasChanged: GameStateHasChanged
 				});
+
+				clearInterval(counter);
 
 			}
 
@@ -72,8 +72,6 @@ module.exports = function(data) {
 			console.log(count);
 		  //Do code for showing the number of seconds here
 		}, 1000); //1000 will  run it every 1 second
-
-
 
 	};
 

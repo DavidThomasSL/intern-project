@@ -289,17 +289,21 @@ module.exports = function(port, enableLogging) {
                     });
 
                     room.gameController.startTimer(function(data) {
-                        if (data.GameStateHasChanged === true)
-                            console.log('hahaa got itt');
-                        else {
-                            console.log("has not changed yeeeeeeet");
 
-                            broadcastroom(room.id, 'GAME answers', {
-                                answers: data.answers
-                            });
+                        if (data.GameStateHasChanged === false) {
 
                             broadcastroom(room.id, 'ROUTING', {
                                 location: 'vote'
+                            });
+
+                            room.gameController.startTimer(function(data) {
+
+                                if (data.GameStateHasChanged === false) {
+
+                                    broadcastroom(room.id, 'ROUTING', {
+                                        location: 'results'
+                                    });
+                                }
                             });
                         }
                     });
@@ -334,6 +338,15 @@ module.exports = function(port, enableLogging) {
                 if (data.allChoicesSubmitted === true) {
                     broadcastroom(room.id, 'ROUTING', {
                         location: 'vote'
+                    });
+
+                    room.gameController.startTimer(function(data) {
+                        if (data.GameStateHasChanged === false) {
+
+                            broadcastroom(room.id, 'ROUTING', {
+                                location: 'results'
+                            });
+                        }
                     });
                 }
             });
