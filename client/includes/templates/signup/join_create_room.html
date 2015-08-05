@@ -15,10 +15,10 @@
     <div class="row">
         <div class="col-md-12 text-center">
             <form class="form" name="roomSubmissionForm" ng-submit="joinRoom(enteredRoomId)">
-                    <div class="input-group col-md-offset-3 col-md-6 col-xs-4 col-xs-offset-4">
-                        <div class="input-group-addon">#</div>
-                        <input type="text" class="form-control" id="room-input-box" name="enteredRoomId" placeholder="CODE" ng-model="enteredRoomId" ng-minlength="4" required>
-                    </div>
+                <div class="input-group col-md-offset-3 col-md-6 col-xs-4 col-xs-offset-4">
+                    <div class="input-group-addon">#</div>
+                    <input type="text" class="form-control" id="room-input-box" name="enteredRoomId" placeholder="CODE" ng-model="enteredRoomId" ng-minlength="4" required>
+                </div>
                 <h4>Enter 4 digit room code</h4>
                 <button type="submit" id="room-join-button" class="btn btn-lg  btn-success" style="margin-bottom: 20px" ng-disabled="roomSubmissionForm.enteredRoomId.$invalid">Join Exisiting Room</button>
             </form>
