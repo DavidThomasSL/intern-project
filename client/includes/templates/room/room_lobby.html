@@ -3,17 +3,19 @@
         <div class="row instructions">
             <div>
                 <h1>ROOM CODE: {{roomId()}}</h1>
-                <p>Give this code to others you want to join this room.</p>
+                <h4>Give this code to others you want to join this room.</h4>
             </div>
         </div>
     </div>
     <div id="room-lobby-container">
         <div class="row">
-            <div class="col-md-6 text-center" ng-repeat="user in getUsersInRoom()">
+            <div class="col-md-12 text-center" ng-repeat="user in getUsersInRoom()">
                 <div class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
                     <div class="panel-body">
                         {{user.username}}
                         <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left: 20px"></span>
+<!--                         <span ng-if="!user.readyToProceed" class="glyphicon glyphicon-remove pull-right" aria-hidden="true"></span>
+                        <span ng-if="user.readyToProceed" class="glyphicon glyphicon-ok pull-right" aria-hidden="true"></span> -->
                     </div>
                 </div>
             </div>
@@ -24,8 +26,8 @@
             </div>
         </div>
         <div class="row text-center">
-            <span ng-show="getRoomUserCount() < 2">You need at least 2 players to start!</span>
-            <span ng-hide="getRoomUserCount() < 2">The game will start when everyone is ready </span>
+            <h4 ng-show="getRoomUserCount() < 2">You need at least 2 players to start!</h4>
+            <h4 ng-hide="getRoomUserCount() < 2">The game will start when everyone is ready </h4>
         </div>
         <div class="row bottom-buttons">
             <div class="col-md-12 text-center">

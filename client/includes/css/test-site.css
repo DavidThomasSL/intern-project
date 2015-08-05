@@ -203,8 +203,8 @@ body, html {
 }
 
 .player-ready {
-  color : white;
-  background-color: green;
+  color:#ffffff;
+  background-color: #5cb85c;
 }
 
 .ready-state-on {

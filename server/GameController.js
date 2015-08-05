@@ -27,7 +27,7 @@ module.exports = function(data) {
 	//deal from current arrays, when card it dealt remove it to stop player getting same cards
 
 	//Number of white cards a user should always have
-	var HANDSIZE = 7;
+	var HANDSIZE = 10;
 
 	/*
 		Called by the server when a game starts
