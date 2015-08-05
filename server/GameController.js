@@ -56,6 +56,9 @@ module.exports = function(data) {
 
 			if ( GameStateHasChanged === true) {
 				clearInterval(counter);
+				callback({
+					GameStateHasChanged: GameStateHasChanged
+				});
 			}
 
 			else if ( count <= 0 ) {
@@ -306,7 +309,7 @@ module.exports = function(data) {
 				setRank();
 
 				//change the gamestate to the next stage
-				GAMESTATE = POSSIBLE_GAMESTATES.ROUND_RESULTS;
+				updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
 				setAllPlayersAbleToSubmit();
 
 				allVotesSubmitted = true;
