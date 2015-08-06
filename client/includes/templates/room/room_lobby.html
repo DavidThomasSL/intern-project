@@ -10,11 +10,11 @@
     <div id="room-lobby-container">
         <div class="row">
             <div class="col-md-12 text-center" ng-repeat="user in getUsersInRoom()">
-                <div class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
+                <div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
                     <div class="panel-body">
                         {{user.username}}
                         <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left: 20px"></span>
-<!--                         <span ng-if="!user.readyToProceed" class="glyphicon glyphicon-remove pull-right" aria-hidden="true"></span>
+                        <!--                         <span ng-if="!user.readyToProceed" class="glyphicon glyphicon-remove pull-right" aria-hidden="true"></span>
                         <span ng-if="user.readyToProceed" class="glyphicon glyphicon-ok pull-right" aria-hidden="true"></span> -->
                     </div>
                 </div>

@@ -44,6 +44,17 @@ describe('When joining an existing room', function() {
 		secondClonageUser.joinRoom(roomId);
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
 
+
+	});
+
+	it('on refresh user is put back into the lobby', function() {
+
+		firstClonageUser.refresh();
+
+		expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Alice');
+		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
+
 		firstClonageUser.clearUser();
 		browser2.close();
 	});
