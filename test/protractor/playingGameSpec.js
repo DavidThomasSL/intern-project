@@ -2,6 +2,7 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When playing a game', function() {
 
+	var MAX_ROUNDS = 8;
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -39,6 +40,11 @@ describe('When playing a game', function() {
 		secondClonageUser.submitFirstAnswer();
 		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/vote/);
+	});
+
+	it('can see what round we are on and how many are left', function() {
+		expect(firstClonageUser.element(by.id('current-round')).getText()).toEqual('Round 1 / ' + MAX_ROUNDS);
+		expect(secondClonageUser.element(by.id('current-round')).getText()).toEqual('Round 1 / ' + MAX_ROUNDS);
 	});
 
 	it('can see what everyone submitted', function() {

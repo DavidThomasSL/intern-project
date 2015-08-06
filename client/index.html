@@ -26,7 +26,7 @@
                 <div ng-hide="rank() === ''">
                     <p id="personal-rank" class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">&#9776;</button>
                 </div>
-                <p class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
+                <p id="current-round" class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
                 <p class="username">{{getUserName()}}</p>
             </div>
             <div class="content">

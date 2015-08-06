@@ -39,7 +39,7 @@ describe('When starting a game', function() {
 	});
 
 	it('can see possible answer cards', function() {
-		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(7);
+		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(HAND_SIZE);
 	});
 
 

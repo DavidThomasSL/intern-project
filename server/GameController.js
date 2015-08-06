@@ -341,7 +341,7 @@ module.exports = function(data) {
 			data: {
 				question: currentRound.question,
 				round: currentRound.count,
-				maxRound: maxRounds
+				maxRounds: maxRounds
 			}
 		};
 
