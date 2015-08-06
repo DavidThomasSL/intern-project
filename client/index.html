@@ -38,7 +38,7 @@
                     <div class="text-center">
                         <ul class="list-group">
                             <li class="list-group-item" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'">
-                                <div style="font-weight: bold">{{currentResult.player.name}}
+                                <div style="font-weight: bold">#{{currentResults.player.rank}} {{currentResult.player.name}}
                                 </div>
                                 <div style="font-style: italic">{{currentResult.player.points}} points</div></li>
                             </ul>

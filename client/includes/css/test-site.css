@@ -37,11 +37,12 @@ body, html {
   /*opacity: 0.2;*/
   color: black;
   text-align: center;
-  width: 16%;
-  top: 380px;
-  bottom: 0;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  width: 200px;
   left: -300px;
   font-size: 120%;
+  z-index: 9999;
 }
 
 .slide-out {
