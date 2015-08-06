@@ -100,6 +100,7 @@ Room.prototype.addUser = function(user) {
         this.broadcastRoom("ROOM details");
     }
 
+    // Return wether the join was successful or not
     return {
         gameInProgress: gameInProgress,
         userAlreadyInRoom: userAlreadyInRoom,
@@ -108,9 +109,21 @@ Room.prototype.addUser = function(user) {
 };
 
 Room.prototype.removeUser = function(user) {
+
     this.usersInRoom = this.usersInRoom.filter(function(userInRoom) {
         return userInRoom.uId !== user.uId;
     });
+
+    // Take the user out of the game (set as disconnected)
+    if (this.gameController !== undefined) {
+        this.gameController.disconnectPlayer(user.uId);
+    }
+
+    this.usersInRoom = this.usersInRoom.filter(function(userInRoom) {
+        return userInRoom.uId !== user.uId;
+    });
+
+    this.broadcastRoom("ROOM details");
 };
 
 /*

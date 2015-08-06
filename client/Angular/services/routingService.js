@@ -30,6 +30,9 @@ ClonageApp.service('RoutingService', ['$location', 'communicationService', funct
                 break;
             case 'waitQuestion':
                 $location.path('/waitQuestion');
+                break;
+            default:
+                $location.path('/');
         }
     }
 

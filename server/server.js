@@ -57,61 +57,55 @@ module.exports = function(port, enableLogging) {
             if (msg.token !== undefined) {
 
                 //Get the id he user has in their session storage
-                var existingId = msg.token;
-
-                //this user previosuly connected and has an id
-
-                user = users.filter(function(otherUser) {
-                    return otherUser.uId === existingId;
-                });
+                user = getUserFromId(msg.token);
 
                 logger.debug("user has joined previously ");
 
                 //check if the user was found
-                if (user.length !== 1) {
-                    logger.warn("No user found with id, creating new user");
-                    user = createNewUser();
-                } else {
-                    //get the previous user account, give them the current socket they are connecting with
-                    user = user[0];
+                if (user !== undefined) {
+                    //give the user the socket they've connected with
                     user.socket = socket;
                     logger.debug("Found previous user ");
+                } else {
+                    logger.warn("No user found with id, creating new user");
+                    user = createNewUser();
                 }
 
             } else {
                 //first time this user has joined
                 user = createNewUser();
                 logger.debug("New user, creating new user " + user.uId);
-
             }
 
             //Send the client the user details
             user.sendUserDetails();
 
-
             // Check if the user was in a room
             // If the room has a game in progress, they will re-join that game
             if (user.roomId !== "") {
                 logger.debug("User " + user.uId + "was in room " + user.roomId + " previously");
-                rooms.forEach(function(room) {
-                    if (room.id === user.roomId) {
-                        putUserInRoom(room.id);
-                    }
-                });
+                putUserInRoom(user.roomId);
+            } else if(user.name !== undefined ){
+                putUserInJoining();
+            } else {
+                putUserInSetName();
             }
 
             logger.debug("Final registered details of user are: " + user.name + " " + user.uId);
-
         });
 
+        /*
+            Set the user's name as given by the client
+         */
         socket.on('USER set name', function(msg) {
             user.name = msg.name;
-            logger.debug("User set name as: " + msg.name);
             user.sendUserDetails();
 
             socket.emit('ROUTING', {
                 location: 'joining'
             });
+
+            logger.debug("User set name as: " + msg.name);
         });
 
         /*
@@ -143,7 +137,6 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('ROOM leave', function(msg) {
 
-            // var roomToLeave = msg.roomId;
             var removed = false;
 
             var room = getRoomFromId(msg.roomId);
@@ -157,7 +150,7 @@ module.exports = function(port, enableLogging) {
             users.forEach(function(otherUser) {
                 if (otherUser.uId === user.uId) {
                     otherUser.roomId = "";
-                    user.sendUserDetails();
+                    otherUser.sendUserDetails();
                 }
             });
 
@@ -282,7 +275,6 @@ module.exports = function(port, enableLogging) {
                 }
 
                 logger.info("Starting new round in room " + room.id);
-
             });
         }
 
@@ -295,10 +287,8 @@ module.exports = function(port, enableLogging) {
                 location: 'waitQuestion'
             });
 
-            /*
-             submit answer
-            callback will return the answers submitted and if everyone has submitted
-             */
+            // submit answer
+            // callback will return the answers submitted and if everyone has submitted
             room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
 
                 //sends the list of answers each time someone submits one
@@ -307,7 +297,6 @@ module.exports = function(port, enableLogging) {
                 });
 
                 if (data.allChoicesSubmitted === true) {
-
                     room.broadcastRoom("ROUTING", {
                         location: 'vote'
                     });
@@ -321,16 +310,11 @@ module.exports = function(port, enableLogging) {
             who submitted what answer, who voted for them, their score after the round
         */
         socket.on('USER vote', function(msg) {
-            var room;
+
+            var room = getRoomFromId(msg.roomId);
 
             socket.emit('ROUTING', {
                 location: 'waitVote'
-            });
-
-            rooms.forEach(function(otherRoom) {
-                if (otherRoom.id === msg.roomId) {
-                    room = otherRoom;
-                }
             });
 
             // Submits the vote information to the game controller
@@ -338,21 +322,18 @@ module.exports = function(port, enableLogging) {
             // Otherwise they just get the current round results
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
 
-                //send room the vote data after each vote
+                // Send room the vote data after each vote
                 room.broadcastRoom("GAME playerRoundResults", {
                     results: data.res,
                     voteNumber: data.voteNumber
                 });
 
-
                 if (data.allVotesSubmitted === true) {
-                    //moving all players to the results page
+                    // Moving all players to the results page
                     room.broadcastRoom("ROUTING", {
                         location: 'results'
                     });
-
                 }
-
             });
         });
 
@@ -364,32 +345,18 @@ module.exports = function(port, enableLogging) {
             Takes the user out of the game if they were in one
         */
         socket.on('disconnect', function() {
-            logger.debug("Disconnecting player " + user.name);
 
             room = getRoomFromId(user.roomId);
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
-                if (room.gameController !== undefined) {
-                    room.gameController.disconnectPlayer(user.uId);
-                }
-
-                room.usersInRoom = room.usersInRoom.filter(function(usersInRoom) {
-                    return usersInRoom.uId !== user.uId;
-                });
-
-                room.broadcastRoom("ROOM details", {
-                    roomId: room.id,
-                    usersInRoom: room.usersInRoom,
-                });
-
+                room.removeUser(user);
                 logger.debug("Removing player from room" + room.id);
             } else {
                 logger.debug("User was not in a room");
             }
 
-            logger.debug("User disconnected");
-
+            logger.debug("User disconnected " + user.name);
         });
 
         /*
@@ -401,16 +368,16 @@ module.exports = function(port, enableLogging) {
         */
         function putUserInRoom(roomId) {
 
-            logger.debug("trying to put user in room " + user.name + user.uId);
-
-            var room = getRoomFromId(roomId);
             var result = {};
             var errorText = "";
+            var room = getRoomFromId(roomId);
 
+            logger.debug("trying to put user in room " + user.name + user.uId);
 
+            // Try and put the user in the room, and deal with the result if there is an error
             if (room !== undefined) {
 
-                //try and join the room
+                // Try and join the room
                 result = room.addUser(user);
 
                 if (result.gameInProgress) {
@@ -420,6 +387,7 @@ module.exports = function(port, enableLogging) {
                 }
 
             } else {
+                // No room was found
                 errorText = "code \"" + roomId + "\" does not match any existing room";
                 result.joined = false;
             }
@@ -432,6 +400,14 @@ module.exports = function(port, enableLogging) {
                 });
                 logger.warn("User " + user.name + " could not join room " + roomId);
             }
+        }
+
+        function putUserInJoining() {
+            socket.emit("ROUTING", {location: 'joining'});
+        }
+
+        function putUserInSetName() {
+             socket.emit("ROUTING", {location: '/'});
         }
 
         /*
@@ -450,13 +426,24 @@ module.exports = function(port, enableLogging) {
             return room;
         }
 
+        function getUserFromId(existingId) {
+            var foundUser;
+
+            users.forEach(function(otherUser) {
+                if (otherUser.uId === existingId) {
+                    foundUser = otherUser;
+                }
+            });
+
+            return foundUser;
+        }
+
         //Creates a new user object
         function createNewUser() {
             var user = new User(socket);
             users.push(user);
             return user;
         }
-
     });
 
     /*
