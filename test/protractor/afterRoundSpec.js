@@ -86,10 +86,16 @@ describe('After each round', function() {
 		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.name')).getText()).toContain('Alice');
 	});
 
-	it('can start a new round', function() {
+	it('can ready up for next round and this can be seen by everyone', function() {
+		secondClonageUser.ready();
+		expect(secondClonageUser.element(by.id('ready-button')).getText()).toEqual('Not Ready');
+		expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
+		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
+	});
+
+	it('can start a new round when everyone is ready', function() {
 
 		firstClonageUser.ready();
-		secondClonageUser.ready();
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
 
