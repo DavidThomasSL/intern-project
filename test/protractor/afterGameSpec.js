@@ -27,7 +27,7 @@ describe('After ending the game', function() {
 
 
 		//change value here if we change the number of rounds
-		for (var i = 0; i < 10; i++) {
+		for (var i = 0; i < 8; i++) {
 			firstClonageUser.submitFirstAnswer();
 			secondClonageUser.submitFirstAnswer();
 
