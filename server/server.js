@@ -242,7 +242,7 @@ module.exports = function(port, enableLogging) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room.usersInRoom, function(data) {
+            room.gameController.initialize(room.usersInRoom, function() {
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
             });
@@ -447,6 +447,8 @@ module.exports = function(port, enableLogging) {
                                 location: routingInfo
                             });
 
+                            // Send to the user all the information about the game
+                            // Needed so they can start playing straight away
                             gameStateData.forEach(function(data) {
                                 socket.emit(data.eventName, data.data);
                             });
@@ -466,7 +468,7 @@ module.exports = function(port, enableLogging) {
                                 roomId: room.id
                             });
 
-                            //Update the room serveice of every user
+                            //Update the room service of every user
                             broadcastroom(room.id, 'ROOM details', {
                                 roomId: room.id,
                                 usersInRoom: room.usersInRoom,
