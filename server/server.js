@@ -31,7 +31,7 @@ module.exports = function(port, enableLogging) {
     var rooms = [];
     var messages = [];
     var users = [];
-    var uId = 0;
+    // var uId = 0;
     var roomId = 0;
 
     io.on('connection', function(socket) {
@@ -94,7 +94,7 @@ module.exports = function(port, enableLogging) {
                 });
             }
 
-            logger.debug("Final registered details of user are: ");
+            logger.debug("Final registered details of user are: " + user.name + " " + user.uId);
 
         });
 
@@ -568,12 +568,13 @@ module.exports = function(port, enableLogging) {
         //Creates a new user
         function createNewUser() {
             var user = {};
-            user.uId = uId;
+            user.uId = uuid.v1(); //generates a RFC4122 v1 Timestamp Based UUID
             user.name = undefined;
             user.roomId = "";
             user.socket = socket;
             users.push(user);
-            uId++;
+            // console.log(user.uId);
+            // uId++;
             return user;
         }
 
