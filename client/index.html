@@ -23,11 +23,13 @@
                 <div class="lead">
                     <h1>Clonage</h1>
                 </div>
-                <div ng-hide="rank() === ''">
-                    <p id="personal-rank" class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">&#9776;</button>
+                <div class="text-right">
+                    <div ng-hide="rank() === ''">
+                        <p id="personal-rank" class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">&#9776;</button>
+                    </div>
+                    <p id="current-round" class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
+                    <p class="username">{{getUserName()}}</p>
                 </div>
-                <p id="current-round" class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
-                <p class="username">{{getUserName()}}</p>
             </div>
             <div class="content">
                 <!-- sidebar -->
@@ -38,7 +40,7 @@
                     <div class="text-center">
                         <ul class="list-group">
                             <li class="list-group-item" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'">
-                                <div style="font-weight: bold">#{{currentResults.player.rank}} {{currentResult.player.name}}
+                                <div style="font-weight: bold">#{{currentResult.player.rank}} {{currentResult.player.name}}
                                 </div>
                                 <div style="font-style: italic">{{currentResult.player.points}} points</div></li>
                             </ul>

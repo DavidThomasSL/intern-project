@@ -110,7 +110,7 @@ body, html {
 }
 
 .jumbotron .username {
-  padding: 120px 40px 0px 0px;
+  padding-right: 3%;
   color: white;
   font-size: 25px;
   position: absolute;
@@ -120,7 +120,7 @@ body, html {
 }
 
 .jumbotron .current-round {
-  padding: 120px 40px 0px 0px;
+  padding-right: 3%;
   color: white;
   font-size: 25px;
   position: absolute;
@@ -206,20 +206,8 @@ body, html {
 
 
     }
-    .jumbotron .lead {
-      margin-bottom: 0;
-    }
-
     .jumbotron h1 {
       font-size: 70px;
-      margin-top: 15%;
-    }
-
-    .jumbotron .username {
-      padding: 0px 20px 0px 0px;
-      margin-bottom: 10px;
-      float: right;
-      visibility: hidden;
     }
 }
 
