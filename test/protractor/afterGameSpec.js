@@ -44,10 +44,10 @@ describe('After ending the game', function() {
 	});
 	it('can see players scores', function() {
 
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain('50');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain('50');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain('50');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain('50');
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain('400');
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain('400');
+		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain('400');
+		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain('400');
 	});
 
 	it('can see players names', function() {
