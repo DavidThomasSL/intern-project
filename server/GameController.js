@@ -28,14 +28,6 @@ module.exports = function(data) {
 	//Number of white cards a user should always have
 	var HANDSIZE = 7;
 
-    /*
-    GameState:
-        0 : game hasn't started yet
-        _1 : game started, round _, everyone has to submit a choice
-        _2 : round _, everyone has to submit a vote
-        _3 : round _, votes are in
-        4: final results, game over
-    */
     var GameState = '0';
     var GameStateHasChanged = false;
 	var count = 30;
@@ -55,10 +47,11 @@ module.exports = function(data) {
 			count --;
 
 			if ( GameStateHasChanged === true) {
-				clearInterval(counter);
+
 				callback({
 					GameStateHasChanged: GameStateHasChanged
 				});
+				clearInterval(counter);
 			}
 
 			else if ( count <= 0 ) {
