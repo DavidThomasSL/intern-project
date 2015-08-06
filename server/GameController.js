@@ -5,7 +5,7 @@ module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
 	var roundCount = 0;
-	var maxRounds = 3;
+	var maxRounds = 8;
 	var rounds = [];
 	var POINTS_PER_VOTE = 50;
 	var blackCardsMaster = [];
@@ -27,7 +27,7 @@ module.exports = function(data) {
 	//deal from current arrays, when card it dealt remove it to stop player getting same cards
 
 	//Number of white cards a user should always have
-	var HANDSIZE = 7;
+	var HANDSIZE = 10;
 
 	/*
 		Called by the server when a game starts
@@ -101,6 +101,7 @@ module.exports = function(data) {
 				players: players,
 				roundQuestion: round.question,
 				round: roundCount,
+				maxRounds: maxRounds,
 				gameIsOver: false
 			};
 		}
@@ -325,6 +326,7 @@ module.exports = function(data) {
 
 		} else if (GAMESTATE === POSSIBLE_GAMESTATES.FINAL_RESULTS) {
 			routingInfo = "endGame";
+
 		}
 
 		var userHand = {
@@ -338,7 +340,8 @@ module.exports = function(data) {
 			eventName: "GAME question",
 			data: {
 				question: currentRound.question,
-				round: currentRound.count
+				round: currentRound.count,
+				maxRound: maxRounds
 			}
 		};
 
