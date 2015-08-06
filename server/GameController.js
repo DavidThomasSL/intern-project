@@ -5,7 +5,7 @@ module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
 	var roundCount = 0;
-	var maxRounds = 3;
+	var maxRounds = 8;
 	var rounds = [];
 	var POINTS_PER_VOTE = 50;
 	var blackCardsMaster = [];
@@ -101,6 +101,7 @@ module.exports = function(data) {
 				players: players,
 				roundQuestion: round.question,
 				round: roundCount,
+				maxRounds: maxRounds,
 				gameIsOver: false
 			};
 		}
@@ -328,7 +329,8 @@ module.exports = function(data) {
 				eventName: "GAME question",
 				data: {
 					question: currentRound.question,
-					round: currentRound.count
+					round: currentRound.count,
+					maxRounds: maxRounds
 				}
 			};
 
@@ -371,7 +373,8 @@ module.exports = function(data) {
 				eventName: "GAME question",
 				data: {
 					question: currentRound.question,
-					round: currentRound.count
+					round: currentRound.count,
+					maxRounds: maxRounds
 				}
 			};
 
@@ -390,7 +393,8 @@ module.exports = function(data) {
 				eventName: "GAME question",
 				data: {
 					question: currentRound.question,
-					round: currentRound.count
+					round: currentRound.count,
+					maxRounds: maxRounds
 				}
 			};
 
@@ -419,7 +423,8 @@ module.exports = function(data) {
 				eventName: "GAME question",
 				data: {
 					question: currentRound.question,
-					round: currentRound.count
+					round: currentRound.count,
+					maxRounds: maxRounds
 				}
 			};
 			gameData = {
