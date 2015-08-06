@@ -31,44 +31,46 @@ module.exports = function(data) {
     var GameState = '0';
     var GameStateHasChanged = false;
 	var count = 30;
+	var timerIsActive = false;
 
 	var callBackReference = null;
 
     var startTimer = function(callback) {
 
-    	//callBackReference = callback;
+    	// var counter;
+GameStateHasChanged = false;
 
-    	GameStateHasChanged = false;
 
 	    count = 30;
+    	// //callBackReference = callback;
+    	// if (counter !== false) {
+    	// 	console.log("timer started again and counter is not false");
+    	// 	clearInterval(counter);
+    	// 	counter = false;
+    	// }
+	 	if (timerIsActive === false) {
 
-		var counter = setInterval( function() {
+			var counter = setInterval( function() {
 
-			count --;
+				timerIsActive = true;
+				count --;
 
-			if ( GameStateHasChanged === true) {
-
-				callback({
-					GameStateHasChanged: GameStateHasChanged
-				});
-				clearInterval(counter);
-			}
-
-			else if ( count <= 0 ) {
-
-				callback({
-					GameStateHasChanged: GameStateHasChanged
-				});
-
-				clearInterval(counter);
-
-			}
+				if ( GameStateHasChanged === true || count <= 0 ) {
 
 
-			console.log(count);
-		  //Do code for showing the number of seconds here
-		}, 1000); //1000 will  run it every 1 second
+					timerIsActive = false;
+					console.log(GameStateHasChanged+ " got if");
 
+					callback({
+						GameStateHasChanged: GameStateHasChanged
+					});
+					clearInterval(counter);
+
+				}
+				console.log(count);
+			  //Do code for showing the number of seconds here
+			}, 1000); //1000 will  run it every 1 second
+}
 	};
 
 	/*

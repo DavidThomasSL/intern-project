@@ -290,6 +290,8 @@ module.exports = function(port, enableLogging) {
 
                     room.gameController.startTimer(function(data) {
 
+                        console.log("timer submited answers : " + data.GameStateHasChanged);
+
                         if (data.GameStateHasChanged === false) {
 
                             broadcastroom(room.id, 'ROUTING', {
@@ -297,6 +299,8 @@ module.exports = function(port, enableLogging) {
                             });
 
                             room.gameController.startTimer(function(data) {
+
+                                console.log("timer submited votes : " + data.GameStateHasChanged);
 
                                 if (data.GameStateHasChanged === false) {
 
@@ -306,6 +310,8 @@ module.exports = function(port, enableLogging) {
                                 }
                             });
                         }
+
+                        else console.log("trueeeeeee");
                     });
                 }
 
@@ -341,6 +347,9 @@ module.exports = function(port, enableLogging) {
                     });
 
                     room.gameController.startTimer(function(data) {
+
+                        console.log("timer submited votes : " + data.GameStateHasChanged);
+
                         if (data.GameStateHasChanged === false) {
 
                             broadcastroom(room.id, 'ROUTING', {

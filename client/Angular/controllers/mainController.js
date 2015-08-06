@@ -1,9 +1,10 @@
-ClonageApp.controller("MainController", function($scope, $timeout, userService, roomService, gameService,errorService,  toastr) {
+ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService,errorService,  toastr) {
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
     $scope.currentRound = gameService.getCurrentRound;
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
+
 
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function() {
@@ -21,23 +22,37 @@ ClonageApp.controller("MainController", function($scope, $timeout, userService, 
         toastr.error(errorMessage);
     }
 
+
+    //timer stuff
+    var countdown;
+
+
     $scope.startCountdown = function() {
+
+        //don't start a new countdown if one is already running ->>> maybe make it so it cancells the current one and start a new one?
+        if ( angular.isDefined(countdown) ) $scope.stopCountdown();
 
         var timerCount = 30;
 
-        var countDown = function() {
-            if (timerCount === 0) {
+        countdown = $interval( function() {
 
-
-            } else {
-
+            if (timerCount > 0) {
                 $scope.counter = timerCount ;
-                timerCount-= 1 ;
-                $timeout(countDown, 1000);
-
+                timerCount -- ;
             }
-        };
-        countDown();
+            else {
+                $scope.stopCountdown();
+            }
+
+        }, 1000);
+    };
+
+     $scope.stopCountdown = function() {
+
+        if (angular.isDefined(countdown)) {
+            $interval.cancel(countdown);
+            countdown = undefined;
+        }
     };
 
     errorService.registerErrorListener(displayErrorMessage)

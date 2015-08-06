@@ -4,5 +4,5 @@
         <h3>{{ currentVotes() }} / {{getUsersInRoom().length}} votes cast</h3>
     </div>
      <p ng-bind="counter"></p>
-    <div class="progress progress-striped active"> <div class="bar" style="width: {{counter}}%;"></div> </div>
+    <div class="progress"> <div ng-class="counter>5 ? 'progress-bar progress-bar-striped active' : 'progress-bar progress-bar-danger progress-bar-striped active'" style="width: {{counter*3.33}}%;"></div> </div>
 </div>
