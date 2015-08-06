@@ -185,9 +185,6 @@ module.exports = function(data) {
 				allChoicesSubmitted: allChoicesSubmitted
 			});
 		}
-
-
-
 	};
 
 
@@ -309,134 +306,64 @@ module.exports = function(data) {
 		player.connectedToServer = true;
 
 		if (GAMESTATE === POSSIBLE_GAMESTATES.QUESTION) {
+
 			if (player.hasSubmitted) {
 				routingInfo = "waitQuestion";
-
-				gameData = {
-					eventName: "GAME answers",
-					data: {
-						answers: currentRound.answers,
-					}
-				};
-
-				data.push(gameData);
-
 			} else {
 				routingInfo = "question";
 			}
 
-			gameData = {
-				eventName: "GAME question",
-				data: {
-					question: currentRound.question,
-					round: currentRound.count,
-					maxRounds: maxRounds
-				}
-			};
-
-			userData = {
-				eventName: "USER hand",
-				data: {
-					hand: player.hand
-				}
-			};
-			data.push(userData);
-			data.push(gameData);
-
 		} else if (GAMESTATE === POSSIBLE_GAMESTATES.VOTING) {
+
 			if (player.hasSubmitted) {
-
 				routingInfo = "waitVote";
-
-				gameData = {
-					eventName: "GAME playerRoundResults",
-					data: {
-						results: currentRound.results,
-						voteNumber: countVotes(currentRound)
-					}
-				};
-
-				data.push(gameData);
-
 			} else {
 				routingInfo = "vote";
 			}
 
-			answerData = {
-				eventName: "GAME answers",
-				data: {
-					answers: currentRound.answers
-				}
-			};
-
-			gameData = {
-				eventName: "GAME question",
-				data: {
-					question: currentRound.question,
-					round: currentRound.count,
-					maxRounds: maxRounds
-				}
-			};
-
-			userData = {
-				eventName: "USER hand",
-				data: {
-					hand: player.hand
-				}
-			};
-			data.push(answerData);
-			data.push(userData);
-			data.push(gameData);
 		} else if (GAMESTATE === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
 			routingInfo = "results";
-			questionData = {
-				eventName: "GAME question",
-				data: {
-					question: currentRound.question,
-					round: currentRound.count,
-					maxRounds: maxRounds
-				}
-			};
-
-
-			gameData = {
-				eventName: "GAME playerRoundResults",
-				data: {
-					results: currentRound.results,
-					voteNumber: countVotes(currentRound)
-				}
-			};
-			userData = {
-				eventName: "USER hand",
-				data: {
-					hand: player.hand
-				}
-			};
-			data.push(questionData);
-			data.push(userData);
-			data.push(gameData);
 
 		} else if (GAMESTATE === POSSIBLE_GAMESTATES.FINAL_RESULTS) {
 			routingInfo = "endGame";
 
-			questionData = {
-				eventName: "GAME question",
-				data: {
-					question: currentRound.question,
-					round: currentRound.count,
-					maxRounds: maxRounds
-				}
-			};
-			gameData = {
-				eventName: "GAME playerRoundResults",
-				data: {
-					results: currentRound.results,
-					voteNumber: countVotes(currentRound)
-				}
-			};
-			data.push(gameData);
-			data.push(questionData);
 		}
+
+		var userHand = {
+			eventName: "USER hand",
+			data: {
+				hand: player.hand
+			}
+		};
+
+		var questionData = {
+			eventName: "GAME question",
+			data: {
+				question: currentRound.question,
+				round: currentRound.count,
+				maxRound: maxRounds
+			}
+		};
+
+		var roundData = {
+			eventName: "GAME playerRoundResults",
+			data: {
+				results: currentRound.results,
+				voteNumber: countVotes(currentRound)
+			}
+		};
+
+		var answerData = {
+			eventName: "GAME answers",
+			data: {
+				answers: currentRound.answers,
+			}
+		};
+
+		data.push(roundData);
+		data.push(answerData);
+		data.push(questionData);
+		data.push(userHand);
 
 		callback(routingInfo, data);
 
