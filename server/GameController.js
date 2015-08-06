@@ -441,11 +441,15 @@ module.exports = function(data) {
 		Gives a rank to every player in the game based on their points total
 	*/
 	var setRank = function() {
-		players.sort(function(a, b) {
-			return parseInt(b.points) - parseInt(a.points);
-		});
-		for (var i = 0; i <= players.length - 1; i++) {
-			players[i].rank = i + 1;
+		players.sort(function(a, b) {return parseInt(b.points) - parseInt(a.points);});
+		var ranks = players.slice().map(function(v){return players.indexOf(v)+1});
+		for (var i = 0; i < players.length; i++) {
+			players[i].rank = ranks[i];
+		}
+		for (var j=1; j<players.length; j++) {
+			if (players[j-1].points === players[j].points) {
+				players[j].rank = players[j-1].rank;
+			}
 		}
 	};
 

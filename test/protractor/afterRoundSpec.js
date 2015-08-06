@@ -53,14 +53,22 @@ describe('After each round', function() {
 
 	});
 
-	it('can see all player scores and ranking in the game', function() {
+	it('can see all player scores and points in the game from the sidebar', function() {
 
 		firstClonageUser.activateSidebar();
 		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).count()).toEqual(2);
+		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(0).element(by.binding('currentResult.player.points')).getText()).toEqual('50 points');
+		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('50 points');
+		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(0).element(by.binding('currentResult.player.name')).getText()).toContain('John');
+		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.name')).getText()).toContain('Alice');
 
 	});
 
-	it('can refresh and still see results and scores', function() {
+	it('can see their own rank', function() {
+		expect(firstClonageUser.element(by.id('personal-rank')).isDisplayed()).toBe(true);
+	});
+
+	it('can refresh and still see results and scores in page and in sidebar', function() {
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/results/);
 		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
@@ -70,6 +78,10 @@ describe('After each round', function() {
 
 		firstClonageUser.activateSidebar();
 		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).count()).toEqual(2);
+		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(0).element(by.binding('currentResult.player.points')).getText()).toEqual('50 points');
+		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('50 points');
+		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(0).element(by.binding('currentResult.player.name')).getText()).toContain('John');
+		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.name')).getText()).toContain('Alice');
 	});
 
 	it('can start a new round', function() {
