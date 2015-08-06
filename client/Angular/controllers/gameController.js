@@ -5,6 +5,7 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     $scope.userHand = userService.getUserHand;
     $scope.getUserId = userService.getUserId;
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
+    $scope.getUsersInRoom = roomService.getUsersInRoom;
 
 
     //get all answers submitted in order to visualise them on the voting page

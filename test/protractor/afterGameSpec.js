@@ -2,6 +2,8 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('After ending the game', function() {
 
+	var MAX_ROUNDS = 8;
+
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -27,7 +29,7 @@ describe('After ending the game', function() {
 
 
 		//change value here if we change the number of rounds
-		for (var i = 0; i < 3; i++) {
+		for (var i = 0; i < MAX_ROUNDS; i++) {
 			firstClonageUser.submitFirstAnswer();
 			secondClonageUser.submitFirstAnswer();
 
@@ -43,10 +45,12 @@ describe('After ending the game', function() {
 
 	});
 	it('can see players scores', function() {
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual('150');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual('150');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual('150');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual('150');
+
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual('400');
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual('400');
+		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual('400');
+		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual('400');
+
 	});
 
 	it('can see players names', function() {
