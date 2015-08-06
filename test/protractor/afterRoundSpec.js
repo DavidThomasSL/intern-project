@@ -64,8 +64,10 @@ describe('After each round', function() {
 
 	});
 
-	it('can see their own rank', function() {
+	it('can see their own rank and ranks are equal if scores are equal', function() {
 		expect(firstClonageUser.element(by.id('personal-rank')).isDisplayed()).toBe(true);
+		expect(firstClonageUser.element(by.id('personal-rank')).getText()).toBe('#1');
+		expect(firstClonageUser.element(by.id('personal-rank')).getText()).toBe('#1');
 	});
 
 	it('can refresh and still see results and scores in page and in sidebar', function() {
