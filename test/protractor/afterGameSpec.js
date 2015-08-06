@@ -2,6 +2,8 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('After ending the game', function() {
 
+	var MAX_ROUNDS = 8;
+
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -27,7 +29,7 @@ describe('After ending the game', function() {
 
 
 		//change value here if we change the number of rounds
-		for (var i = 0; i < 8; i++) {
+		for (var i = 0; i < MAX_ROUNDS; i++) {
 			firstClonageUser.submitFirstAnswer();
 			secondClonageUser.submitFirstAnswer();
 

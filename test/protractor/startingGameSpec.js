@@ -2,6 +2,8 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When starting a game', function() {
 
+	var HAND_SIZE = 10;
+
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -36,7 +38,7 @@ describe('When starting a game', function() {
 
 	it('can see possible answer cards', function() {
 
-		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(10);
+		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(HAND_SIZE);
 
 		firstClonageUser.clearUser();
 		browser2.close();
