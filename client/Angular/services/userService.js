@@ -19,8 +19,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         //call function that emits to server the vote that was just submitted
-        function submitVote(enteredAnswer) {
-            _emitVote(enteredAnswer);
+        function submitVote(answer) {
+            _emitVote(answer);
         }
 
         function getUserName() {
@@ -127,6 +127,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         //emit the vote that was just submitted: who voted for what and what room they are in
         function _emitVote(answer) {
+            console.log(answer);
             sendMessage('USER vote', {
                 playerId: user.uId,
                 playerName: user.name,

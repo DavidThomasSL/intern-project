@@ -12,6 +12,8 @@ module.exports = function(data) {
 	var whiteCardsMaster = [];
 	var blackCardsCurrent = [];
 	var whiteCardsCurrent = [];
+	var FAKE_ANSWERS = 3; //Number of fake answers to put in every round
+	var HANDSIZE = 10; //Number of white cards a user should always have
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -21,13 +23,6 @@ module.exports = function(data) {
 		'FINAL_RESULTS': 4
 	};
 	var GAMESTATE;
-
-	// Message Functions pass in on creation from the server
-	// Allows the gameController to send messages via to server to clients
-	//deal from current arrays, when card it dealt remove it to stop player getting same cards
-
-	//Number of white cards a user should always have
-	var HANDSIZE = 10;
 
 	/*
 		Called by the server when a game starts
@@ -157,7 +152,8 @@ module.exports = function(data) {
 			var ans = {
 				player: submittingPlayer,
 				answerText: answerText,
-				playersVote: []
+				playersVote: [],
+				isFake: false
 			};
 
 			//Get the current round object, which will hold all the answers for that round
@@ -167,15 +163,20 @@ module.exports = function(data) {
 			//Update this players hand with a new card, as they have just played one
 			updateHand(playerId, answerText);
 
-			//check if everyone submitted and sends back all the currently submitted answers
 			var allChoicesSubmitted;
 
+			//check if everyone submitted and sends back all the currently submitted answers
 			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
 				// change gametsate to the next stage
 				GAMESTATE = POSSIBLE_GAMESTATES.VOTING;
+
+				//allow everyone to vote again
 				setAllPlayersAbleToSubmit();
 
+				//add fake answers for people to vote on
+				addFakeAnswers(currentRound);
 				allChoicesSubmitted = true;
+
 			} else {
 				allChoicesSubmitted = false;
 			}
@@ -189,7 +190,7 @@ module.exports = function(data) {
 
 
 	/*
-		Submit a user vote for an snwer
+		Submit a user vote for an answer
 
 		Answers are the submissiions from users
 		Gets the answer this vote is for
@@ -202,7 +203,7 @@ module.exports = function(data) {
 		Return results, an array of objects for each answer that has been submitted
 		The result object holds who submitted it, voted for it, the voters rank and points
 	 */
-	var submitVote = function(playerId, votedForText, callback) {
+	var submitVote = function(playerId, votedForAnswer, callback) {
 
 		var currentRound = rounds[rounds.length - 1];
 		var results = [];
@@ -217,7 +218,10 @@ module.exports = function(data) {
 			submittingPlayer.hasSubmitted = true;
 			// Add the user's vote to the answer
 			currentRound.answers.forEach(function(answer) {
-				if (answer.answerText === votedForText) {
+				console.log(answer);
+				console.log(votedForAnswer);
+				//Find the anwser matching the one selected
+				if (answer.player.uId === votedForAnswer.player.uId) {
 					answer.playersVote.push(getName(playerId));
 				}
 
@@ -237,10 +241,10 @@ module.exports = function(data) {
 			});
 
 			var allVotesSubmitted;
-			var voteNumber;
+			var voteNumber = countVotes(currentRound);
 
 			//check if everyone voted
-			if (countVotes(currentRound) === getNumOfConnectedPlayers()) {
+			if (voteNumber === getNumOfConnectedPlayers()) {
 
 				//add the points to the players for each vote they received
 				currentRound.answers.forEach(function(answer) {
@@ -260,20 +264,15 @@ module.exports = function(data) {
 				voteNumber = 0;
 
 			} else {
-				voteNumber = countVotes(currentRound);
 				allVotesSubmitted = false;
 			}
 
 			callback({
 				res: currentRound.results,
 				allVotesSubmitted: allVotesSubmitted,
-				voteNumber: countVotes(currentRound)
+				voteNumber: voteNumber
 			});
-
 		}
-
-
-
 	};
 
 	/*
@@ -366,6 +365,44 @@ module.exports = function(data) {
 		data.push(userHand);
 
 		callback(routingInfo, data);
+	};
+
+	/*
+		Adds several fake answers (random white cards) to each rounds answers
+
+		Increases the number of responses when not many players present
+	*/
+	var addFakeAnswers = function(round) {
+
+		// var player = {
+		// 	uId: user.uId,
+		// 	name: user.name,
+		// 	hand: dealUserHand(),
+		// 	hasSubmitted: false,
+		// 	points: 0,
+		// 	rank: "",
+		// 	connectedToServer: true
+		// };
+
+		for (var i = 0; i < FAKE_ANSWERS; i++) {
+
+			// Build fake player
+			var fakePlayer = {
+				name: "BOT " + i,
+				uId: i
+			};
+
+			// Build the submitted answer
+			var ans = {
+				player: fakePlayer,
+				answerText: "FAKE ANSWER",
+				playersVote: [],
+				isFake: true
+			};
+
+			//Get the current round object, which will hold all the answers for that round
+			round.answers.push(ans);
+		}
 
 	};
 
@@ -425,8 +462,12 @@ module.exports = function(data) {
 	var countVotes = function(currentRound) {
 		var votes = 0;
 		currentRound.answers.forEach(function(option) {
+			// console.log(option.playersVote);
+			// console.log(option.playersVote.length);
+
 			votes += option.playersVote.length;
 		});
+
 		return votes;
 	};
 
@@ -446,18 +487,20 @@ module.exports = function(data) {
 	var setRank = function() {
 
 		//sorting the players and getting their ranks
-		players.sort(function(a, b) {return parseInt(b.points) - parseInt(a.points);});
-		var ranks = players.slice().map(function(v){
-			return players.indexOf(v)+1;
+		players.sort(function(a, b) {
+			return parseInt(b.points) - parseInt(a.points);
+		});
+		var ranks = players.slice().map(function(v) {
+			return players.indexOf(v) + 1;
 		});
 		//assigning ranks to players
 		for (var i = 0; i < players.length; i++) {
 			players[i].rank = ranks[i];
 		}
 		//if players have the same score they are given the same rank
-		for (var j=1; j<players.length; j++) {
-			if (players[j-1].points === players[j].points) {
-				players[j].rank = players[j-1].rank;
+		for (var j = 1; j < players.length; j++) {
+			if (players[j - 1].points === players[j].points) {
+				players[j].rank = players[j - 1].rank;
 			}
 		}
 	};
