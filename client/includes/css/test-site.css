@@ -52,16 +52,6 @@ body, html {
     left: 0px;
 }
 
-.largeWidth {
-  width: 100%;
-}
-
-.smallWidth {
-  width: 84%;
-  right: 0px;
-  margin-left: 16%;
-}
-
 /* Custom page footer */
 .footer {
   /*position: absolute;
@@ -85,7 +75,8 @@ body, html {
 }
 
 .wrapper {
-  min-height: 800px;
+  min-height: 100%;
+  width:100%;
   margin-bottom: 60px;
 }
 
@@ -170,13 +161,7 @@ body, html {
   font-size: 17px;
 }
 
-.header .btn {
-  padding: 14px 24px;
-  font-size: 21px;
-  float: right;
-}
-
-.header .instructions {
+.header {
   text-align: center;
 }
 

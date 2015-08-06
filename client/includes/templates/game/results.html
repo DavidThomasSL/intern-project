@@ -1,7 +1,7 @@
 <div class="container">
-    <div class="header clearfix text-center">
-        <h2> Round results: </h2>
-        <h4> {{roundQuestion()}}</h4>
+    <div class="header clearfix">
+            <h2> Round results: </h2>
+            <h4> {{roundQuestion()}}</h4>
     </div>
     <div class="text-center">
         <table class="table table-striped">
@@ -35,7 +35,7 @@
                     <div class="panel-body">
                         {{user.username}}
                         <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left: 20px"></span>
-<!--                         <span ng-if="!user.readyToProceed" class="glyphicon glyphicon-remove pull-right" aria-hidden="true"></span>
+                        <!--                         <span ng-if="!user.readyToProceed" class="glyphicon glyphicon-remove pull-right" aria-hidden="true"></span>
                         <span ng-if="user.readyToProceed" class="glyphicon glyphicon-ok pull-right" aria-hidden="true"></span> -->
                     </div>
                 </div>
