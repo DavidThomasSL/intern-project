@@ -53,7 +53,6 @@ describe('After each round', function() {
 
 	});
 
-
 	it('can see all player scores and ranking in the game', function() {
 
 		firstClonageUser.activateSidebar();
@@ -61,6 +60,17 @@ describe('After each round', function() {
 
 	});
 
+	it('can refresh and still see results and scores', function() {
+		firstClonageUser.refresh();
+		expect(browser.getCurrentUrl()).toMatch(/\/results/);
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
+
+		firstClonageUser.activateSidebar();
+		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).count()).toEqual(2);
+	});
 
 	it('can start a new round', function() {
 

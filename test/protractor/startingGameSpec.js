@@ -38,6 +38,14 @@ describe('When starting a game', function() {
 
 		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(7);
 
+	});
+
+	it('on refresh can see questions and answers again', function() {
+		firstClonageUser.refresh();
+		expect(browser.getCurrentUrl()).toMatch(/\/question/);
+		expect(firstClonageUser.element(by.id('roundQuestion')).getText().length).not.toEqual(0);
+		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(7);
+
 		firstClonageUser.clearUser();
 		browser2.close();
 	});
