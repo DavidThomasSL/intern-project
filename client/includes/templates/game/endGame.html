@@ -11,7 +11,7 @@
                 <th>Score</th>
             </tr>
             <tr ng-repeat="result in getPlayerRoundResults() | orderBy:'-player.points'">
-                <td>{{result.player.rank}}</td>
+                <td>#{{result.player.rank}}</td>
                 <td>{{result.player.name}}</td>
                 <td>{{result.player.points}}</td>
             </tr>
