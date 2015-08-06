@@ -85,7 +85,7 @@ module.exports = function(port, enableLogging) {
             if (user.roomId !== "") {
                 logger.debug("User " + user.uId + "was in room " + user.roomId + " previously");
                 putUserInRoom(user.roomId);
-            } else if(user.name !== undefined ){
+            } else if (user.name !== undefined) {
                 putUserInJoining();
             } else {
                 putUserInSetName();
@@ -262,10 +262,7 @@ module.exports = function(port, enableLogging) {
                         round: data.round,
                         maxRounds: data.maxRounds
                     });
-                    broadcastroom(room.id, 'ROOM details', {
-                        roomId: room.id,
-                        usersInRoom: room.usersInRoom,
-                    });
+                    room.broadcastRoom('ROOM details');
 
                     //Send each user in the room their individual hand (delt by the GameController)
                     data.players.forEach(function(player) {
@@ -408,11 +405,15 @@ module.exports = function(port, enableLogging) {
         }
 
         function putUserInJoining() {
-            socket.emit("ROUTING", {location: 'joining'});
+            socket.emit("ROUTING", {
+                location: 'joining'
+            });
         }
 
         function putUserInSetName() {
-             socket.emit("ROUTING", {location: '/'});
+            socket.emit("ROUTING", {
+                location: '/'
+            });
         }
 
         /*
