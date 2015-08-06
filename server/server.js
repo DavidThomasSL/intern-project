@@ -274,6 +274,11 @@ module.exports = function(port, enableLogging) {
                     broadcastroom(room.id, 'GAME question', {
                         question: data.roundQuestion,
                         round: data.round,
+                        maxRounds: data.maxRounds
+                    });
+                    broadcastroom(room.id, 'ROOM details', {
+                        roomId: room.id,
+                        usersInRoom: room.usersInRoom,
                     });
 
                     //Send each user in the room their individual hand (delt by the GameController)

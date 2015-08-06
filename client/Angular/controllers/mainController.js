@@ -3,6 +3,7 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
     $scope.currentRound = gameService.getCurrentRound;
+    $scope.maxRounds = gameService.getMaxRounds;
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
 
     //when player says they are ready to move on it sends this to the server

@@ -1,7 +1,7 @@
 <div class="container">
     <div class="header clearfix text-center">
         <h2> Round results: </h2>
-        <h3> {{roundQuestion()}}</h3>
+        <h4> {{roundQuestion()}}</h4>
     </div>
     <div class="text-center">
         <table class="table table-striped">
@@ -26,8 +26,19 @@
         <div class ="row">
             <div class="col-md-12 text-center">
                 <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
-                <p>Next round will start when everyone is ready</p>
-                <p>You are {{ roomReadyToggle ? 'ready' : 'not ready' }}</p>
+                <h4>Waiting for everyone to be ready</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center" ng-repeat="user in getUsersInRoom()">
+                <div class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
+                    <div class="panel-body">
+                        {{user.username}}
+                        <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left: 20px"></span>
+<!--                         <span ng-if="!user.readyToProceed" class="glyphicon glyphicon-remove pull-right" aria-hidden="true"></span>
+                        <span ng-if="user.readyToProceed" class="glyphicon glyphicon-ok pull-right" aria-hidden="true"></span> -->
+                    </div>
+                </div>
             </div>
         </div>
         <div>
