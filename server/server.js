@@ -9,6 +9,8 @@ var log4js = require('log4js');
 var logger = log4js.getLogger();
 
 var GameController = require('./GameController');
+var User = require('./User');
+var Room = require('./Room');
 
 module.exports = function(port, enableLogging) {
     var router = express();
@@ -54,7 +56,8 @@ module.exports = function(port, enableLogging) {
 
             if (msg.token !== undefined) {
 
-                var existingId = parseInt(msg.token);
+                //Get the id he user has in their session storage
+                var existingId = msg.token;
 
                 //this user previosuly connected and has an id
 
@@ -62,31 +65,34 @@ module.exports = function(port, enableLogging) {
                     return otherUser.uId === existingId;
                 });
 
-                logger.debug("user has joined previously " + user.name + user.uId);
+                logger.debug("user has joined previously ");
 
                 //check if the user was found
                 if (user.length !== 1) {
                     logger.warn("No user found with id, creating new user");
                     user = createNewUser();
                 } else {
+                    //get the previous user account, give them the current socket they are connecting with
                     user = user[0];
+                    user.socket = socket;
+                    logger.debug("Found previous user ");
                 }
 
             } else {
                 //first time this user has joined
                 user = createNewUser();
-                logger.debug("New user, creating new user " + user.name);
+                logger.debug("New user, creating new user " + user.uId);
 
             }
 
-            //can't send socket over socket, detach then reattach after sending
-            sendUserDetails();
+            //Send the client the user details
+            user.sendUserDetails();
 
 
             // Check if the user was in a room
             // If the room has a game in progress, they will re-join that game
             if (user.roomId !== "") {
-                logger.debug("USer " + user.uId + "was in room " + user.roomId + " previously");
+                logger.debug("User " + user.uId + "was in room " + user.roomId + " previously");
                 rooms.forEach(function(room) {
                     if (room.id === user.roomId) {
                         putUserInRoom(room.id);
@@ -101,7 +107,7 @@ module.exports = function(port, enableLogging) {
         socket.on('USER set name', function(msg) {
             user.name = msg.name;
             logger.debug("User set name as: " + msg.name);
-            sendUserDetails();
+            user.sendUserDetails();
             putUserInJoining();
         });
 
@@ -111,11 +117,8 @@ module.exports = function(port, enableLogging) {
         socket.on('ROOM create', function(msg) {
 
             roomId = makeid();
-            var room = {
-                id: roomId,
-                usersInRoom: [],
-            };
 
+            var room = new Room(roomId);
             rooms.push(room);
 
             putUserInRoom(roomId);
@@ -145,14 +148,17 @@ module.exports = function(port, enableLogging) {
 
                 if (room.id === roomToLeave) {
 
-                    room.usersInRoom = room.usersInRoom.filter(function(userInRoom) {
-                        return userInRoom.uId !== user.uId;
-                    });
+                    // room.usersInRoom = room.usersInRoom.filter(function(userInRoom) {
+                    //     return userInRoom.uId !== user.uId;
+                    // });
+                    room.removeUser(user);
 
-                    broadcastroom(room.id, 'ROOM details', {
-                        roomId: room.id,
-                        usersInRoom: room.usersInRoom,
-                    });
+                    room.broadcastRoom('ROOM details');
+
+                    // broadcastroom(room.id, 'ROOM details', {
+                    //     roomId: room.id,
+                    //     usersInRoom: room.usersInRoom,
+                    // });
                 }
             });
 
@@ -160,7 +166,7 @@ module.exports = function(port, enableLogging) {
             users.forEach(function(otherUser) {
                 if (otherUser.uId === user.uId) {
                     otherUser.roomId = "";
-                    sendUserDetails();
+                    user.sendUserDetails();
                 }
             });
 
@@ -195,10 +201,7 @@ module.exports = function(port, enableLogging) {
             });
 
             // Broadcast the room details so every user can see who is ready and who isn't
-            broadcastroom(room.id, 'ROOM details', {
-                roomId: room.id,
-                usersInRoom: room.usersInRoom,
-            });
+            room.broadcastRoom("ROOM details");
 
             // Get number of users ready in room
             room.usersInRoom.forEach(function(iteratedUser) {
@@ -260,18 +263,17 @@ module.exports = function(port, enableLogging) {
             room.gameController.newRound(function(data) {
                 if (data.gameIsOver === true) {
 
-                    // Show the end game page if no rounds left
-                    broadcastroom(room.id, 'ROUTING', {
+                    room.broadcastRoom("ROUTING", {
                         location: 'endGame'
                     });
 
                 } else {
 
-                    broadcastroom(room.id, 'ROUTING', {
+                    room.broadcastRoom("ROUTING", {
                         location: 'question'
                     });
 
-                    broadcastroom(room.id, 'GAME question', {
+                    room.broadcastRoom("GAME question", {
                         question: data.roundQuestion,
                         round: data.round,
                     });
@@ -280,7 +282,7 @@ module.exports = function(port, enableLogging) {
                     data.players.forEach(function(player) {
                         users.forEach(function(user) {
                             if (player.uId === user.uId) {
-                                user.socket.emit('USER hand', {
+                                user.emit('USER hand', {
                                     hand: player.hand
                                 });
                             }
@@ -295,25 +297,27 @@ module.exports = function(port, enableLogging) {
 
         // submit answer
         socket.on('USER submitChoice', function(msg) {
-            /*
-             submit answer
-            callback will return the answers submitted and if everyone has submitted
-             */
+
             var room = getRoomFromId(msg.roomId);
 
             socket.emit('ROUTING', {
                 location: 'waitQuestion'
             });
 
+            /*
+             submit answer
+            callback will return the answers submitted and if everyone has submitted
+             */
             room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
 
                 //sends the list of answers each time someone submits one
-                broadcastroom(room.id, 'GAME answers', {
+                room.broadcastRoom("GAME answers", {
                     answers: data.answers
                 });
 
                 if (data.allChoicesSubmitted === true) {
-                    broadcastroom(room.id, 'ROUTING', {
+
+                    room.broadcastRoom("ROUTING", {
                         location: 'vote'
                     });
                 }
@@ -344,7 +348,7 @@ module.exports = function(port, enableLogging) {
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
 
                 //send room the vote data after each vote
-                broadcastroom(room.id, 'GAME playerRoundResults', {
+                room.broadcastRoom("GAME playerRoundResults", {
                     results: data.res,
                     voteNumber: data.voteNumber
                 });
@@ -352,7 +356,7 @@ module.exports = function(port, enableLogging) {
 
                 if (data.allVotesSubmitted === true) {
                     //moving all players to the results page
-                    broadcastroom(room.id, 'ROUTING', {
+                    room.broadcastRoom("ROUTING", {
                         location: 'results'
                     });
 
@@ -383,7 +387,7 @@ module.exports = function(port, enableLogging) {
                         return usersInRoom.uId !== user.uId;
                     });
 
-                    broadcastroom(room.id, 'ROOM details', {
+                    room.broadcastRoom("ROOM details", {
                         roomId: room.id,
                         usersInRoom: room.usersInRoom,
                     });
@@ -442,7 +446,6 @@ module.exports = function(port, enableLogging) {
                         // Find out where to put this user, i.e where all the other players are
                         room.gameController.getInfoForReconnectingUser(user.uId, function(routingInfo, gameStateData) {
 
-                            //TODO FUUCCCCKKKK
                             socket.emit('ROUTING', {
                                 location: routingInfo
                             });
@@ -454,11 +457,7 @@ module.exports = function(port, enableLogging) {
                             });
 
                             // Add the user to the room
-                            room.usersInRoom.push({
-                                uId: user.uId,
-                                username: user.name,
-                                readyToProceed: false
-                            });
+                            room.addUser(user);
 
                             user.roomId = roomId;
 
@@ -469,11 +468,7 @@ module.exports = function(port, enableLogging) {
                             });
 
                             //Update the room service of every user
-                            broadcastroom(room.id, 'ROOM details', {
-                                roomId: room.id,
-                                usersInRoom: room.usersInRoom,
-                            });
-
+                            room.broadcastRoom("ROOM details");
                         });
 
                     } else {
@@ -486,16 +481,12 @@ module.exports = function(port, enableLogging) {
                 if (userAlreadyInRoom === false && gameInProgress === false && joined === false) {
 
                     // Add the user to the room
-                    room.usersInRoom.push({
-                        uId: user.uId,
-                        username: user.name,
-                        readyToProceed: false
-                    });
+                    room.addUser(user);
 
                     user.roomId = roomId;
 
                     // Tell the user they have joined
-                    socket.emit('USER room join', {
+                    user.emit('USER room join', {
                         success: true,
                         roomId: room.id
                     });
@@ -505,12 +496,9 @@ module.exports = function(port, enableLogging) {
                         location: 'room'
                     });
 
-                    //Update the room serveice of every user
-                    broadcastroom(room.id, 'ROOM details', {
-                        roomId: room.id,
-                        usersInRoom: room.usersInRoom,
-                    });
+                    room.broadcastRoom("ROOM details");
 
+                    //Update the room serveice of every user
                     logger.debug("User " + user.name + " joined room " + roomId);
 
                     joined = true;
@@ -535,14 +523,6 @@ module.exports = function(port, enableLogging) {
             }
         }
 
-        function sendUserDetails() {
-            user.socket = "";
-            socket.emit('USER details', {
-                user: user
-            });
-            user.socket = socket;
-        }
-
         function putUserInJoining() {
             socket.emit('ROUTING', {
                 location: 'joining'
@@ -565,34 +545,14 @@ module.exports = function(port, enableLogging) {
             return room;
         }
 
-        //Creates a new user
+        //Creates a new user object
         function createNewUser() {
-            var user = {};
-            user.uId = uuid.v1(); //generates a RFC4122 v1 Timestamp Based UUID
-            user.name = undefined;
-            user.roomId = "";
-            user.socket = socket;
+            var user = new User(socket);
             users.push(user);
-            // console.log(user.uId);
-            // uId++;
             return user;
         }
 
     });
-
-    /*
-        emit event and data to all players in a certain room
-        that is passed as an argument
-        -> used to send a new join and new leave event
-        with the data as the new list of players in the room
-    */
-    function broadcastroom(room, event, data) {
-        users.forEach(function(user) {
-            if (user.roomId === room) {
-                user.socket.emit(event, data);
-            }
-        });
-    }
 
     /*
         make an id for 5 letters until it is unique

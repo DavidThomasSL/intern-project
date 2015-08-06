@@ -496,7 +496,7 @@ module.exports = function(data) {
 
 		var player = {
 			uId: user.uId,
-			name: user.username,
+			name: user.name,
 			hand: dealUserHand(),
 			hasSubmitted: false,
 			points: 0,
