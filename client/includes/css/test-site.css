@@ -20,6 +20,13 @@ body, html {
   border-bottom: 1px solid #e5e5e5;
   margin-bottom: 20px;
 }
+
+/* Custom page header */
+.sidebar-header {
+  padding-bottom: 20px;
+}
+
+
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
   margin-top: 0;
@@ -34,10 +41,9 @@ body, html {
   transition: left .2s;
   position: absolute;
   background-color: white;
-  /*opacity: 0.2;*/
   color: black;
   text-align: center;
-  border-bottom: 1px solid #e5e5e5;
+/*  border-bottom: 1px solid #e5e5e5;*/
   border-right: 1px solid #e5e5e5;
   width: 200px;
   left: -300px;
@@ -83,6 +89,7 @@ body, html {
 
 /* Main marketing message and sign up button */
 .jumbotron {
+  color:white;
   position: relative;
   margin-bottom: 0px;
   height: 200px;
@@ -99,14 +106,12 @@ body, html {
 }
 
 .jumbotron .lead {
-  color: white;
   float: left;
   text-align: left;
 }
 
 .jumbotron .username {
   margin-right: 3%;
-  color: white;
   font-size: 25px;
   position: absolute;
   bottom: 0px;
@@ -116,7 +121,6 @@ body, html {
 
 .jumbotron .current-round {
   margin-right: 3%;
-  color: white;
   font-size: 25px;
   position: absolute;
   bottom: 0px;
@@ -128,17 +132,15 @@ body, html {
   margin-left: 3%;
   bottom: 0px;
   left: 0px;
+  border: none;
   background: transparent;
-  border: none !important;
   position: absolute;
   font-size: 40px;
-  color: white;
   outline: none;
 }
 
 .jumbotron .rank {
   margin-left: 7%;
-  color: white;
   font-size: 35px;
   position: absolute;
   bottom: 0px;
@@ -147,12 +149,11 @@ body, html {
 
 .jumbotron h1 {
   float: left;
-  color: white;
   font-size: 90px;
 }
 
 .white-card {
-   position: relative;
+  position: relative;
   min-height: 150px;
   font-size: 17px;
 }

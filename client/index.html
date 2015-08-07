@@ -39,12 +39,12 @@
             <div class="content">
                 <!-- sidebar -->
                 <div class="sidebar" ng-show="toggle" ng-class="{'slide-out': toggle}">
-                    <div class="header clearfix text-center"><br>
+                    <div class="sidebar-header clearfix text-center"><br>
                         <h4> Current Scores :</h4>
                     </div>
                     <div class="text-center">
-                        <ul class="list-group">
-                            <li class="list-group-item" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'">
+                        <ul class="list-group" style="margin-bottom:0px">
+                            <li class="list-group-item" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'" style="border-radius:0px">
                                 <div style="font-weight: bold">#{{currentResult.player.rank}} {{currentResult.player.name}}
                                 </div>
                                 <div style="font-style: italic">{{currentResult.player.points}} points</div></li>
