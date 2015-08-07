@@ -86,8 +86,10 @@ module.exports = function(port, enableLogging) {
                 logger.debug("User " + user.uId + "was in room " + user.roomId + " previously");
                 putUserInRoom(user.roomId);
             } else if (user.name !== undefined) {
+                logger.debug("Putting user in joining");
                 putUserInJoining();
             } else {
+                logger.debug("Putting user in set name");
                 putUserInSetName();
             }
 
@@ -101,9 +103,7 @@ module.exports = function(port, enableLogging) {
             user.name = msg.name;
             user.sendUserDetails();
 
-            socket.emit('ROUTING', {
-                location: 'joining'
-            });
+            putUserInJoining();
 
             logger.debug("User set name as: " + msg.name);
         });
@@ -154,11 +154,17 @@ module.exports = function(port, enableLogging) {
                 }
             });
 
-            socket.emit('ROUTING', {
-                location: 'joining'
-            });
+            putUserInJoining();
 
             logger.debug("Removed user " + user.name + " from room " + room.id);
+        });
+
+        socket.on('ROOM toggleBots', function(data) {
+            var room = getRoomFromId(data.roomId);
+            room.botsEnabled = !room.botsEnabled;
+            console.log(room);
+            room.broadcastRoom("ROOM details");
+            return;
         });
 
         /*
@@ -183,6 +189,12 @@ module.exports = function(port, enableLogging) {
                     iteratedUser.readyToProceed = (!iteratedUser.readyToProceed);
                 }
             });
+
+            // if(data.botsEnabled) {
+            //     room.botsEnabled = true;
+            // } else {
+            //     room.botsEnabled = false;
+            // }
 
             // Broadcast the room details so every user can see who is ready and who isn't
             room.broadcastRoom("ROOM details");
@@ -406,7 +418,8 @@ module.exports = function(port, enableLogging) {
 
         function putUserInJoining() {
             socket.emit("ROUTING", {
-                location: 'joining'
+                location: 'joining',
+                messgae: "fuck"
             });
         }
 

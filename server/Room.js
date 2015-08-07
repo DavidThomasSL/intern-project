@@ -3,6 +3,7 @@ function Room(roomCode) {
     self.id = roomCode;
     self.usersInRoom = [];
     self.gameController = undefined;
+    this.botsEnabled = false;
 
     /*
         Returns a user from the room
@@ -49,7 +50,8 @@ function Room(roomCode) {
 
             // Route them to the room lobby
             user.emit('ROUTING', {
-                location: 'room'
+                location: 'room',
+                error: "in checking if game controller undefined"
             });
 
             gameInProgress = false;
@@ -99,6 +101,7 @@ function Room(roomCode) {
             //Update the room service of every user
             self.broadcastRoom("ROOM details");
         }
+        console.log(self);
 
         // Return wether the join was successful or not
         return {
@@ -134,15 +137,16 @@ function Room(roomCode) {
 
 
         if (eventName === "ROOM details") {
-            var usersInRoom = [];
+            var usersInRoomJSON = [];
 
             self.usersInRoom.forEach(function(user) {
-                usersInRoom.push(user.getUserDetails());
+                usersInRoomJSON.push(user.getUserDetails());
             });
 
             data = {
                 roomId: self.id,
-                usersInRoom: usersInRoom
+                usersInRoom: usersInRoomJSON,
+                botsEnabled: self.botsEnabled
             };
 
         }

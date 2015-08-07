@@ -11,6 +11,8 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var roomId = -1;
     var usersInRoom = [];
     var errorMessage = "";
+    var botsEnabled = false;
+    var botListener;
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -39,6 +41,16 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return roomId;
     }
 
+    function toggleBotStatus () {
+        botsEnabled = !botsEnabled;
+        sendMessage('ROOM toggleBots', {roomId: roomId});
+        return;
+    }
+
+    function registerListener(callback) {
+        botListener = callback;
+    }
+
     //----------------------
     //SOCKET EVENT LISTENERS
     //-=-----------------
@@ -61,6 +73,10 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     function _setRoomDetails(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
+        botsEnabled = data.botsEnabled;
+
+        // Tell the controller listener that the bots have changed
+        botListener(botsEnabled);
     }
 
     function _setError(data) {
@@ -99,6 +115,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
+        botsStatus: botsEnabled,
+        toggleBotStatus: toggleBotStatus,
+        registerListener: registerListener,
         getRoomId: getRoomId,
         _setRoomDetails: _setRoomDetails
     };

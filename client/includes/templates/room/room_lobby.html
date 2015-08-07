@@ -22,7 +22,8 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-center">
-                <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+                <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(botsStatus); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+                 <input type="checkbox" ng-change="toggleBots()" ng-model="botsStatus"> Add Robots to Game
             </div>
         </div>
         <div class="row text-center">
