@@ -23,10 +23,15 @@
                 <div class="lead">
                     <h1>Clonage</h1>
                 </div>
+                <div class="text-left">
+                <div ng-hide="rank() === ''">
+                    <p id="personal-rank" class="rank">#{{rank()}}</p>
+                    <button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+                    </button>
+                </div>
+                </div>
                 <div class="text-right">
-                    <div ng-hide="rank() === ''">
-                        <p id="personal-rank" class="rank">#{{rank()}}</p><button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">&#9776;</button>
-                    </div>
                     <p id="current-round" class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
                     <p class="username">{{getUserName()}}</p>
                 </div>
