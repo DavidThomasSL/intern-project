@@ -218,8 +218,7 @@ module.exports = function(data) {
 			submittingPlayer.hasSubmitted = true;
 			// Add the user's vote to the answer
 			currentRound.answers.forEach(function(answer) {
-				console.log(answer);
-				console.log(votedForAnswer);
+
 				//Find the anwser matching the one selected
 				if (answer.player.uId === votedForAnswer.player.uId) {
 					answer.playersVote.push(getName(playerId));
@@ -373,16 +372,6 @@ module.exports = function(data) {
 		Increases the number of responses when not many players present
 	*/
 	var addFakeAnswers = function(round) {
-
-		// var player = {
-		// 	uId: user.uId,
-		// 	name: user.name,
-		// 	hand: dealUserHand(),
-		// 	hasSubmitted: false,
-		// 	points: 0,
-		// 	rank: "",
-		// 	connectedToServer: true
-		// };
 
 		for (var i = 0; i < FAKE_ANSWERS; i++) {
 

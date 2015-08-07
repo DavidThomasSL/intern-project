@@ -1,6 +1,6 @@
 var clonageUser = require("./helpers/browserHelper.js");
 
-describe('After ending the game', function() {
+describe('AFTER GAME SPEC After ending the game', function() {
 
 	var MAX_ROUNDS = 8;
 	var POINTS_PER_VOTE = 50;
