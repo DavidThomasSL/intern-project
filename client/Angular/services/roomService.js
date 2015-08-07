@@ -12,7 +12,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var usersInRoom = [];
     var errorMessage = "";
     var botsEnabled = false;
-    var botListener;
+    var botListener = function(){};
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {

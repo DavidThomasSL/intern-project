@@ -3,7 +3,7 @@ var clonageUser = require("./helpers/browserHelper.js");
 describe('When playing a game', function() {
 
 	var MAX_ROUNDS = 8;
-	var FAKE_ANSWERS = 3;
+	var FAKE_ANSWERS = 0;
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
