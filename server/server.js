@@ -359,8 +359,6 @@ module.exports = function(port, enableLogging) {
             // Otherwise they just get the current round results
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
 
-                console.log("got voting callback");
-
                 // Send room the vote data after each vote
                 room.broadcastRoom("GAME playerRoundResults", {
                     results: data.res,

@@ -79,6 +79,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		currentQuestion = data.question;
 		round = data.round;
 		maxRounds = data.maxRounds;
+		answers = [];
+		voteCounter = 0;
+		playerRoundResults = [];
 	}
 
 	function _setChosenAnswers(data) {
