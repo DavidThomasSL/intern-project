@@ -43,8 +43,8 @@
                         <h4> Current Scores :</h4>
                     </div>
                     <div class="text-center">
-                        <ul class="list-group" style="margin-bottom:0px">
-                            <li class="list-group-item" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'" style="border-radius:0px">
+                        <ul class="list-group sidebar-list">
+                            <li class="list-group-item sidebar-item" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'">
                                 <div style="font-weight: bold">#{{currentResult.player.rank}} {{currentResult.player.name}}
                                 </div>
                                 <div style="font-style: italic">{{currentResult.player.points}} points</div></li>
