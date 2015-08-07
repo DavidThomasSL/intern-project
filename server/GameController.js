@@ -536,6 +536,8 @@ module.exports = function(data) {
 				allPlayers[j].rank = allPlayers[j - 1].rank;
 			}
 		}
+
+		//
 	};
 
 	/*
