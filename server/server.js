@@ -276,30 +276,25 @@ module.exports = function(port, enableLogging) {
                         });
                     });
 
-                    room.gameController.startTimer(function(data) {
+                    // once a new round has started (aka we are on question page)
+                    // start a timer
+                    // and wait until it has ran out (triggers a callback)
+                    room.gameController.startTimer(function() {
 
-                        console.log("timer submited answers : " + data.GameStateHasChanged);
-
-                        if (data.GameStateHasChanged === false) {
-
-                            broadcastroom(room.id, 'ROUTING', {
+                            // time has ran out so everyone is routed to the voting page
+                            room.broadcastRoom("ROUTING", {
                                 location: 'vote'
                             });
 
-                            room.gameController.startTimer(function(data) {
+                            // start new timer for the voting page
+                            // and wait until time rans out
+                            room.gameController.startTimer(function() {
 
-                                console.log("timer submited votes : " + data.GameStateHasChanged);
-
-                                if (data.GameStateHasChanged === false) {
-
-                                    broadcastroom(room.id, 'ROUTING', {
-                                        location: 'results'
-                                    });
-                                }
+                                //time has ran out so everyone is routed to the results page
+                                room.broadcastRoom("ROUTING", {
+                                    location: 'results'
+                                });
                             });
-                        }
-
-                        else console.log("trueeeeeee");
                     });
                 }
 
@@ -327,21 +322,20 @@ module.exports = function(port, enableLogging) {
                     answers: data.answers
                 });
 
+                // once everyone submitted an answer
                 if (data.allChoicesSubmitted === true) {
+
                     room.broadcastRoom("ROUTING", {
                         location: 'vote'
                     });
 
-                    room.gameController.startTimer(function(data) {
+                    // start a timer for the voting page
+                    room.gameController.startTimer(function() {
 
-                        console.log("timer submited votes : " + data.GameStateHasChanged);
-
-                        if (data.GameStateHasChanged === false) {
-
-                            broadcastroom(room.id, 'ROUTING', {
-                                location: 'results'
-                            });
-                        }
+                        // once the time has ran out route everyone to the results page
+                        room.broadcastRoom("ROUTING", {
+                            location: 'results'
+                        });
                     });
                 }
             });
@@ -364,6 +358,8 @@ module.exports = function(port, enableLogging) {
             // If all votes are submitted, move user to results page
             // Otherwise they just get the current round results
             room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
+
+                console.log("got voting callback");
 
                 // Send room the vote data after each vote
                 room.broadcastRoom("GAME playerRoundResults", {

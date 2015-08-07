@@ -12,6 +12,7 @@ module.exports = function(data) {
 	var whiteCardsMaster = [];
 	var blackCardsCurrent = [];
 	var whiteCardsCurrent = [];
+	var voteNumber;
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -21,57 +22,56 @@ module.exports = function(data) {
 		'FINAL_RESULTS': 4
 	};
 
-	// Message Functions pass in on creation from the server
-	// Allows the gameController to send messages via to server to clients
-	//deal from current arrays, when card it dealt remove it to stop player getting same cards
+	/*
+		Message Functions pass in on creation from the server
+		Allows the gameController to send messages via to server to clients
+		deal from current arrays, when card it dealt remove it to stop player getting same cards
+	*/
 
 	//Number of white cards a user should always have
 	var HANDSIZE = 10;
 
     var GameState = '0';
-    var GameStateHasChanged = false;
-	var count = 30;
+
+	// true if there is a timer running -> checked in updateGameState
+	// in the case if everyone submitted and game state has changed -> timer needs to stop
 	var timerIsActive = false;
 
-	var callBackReference = null;
+	/*
+		holding the function called on a 1sec interval
+		global so that it can be stopped by function stopTimer,
+		which is outside of the scope of startTimer
+	*/
+	var counter;
 
+	// function to initialise the countdown
     var startTimer = function(callback) {
 
-    	// var counter;
-GameStateHasChanged = false;
+	    timerIsActive = true;
+	    setAllPlayersAbleToSubmit();
+		counter = setTimeout( function() {
 
+			timerIsActive = false;
+			// trigger callback so the server sees the time has ran out
+			callback();
 
-	    count = 30;
-    	// //callBackReference = callback;
-    	// if (counter !== false) {
-    	// 	console.log("timer started again and counter is not false");
-    	// 	clearInterval(counter);
-    	// 	counter = false;
-    	// }
-	 	if (timerIsActive === false) {
+		}, 30000);  // 1000 will  run it every 1 second
 
-			var counter = setInterval( function() {
-
-				timerIsActive = true;
-				count --;
-
-				if ( GameStateHasChanged === true || count <= 0 ) {
-
-
-					timerIsActive = false;
-					console.log(GameStateHasChanged+ " got if");
-
-					callback({
-						GameStateHasChanged: GameStateHasChanged
-					});
-					clearInterval(counter);
-
-				}
-				console.log(count);
-			  //Do code for showing the number of seconds here
-			}, 1000); //1000 will  run it every 1 second
-}
 	};
+
+	/*
+		function to stop the counter
+		is called from updateGameState function
+		when there is an active timer
+		but the game state has changed
+		-> aka. everyone submitted so the timer needs to stop
+	*/
+	var stopTimer = function() {
+
+		clearTimeout(counter);
+
+	}
+
 
 	/*
 		Called by the server when a game starts
@@ -218,7 +218,6 @@ GameStateHasChanged = false;
 			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
 				// change gametsate to the next stage
 				updateGameState(POSSIBLE_GAMESTATES.VOTING);
-				setAllPlayersAbleToSubmit();
 
 				allChoicesSubmitted = true;
 			} else {
@@ -249,8 +248,6 @@ GameStateHasChanged = false;
 	 */
 	var submitVote = function(playerId, votedForText, callback) {
 
-
-
 		// TO DO : before submitting a vote check that the player hasn't already submitted one
 
 		var currentRound = rounds[rounds.length - 1];
@@ -260,6 +257,7 @@ GameStateHasChanged = false;
 		var submittingPlayer = getPlayerFromId(playerId);
 
 		if (submittingPlayer.hasSubmitted) {
+
 			// Do nothing
 		} else {
 
@@ -286,27 +284,15 @@ GameStateHasChanged = false;
 			});
 
 			var allVotesSubmitted;
-			var voteNumber;
 
 			//check if everyone voted
 			if (countVotes(currentRound) === getNumOfConnectedPlayers()) {
 
-				//add the points to the players for each vote they received
-				currentRound.answers.forEach(function(answer) {
-					for (var i = 0; i < answer.playersVote.length; i++) {
-						addPoints(answer.player.uId);
-					}
-				});
-
-				// Update every player's rank in the room
-				setRank();
-
 				//change the gamestate to the next stage
 				updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
-				setAllPlayersAbleToSubmit();
 
+				voteNumber = 0 ;
 				allVotesSubmitted = true;
-				voteNumber = 0;
 
 			} else {
 				voteNumber = countVotes(currentRound);
@@ -458,7 +444,49 @@ GameStateHasChanged = false;
 	*/
 	var updateGameState = function(wantedState) {
 		GameState = wantedState;
-		GameStateHasChanged = true ;
+
+		if ( timerIsActive ) {
+			stopTimer();
+		}
+
+		if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+
+			var currentRound = rounds[rounds.length - 1];
+
+			//add the points to the players for each vote they received
+			currentRound.answers.forEach(function(answer) {
+				for (var i = 0; i < answer.playersVote.length; i++) {
+					addPoints(answer.player.uId);
+				}
+			});
+
+			voteNumber = 0 ;
+
+			// Update every player's rank in the room
+			setRank();
+
+		}
+
+		else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+			players.forEach(function(pl) {
+
+				if (pl.hasSubmitted === false) {
+
+					// Submit an empty answer
+					var ans = {
+						player: pl,
+						answerText: "",
+						playersVote: []
+					};
+
+					//Get the current round object, which will hold all the answers for that round
+					var currentRound = rounds[rounds.length - 1];
+					currentRound.answers.push(ans);
+					pl.hasSubmitted = true;
+				}
+			});
+
+		}
 	};
 
 	// TO DO : check game state before every move!
