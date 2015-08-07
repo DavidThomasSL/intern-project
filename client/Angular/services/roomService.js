@@ -47,9 +47,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return;
     }
 
-    function registerListener(callback) {
-        botListener = callback;
-    }
+    // function registerListener(callback) {
+    //     botListener = callback;
+    // }
 
     function getBotNumber() {
         return botNumber;
@@ -75,13 +75,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     */
 
     function _setRoomDetails(data) {
-        console.log(data);
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
         botNumber = data.botNumber;
-        console.log(botListener);
-        // Tell the controller listener that the bots have changed
-        botListener(botNumber);
     }
 
     function _setError(data) {
@@ -121,7 +117,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
         setBotNumber: setBotNumber,
-        registerListener: registerListener,
+        // registerListener: registerListener,
         getBotNumber: getBotNumber,
         getRoomId: getRoomId,
         _setRoomDetails: _setRoomDetails

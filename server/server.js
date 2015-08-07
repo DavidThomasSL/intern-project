@@ -164,7 +164,6 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('ROOM setBotNumber', function(data) {
             var room = getRoomFromId(data.roomId);
-            console.log(room);
             room.botNumber = data.botNumber;
             room.broadcastRoom("ROOM details");
             return;

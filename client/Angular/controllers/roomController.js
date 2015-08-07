@@ -38,16 +38,4 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
         roomService.setBotNumber(number);
     };
 
-    function updateBotNumber(number) {
-        $scope.botNumber = number;
-        $scope.$apply();
-    }
-
-    // // Called when the bot status is changes on the server
-    // function updateBotStatus(status) {
-    //     $scope.botsStatus = status;
-    // }
-
-    roomService.registerListener(updateBotNumber);
-
 });
