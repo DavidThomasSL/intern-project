@@ -82,6 +82,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
+		console.log(answers);
 	}
 
 	function _setPlayerRoundResults(data) {
