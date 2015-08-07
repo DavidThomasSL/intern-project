@@ -3,6 +3,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
     $scope.currentRound = gameService.getCurrentRound;
+    $scope.maxRounds = gameService.getMaxRounds;
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
 
 

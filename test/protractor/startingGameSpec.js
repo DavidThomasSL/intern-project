@@ -2,6 +2,8 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When starting a game', function() {
 
+	var HAND_SIZE = 10;
+
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -9,8 +11,7 @@ describe('When starting a game', function() {
 	var firstClonageUser = new clonageUser(browser);
 	var secondClonageUser = new clonageUser(browser2);
 
-	it('can start the game', function() {
-
+	it('a player can become ready and this can be seen by all players', function() {
 		firstClonageUser.getIndex();
 		firstClonageUser.submitName('John');
 		firstClonageUser.createRoom();
@@ -22,21 +23,31 @@ describe('When starting a game', function() {
 			roomId = text.split(" ")[2];
 			secondClonageUser.joinRoom(roomId);
 			firstClonageUser.ready();
-			secondClonageUser.ready();
+			expect(firstClonageUser.element(by.id('ready-button')).getText()).toEqual('Not Ready');
+			expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
+			expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
 		});
-		expect(browser.getCurrentUrl()).toMatch(/\/question/);
+	});
 
+	it('can start the game after everyone is ready', function() {
+		secondClonageUser.ready();
+		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 	});
 
 	it('can see a question', function() {
-
 		expect(firstClonageUser.element(by.id('roundQuestion')).getText().length).not.toEqual(0);
-
 	});
 
 	it('can see possible answer cards', function() {
+		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(HAND_SIZE);
+	});
 
-		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(7);
+
+	it('on refresh can see questions and answers again', function() {
+		firstClonageUser.refresh();
+		expect(browser.getCurrentUrl()).toMatch(/\/question/);
+		expect(firstClonageUser.element(by.id('roundQuestion')).getText().length).not.toEqual(0);
+		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(HAND_SIZE);
 
 		firstClonageUser.clearUser();
 		browser2.close();

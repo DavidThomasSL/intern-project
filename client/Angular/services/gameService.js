@@ -12,7 +12,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var playerRoundResults = [];
 	var currentscores = [];
 	var voteCounter = 0;
-	var maxRounds = 8; //variable holding the number of rounds wanted
+	var maxRounds = 0; //variable holding the number of rounds wanted
 
 	function getRoundQuestion() {
 		return currentQuestion;
@@ -20,6 +20,10 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	function getCurrentRound() {
 		return round;
+	}
+
+	function getMaxRounds() {
+		return maxRounds;
 	}
 
 	function sendReadyStatus(roomId) {
@@ -54,7 +58,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		if (playerRoundResults !== null) {
 			playerRoundResults.forEach(function(playerResult) {
 				if (playerId === playerResult.player.uId) {
-					returnValue = playerResult.player.rank
+					returnValue = playerResult.player.rank;
 				}
 			});
 		}
@@ -74,6 +78,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	function _receiveQuestion(data) {
 		currentQuestion = data.question;
 		round = data.round;
+		maxRounds = data.maxRounds;
 	}
 
 	function _setChosenAnswers(data) {
@@ -81,6 +86,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	function _setPlayerRoundResults(data) {
+		console.log(data.results);
 		playerRoundResults = data.results;
 		voteCounter = data.voteNumber;
 	}
@@ -127,6 +133,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
 		getCurrentVotes: getCurrentVotes,
+		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
 		sendReadyStatus: sendReadyStatus,
 		_receiveQuestion: _receiveQuestion,

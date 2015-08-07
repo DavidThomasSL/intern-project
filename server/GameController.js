@@ -5,7 +5,7 @@ module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
 	var roundCount = 0;
-	var maxRounds = 3;
+	var maxRounds = 8;
 	var rounds = [];
 	var POINTS_PER_VOTE = 50;
 	var blackCardsMaster = [];
@@ -26,7 +26,7 @@ module.exports = function(data) {
 	//deal from current arrays, when card it dealt remove it to stop player getting same cards
 
 	//Number of white cards a user should always have
-	var HANDSIZE = 7;
+	var HANDSIZE = 10;
 
     var GameState = '0';
     var GameStateHasChanged = false;
@@ -146,6 +146,7 @@ GameStateHasChanged = false;
 				players: players,
 				roundQuestion: round.question,
 				round: roundCount,
+				maxRounds: maxRounds,
 				gameIsOver: false
 			};
 		}
@@ -229,9 +230,6 @@ GameStateHasChanged = false;
 				allChoicesSubmitted: allChoicesSubmitted
 			});
 		}
-
-
-
 	};
 
 
@@ -357,130 +355,66 @@ GameStateHasChanged = false;
 		player.connectedToServer = true;
 
 		if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
+
 			if (player.hasSubmitted) {
 				routingInfo = "waitQuestion";
-
-				gameData = {
-					eventName: "GAME answers",
-					data: {
-						answers: currentRound.answers,
-					}
-				};
-
-				data.push(gameData);
-
 			} else {
 				routingInfo = "question";
 			}
 
-			gameData = {
-				eventName: "GAME question",
-				data: {
-					question: currentRound.question,
-					round: currentRound.count
-				}
-			};
-
-			userData = {
-				eventName: "USER hand",
-				data: {
-					hand: player.hand
-				}
-			};
-			data.push(userData);
-			data.push(gameData);
-
 		} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+
 			if (player.hasSubmitted) {
-
 				routingInfo = "waitVote";
-
-				gameData = {
-					eventName: "GAME playerRoundResults",
-					data: {
-						results: currentRound.results,
-						voteNumber: countVotes(currentRound)
-					}
-				};
-
-				data.push(gameData);
-
 			} else {
 				routingInfo = "vote";
 			}
 
-			answerData = {
-				eventName: "GAME answers",
-				data: {
-					answers: currentRound.answers
-				}
-			};
-
-			gameData = {
-				eventName: "GAME question",
-				data: {
-					question: currentRound.question,
-					round: currentRound.count
-				}
-			};
-
-			userData = {
-				eventName: "USER hand",
-				data: {
-					hand: player.hand
-				}
-			};
-			data.push(answerData);
-			data.push(userData);
-			data.push(gameData);
 		} else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+
 			routingInfo = "results";
-			questionData = {
-				eventName: "GAME question",
-				data: {
-					question: currentRound.question,
-					round: currentRound.count
-				}
-			};
-
-
-			gameData = {
-				eventName: "GAME playerRoundResults",
-				data: {
-					results: currentRound.results,
-					voteNumber: countVotes(currentRound)
-				}
-			};
-			userData = {
-				eventName: "USER hand",
-				data: {
-					hand: player.hand
-				}
-			};
-			data.push(questionData);
-			data.push(userData);
-			data.push(gameData);
 
 		} else if (GameState === POSSIBLE_GAMESTATES.FINAL_RESULTS) {
+
 			routingInfo = "endGame";
 
-			questionData = {
-				eventName: "GAME question",
-				data: {
-					question: currentRound.question,
-					round: currentRound.count
-				}
-			};
-			gameData = {
-				eventName: "GAME playerRoundResults",
-				data: {
-					results: currentRound.results,
-					voteNumber: countVotes(currentRound)
-				}
-			};
-			data.push(gameData);
-			data.push(questionData);
 		}
+
+		var userHand = {
+			eventName: "USER hand",
+			data: {
+				hand: player.hand
+			}
+		};
+
+		var questionData = {
+			eventName: "GAME question",
+			data: {
+				question: currentRound.question,
+				round: currentRound.count,
+				maxRounds: maxRounds
+			}
+		};
+
+		var roundData = {
+			eventName: "GAME playerRoundResults",
+			data: {
+				results: currentRound.results,
+				voteNumber: countVotes(currentRound)
+			}
+		};
+
+		var answerData = {
+			eventName: "GAME answers",
+			data: {
+				answers: currentRound.answers,
+			}
+		};
+
+		data.push(roundData);
+		data.push(answerData);
+		data.push(questionData);
+		data.push(userHand);
 
 		callback(routingInfo, data);
 
@@ -571,11 +505,21 @@ GameStateHasChanged = false;
 		Gives a rank to every player in the game based on their points total
 	*/
 	var setRank = function() {
-		players.sort(function(a, b) {
-			return parseInt(b.points) - parseInt(a.points);
+
+		//sorting the players and getting their ranks
+		players.sort(function(a, b) {return parseInt(b.points) - parseInt(a.points);});
+		var ranks = players.slice().map(function(v){
+			return players.indexOf(v)+1;
 		});
-		for (var i = 0; i <= players.length - 1; i++) {
-			players[i].rank = i + 1;
+		//assigning ranks to players
+		for (var i = 0; i < players.length; i++) {
+			players[i].rank = ranks[i];
+		}
+		//if players have the same score they are given the same rank
+		for (var j=1; j<players.length; j++) {
+			if (players[j-1].points === players[j].points) {
+				players[j].rank = players[j-1].rank;
+			}
 		}
 	};
 
@@ -626,7 +570,7 @@ GameStateHasChanged = false;
 
 		var player = {
 			uId: user.uId,
-			name: user.username,
+			name: user.name,
 			hand: dealUserHand(),
 			hasSubmitted: false,
 			points: 0,
