@@ -70,7 +70,7 @@ module.exports = function(data) {
 
 		clearTimeout(counter);
 
-	}
+	};
 
 
 	/*
