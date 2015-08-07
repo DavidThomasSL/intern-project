@@ -14,7 +14,7 @@ module.exports = function(data) {
 	var whiteCardsCurrent = [];
 	var FAKE_ANSWERS = 3; //Number of fake answers to put in every round
 	var HANDSIZE = 10; //Number of white cards a user should always have
-	var BOTS_ENABLED = false;
+	var BOT_NUMBER = 0;
 	var bots = [];
 
 	// Indicate what gamestate the gamecontroller is currently in
@@ -53,9 +53,7 @@ module.exports = function(data) {
 					setupPlayer(user);
 				});
 
-				BOTS_ENABLED = room.botsEnabled;
-
-				// if(BOTS_ENABLED) {buildFakePlayers();}
+				BOT_NUMBER = room.botNumber;
 
 				callback();
 			}
@@ -179,10 +177,8 @@ module.exports = function(data) {
 				//allow everyone to vote again
 				setAllPlayersAbleToSubmit();
 
-				//add fake answers for people to vote on
-				if (BOTS_ENABLED) {
-					addFakeAnswers(currentRound);
-				}
+				//add bot answers for people to vote on
+				addFakeAnswers(currentRound);
 
 				allChoicesSubmitted = true;
 
@@ -247,21 +243,19 @@ module.exports = function(data) {
 					}
 				});
 
-				if (BOTS_ENABLED) {
-					bots.forEach(function(bot) {
-						if (bot.uId === answer.player.uId) {
 
-							var result = {
-								player: bot,
-								answerText: answer.answerText,
-								playersWhoVotedForThis: answer.playersVote,
-							};
+				bots.forEach(function(bot) {
+					if (bot.uId === answer.player.uId) {
 
-							currentRound.results.push(result);
-						}
-					});
-				}
+						var result = {
+							player: bot,
+							answerText: answer.answerText,
+							playersWhoVotedForThis: answer.playersVote,
+						};
 
+						currentRound.results.push(result);
+					}
+				});
 
 			});
 
@@ -399,7 +393,7 @@ module.exports = function(data) {
 	*/
 	var addFakeAnswers = function(round) {
 
-		for (var i = 0; i < FAKE_ANSWERS; i++) {
+		for (var i = 0; i < BOT_NUMBER; i++) {
 
 			// Ethier create new bots or use the exisiting ones
 			var fakePlayer;

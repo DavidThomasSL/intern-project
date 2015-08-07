@@ -23,7 +23,24 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(botsStatus); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
-                 <input type="checkbox" ng-change="toggleBots()" ng-model="botsStatus"> Add Robots to Game
+            </div>
+        </div>
+        <div class="row text-center">
+            <h4> ({{getBotNumber()}} addition users = {{getBotNumber()}}x the fun!) </h4>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Set number of Bots <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a "setBotNumber(0)">None</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a ng-click="setBotNumber(1)">1</a></li>
+                    <li><a ng-click="setBotNumber(2)">2</a></li>
+                    <li><a ng-click="setBotNumber(3)">3</a></li>
+                    <li><a ng-click="setBotNumber(4)">4</a></li>
+                    <li><a ng-click="setBotNumber(5)">5</a></li>
+                    <li><a ng-click="setBotNumber(6)">6</a></li>
+                </ul>
             </div>
         </div>
         <div class="row text-center">

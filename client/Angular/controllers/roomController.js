@@ -5,7 +5,8 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getUserId = userService.getUserId; //Display user icon on card in lobby
     $scope.getUsersInRoom = roomService.getUsersInRoom;
-    $scope.botsStatus = roomService.botsStatus;
+    // $scope.botNumber = 0;
+    $scope.getBotNumber = roomService.getBotNumber;
 
 
     $scope.createRoom = function() {
@@ -33,13 +34,20 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
         return num.length;
     };
 
-    // Called when the bot status is changes on the server
-    function updateBotStatus(status) {
-        $scope.botsStatus = status;
+    $scope.setBotNumber = function(number) {
+        roomService.setBotNumber(number);
+    };
+
+    function updateBotNumber(number) {
+        $scope.botNumber = number;
+        $scope.$apply();
     }
 
-    roomService.registerListener(updateBotStatus);
+    // // Called when the bot status is changes on the server
+    // function updateBotStatus(status) {
+    //     $scope.botsStatus = status;
+    // }
 
-
+    roomService.registerListener(updateBotNumber);
 
 });

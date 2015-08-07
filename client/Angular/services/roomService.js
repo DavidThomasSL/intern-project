@@ -11,7 +11,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var roomId = -1;
     var usersInRoom = [];
     var errorMessage = "";
-    var botsEnabled = false;
+    var botNumber = 0;
     var botListener = function(){};
 
     function createRoom(playerId) {
@@ -41,14 +41,18 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return roomId;
     }
 
-    function toggleBotStatus () {
-        botsEnabled = !botsEnabled;
-        sendMessage('ROOM toggleBots', {roomId: roomId});
+    function setBotNumber (number) {
+        botNumber = number;
+        sendMessage('ROOM setBotNumber', {botNumber: botNumber, roomId: roomId});
         return;
     }
 
     function registerListener(callback) {
         botListener = callback;
+    }
+
+    function getBotNumber() {
+        return botNumber;
     }
 
     //----------------------
@@ -71,12 +75,13 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     */
 
     function _setRoomDetails(data) {
+        console.log(data);
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
-        botsEnabled = data.botsEnabled;
-
+        botNumber = data.botNumber;
+        console.log(botListener);
         // Tell the controller listener that the bots have changed
-        botListener(botsEnabled);
+        botListener(botNumber);
     }
 
     function _setError(data) {
@@ -115,9 +120,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
-        botsStatus: botsEnabled,
-        toggleBotStatus: toggleBotStatus,
+        setBotNumber: setBotNumber,
         registerListener: registerListener,
+        getBotNumber: getBotNumber,
         getRoomId: getRoomId,
         _setRoomDetails: _setRoomDetails
     };
