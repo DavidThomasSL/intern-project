@@ -245,7 +245,7 @@ module.exports = function(port, enableLogging) {
             var room = getRoomFromId(roomId);
 
             room.gameController.newRound(function(data) {
-                console.log(data.gameIsOver);
+
                 if (data.gameIsOver === true) {
 
                     room.broadcastRoom("ROUTING", {
