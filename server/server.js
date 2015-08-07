@@ -159,10 +159,12 @@ module.exports = function(port, enableLogging) {
             logger.debug("Removed user " + user.name + " from room " + room.id);
         });
 
+        /*
+            Set by the players in the room lobby if they want to enable bots during the game or not
+        */
         socket.on('ROOM toggleBots', function(data) {
             var room = getRoomFromId(data.roomId);
             room.botsEnabled = !room.botsEnabled;
-            console.log(room);
             room.broadcastRoom("ROOM details");
             return;
         });
@@ -189,12 +191,6 @@ module.exports = function(port, enableLogging) {
                     iteratedUser.readyToProceed = (!iteratedUser.readyToProceed);
                 }
             });
-
-            // if(data.botsEnabled) {
-            //     room.botsEnabled = true;
-            // } else {
-            //     room.botsEnabled = false;
-            // }
 
             // Broadcast the room details so every user can see who is ready and who isn't
             room.broadcastRoom("ROOM details");
@@ -241,7 +237,7 @@ module.exports = function(port, enableLogging) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room.usersInRoom, function() {
+            room.gameController.initialize(room, function() {
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
             });

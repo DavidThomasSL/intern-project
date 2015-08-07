@@ -2,14 +2,14 @@ exports.config = {
 	seleniumAddress: 'http://localhost:4444/wd/hub',
 
 	specs: [ //comment out lines here to test specific sections
-		// 'initalSpec.js',
-		// 'userInitialiseSpec.js',
-		// 'userRegisteredSpec.js',
-		// 'roomCreateSpec.js',
-		// 'joinRoomSpec.js',
-		// 'startingGameSpec.js',
-		// 'playingGameSpec.js',
-		// 'afterRoundSpec.js',
+		'initalSpec.js',
+		'userInitialiseSpec.js',
+		'userRegisteredSpec.js',
+		'roomCreateSpec.js',
+		'joinRoomSpec.js',
+		'startingGameSpec.js',
+		'playingGameSpec.js',
+		'afterRoundSpec.js',
 		'afterGameSpec.js'
 		],
 	baseUrl: 'http://localhost:8080/',

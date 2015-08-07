@@ -14,6 +14,7 @@ module.exports = function(data) {
 	var whiteCardsCurrent = [];
 	var FAKE_ANSWERS = 3; //Number of fake answers to put in every round
 	var HANDSIZE = 10; //Number of white cards a user should always have
+	var BOTS_ENABLED = false;
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -27,7 +28,7 @@ module.exports = function(data) {
 	/*
 		Called by the server when a game starts
 	*/
-	var initialize = function(usersInRoom, callback) {
+	var initialize = function(room, callback) {
 
 		path.join(__dirname, './BlackWhiteCards.json');
 
@@ -47,9 +48,11 @@ module.exports = function(data) {
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);
 
-				usersInRoom.forEach(function(user) {
+				room.usersInRoom.forEach(function(user) {
 					setupPlayer(user);
 				});
+
+				BOTS_ENABLED = room.botsEnabled;
 
 				callback();
 			}
@@ -174,7 +177,8 @@ module.exports = function(data) {
 				setAllPlayersAbleToSubmit();
 
 				//add fake answers for people to vote on
-				addFakeAnswers(currentRound);
+				if(BOTS_ENABLED) {addFakeAnswers(currentRound);}
+
 				allChoicesSubmitted = true;
 
 			} else {
@@ -451,9 +455,6 @@ module.exports = function(data) {
 	var countVotes = function(currentRound) {
 		var votes = 0;
 		currentRound.answers.forEach(function(option) {
-			// console.log(option.playersVote);
-			// console.log(option.playersVote.length);
-
 			votes += option.playersVote.length;
 		});
 

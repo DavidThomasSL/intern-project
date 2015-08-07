@@ -101,7 +101,6 @@ function Room(roomCode) {
             //Update the room service of every user
             self.broadcastRoom("ROOM details");
         }
-        console.log(self);
 
         // Return wether the join was successful or not
         return {
