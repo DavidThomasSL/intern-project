@@ -413,7 +413,7 @@ module.exports = function(data) {
 			eventName: "GAME playerRoundResults",
 			data: {
 				results: results,
-				voteNumber: countVotes(lastFullRound)
+				voteNumber: countVotes(currentRound)
 			}
 		};
 
