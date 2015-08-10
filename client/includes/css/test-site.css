@@ -184,9 +184,14 @@ body, html {
   margin-bottom: 20px;
 }
 
-/*used to let text wrap on buttons for smaller screens*/
-.card-text-button {
+/* whitespace:normal; lets the button text wrap*/
+.card-text-button{
   white-space: normal;
+  border:none;
+}
+
+.card-text-button:focus {
+  outline: none;
 }
 
 .table th {
