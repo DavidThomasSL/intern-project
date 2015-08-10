@@ -278,7 +278,7 @@ module.exports = function(data) {
 			// Add the user's vote to the answer
 			currentRound.answers.forEach(function(answer) {
 				if (answer.answerText === votedForText) {
-					answer.playersVote.push(getName(playerId));
+					answer.playersVote.push(submittingPlayer.name);
 				}
 
 				//Build result object for each answer submitted
@@ -288,7 +288,7 @@ module.exports = function(data) {
 						var result = {
 							player: pl,
 							answerText: answer.answerText,
-							playersWhoVotedForThis: answer.playersVote,
+							playersWhoVotedForThis: answer.playersVote
 						};
 
 						currentRound.results.push(result);
@@ -536,16 +536,6 @@ module.exports = function(data) {
 			});
 		}
 		return votes;
-	};
-
-	var getName = function(playerId) {
-		var name;
-		players.forEach(function(pl) {
-			if (parseInt(pl.uId) === parseInt(playerId)) {
-				name = pl.name;
-			}
-		});
-		return name;
 	};
 
 	/*
