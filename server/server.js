@@ -146,13 +146,8 @@ module.exports = function(port, enableLogging) {
                 room.broadcastRoom('ROOM details');
             }
 
-            //remove room from user
-            users.forEach(function(otherUser) {
-                if (otherUser.uId === user.uId) {
-                    otherUser.roomId = "";
-                    otherUser.sendUserDetails();
-                }
-            });
+            user.roomId = "";
+            user.sendUserDetails();
 
             putUserInJoining();
 
