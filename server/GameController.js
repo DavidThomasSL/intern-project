@@ -12,6 +12,7 @@ module.exports = function(data) {
 	var whiteCardsMaster = [];
 	var blackCardsCurrent = [];
 	var whiteCardsCurrent = [];
+	var voteNumber;
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -20,14 +21,70 @@ module.exports = function(data) {
 		'ROUND_RESULTS': 3,
 		'FINAL_RESULTS': 4
 	};
-	var GAMESTATE;
 
-	// Message Functions pass in on creation from the server
-	// Allows the gameController to send messages via to server to clients
-	//deal from current arrays, when card it dealt remove it to stop player getting same cards
+	/*
+		Message Functions pass in on creation from the server
+		Allows the gameController to send messages via to server to clients
+		deal from current arrays, when card it dealt remove it to stop player getting same cards
+	*/
 
 	//Number of white cards a user should always have
 	var HANDSIZE = 10;
+
+    var GameState = '0';
+
+	// true if there is a timer running -> checked in updateGameState
+	// in the case if everyone submitted and game state has changed -> timer needs to stop
+	var timerIsActive = false;
+	var count = 30 ;
+
+	/*
+		holding the function called on a 1sec interval
+		global so that it can be stopped by function stopTimer,
+		which is outside of the scope of startTimer
+	*/
+	var counter;
+
+	// function to initialise the countdown
+    var startTimer = function(callback) {
+
+    	count = 30 ;
+
+	    timerIsActive = true;
+	    setAllPlayersAbleToSubmit();
+		counter = setInterval( function() {
+
+			count -- ;
+			if (count < 0) {
+				if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
+					updateGameState(POSSIBLE_GAMESTATES.VOTING);
+				}
+				else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+					updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
+				}
+				timerIsActive = false;
+				// trigger callback so the server sees the time has ran out
+				stopTimer();
+				callback();
+			}
+
+		}, 1000);  // 1000 will  run it every 1 second
+
+	};
+
+	/*
+		function to stop the counter
+		is called from updateGameState function
+		when there is an active timer
+		but the game state has changed
+		-> aka. everyone submitted so the timer needs to stop
+	*/
+	var stopTimer = function() {
+
+		clearInterval(counter);
+
+	};
+
 
 	/*
 		Called by the server when a game starts
@@ -42,6 +99,8 @@ module.exports = function(data) {
 				console.log(err);
 				throw err;
 			} else {
+
+				//round 1 started in phase 1 of the game: players are submitting their choices
 
 				//set up each user
 				var cards = JSON.parse(data);
@@ -75,14 +134,13 @@ module.exports = function(data) {
 		// Check if game over
 		if (gameOver) {
 
-			GAMESTATE = POSSIBLE_GAMESTATES.FINAL_RESULTS;
+			updateGameState(POSSIBLE_GAMESTATES.FINAL_RESULTS);
 
 			data = {
 				gameIsOver: true
 			};
 
 		} else {
-
 			// Create new round
 			roundCount += 1;
 
@@ -95,7 +153,7 @@ module.exports = function(data) {
 
 			rounds.push(round);
 
-			GAMESTATE = POSSIBLE_GAMESTATES.QUESTION;
+			updateGameState(POSSIBLE_GAMESTATES.QUESTION);
 
 			data = {
 				players: players,
@@ -105,8 +163,6 @@ module.exports = function(data) {
 				gameIsOver: false
 			};
 		}
-
-		//return this round information back to the server
 		callback(data);
 	};
 
@@ -147,6 +203,8 @@ module.exports = function(data) {
 
 		var submittingPlayer = getPlayerFromId(playerId);
 
+		//TO DO: before submitting check that the player hasn't submitted yet
+
 		if (submittingPlayer.hasSubmitted) {
 			//can't submit twice
 		} else {
@@ -172,8 +230,7 @@ module.exports = function(data) {
 
 			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
 				// change gametsate to the next stage
-				GAMESTATE = POSSIBLE_GAMESTATES.VOTING;
-				setAllPlayersAbleToSubmit();
+				updateGameState(POSSIBLE_GAMESTATES.VOTING);
 
 				allChoicesSubmitted = true;
 			} else {
@@ -204,6 +261,8 @@ module.exports = function(data) {
 	 */
 	var submitVote = function(playerId, votedForText, callback) {
 
+		// TO DO : before submitting a vote check that the player hasn't already submitted one
+
 		var currentRound = rounds[rounds.length - 1];
 		var results = [];
 		currentRound.results = [];
@@ -211,6 +270,7 @@ module.exports = function(data) {
 		var submittingPlayer = getPlayerFromId(playerId);
 
 		if (submittingPlayer.hasSubmitted) {
+
 			// Do nothing
 		} else {
 
@@ -237,27 +297,15 @@ module.exports = function(data) {
 			});
 
 			var allVotesSubmitted;
-			var voteNumber;
 
 			//check if everyone voted
 			if (countVotes(currentRound) === getNumOfConnectedPlayers()) {
 
-				//add the points to the players for each vote they received
-				currentRound.answers.forEach(function(answer) {
-					for (var i = 0; i < answer.playersVote.length; i++) {
-						addPoints(answer.player.uId);
-					}
-				});
-
-				// Update every player's rank in the room
-				setRank();
-
 				//change the gamestate to the next stage
-				GAMESTATE = POSSIBLE_GAMESTATES.ROUND_RESULTS;
-				setAllPlayersAbleToSubmit();
+				updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
 
+				voteNumber = 0 ;
 				allVotesSubmitted = true;
-				voteNumber = 0;
 
 			} else {
 				voteNumber = countVotes(currentRound);
@@ -305,7 +353,7 @@ module.exports = function(data) {
 
 		player.connectedToServer = true;
 
-		if (GAMESTATE === POSSIBLE_GAMESTATES.QUESTION) {
+		if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
 
 			if (player.hasSubmitted) {
 				routingInfo = "waitQuestion";
@@ -313,7 +361,7 @@ module.exports = function(data) {
 				routingInfo = "question";
 			}
 
-		} else if (GAMESTATE === POSSIBLE_GAMESTATES.VOTING) {
+		} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
 
 			if (player.hasSubmitted) {
 				routingInfo = "waitVote";
@@ -321,10 +369,12 @@ module.exports = function(data) {
 				routingInfo = "vote";
 			}
 
-		} else if (GAMESTATE === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+		} else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+
 			routingInfo = "results";
 
-		} else if (GAMESTATE === POSSIBLE_GAMESTATES.FINAL_RESULTS) {
+		} else if (GameState === POSSIBLE_GAMESTATES.FINAL_RESULTS) {
+
 			routingInfo = "endGame";
 
 		}
@@ -341,7 +391,8 @@ module.exports = function(data) {
 			data: {
 				question: currentRound.question,
 				round: currentRound.count,
-				maxRounds: maxRounds
+				maxRounds: maxRounds,
+				countdown: count
 			}
 		};
 
@@ -357,6 +408,7 @@ module.exports = function(data) {
 			eventName: "GAME answers",
 			data: {
 				answers: currentRound.answers,
+				countdown: count
 			}
 		};
 
@@ -401,6 +453,47 @@ module.exports = function(data) {
 		});
 		return player;
 	};
+
+	/*
+	update to the next GameState depending on the current state
+	*/
+	var updateGameState = function(wantedState) {
+		GameState = wantedState;
+
+		if ( timerIsActive ) {
+			stopTimer();
+		}
+
+		if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+
+			var currentRound = rounds[rounds.length - 1];
+
+			//add the points to the players for each vote they received
+			currentRound.answers.forEach(function(answer) {
+				for (var i = 0; i < answer.playersVote.length; i++) {
+					addPoints(answer.player.uId);
+				}
+			});
+
+			voteNumber = 0 ;
+
+			// Update every player's rank in the room
+			setRank();
+
+		}
+
+		 else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+			players.forEach(function(pl) {
+
+				if (pl.hasSubmitted === false) {
+					pl.hasSubmitted = true;
+				}
+			});
+
+		}
+	};
+
+	// TO DO : check game state before every move!
 
 	function setAllPlayersAbleToSubmit() {
 		players.forEach(function(player) {
@@ -537,6 +630,8 @@ module.exports = function(data) {
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
 		newRound: newRound,
+		updateGameState: updateGameState,
+		startTimer: startTimer,
 		checkIfUserInGame: checkIfUserInGame,
 		getInfoForReconnectingUser: getInfoForReconnectingUser,
 		disconnectPlayer: disconnectPlayer
