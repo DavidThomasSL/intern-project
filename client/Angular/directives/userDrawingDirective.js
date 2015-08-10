@@ -30,12 +30,28 @@ ClonageApp.directive('userDrawing', function() {
 			var canvasElement = element;
 			canvasElement.attr('id', 'user-canvas-' + thisId);
 
+			//Create the canvas for the user to draw on
 			canvas = new fabric.Canvas('user-canvas-' + thisId, {
 				isDrawingMode: true
 			});
 
 			canvas.freeDrawingBrush.color = rainbow(NUMCOLORS, rand);
 			canvas.freeDrawingBrush.width = 7;
+
+			//Add instructional text
+			var text = new fabric.Text('Draw your icon here!', {
+				left: 15,
+				top: 120,
+				textAlign: 'center',
+				fontSize: 30,
+				fontFamily: 'Roboto'
+			});
+			canvas.add(text);
+
+			//Remove text when drawing starts
+			canvas.on('mouse:down', function(options) {
+				canvas.remove(text);
+			});
 
 			/*
 				DIRECTIVE PUBLIC API

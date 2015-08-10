@@ -5,7 +5,7 @@
     </div>
     <div id="room-lobby-container">
         <div class="row">
-            <div class="col-md-12 text-center" ng-repeat="user in getUsersInRoom()">
+            <div class="col-md-6 text-center" ng-repeat="user in getUsersInRoom()">
                 <div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
                     <div class="panel-body">
                          <user-profile control="user.canvasControl" ></user-profile>
