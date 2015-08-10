@@ -36,6 +36,7 @@ module.exports = function(data) {
 	// true if there is a timer running -> checked in updateGameState
 	// in the case if everyone submitted and game state has changed -> timer needs to stop
 	var timerIsActive = false;
+	var count = 30 ;
 
 	/*
 		holding the function called on a 1sec interval
@@ -47,15 +48,28 @@ module.exports = function(data) {
 	// function to initialise the countdown
     var startTimer = function(callback) {
 
+    	count = 30 ;
+
 	    timerIsActive = true;
 	    setAllPlayersAbleToSubmit();
-		counter = setTimeout( function() {
+		counter = setInterval( function() {
 
-			timerIsActive = false;
-			// trigger callback so the server sees the time has ran out
-			callback();
+			count -- ;
+			if (count < 0) {
+				if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
+					updateGameState(POSSIBLE_GAMESTATES.VOTING);
+				}
+				else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+					updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
+				}
+				timerIsActive = false;
+				// trigger callback so the server sees the time has ran out
+				stopTimer();
+				callback();
+			}
+			console.log(count);
 
-		}, 30000);  // 1000 will  run it every 1 second
+		}, 1000);  // 1000 will  run it every 1 second
 
 	};
 
@@ -68,7 +82,7 @@ module.exports = function(data) {
 	*/
 	var stopTimer = function() {
 
-		clearTimeout(counter);
+		clearInterval(counter);
 
 	};
 
@@ -378,7 +392,8 @@ module.exports = function(data) {
 			data: {
 				question: currentRound.question,
 				round: currentRound.count,
-				maxRounds: maxRounds
+				maxRounds: maxRounds,
+				countdown: count
 			}
 		};
 
@@ -394,6 +409,7 @@ module.exports = function(data) {
 			eventName: "GAME answers",
 			data: {
 				answers: currentRound.answers,
+				countdown: count
 			}
 		};
 
@@ -467,7 +483,7 @@ module.exports = function(data) {
 
 		}
 
-		else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+		 /*else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
 			players.forEach(function(pl) {
 
 				if (pl.hasSubmitted === false) {
@@ -486,7 +502,7 @@ module.exports = function(data) {
 				}
 			});
 
-		}
+		}*/
 	};
 
 	// TO DO : check game state before every move!

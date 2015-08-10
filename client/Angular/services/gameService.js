@@ -13,6 +13,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var currentscores = [];
 	var voteCounter = 0;
 	var maxRounds = 0; //variable holding the number of rounds wanted
+	var countdown = undefined;
 
 	function getRoundQuestion() {
 		return currentQuestion;
@@ -47,6 +48,24 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		round = -1;
 	}
 
+	//return countdown -> undefined normally or no of seconds left when reconnecting
+	function getCountdown () {
+		return countdown;
+	}
+
+	//set the countdown to undefined - function called after the counter was set to the new value
+	function resetCountdown() {
+		countdown = undefined ;
+	}
+
+	/*
+		set the countdown to a certain value
+		 - function called to retain the counter value when redirected to the waiting page
+	*/
+	function setCountdown(value) {
+		countdown = value ;
+	}
+
 	//get results of voting
 	function getPlayerRoundResults() {
 		return playerRoundResults;
@@ -79,13 +98,18 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		currentQuestion = data.question;
 		round = data.round;
 		maxRounds = data.maxRounds;
-		answers = [];
-		voteCounter = 0;
-		playerRoundResults = [];
+		countdown = data.countdown ;
+		if (countdown === undefined) {
+			answers = [];
+			voteCounter = 0;
+			playerRoundResults = [];
+		}
+		console.log(countdown);
 	}
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
+		countdown = data.countdown ;
 	}
 
 	function _setPlayerRoundResults(data) {
@@ -143,7 +167,10 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
 		_setMaxRounds: _setMaxRounds,
-		clearGameData: clearGameData
+		clearGameData: clearGameData,
+		getCountdown: getCountdown,
+		resetCountdown: resetCountdown,
+		setCountdown: setCountdown
 	};
 
 }]);
