@@ -47,6 +47,11 @@ describe('When joining an existing room', function() {
 
 	});
 
+	it('If other user sets the bot number, user can see that change without updating', function() {
+		secondClonageUser.setBotsOn(3);
+		expect(firstClonageUser.element(by.binding("getBotNumber()")).getText()).toMatch("(3 addition users = 3x the fun!)");
+	});
+
 	it('on refresh user is put back into the lobby', function() {
 
 		firstClonageUser.refresh();
@@ -54,6 +59,7 @@ describe('When joining an existing room', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Alice');
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
+		expect(firstClonageUser.element(by.binding("getBotNumber()")).getText()).toMatch("(3 addition users = 3x the fun!)");
 
 		firstClonageUser.clearUser();
 		browser2.close();
