@@ -7,6 +7,7 @@ function User(socket) {
 	this.roomId = "";
 	this.socket = socket;
 	this.readyToProceed = false;
+	this.image = "";
 }
 
 /*
@@ -36,7 +37,8 @@ User.prototype.getUserDetails = function() {
 		uId: this.uId,
 		name: this.name,
 		roomId: this.roomId,
-		readyToProceed: this.readyToProceed
+		readyToProceed: this.readyToProceed,
+		image: this.image
 	};
 
 	return userDetails;
