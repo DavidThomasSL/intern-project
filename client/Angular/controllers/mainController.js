@@ -1,85 +1,98 @@
-ClonageApp.controller("MainController", function($scope, userService, roomService, RoutingService, gameService, $location, $sessionStorage) {
+ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService,errorService,  toastr) {
 
-    $scope.$storage = $sessionStorage;
     $scope.getUserName = userService.getUserName;
-    $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.roomId = roomService.getRoomId;
-    $scope.roundQuestion = gameService.getRoundQuestion;
-    $scope.userHand = userService.getUserHand;
-    $scope.getUserId = userService.getUserId;
-    $scope.gameInProgress = roomService.getGameInProgress;
-
-    //get all answers submitted in order to visualise them on the voting page
-    $scope.answers = gameService.getAnswers;
+    $scope.currentRound = gameService.getCurrentRound;
+    $scope.maxRounds = gameService.getMaxRounds;
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
 
-    //get results after each round which involves: what each player submitted, who voted for their answer, and their score after the round
-    //in order to calculate the points after the round multiply 50 with the number of votes
-    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
-    $scope.currentVotes = gameService.getCurrentVotes;
 
-    //get final scores for all players when the game finishes
-    $scope.finalresults = gameService.getCurrentScores;
-
-    //current results will hold all players scores at the current time in the game
-    $scope.currentscores = function() {
-        scores = gameService.getCurrentScores();
-        userService.setRank(scores);
-        return scores;
+    //when player says they are ready to move on it sends this to the server
+    $scope.sendReadyStatus = function() {
+        gameService.sendReadyStatus($scope.roomId());
     }
 
     //get user rank
-    $scope.rank = userService.getRank;
+    $scope.rank = function() {
+        var playerId = userService.getUserId();
+        var rank = gameService.getPlayerCurrentRank(playerId);
+        return rank;
+    }
 
-    //call function to finish the game in a certain room if players wanted to finish game
-    $scope.finishGame = function() {
-        gameService.finishGame($scope.roomId());
+    function displayErrorMessage(errorMessage) {
+        toastr.error(errorMessage);
+    }
+
+
+    /*
+    -------------------------------------------------------
+    TIMER FUNCTIONS AND VARIABLES
+    -------------------------------------------------------
+    */
+    var countdown;
+
+    /*
+        when moving to the waiting page
+        function is called to save the value of the countdown
+    */
+    $scope.retainCountdownValue = function() {
+        gameService.setCountdown($scope.counter);
     };
 
-    //call function to get next round
-    $scope.nextRound = function() {
-        gameService.nextRound($scope.roomId());
+    // start countdown
+    $scope.startCountdown = function() {
+
+        //don't start a new countdown if one is already running ->>> it cancells the current one and start a new one
+        if ( angular.isDefined(countdown) ) $scope.stopCountdown();
+
+        /*
+            if we don't get the value of the countdown from the server
+            reset countdown to 30 seconds
+            (=> page is loaded for the first time not refreshed)
+        */
+        if (gameService.getCountdown() === undefined) {
+            $scope.counter = 30;
+        }
+
+        countdown = $interval( function() {
+
+            /*
+                on refresh we get the value from the server
+                so we set the counter to that value
+                and reset it to undefined
+            */
+            if (gameService.getCountdown() !== undefined) {
+                $scope.counter = gameService.getCountdown();
+                gameService.setCountdown(undefined);
+            }
+
+            // if time hasn't run out -> decrement counter
+            if ($scope.counter > 0) {
+
+                $scope.counter -- ;
+
+            } else {
+
+                $scope.stopCountdown(); // otherwise -> stop the counter
+
+            }
+
+        }, 1000); // call this function every 1 second
     };
 
-    //function call to submit an answer to the question
-    $scope.submitAnswer = function(enteredAnswer) {
-        userService.submitChoice(enteredAnswer);
+    // stop the countdown by cancelling the interval and setting it to undefined
+    $scope.stopCountdown = function() {
+
+        if (angular.isDefined(countdown)) {
+            $interval.cancel(countdown);
+            countdown = undefined;
+        }
     };
 
-    //function call to submit a vote for the funniest answer
-    $scope.submitVote = function(enteredAnswer) {
-        console.log(enteredAnswer);
-        userService.submitVote(enteredAnswer);
-    };
+    /*
+    ---------------------------------------------------------
+    */
 
-    $scope.createRoom = function() {
-        roomService.createRoom(userService.getUserId());
-    };
-
-    $scope.submitName = function(form) {
-        //todo validate input field
-        userService.setName(form.enteredName);
-    };
-
-    $scope.joinRoom = function(roomId) {
-        roomService.joinRoom(roomId);
-    };
-
-    $scope.leaveRoom = function() {
-        roomService.leaveRoom();
-    };
-
-    $scope.startGame = function() {
-        gameService.startGame($scope.roomId());
-    };
-
-    $scope.getUserId = function() {
-        return userService.getUserId();
-    };
-
-    $scope.getRoomUserCount = function() {
-        var num = roomService.getUsersInRoom();
-        return num.length;
-    };
+    errorService.registerErrorListener(displayErrorMessage)
 
 });

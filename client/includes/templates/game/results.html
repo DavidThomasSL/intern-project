@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="header clearfix">
+        <h2> Round results: </h2>
+        <h4> {{roundQuestion()}}</h4>
+    </div>
+    <div class="text-center">
+        <table class="table table-striped">
+            <tr>
+                <th>Answer</th>
+                <th>Submitted by</th>
+                <th>Votes</th>
+                <th>Voted by</th>
+                <th>Points</th>
+            </tr>
+            <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
+                <td>{{result.answerText}}</td>
+                <td>{{result.player.name}}</td>
+                <td>{{result.playersWhoVotedForThis.length}}</td>
+                <td>
+                    <div ng-repeat="player in result.playersWhoVotedForThis track by $index">{{player}}</div>
+                </td>
+                <td>+{{result.playersWhoVotedForThis.length*50}}</td>
+            </tr>
+        </table>
+        <br>
+        <div class ="row">
+            <div class="col-md-12 text-center">
+                <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+                <h4>Waiting for everyone to be ready</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 text-center" ng-repeat="user in getUsersInRoom()">
+                <div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
+                    <div class="panel-body">
+                        <user-profile control="user.canvasControl" ></user-profile>
+                        {{user.name}}
+                        <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left:20px"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

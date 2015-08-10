@@ -1,0 +1,34 @@
+<div class="container">
+    <div class="header clearfix">
+        <h1>ROOM CODE: {{roomId()}}</h1>
+        <h4>Give this code to others you want to join this room.</h4>
+    </div>
+    <div id="room-lobby-container">
+        <div class="row">
+            <div class="col-md-6 text-center" ng-repeat="user in getUsersInRoom()">
+                <div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
+                    <div class="panel-body">
+                         <user-profile control="user.canvasControl" ></user-profile>
+                        {{user.name}}
+                        <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left: 20px"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+            </div>
+        </div>
+        <div class="row text-center">
+            <h4 ng-show="getRoomUserCount() < 2">You need at least 2 players to start!</h4>
+            <h4 ng-hide="getRoomUserCount() < 2">The game will start when everyone is ready </h4>
+        </div>
+        <div class="row bottom-buttons">
+            <div class="col-md-12 text-center">
+                <button id="leave-lobby-button" type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()" >Go Back</button>
+            </div>
+        </div>
+    </div>
+    </div> <!-- /container -->
+</div>

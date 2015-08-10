@@ -42,7 +42,8 @@ describe("Testing Communcation Service ", function() {
 			"GAME playerRoundResults",
 			"GAME finish",
 			"ROOM details",
-			"ROUTING"
+			"ROUTING",
+			"ERROR message"
 		]);
 	});
 

@@ -10,7 +10,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
 
     var roomId = -1;
     var usersInRoom = [];
-    var gameInProgress = false;
     var errorMessage = "";
 
     function createRoom(playerId) {
@@ -44,9 +43,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     //SOCKET EVENT LISTENERS
     //-=-----------------
 
-    function getGameInProgess() {
-        return gameInProgress;
-    }
 
     function getErrorMessage() {
         if (errorMessage !== "") {
@@ -65,7 +61,15 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     function _setRoomDetails(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
-        gameInProgress = data.gameInProgress;
+
+        //add on canvas control elements
+        usersInRoom.forEach(function(user) {
+            user.canvasControl = {
+                getUserImage: function() {
+                    return user.image;
+                }
+            };
+        });
     }
 
     function _setError(data) {
@@ -105,7 +109,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
-        getGameInProgress: getGameInProgess,
         _setRoomDetails: _setRoomDetails
     };
 
