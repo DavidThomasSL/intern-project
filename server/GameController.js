@@ -45,10 +45,10 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards;
-				// blackCardsMaster = cards.blackCards.filter(function(card) {
-				// 	return (card.pick === 1);
-				// });
+				// blackCardsMaster = cards.blackCards;
+				blackCardsMaster = cards.blackCards.filter(function(card) {
+					return (card.pick !== 1);
+				});
 				whiteCardsMaster = cards.whiteCards;
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);
@@ -145,7 +145,7 @@ module.exports = function(data) {
 		to next stage
 
 	 */
-	var submitAnswer = function(playerId, answerText, callback) {
+	var submitAnswer = function(playerId, answersText, callback) {
 
 		var submittingPlayer = getPlayerFromId(playerId);
 
@@ -158,7 +158,7 @@ module.exports = function(data) {
 			// Build the submitted answer
 			var ans = {
 				player: submittingPlayer,
-				answerText: answerText,
+				answersText: answersText,
 				playersVote: []
 			};
 
@@ -167,7 +167,9 @@ module.exports = function(data) {
 			currentRound.answers.push(ans);
 
 			//Update this players hand with a new card, as they have just played one
-			updateHand(playerId, answerText);
+			answersText.forEach(function (answer){
+				updateHand(playerId, answer);
+			});
 
 			//check if everyone submitted and sends back all the currently submitted answers
 			var allChoicesSubmitted;
@@ -219,7 +221,7 @@ module.exports = function(data) {
 			submittingPlayer.hasSubmitted = true;
 			// Add the user's vote to the answer
 			currentRound.answers.forEach(function(answer) {
-				if (answer.answerText === votedForText) {
+				if (JSON.stringify(answer.answersText) === JSON.stringify(votedForText)) {
 					answer.playersVote.push(submittingPlayer.name);
 				}
 
@@ -229,7 +231,7 @@ module.exports = function(data) {
 
 						var result = {
 							player: pl,
-							answerText: answer.answerText,
+							answersText: answer.answersText,
 							playersWhoVotedForThis: answer.playersVote,
 						};
 

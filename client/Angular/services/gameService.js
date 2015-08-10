@@ -8,7 +8,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	var currentQuestionText = "";
 	var currentQuestionBlanks = 0;
-	var currentlySubmittedAnswers = 0;
+	var currentlySubmittedAnswers = [];
 	var round = -1;
 	var answers = [];
 	var playerRoundResults = [];
@@ -17,9 +17,14 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var maxRounds = 0; //variable holding the number of rounds wanted
 
 
+
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
-		_emitChoice(enteredAnswer);
+		currentlySubmittedAnswers.push(enteredAnswer);
+		if(currentlySubmittedAnswers.length === currentQuestionBlanks){
+			_emitChoice(currentlySubmittedAnswers);
+			currentlySubmittedAnswers = [];
+		}
 	}
 
 	//call function that emits to server the vote that was just submitted
@@ -98,7 +103,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	function _setPlayerRoundResults(data) {
-		console.log(data.results);
 		playerRoundResults = data.results;
 		voteCounter = data.voteNumber;
 	}

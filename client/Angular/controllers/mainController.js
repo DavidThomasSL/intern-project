@@ -19,7 +19,6 @@ ClonageApp.controller("MainController", function($scope, userService, roomServic
     }
 
     function displayErrorMessage(errorMessage) {
-        console.log("IM HEAR")
         toastr.error(errorMessage);
     }
 

@@ -13,11 +13,13 @@
                 <th>Points</th>
             </tr>
             <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
-                <td>{{result.answerText}}</td>
+                <td>
+                    <span ng-repeat="text in result.answersText track by $index">{{text}}<br></span>
+                </td>
                 <td>{{result.player.name}}</td>
                 <td>{{result.playersWhoVotedForThis.length}}</td>
                 <td>
-                    <div ng-repeat="player in result.playersWhoVotedForThis">{{player}}</div>
+                    <div ng-repeat="player in result.playersWhoVotedForThis track by $index">{{player}}</div>
                 </td>
                 <td>+{{result.playersWhoVotedForThis.length*50}}</td>
             </tr>
