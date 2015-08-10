@@ -283,7 +283,7 @@ module.exports = function(port, enableLogging) {
         // submit answer
         socket.on('USER submitChoice', function(msg) {
 
-            var room = getRoomFromId(msg.roomId);
+            var room = getRoomFromId(user.roomId);
 
             socket.emit('ROUTING', {
                 location: 'waitQuestion'
@@ -291,7 +291,7 @@ module.exports = function(port, enableLogging) {
 
             // submit answer
             // callback will return the answers submitted and if everyone has submitted
-            room.gameController.submitAnswer(msg.playerId, msg.playerName, msg.answer, function(data) {
+            room.gameController.submitAnswer(user.uId, msg.answer, function(data) {
 
                 //sends the list of answers each time someone submits one
                 room.broadcastRoom("GAME answers", {
@@ -313,7 +313,7 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('USER vote', function(msg) {
 
-            var room = getRoomFromId(msg.roomId);
+            var room = getRoomFromId(user.roomId);
 
             socket.emit('ROUTING', {
                 location: 'waitVote'
@@ -322,7 +322,7 @@ module.exports = function(port, enableLogging) {
             // Submits the vote information to the game controller
             // If all votes are submitted, move user to results page
             // Otherwise they just get the current round results
-            room.gameController.submitVote(msg.playerId, msg.answer, function(data) {
+            room.gameController.submitVote(user.uId, msg.answer, function(data) {
 
                 // Send room the vote data after each vote
                 room.broadcastRoom("GAME playerRoundResults", {

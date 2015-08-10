@@ -45,9 +45,10 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards.filter(function(card) {
-					return (card.pick === 1);
-				});
+				blackCardsMaster = cards.blackCards;
+				// blackCardsMaster = cards.blackCards.filter(function(card) {
+				// 	return (card.pick === 1);
+				// });
 				whiteCardsMaster = cards.whiteCards;
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);
@@ -127,7 +128,8 @@ module.exports = function(data) {
 		blackCardsCurrent.splice(index, 1);
 		//removing dealt card from card list
 
-		return question.text;
+
+		return question;
 	};
 
 
@@ -143,7 +145,7 @@ module.exports = function(data) {
 		to next stage
 
 	 */
-	var submitAnswer = function(playerId, playerName, answerText, callback) {
+	var submitAnswer = function(playerId, answerText, callback) {
 
 		var submittingPlayer = getPlayerFromId(playerId);
 
@@ -218,7 +220,7 @@ module.exports = function(data) {
 			// Add the user's vote to the answer
 			currentRound.answers.forEach(function(answer) {
 				if (answer.answerText === votedForText) {
-					answer.playersVote.push(getName(playerId));
+					answer.playersVote.push(submittingPlayer.name);
 				}
 
 				//Build result object for each answer submitted
@@ -428,16 +430,6 @@ module.exports = function(data) {
 			votes += option.playersVote.length;
 		});
 		return votes;
-	};
-
-	var getName = function(playerId) {
-		var name;
-		players.forEach(function(pl) {
-			if (parseInt(pl.uId) === parseInt(playerId)) {
-				name = pl.name;
-			}
-		});
-		return name;
 	};
 
 	/*

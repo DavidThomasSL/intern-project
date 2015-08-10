@@ -6,7 +6,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	    and others who who use this service
 	//-------------------	*/
 
-	var currentQuestion = "";
+	var currentQuestionText = "";
+	var currentQuestionBlanks = 0;
+	var currentlySubmittedAnswers = 0;
 	var round = -1;
 	var answers = [];
 	var playerRoundResults = [];
@@ -14,8 +16,19 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var voteCounter = 0;
 	var maxRounds = 0; //variable holding the number of rounds wanted
 
-	function getRoundQuestion() {
-		return currentQuestion;
+
+	//call function that emits to server the answer that was just submitted
+	function submitChoice(enteredAnswer) {
+		_emitChoice(enteredAnswer);
+	}
+
+	//call function that emits to server the vote that was just submitted
+	function submitVote(enteredAnswer) {
+		_emitVote(enteredAnswer);
+	}
+
+	function getRoundQuestionText() {
+		return currentQuestionText;
 	}
 
 	function getCurrentRound() {
@@ -74,7 +87,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	*/
 
 	function _receiveQuestion(data) {
-		currentQuestion = data.question;
+		currentQuestionText = data.question.text;
+		currentQuestionBlanks = data.question.pick;
 		round = data.round;
 		maxRounds = data.maxRounds;
 	}
@@ -118,6 +132,20 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
     -----------------
     */
 
+	//emit the answer that was just submitted: who submitted what and what room they are in
+	function _emitChoice(answer) {
+		sendMessage('USER submitChoice', {
+			answer: answer,
+		});
+	}
+
+	//emit the vote that was just submitted: who voted for what and what room they are in
+	function _emitVote(answer) {
+		sendMessage('USER vote', {
+			answer: answer,
+		});
+	}
+
 	function sendMessage(eventName, data, callback) {
 		if (callback === undefined) {
 			callback = function() {};
@@ -126,7 +154,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	return {
-		getRoundQuestion: getRoundQuestion,
+		getRoundQuestionText: getRoundQuestionText,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
@@ -134,6 +162,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
 		sendReadyStatus: sendReadyStatus,
+		submitChoice: submitChoice,
+		submitVote: submitVote,
 		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
