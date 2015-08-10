@@ -1,4 +1,4 @@
-ClonageApp.directive('userImage', function() {
+ClonageApp.directive('userDrawing', function() {
 
 	// used so each canvas element has a different id
 	// each directive then binds the fabric canvas to that unqiue canvas
@@ -28,71 +28,24 @@ ClonageApp.directive('userImage', function() {
 
 			// get a reference to the canvas element
 			var canvasElement = element;
-			console.log(canvasElement);
 			canvasElement.attr('id', 'user-canvas-' + thisId);
 
-			//Create the Fabric canvas
-			if (scope.internalControl.canCanvasDraw()) {
-				// allow free drawing
-				canvas = new fabric.Canvas('user-canvas-' + thisId, {
-					isDrawingMode: true
-				});
+			canvas = new fabric.Canvas('user-canvas-' + thisId, {
+				isDrawingMode: true
+			});
 
-				canvas.freeDrawingBrush.color = rainbow(NUMCOLORS, rand);
-				canvas.freeDrawingBrush.width = 7;
-			} else {
-				canvas = new fabric.StaticCanvas('user-canvas-' + thisId, {
-					isDrawingMode: false
-				});
-			}
+			canvas.freeDrawingBrush.color = rainbow(NUMCOLORS, rand);
+			canvas.freeDrawingBrush.width = 7;
 
 			/*
 				DIRECTIVE PUBLIC API
 				These functions can be called by the controller that exposes a scope to this directive
 			*/
 
-			// Scales the canvas and all objects on it to a different size
-			scope.internalControl.scaleCanvas = function(xScale, yScale) {
-
-				// Get all the paths on the canvas
-				var drawings = canvas.getObjects();
-
-				if (drawings.length >= 1) {
-
-					// Resize canvas
-					var newXSize = canvas.width * xScale;
-					var newYSize = canvas.height * yScale;
-
-					canvas.setWidth(newXSize);
-					canvas.setHeight(newYSize);
-
-					// Resize each object
-					drawings.forEach(function(obj) {
-						var newLeft = obj.left * xScale;
-						var newTop = obj.top * yScale;
-
-						obj.scaleX = xScale;
-						obj.scaleY = yScale;
-						obj.left = newLeft;
-						obj.top = newTop;
-					});
-
-					//Update the Canvas
-					canvas.renderAll();
-				}
-			};
-
 			// Returns the data from the canvas, i.e the user drawing
 			// Returns as a json object
 			scope.internalControl.getCanvasData = function() {
 				return canvas.toDatalessJSON();
-			};
-
-			// Given a json object of a drawing, draws it to the canvas
-			scope.internalControl.drawCanvasImage = function(imageData) {
-				canvas.loadFromDatalessJSON(imageData, function() {
-					canvas.renderAll();
-				});
 			};
 
 			// This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.

@@ -2,18 +2,10 @@ ClonageApp.controller("signupController", function($scope, userService, roomServ
 
 	// Scope given to the userCanvasDirective, which attaches a getCanvasData function to it
 	// This can be used to get the canvas data
-	$scope.joinCanvasControl = {
-		canCanvasDraw: function() {
-			return $scope.drawingEnabled;
-		},
-		getId: function() {
-            return 2;
-        }
-	};
+	$scope.joinCanvasControl = {};
 
 	// Set whether the canvas can be drawn or not
 	$scope.drawingEnabled = true;
-
 
 	// sends the user name and their drawing
 	$scope.submitName = function(form) {
