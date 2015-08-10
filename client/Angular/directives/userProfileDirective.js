@@ -34,10 +34,15 @@ ClonageApp.directive('userProfile', function() {
 				isDrawingMode: false
 			});
 
+			// Get the user's image (if they drew one)
 			imageData = scope.internalControl.getUserImage();
+			if (imageData.objects[0].text === "Draw your icon here!") {
+				imageData.objects[0].text = "I was too lazy to draw\n my own picture so I\n got this instead";
+				imageData.objects[0].left = 0;
+			}
 
 			canvas.loadFromDatalessJSON(imageData, function() {
-				scaleCanvas(0.5,0.5);
+				scaleCanvas(0.5, 0.5);
 			});
 
 			function scaleCanvas(xScale, yScale) {
