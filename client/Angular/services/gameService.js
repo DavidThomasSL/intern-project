@@ -12,7 +12,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var playerRoundResults = [];
 	var currentscores = [];
 	var voteCounter = 0;
-	var maxRounds = 8; //variable holding the number of rounds wanted
+	var maxRounds = 0; //variable holding the number of rounds wanted
 
 	function getRoundQuestion() {
 		return currentQuestion;
@@ -22,8 +22,12 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		return round;
 	}
 
-	function startGame(roomId) {
-		sendMessage("GAME start", {
+	function getMaxRounds() {
+		return maxRounds;
+	}
+
+	function sendReadyStatus(roomId) {
+		sendMessage("GAME ready status", {
 			roomId: roomId
 		});
 	}
@@ -37,37 +41,30 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		return voteCounter;
 	}
 
+	// Clears local game data when the user leaves the game
+	function clearGameData() {
+		playerRoundResults = null;
+		round = -1;
+	}
+
 	//get results of voting
 	function getPlayerRoundResults() {
 		return playerRoundResults;
 	}
 
-	//get final scores after the game finished
-	function getCurrentScores() {
-		return currentscores;
-	}
+	function getPlayerCurrentRank(playerId) {
+		var returnValue = "";
 
-	//load next round or finish the game if that was the last round
-	function nextRound(roomId) {
-		if (round < maxRounds) {
-			round++;
-			sendMessage("GAME next round", {
-				roomId: roomId
-			});
-		} else {
-			sendMessage("GAME finish", {
-				roomId: roomId
+		if (playerRoundResults !== null) {
+			playerRoundResults.forEach(function(playerResult) {
+				if (playerId === playerResult.player.uId) {
+					returnValue = playerResult.player.rank;
+				}
 			});
 		}
-	}
 
-	//tell server to finish the game
-	function finishGame(roomId) {
-		sendMessage("GAME finish", {
-			roomId: roomId
-		});
+		return returnValue;
 	}
-
 	/*
 	---------------
 	    COMMUNCATION LAYER API
@@ -76,10 +73,10 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	---------------
 	*/
 
-	function _recieveQuestion(data) {
+	function _receiveQuestion(data) {
 		currentQuestion = data.question;
 		round = data.round;
-		currentscores = data.scores;
+		maxRounds = data.maxRounds;
 	}
 
 	function _setChosenAnswers(data) {
@@ -87,12 +84,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	function _setPlayerRoundResults(data) {
+		console.log(data.results);
 		playerRoundResults = data.results;
 		voteCounter = data.voteNumber;
-	}
-
-	function _gameFinish(data) {
-		currentscores = data.results;
 	}
 
 	function _setMaxRounds(num) {
@@ -109,16 +103,13 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	communicationService.registerListener("GAME", [{
 		eventName: "question",
-		eventAction: _recieveQuestion
+		eventAction: _receiveQuestion
 	}, {
-		eventName: "chosenAnswers",
+		eventName: "answers",
 		eventAction: _setChosenAnswers
 	}, {
 		eventName: "playerRoundResults",
 		eventAction: _setPlayerRoundResults
-	}, {
-		eventName: "finish",
-		eventAction: _gameFinish
 	}]);
 
 	/*
@@ -135,20 +126,19 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	return {
-		startGame: startGame,
 		getRoundQuestion: getRoundQuestion,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
-		getCurrentScores: getCurrentScores,
-		nextRound: nextRound,
-		finishGame: finishGame,
 		getCurrentVotes: getCurrentVotes,
-		_recieveQuestion: _recieveQuestion,
+		getMaxRounds: getMaxRounds,
+		getPlayerCurrentRank: getPlayerCurrentRank,
+		sendReadyStatus: sendReadyStatus,
+		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
-		_gameFinish: _gameFinish,
-		_setMaxRounds: _setMaxRounds
+		_setMaxRounds: _setMaxRounds,
+		clearGameData: clearGameData
 	};
 
 }]);

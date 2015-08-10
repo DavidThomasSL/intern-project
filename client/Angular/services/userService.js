@@ -83,6 +83,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         function _setUserDetails(data) {
             user = data.user;
+            console.log(user);
             $sessionStorage.userId = user.uId;
             $sessionStorage.roomId = user.roomId;
         }

@@ -5,22 +5,34 @@ module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
 	var roundCount = 0;
+	var maxRounds = 8;
 	var rounds = [];
 	var POINTS_PER_VOTE = 50;
 	var blackCardsMaster = [];
 	var whiteCardsMaster = [];
 	var blackCardsCurrent = [];
 	var whiteCardsCurrent = [];
+
+	// Indicate what gamestate the gamecontroller is currently in
+	var POSSIBLE_GAMESTATES = {
+		'QUESTION': 1,
+		'VOTING': 2,
+		'ROUND_RESULTS': 3,
+		'FINAL_RESULTS': 4
+	};
+	var GAMESTATE;
+
+	// Message Functions pass in on creation from the server
+	// Allows the gameController to send messages via to server to clients
 	//deal from current arrays, when card it dealt remove it to stop player getting same cards
 
 	//Number of white cards a user should always have
-	var HANDSIZE = 7;
+	var HANDSIZE = 10;
 
 	/*
 		Called by the server when a game starts
 	*/
 	var initialize = function(usersInRoom, callback) {
-		roundCount = 0;
 
 		path.join(__dirname, './BlackWhiteCards.json');
 
@@ -33,124 +45,69 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards.filter(function(card){
+				blackCardsMaster = cards.blackCards.filter(function(card) {
 					return (card.pick === 1);
 				});
 				whiteCardsMaster = cards.whiteCards;
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);
 
-				//TODO : stop game if we don't have enough inital white cards (HANDSIZE * number of players)
-
 				usersInRoom.forEach(function(user) {
 					setupPlayer(user);
 				});
 
-				var round = {
-					count: roundCount,
-					question: getRoundQuestion(),
-					answers: []
-				};
-				rounds.push(round);
-
-				var scores = [];
-				players.forEach(function(pl){
-					var score = {
-						playerId: pl.uId,
-						playerName : pl.name,
-						points: pl.points,
-						rank: pl.rank
-					};
-					scores.push(score);
-				});
-
-				//return this game information back to the server
-				callback({
-					players: players,
-					roundQuestion: round.question,
-					round: roundCount,
-					scores: scores
-				});
+				callback();
 			}
 		});
 	};
 
+	/*
+		Moves the gameController to the next round
+		FInd out if the game is over or should continue
+
+		Returns to the server new round information
+	*/
 	var newRound = function(callback) {
-		roundCount += 1;
-		var round = {
-			count: roundCount,
-			question: getRoundQuestion(),
-			answers: []
-		};
 
-		rounds.push(round);
+		var gameOver = (roundCount >= maxRounds);
+		var data;
 
-		setRank();
-		var scores = [];
-		players.forEach(function(pl){
-			var score = {
-				playerId: pl.uId,
-				playerName : pl.name,
-				points: pl.points,
-				rank: pl.rank
+		// Check if game over
+		if (gameOver) {
+
+			GAMESTATE = POSSIBLE_GAMESTATES.FINAL_RESULTS;
+
+			data = {
+				gameIsOver: true
 			};
-			scores.push(score);
-		});
+
+		} else {
+
+			// Create new round
+			roundCount += 1;
+
+			var round = {
+				count: roundCount,
+				question: getRoundQuestion(),
+				answers: [],
+				results: []
+			};
+
+			rounds.push(round);
+
+			GAMESTATE = POSSIBLE_GAMESTATES.QUESTION;
+
+			data = {
+				players: players,
+				roundQuestion: round.question,
+				round: roundCount,
+				maxRounds: maxRounds,
+				gameIsOver: false
+			};
+		}
 
 		//return this round information back to the server
-		callback({
-			players: players,
-			roundQuestion: round.question,
-			round: roundCount,
-			scores: scores
-		});
-	};
-
-	var setRank = function() {
-		players.sort(function(a, b) {
-			return parseInt(b.points) - parseInt(a.points);
-		});
-		for (var i = 0 ; i <= players.length-1 ; i++) {
-			players[i].rank = i+1 ;
-		}
-	};
-
-	//finish game and send back final scores
-	var finishGame = function(callback) {
-
-		var results = [];
-
-		players.forEach(function(pl){
-			var result = {
-				playerId: pl.uId,
-				playerName : pl.name,
-				score: pl.points,
-				rank: pl.rank
-			};
-			results.push(result);
-		});
-
-		// newRound();
-		callback({
-			res: results
-		});
-	};
-
-	/*
-		Sets up a player with a user id, a new hand and 0 points
-		Adds them to the player list
-	*/
-	var setupPlayer = function(user) {
-
-		var player = {
-			uId: user.uId,
-			name : user.username,
-			hand: dealUserHand(),
-			points: 0,
-			rank: ""
-		};
-
-		players.push(player);
+		callback(data);
 	};
 
 	/*
@@ -171,6 +128,338 @@ module.exports = function(data) {
 		//removing dealt card from card list
 
 		return question.text;
+	};
+
+
+	/*
+		Submit a user answer to a question
+
+		Adds the user's answer to the round answers, with their details,
+		the answer text and an (empty) list of who voted for it.
+
+		Updates the users hand to give them a new card
+
+		Checks if everyone has submitted their answers, and if tells the server to route them
+		to next stage
+
+	 */
+	var submitAnswer = function(playerId, playerName, answerText, callback) {
+
+		var submittingPlayer = getPlayerFromId(playerId);
+
+		if (submittingPlayer.hasSubmitted) {
+			//can't submit twice
+		} else {
+
+			submittingPlayer.hasSubmitted = true;
+
+			// Build the submitted answer
+			var ans = {
+				player: submittingPlayer,
+				answerText: answerText,
+				playersVote: []
+			};
+
+			//Get the current round object, which will hold all the answers for that round
+			var currentRound = rounds[rounds.length - 1];
+			currentRound.answers.push(ans);
+
+			//Update this players hand with a new card, as they have just played one
+			updateHand(playerId, answerText);
+
+			//check if everyone submitted and sends back all the currently submitted answers
+			var allChoicesSubmitted;
+
+			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
+				// change gametsate to the next stage
+				GAMESTATE = POSSIBLE_GAMESTATES.VOTING;
+				setAllPlayersAbleToSubmit();
+
+				allChoicesSubmitted = true;
+			} else {
+				allChoicesSubmitted = false;
+			}
+
+			callback({
+				answers: currentRound.answers,
+				allChoicesSubmitted: allChoicesSubmitted
+			});
+		}
+	};
+
+
+	/*
+		Submit a user vote for an snwer
+
+		Answers are the submissiions from users
+		Gets the answer this vote is for
+		Add points to the player who submitted that answer
+		Adds the voting user's name to the list of people who voted for this answer
+
+		If everyone has submitted a vote, will return with All Votes submitted as true,
+			which is checked by the server in the callback.
+
+		Return results, an array of objects for each answer that has been submitted
+		The result object holds who submitted it, voted for it, the voters rank and points
+	 */
+	var submitVote = function(playerId, votedForText, callback) {
+
+		var currentRound = rounds[rounds.length - 1];
+		var results = [];
+		currentRound.results = [];
+
+		var submittingPlayer = getPlayerFromId(playerId);
+
+		if (submittingPlayer.hasSubmitted) {
+			// Do nothing
+		} else {
+
+			submittingPlayer.hasSubmitted = true;
+			// Add the user's vote to the answer
+			currentRound.answers.forEach(function(answer) {
+				if (answer.answerText === votedForText) {
+					answer.playersVote.push(getName(playerId));
+				}
+
+				//Build result object for each answer submitted
+				players.forEach(function(pl) {
+					if (pl.uId === answer.player.uId) {
+
+						var result = {
+							player: pl,
+							answerText: answer.answerText,
+							playersWhoVotedForThis: answer.playersVote,
+						};
+
+						currentRound.results.push(result);
+					}
+				});
+			});
+
+			var allVotesSubmitted;
+			var voteNumber;
+
+			//check if everyone voted
+			if (countVotes(currentRound) === getNumOfConnectedPlayers()) {
+
+				//add the points to the players for each vote they received
+				currentRound.answers.forEach(function(answer) {
+					for (var i = 0; i < answer.playersVote.length; i++) {
+						addPoints(answer.player.uId);
+					}
+				});
+
+				// Update every player's rank in the room
+				setRank();
+
+				//change the gamestate to the next stage
+				GAMESTATE = POSSIBLE_GAMESTATES.ROUND_RESULTS;
+				setAllPlayersAbleToSubmit();
+
+				allVotesSubmitted = true;
+				voteNumber = 0;
+
+			} else {
+				voteNumber = countVotes(currentRound);
+				allVotesSubmitted = false;
+			}
+
+			callback({
+				res: currentRound.results,
+				allVotesSubmitted: allVotesSubmitted,
+				voteNumber: countVotes(currentRound)
+			});
+
+		}
+
+
+
+	};
+
+	/*
+		Catches a reconnecting user up with the current game status
+
+		Sends the
+			routing information (what page are we on)
+			game information (game question, user hand)
+			round information (current votes, etc for table)
+
+	*/
+	var getInfoForReconnectingUser = function(userId, callback) {
+
+		//GET round information
+		var routingInfo = "";
+		var gameData = {};
+		var userData = {};
+		var data = [];
+		var player;
+
+		var currentRound = rounds[roundCount - 1];
+
+		// Tell controller player is now active again
+		players.forEach(function(playerInGame) {
+			if (playerInGame.uId === userId) {
+				player = playerInGame;
+			}
+		});
+
+		player.connectedToServer = true;
+
+		if (GAMESTATE === POSSIBLE_GAMESTATES.QUESTION) {
+
+			if (player.hasSubmitted) {
+				routingInfo = "waitQuestion";
+			} else {
+				routingInfo = "question";
+			}
+
+		} else if (GAMESTATE === POSSIBLE_GAMESTATES.VOTING) {
+
+			if (player.hasSubmitted) {
+				routingInfo = "waitVote";
+			} else {
+				routingInfo = "vote";
+			}
+
+		} else if (GAMESTATE === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+			routingInfo = "results";
+
+		} else if (GAMESTATE === POSSIBLE_GAMESTATES.FINAL_RESULTS) {
+			routingInfo = "endGame";
+
+		}
+
+		var userHand = {
+			eventName: "USER hand",
+			data: {
+				hand: player.hand
+			}
+		};
+
+		var questionData = {
+			eventName: "GAME question",
+			data: {
+				question: currentRound.question,
+				round: currentRound.count,
+				maxRounds: maxRounds
+			}
+		};
+
+		var roundData = {
+			eventName: "GAME playerRoundResults",
+			data: {
+				results: currentRound.results,
+				voteNumber: countVotes(currentRound)
+			}
+		};
+
+		var answerData = {
+			eventName: "GAME answers",
+			data: {
+				answers: currentRound.answers,
+			}
+		};
+
+		data.push(roundData);
+		data.push(answerData);
+		data.push(questionData);
+		data.push(userHand);
+
+		callback(routingInfo, data);
+
+	};
+
+	/*
+		Given a user id, returns if that user is a player in this game
+	*/
+	var checkIfUserInGame = function(userId) {
+		var inRoom = false;
+		players.forEach(function(player) {
+			if (player.uId === userId) {
+				inRoom = true;
+			}
+		});
+		return inRoom;
+	};
+
+	var getNumOfConnectedPlayers = function() {
+		var counter = 0;
+		players.forEach(function(player) {
+			if (player.connectedToServer) {
+				counter++;
+			}
+		});
+		return counter;
+	};
+
+	var getPlayerFromId = function(playerId) {
+		var player;
+		players.forEach(function(pl) {
+			if (pl.uId === playerId) {
+				player = pl;
+			}
+		});
+		return player;
+	};
+
+	function setAllPlayersAbleToSubmit() {
+		players.forEach(function(player) {
+			player.hasSubmitted = false;
+		});
+	}
+
+	/*
+		add 50 points to player -> called on each vote
+	*/
+	var addPoints = function(playerId) {
+		players.forEach(function(player) {
+			if (player.uId === playerId) {
+				player.points += POINTS_PER_VOTE;
+			}
+		});
+	};
+
+	/*
+		count the overall votes in this round
+	*/
+	var countVotes = function(currentRound) {
+		var votes = 0;
+		currentRound.answers.forEach(function(option) {
+			votes += option.playersVote.length;
+		});
+		return votes;
+	};
+
+	var getName = function(playerId) {
+		var name;
+		players.forEach(function(pl) {
+			if (parseInt(pl.uId) === parseInt(playerId)) {
+				name = pl.name;
+			}
+		});
+		return name;
+	};
+
+	/*
+		Gives a rank to every player in the game based on their points total
+	*/
+	var setRank = function() {
+
+		//sorting the players and getting their ranks
+		players.sort(function(a, b) {return parseInt(b.points) - parseInt(a.points);});
+		var ranks = players.slice().map(function(v){
+			return players.indexOf(v)+1;
+		});
+		//assigning ranks to players
+		for (var i = 0; i < players.length; i++) {
+			players[i].rank = ranks[i];
+		}
+		//if players have the same score they are given the same rank
+		for (var j=1; j<players.length; j++) {
+			if (players[j-1].points === players[j].points) {
+				players[j].rank = players[j-1].rank;
+			}
+		}
 	};
 
 	/*
@@ -197,7 +486,7 @@ module.exports = function(data) {
 	update a users hand by replacing the used card with a new random one
 	*/
 	var updateHand = function(userId, usedCard) {
-		players.forEach(function(player){
+		players.forEach(function(player) {
 			if (player.uId === userId) {
 				player.hand = player.hand.filter(function(card) {
 					if (card !== usedCard)
@@ -213,127 +502,34 @@ module.exports = function(data) {
 	};
 
 	/*
-		submit the answer and change the used card with another one in players
+		Sets up a player with a user id, a new hand and 0 points
+		Adds them to the player list
+	*/
+	var setupPlayer = function(user) {
 
-	 */
-	 //TODO change this to a promise with a reject clause
-
-	var submitAnswer = function(playerId, playerName, answer, callback) {
-
-		var ans = {
-			playerId: playerId,
-			playerName: playerName,
-			answerText: answer,
-			playersVote: []
+		var player = {
+			uId: user.uId,
+			name: user.name,
+			hand: dealUserHand(),
+			hasSubmitted: false,
+			points: 0,
+			rank: "",
+			connectedToServer: true
 		};
 
-		var currentRound = rounds[rounds.length-1];
-		currentRound.answers.push(ans);
-		updateHand(playerId, answer);
-
-		//check if everyone submitted
-		if (currentRound.answers.length === players.length) {
-			callback({
-				answers: currentRound.answers,
-				allChoicesSubmitted : true
-			});
-		} else {
-			callback({
-				answers: currentRound.answers,
-				allChoicesSubmitted : false
-			});
-		}
+		players.push(player);
 	};
 
-	var assignName = function (playerId, playerName) {
-		players.forEach(function(pl){
-			if(pl.name === undefined && pl.uId === playerId){
-				pl.name = playerName;
+	var disconnectPlayer = function(playerId) {
+		var player;
+
+		//Find the player who submmited this
+		players.forEach(function(pl) {
+			if (pl.uId === playerId) {
+				player = pl;
 			}
 		});
-	};
-
-	var getName = function (playerId) {
-		var name;
-		players.forEach(function(pl){
-			if(parseInt(pl.uId) === parseInt(playerId)){
-				name = pl.name;
-			}
-		});
-		return name;
-	};
-
-		/*
-		submit the vote and change the used card with another one in players
-	 */
-	var submitVote = function(playerId, answer, callback) {
-
-		var currentRound = rounds[rounds.length-1];
-
-		currentRound.answers.forEach(function(option){
-			if(option.answerText === answer) {
-				option.playersVote.push(getName(playerId));
-				addPoints(option.playerId);
-			}
-		});
-
-		//check if everyone voted
-		if (countVotes(currentRound) === players.length) {
-
-			var results = [];
-			currentRound.answers.forEach(function(answer){
-				var points;
-				players.forEach(function(pl){
-					if (pl.uId === answer.playerId) {
-						points = pl.points;
-					}
-				});
-				var result = {
-					playerId: answer.playerId,
-					playerName: answer.playerName,
-					ans: answer.answerText,
-					playerVote: answer.playersVote,
-					playerPoints: points
-				};
-				results.push(result);
-			});
-
-			// newRound();
-			callback({
-				res: results,
-				allVotesSubmitted : true,
-				voteNumber : 0 //resetting the votes for the next round
-			});
-		} else {
-			callback({
-				res: null,
-				allVotesSubmitted : false,
-				voteNumber: countVotes(currentRound)
-			});
-		}
-	};
-
-
-	/*
-	add 50 points to player -> called on each vote
-	*/
-	var addPoints = function(playerId) {
-		players.forEach (function(player){
-			if (player.uId === playerId ) {
-				player.points += POINTS_PER_VOTE ;
-			}
-		});
-	};
-
-	/*
-	count the overall votes in this round
-	*/
-	var countVotes = function(currentRound) {
-		var votes = 0 ;
-		currentRound.answers.forEach(function(option){
-			votes += option.playersVote.length;
-		});
-		return votes ;
+		player.connectedToServer = false;
 	};
 
 	return {
@@ -341,6 +537,8 @@ module.exports = function(data) {
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
 		newRound: newRound,
-		finishGame: finishGame
+		checkIfUserInGame: checkIfUserInGame,
+		getInfoForReconnectingUser: getInfoForReconnectingUser,
+		disconnectPlayer: disconnectPlayer
 	};
 };

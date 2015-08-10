@@ -1,19 +1,17 @@
 <div class="container">
-	<div class="header clearfix">
-		<div class="row instructions">
-			<div id="roundQuestion">
-				<h2>{{roundQuestion()}}</h2>
-				<h5>Submit your favourite answer to this question</h5>
-			</div>
-		</div>
-	</div>
-	<div id="user-hand-container">
-		<div class="row">
-			<div class="col-md-12 text-center" ng-repeat="answer in userHand()">
-				<div class="card-text-container">
-					<button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitAnswer(answer)">{{answer}}</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="header clearfix">
+            <div id="roundQuestion">
+                <h2>{{roundQuestion()}}</h2>
+                <h4>Submit your favourite answer to this question</h4>
+            </div>
+    </div>
+    <div id="user-hand-container">
+        <div class="row">
+            <div class="col-md-12 text-center" ng-repeat="answer in userHand()">
+                <div class="card-text-container">
+                    <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitAnswer(answer)">{{answer}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
