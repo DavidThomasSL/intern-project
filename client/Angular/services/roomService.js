@@ -12,7 +12,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var usersInRoom = [];
     var errorMessage = "";
     var botNumber = 0;
-    var botListener = function(){};
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -46,10 +45,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         sendMessage('ROOM setBotNumber', {botNumber: botNumber, roomId: roomId});
         return;
     }
-
-    // function registerListener(callback) {
-    //     botListener = callback;
-    // }
 
     function getBotNumber() {
         return botNumber;
@@ -117,7 +112,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
         setBotNumber: setBotNumber,
-        // registerListener: registerListener,
         getBotNumber: getBotNumber,
         getRoomId: getRoomId,
         _setRoomDetails: _setRoomDetails
