@@ -18,11 +18,26 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
-		currentlySubmittedAnswers.push(enteredAnswer);
-		if(currentlySubmittedAnswers.length === currentQuestionBlanks){
-			_emitChoice(currentlySubmittedAnswers);
-			currentlySubmittedAnswers = [];
+		console.log(currentlySubmittedAnswers);
+		var alreadySelected = false;
+		currentlySubmittedAnswers.forEach(function(currentAnswer) {
+			if (currentAnswer === enteredAnswer) {
+				alreadySelected = true;
+
+				currentlySubmittedAnswers = currentlySubmittedAnswers.filter(function(answer) {
+					return (enteredAnswer !== answer);
+				});
+				console.log("already submitted, current answers= " + currentlySubmittedAnswers);
+			}
+		});
+		if (!alreadySelected) {
+			currentlySubmittedAnswers.push(enteredAnswer);
+			if (currentlySubmittedAnswers.length === currentQuestionBlanks) {
+				_emitChoice(currentlySubmittedAnswers);
+				currentlySubmittedAnswers = [];
+			}
 		}
+
 	}
 
 	//call function that emits to server the vote that was just submitted
@@ -170,8 +185,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	return {
 		getRoundQuestionText: getRoundQuestionText,
-		getCurrentlySubmittedAnswers:getCurrentlySubmittedAnswers,
-		getAnswerPosition:getAnswerPosition,
+		getCurrentlySubmittedAnswers: getCurrentlySubmittedAnswers,
+		getAnswerPosition: getAnswerPosition,
 		getCurrentQuestionBlanks: getCurrentQuestionBlanks,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
