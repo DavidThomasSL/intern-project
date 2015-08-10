@@ -26,7 +26,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     }
 
     function getUsersInRoom() {
-
         return usersInRoom;
     }
 

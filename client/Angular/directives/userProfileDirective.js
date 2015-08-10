@@ -40,18 +40,6 @@ ClonageApp.directive('userProfile', function() {
 				scaleCanvas(0.5,0.5);
 			});
 
-			/*
-				DIRECTIVE PUBLIC API
-				These functions can be called by the controller that exposes a scope to this directive
-			*/
-
-			// Given a json object of a drawing, draws it to the canvas
-			scope.internalControl.drawCanvasImage = function(imageData) {
-				canvas.loadFromDatalessJSON(imageData, function() {
-					canvas.renderAll();
-				});
-			};
-
 			function scaleCanvas(xScale, yScale) {
 				// Get all the paths on the canvas
 				var drawings = canvas.getObjects();

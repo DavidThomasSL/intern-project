@@ -109,8 +109,6 @@ module.exports = function(port, enableLogging) {
         });
 
         socket.on('USER set profile', function(data){
-            // console.log(data.name);
-            // console.log(data.image);
             user.name = data.name;
             user.image = data.image;
             logger.debug("User set name as: " + data.name);
