@@ -16,10 +16,18 @@ body, html {
 
 /* Custom page header */
 .header {
+  text-align: center;
   padding-bottom: 20px;
   border-bottom: 1px solid #e5e5e5;
   margin-bottom: 20px;
 }
+
+/* Custom page header */
+.sidebar-header {
+  padding-bottom: 20px;
+}
+
+
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
   margin-top: 0;
@@ -34,14 +42,25 @@ body, html {
   transition: left .2s;
   position: absolute;
   background-color: white;
-  /*opacity: 0.2;*/
   color: black;
   text-align: center;
-  width: 16%;
-  top: 380px;
-  bottom: 0;
+/*  border-bottom: 1px solid #e5e5e5;*/
+  border-right: 1px solid #e5e5e5;
+  border-left: 1px solid #e5e5e5;
+  width: 200px;
   left: -300px;
   font-size: 120%;
+  z-index: 9999;
+}
+
+.sidebar-item {
+  border-radius: 0px;
+  border-right: none;
+  border-left: none;
+}
+
+.sidebar-list {
+  margin-bottom: 0px;
 }
 
 .slide-out {
@@ -50,16 +69,6 @@ body, html {
     -o-transition: left 0.2s;
     transition: left 0.2s;
     left: 0px;
-}
-
-.largeWidth {
-  width: 100%;
-}
-
-.smallWidth {
-  width: 84%;
-  right: 0px;
-  margin-left: 16%;
 }
 
 /* Custom page footer */
@@ -85,41 +94,36 @@ body, html {
 }
 
 .wrapper {
-  min-height: 800px;
+  min-height: 100%;
+  width:100%;
   margin-bottom: 60px;
 }
 
 /* Main marketing message and sign up button */
 .jumbotron {
+  color:white;
   position: relative;
   margin-bottom: 0px;
-  height: 380px;
+  height: 200px;
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0%,rgba(0,0,0,1)), color-stop(20%,rgba(0,0,0,0.65)),color-stop(40%,rgba(0,0,0,0.2)), color-stop(100%,rgba(0,0,0,0))), url('/../../includes/images/background.jpg'); /* Chrome,Safari4+
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0%,rgba(0,0,0,1)), color-stop(20%,rgba(0,0,0,0.65)),color-stop(40%,rgba(0,0,0,0.2)), color-stop(100%,rgba(0,0,0,0))), url('/../../includes/images/background.jpg'); /* Chrome,Safari4+ */
   /*background: url('/../../includes/images/background.jpg');*/
-  background-repeat: no-repeat;
+  background-color: #1976D2; /* blue background color incase background image cannot be loaded*/
   background-attachment: fixed;
-  background-position: 50% -400px;
-  background-size: 100% 100%;
-  /*text-align: left;*/
-  padding-left: 40px;
-  padding-top: 200px
+  background-position: 50% -500px;
+  background-size: cover;
+  padding-left: 3%;
+  padding-top: 20px
 }
 
 .jumbotron .lead {
-  color: white;
   float: left;
   text-align: left;
 }
 
-.lead p{
-  font-size: 25px;
-}
-
 .jumbotron .username {
-  padding: 120px 40px 0px 0px;
-  color: white;
+  margin-right: 3%;
   font-size: 25px;
   position: absolute;
   bottom: 0px;
@@ -128,8 +132,7 @@ body, html {
 }
 
 .jumbotron .current-round {
-  padding: 120px 40px 0px 0px;
-  color: white;
+  margin-right: 3%;
   font-size: 25px;
   position: absolute;
   bottom: 0px;
@@ -138,46 +141,33 @@ body, html {
 }
 
 .jumbotron .menu-button {
-  padding: 0px 0px 0px 25px;
+  margin-left: 3%;
   bottom: 0px;
   left: 0px;
+  border: none;
   background: transparent;
-  border: none !important;
   position: absolute;
-  font-size: 50px;
-  color: white;
+  font-size: 40px;
+  outline: none;
 }
 
 .jumbotron .rank {
-  padding: 40px 120px 0px 120px;
-  color: white;
-  font-size: 25px;
+  margin-left: 7%;
+  font-size: 35px;
   position: absolute;
   bottom: 0px;
-  left: 0px;
   margin-bottom: 10px;
 }
 
 .jumbotron h1 {
   float: left;
-  color: white;
   font-size: 90px;
 }
 
 .white-card {
-   position: relative;
+  position: relative;
   min-height: 150px;
   font-size: 17px;
-}
-
-.header .btn {
-  padding: 14px 24px;
-  font-size: 21px;
-  float: right;
-}
-
-.header .instructions {
-  text-align: center;
 }
 
 .name-submit-container {
@@ -186,6 +176,7 @@ body, html {
 }
 
 .bottom-buttons {
+  text-align: center;
   margin-top: 60px;
 }
 
@@ -211,6 +202,10 @@ body, html {
   text-align: center;
 }
 
+.table td {
+  text-align: center;
+}
+
 .player-ready {
   color:#ffffff;
   background-color: #5cb85c;
@@ -220,29 +215,19 @@ body, html {
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
     .jumbotron {
-      height: 250px;
+      height: 150px;
       background-attachment: scroll;
-      background-position: 50% 40%;
-      background-size: 200% 150%;
+      background-position: center;
+      background-size: cover;
       text-align: center;
-      padding: 80px 10px 30px 20px;
-
-
+      padding: 0px 0px 0px 10px;
     }
-    .jumbotron .lead {
-      margin-bottom: 0;
-    }
-
     .jumbotron h1 {
-      font-size: 70px;
-      margin-top: 15%;
+      font-size: 50px;
     }
 
-    .jumbotron .username {
-      padding: 0px 20px 0px 0px;
-      margin-bottom: 10px;
-      float: right;
-      visibility: hidden;
+    .jumbotron .rank {
+      margin-left: 16%
     }
 }
 

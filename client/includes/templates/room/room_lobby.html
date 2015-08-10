@@ -1,11 +1,7 @@
 <div class="container">
     <div class="header clearfix">
-        <div class="row instructions">
-            <div>
-                <h1>ROOM CODE: {{roomId()}}</h1>
-                <h4>Give this code to others you want to join this room.</h4>
-            </div>
-        </div>
+        <h1>ROOM CODE: {{roomId()}}</h1>
+        <h4>Give this code to others you want to join this room.</h4>
     </div>
     <div id="room-lobby-container">
         <div class="row">
@@ -14,8 +10,6 @@
                     <div class="panel-body">
                         {{user.name}}
                         <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left: 20px"></span>
-                        <!--                         <span ng-if="!user.readyToProceed" class="glyphicon glyphicon-remove pull-right" aria-hidden="true"></span>
-                        <span ng-if="user.readyToProceed" class="glyphicon glyphicon-ok pull-right" aria-hidden="true"></span> -->
                     </div>
                 </div>
             </div>
