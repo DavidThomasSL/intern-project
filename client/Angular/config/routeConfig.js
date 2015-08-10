@@ -6,7 +6,7 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
                 controller: 'signupController'
             })
             .when('/joining', {
-                templateUrl: '/includes/templates/signup/join_create_room.html',
+                templateUrl: '/includes/templates/room/join_create_room.html',
                 controller: 'roomController'
 
             })

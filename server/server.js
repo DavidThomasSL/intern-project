@@ -108,6 +108,14 @@ module.exports = function(port, enableLogging) {
             logger.debug("User set name as: " + msg.name);
         });
 
+        socket.on('USER set profile', function(data){
+            user.name = data.name;
+            user.image = data.image;
+            logger.debug("User set name as: " + data.name);
+            user.sendUserDetails();
+            putUserInJoining();
+        });
+
         /*
             create room, assign id, add current player and return room id to player
         */
