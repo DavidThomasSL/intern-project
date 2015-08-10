@@ -2,6 +2,9 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.roundQuestionText = gameService.getRoundQuestionText;
+    $scope.currentlySubmittedAnswers = gameService.getCurrentlySubmittedAnswers;
+    $scope.answerPosition = gameService.getAnswerPosition;
+    $scope.currentQuestionBlanks = gameService.getCurrentQuestionBlanks;
     $scope.userHand = userService.getUserHand;
     $scope.getUserId = userService.getUserId;
     $scope.roomId = roomService.getRoomId; //Display room code in lobby

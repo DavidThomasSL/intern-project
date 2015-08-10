@@ -12,10 +12,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var round = -1;
 	var answers = [];
 	var playerRoundResults = [];
-	var currentscores = [];
 	var voteCounter = 0;
 	var maxRounds = 0; //variable holding the number of rounds wanted
-
 
 
 	//call function that emits to server the answer that was just submitted
@@ -34,6 +32,19 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	function getRoundQuestionText() {
 		return currentQuestionText;
+	}
+
+	function getCurrentlySubmittedAnswers() {
+		return currentlySubmittedAnswers;
+	}
+
+	function getAnswerPosition(answer) {
+		var position = currentlySubmittedAnswers.indexOf(answer) + 1;
+		return position;
+	}
+
+	function getCurrentQuestionBlanks() {
+		return currentQuestionBlanks;
 	}
 
 	function getCurrentRound() {
@@ -159,6 +170,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	return {
 		getRoundQuestionText: getRoundQuestionText,
+		getCurrentlySubmittedAnswers:getCurrentlySubmittedAnswers,
+		getAnswerPosition:getAnswerPosition,
+		getCurrentQuestionBlanks: getCurrentQuestionBlanks,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
