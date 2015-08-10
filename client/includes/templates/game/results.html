@@ -17,7 +17,7 @@
                 <td>{{result.player.name}}</td>
                 <td>{{result.playersWhoVotedForThis.length}}</td>
                 <td>
-                    <div ng-repeat="player in result.playersWhoVotedForThis">{{player}}</div>
+                    <div ng-repeat="player in result.playersWhoVotedForThis track by $index">{{player}}</div>
                 </td>
                 <td>+{{result.playersWhoVotedForThis.length*50}}</td>
             </tr>
