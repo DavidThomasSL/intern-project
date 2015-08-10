@@ -48,14 +48,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		round = -1;
 	}
 
-	//return countdown -> undefined normally or no of seconds left when reconnecting
+	//return countdown -> undefined normally or number of seconds left when reconnecting
 	function getCountdown () {
 		return countdown;
-	}
-
-	//set the countdown to undefined - function called after the counter was set to the new value
-	function resetCountdown() {
-		countdown = undefined ;
 	}
 
 	/*
@@ -169,7 +164,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		_setMaxRounds: _setMaxRounds,
 		clearGameData: clearGameData,
 		getCountdown: getCountdown,
-		resetCountdown: resetCountdown,
 		setCountdown: setCountdown
 	};
 

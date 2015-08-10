@@ -19,11 +19,6 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     //get final scores for all players when the game finishes
     $scope.finalresults = gameService.getCurrentScores;
 
-    //call function to finish the game in a certain room if players wanted to finish game
-    $scope.finishGame = function() {
-        gameService.finishGame($scope.roomId());
-    };
-
     //call function to get next round
     $scope.nextRound = function() {
         gameService.nextRound($scope.roomId());

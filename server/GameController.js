@@ -67,7 +67,6 @@ module.exports = function(data) {
 				stopTimer();
 				callback();
 			}
-			console.log(count);
 
 		}, 1000);  // 1000 will  run it every 1 second
 
@@ -483,26 +482,15 @@ module.exports = function(data) {
 
 		}
 
-		 /*else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+		 else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
 			players.forEach(function(pl) {
 
 				if (pl.hasSubmitted === false) {
-
-					// Submit an empty answer
-					var ans = {
-						player: pl,
-						answerText: "",
-						playersVote: []
-					};
-
-					//Get the current round object, which will hold all the answers for that round
-					var currentRound = rounds[rounds.length - 1];
-					currentRound.answers.push(ans);
 					pl.hasSubmitted = true;
 				}
 			});
 
-		}*/
+		}
 	};
 
 	// TO DO : check game state before every move!

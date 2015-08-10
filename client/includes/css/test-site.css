@@ -180,15 +180,6 @@ body, html {
   margin-top: 60px;
 }
 
-.player-ready {
-  color : white;
-  background-color: green;
-}
-
-.ready-state-on {
-
-}
-
 .card-text-container {
   margin-bottom: 20px;
 }
