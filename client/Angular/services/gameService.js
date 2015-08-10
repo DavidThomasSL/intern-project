@@ -97,7 +97,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		if (countdown === undefined) {
 			answers = [];
 			voteCounter = 0;
-			playerRoundResults = [];
 		}
 		console.log(countdown);
 	}

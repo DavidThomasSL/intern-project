@@ -341,6 +341,7 @@ module.exports = function(data) {
 		var userData = {};
 		var data = [];
 		var player;
+		var lastFullRound;
 
 		var currentRound = rounds[roundCount - 1];
 
@@ -355,6 +356,8 @@ module.exports = function(data) {
 
 		if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
 
+			lastFullRound = rounds[roundCount - 2];
+
 			if (player.hasSubmitted) {
 				routingInfo = "waitQuestion";
 			} else {
@@ -362,6 +365,8 @@ module.exports = function(data) {
 			}
 
 		} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+
+			lastFullRound = rounds[roundCount - 2];
 
 			if (player.hasSubmitted) {
 				routingInfo = "waitVote";
@@ -371,9 +376,13 @@ module.exports = function(data) {
 
 		} else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
 
+			lastFullRound = rounds[roundCount - 1];
+
 			routingInfo = "results";
 
 		} else if (GameState === POSSIBLE_GAMESTATES.FINAL_RESULTS) {
+
+			lastFullRound = rounds[roundCount - 1];
 
 			routingInfo = "endGame";
 
@@ -396,10 +405,14 @@ module.exports = function(data) {
 			}
 		};
 
+		if (lastFullRound !== undefined) {
+			results = lastFullRound.results;
+		} else results = [];
+
 		var roundData = {
 			eventName: "GAME playerRoundResults",
 			data: {
-				results: currentRound.results,
+				results: results,
 				voteNumber: countVotes(currentRound)
 			}
 		};
@@ -517,9 +530,11 @@ module.exports = function(data) {
 	*/
 	var countVotes = function(currentRound) {
 		var votes = 0;
-		currentRound.answers.forEach(function(option) {
-			votes += option.playersVote.length;
-		});
+		if (currentRound !== undefined) {
+			currentRound.answers.forEach(function(option) {
+				votes += option.playersVote.length;
+			});
+		}
 		return votes;
 	};
 
