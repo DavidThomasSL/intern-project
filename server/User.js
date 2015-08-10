@@ -37,7 +37,8 @@ User.prototype.getUserDetails = function() {
 		uId: this.uId,
 		name: this.name,
 		roomId: this.roomId,
-		readyToProceed: this.readyToProceed
+		readyToProceed: this.readyToProceed,
+		image: this.image
 	};
 
 	return userDetails;

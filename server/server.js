@@ -456,16 +456,7 @@ module.exports = function(port, enableLogging) {
 
         //Creates a new user object
         function createNewUser() {
-<<<<<<< HEAD
-            var user = {};
-            user.uId = uId;
-            user.name = undefined;
-            user.roomId = "";
-            user.socket = socket;
-            user.image = undefined;
-=======
             var user = new User(socket);
->>>>>>> dev
             users.push(user);
             return user;
         }
