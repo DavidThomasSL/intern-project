@@ -5,6 +5,7 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     $scope.currentlySubmittedAnswers = gameService.getCurrentlySubmittedAnswers;
     $scope.answerPosition = gameService.getAnswerPosition;
     $scope.currentQuestionBlanks = gameService.getCurrentQuestionBlanks;
+    $scope.filledInQuestion = gameService.getCurrentFilledInQuestion;
     $scope.userHand = userService.getUserHand;
     $scope.getUserId = userService.getUserId;
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
@@ -17,9 +18,6 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     //in order to calculate the points after the round multiply 50 with the number of votes
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
     $scope.currentVotes = gameService.getCurrentVotes;
-
-    //get final scores for all players when the game finishes
-    $scope.finalresults = gameService.getCurrentScores;
 
     //call function to get next round
     $scope.nextRound = function() {

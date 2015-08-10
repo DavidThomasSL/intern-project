@@ -14,30 +14,33 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var playerRoundResults = [];
 	var voteCounter = 0;
 	var maxRounds = 0; //variable holding the number of rounds wanted
+	var currentFilledInQuestion = "";
 
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
-		console.log(currentlySubmittedAnswers);
 		var alreadySelected = false;
 		currentlySubmittedAnswers.forEach(function(currentAnswer) {
 			if (currentAnswer === enteredAnswer) {
-				alreadySelected = true;
 
+				//if reselecting an answer remove it from the array to send
+				alreadySelected = true;
 				currentlySubmittedAnswers = currentlySubmittedAnswers.filter(function(answer) {
 					return (enteredAnswer !== answer);
 				});
-				console.log("already submitted, current answers= " + currentlySubmittedAnswers);
 			}
 		});
+		currentFilledInQuestion = fillInSelections(currentQuestionText, currentlySubmittedAnswers);
+		//if clicking a new answer, add it to the array to send
 		if (!alreadySelected) {
 			currentlySubmittedAnswers.push(enteredAnswer);
+			currentFilledInQuestion = fillInSelections(currentQuestionText, currentlySubmittedAnswers);
 			if (currentlySubmittedAnswers.length === currentQuestionBlanks) {
+				//when the user has selected enough answers, send them as an array
 				_emitChoice(currentlySubmittedAnswers);
 				currentlySubmittedAnswers = [];
 			}
 		}
-
 	}
 
 	//call function that emits to server the vote that was just submitted
@@ -51,6 +54,10 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	function getCurrentlySubmittedAnswers() {
 		return currentlySubmittedAnswers;
+	}
+
+	function getCurrentFilledInQuestion() {
+		return currentFilledInQuestion;
 	}
 
 	function getAnswerPosition(answer) {
@@ -119,6 +126,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	function _receiveQuestion(data) {
 		currentQuestionText = data.question.text;
+		currentFilledInQuestion = data.question.text;
 		currentQuestionBlanks = data.question.pick;
 		round = data.round;
 		maxRounds = data.maxRounds;
@@ -183,9 +191,42 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		communicationService.sendMessage(eventName, data, callback);
 	}
 
+	function fillInSelections(questionText, currentSelections) {
+		var outputText = questionText;
+		var removedFullStops = [];
+		//formatting selected answers so they can be put into the question
+		// var removedFullStops = currentSelections.slice();
+		// removedFullStops = removedFullStops.map(function(selection) {
+		// 	selection = selection.replace(/.\s*$/, "");
+		// 	selection = "[" + selection + "]";
+		// 	console.log(selection);
+		// });
+
+		currentSelections.forEach(function(selection){
+			var selectionToPush = selection.replace(/.\s*$/, "");
+			selectionToPush = "[" + selectionToPush + "]";
+			removedFullStops.push(selectionToPush);
+		});
+
+		if (questionText.indexOf('_') === -1) {
+			outputText += "\n";
+			removedFullStops.forEach(function(selection) {
+				outputText += removedFullStops + ",\n";
+			});
+			outputText = outputText.replace(/.\s*$/, ".");
+			return
+		} else {
+			for (var i = 0; i < currentSelections.length; i++) {
+				outputText = outputText.replace('_', removedFullStops[i]);
+			}
+		}
+		return outputText;
+	}
+
 	return {
 		getRoundQuestionText: getRoundQuestionText,
 		getCurrentlySubmittedAnswers: getCurrentlySubmittedAnswers,
+		getCurrentFilledInQuestion: getCurrentFilledInQuestion,
 		getAnswerPosition: getAnswerPosition,
 		getCurrentQuestionBlanks: getCurrentQuestionBlanks,
 		getAnswers: getAnswers,
