@@ -195,13 +195,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		var outputText = questionText;
 		var removedFullStops = [];
 		//formatting selected answers so they can be put into the question
-		// var removedFullStops = currentSelections.slice();
-		// removedFullStops = removedFullStops.map(function(selection) {
-		// 	selection = selection.replace(/.\s*$/, "");
-		// 	selection = "[" + selection + "]";
-		// 	console.log(selection);
-		// });
-
 		currentSelections.forEach(function(selection){
 			var selectionToPush = selection.replace(/.\s*$/, "");
 			selectionToPush = "[" + selectionToPush + "]";
@@ -211,10 +204,10 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		if (questionText.indexOf('_') === -1) {
 			outputText += "\n";
 			removedFullStops.forEach(function(selection) {
-				outputText += removedFullStops + ",\n";
+				outputText += (selection + ", ");
 			});
 			outputText = outputText.replace(/.\s*$/, ".");
-			return
+			return outputText;
 		} else {
 			for (var i = 0; i < currentSelections.length; i++) {
 				outputText = outputText.replace('_', removedFullStops[i]);
