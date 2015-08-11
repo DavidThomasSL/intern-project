@@ -215,8 +215,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 		//formatting selected answers so they can be put into the question
 		currentSelections.forEach(function(selection){
-			console.log(typeof(selection));
-			console.log(selection);
 			var selectionToPush = selection.replace(/.\s*$/, "");
 			selectionToPush = "[" + selectionToPush + "]";
 			removedFullStops.push(selectionToPush);

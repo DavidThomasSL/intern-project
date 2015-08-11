@@ -29,8 +29,11 @@ describe('When starting a game with BOTS', function() {
 		});
 		secondClonageUser.ready();
 
-		firstClonageUser.submitFirstAnswer();
-		secondClonageUser.submitFirstAnswer();
+		firstClonageUser.getBlankSpaces().then(function(text) {
+			cardsToSubmit = parseInt(text[5]); //PICK X.
+			firstClonageUser.submitFirstAnswers(cardsToSubmit);
+			secondClonageUser.submitFirstAnswers(cardsToSubmit);
+		});
 
 		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/vote/);
@@ -63,10 +66,16 @@ describe('When starting a game with BOTS', function() {
 		firstClonageUser.ready();
 		secondClonageUser.ready();
 
+		//taking function out of loop as jshint complains
+		var userSubmitAnswer = function(text) {
+			cardsToSubmit = parseInt(text[5]); //PICK X.
+			firstClonageUser.submitFirstAnswers(cardsToSubmit);
+			secondClonageUser.submitFirstAnswers(cardsToSubmit);
+		};
+
 		//change value here if we change the number of rounds
 		for (var i = 0; i < MAX_ROUNDS - 1; i++) {
-			firstClonageUser.submitFirstAnswer();
-			secondClonageUser.submitFirstAnswer();
+			firstClonageUser.getBlankSpaces().then(userSubmitAnswer);
 
 			firstClonageUser.submitFirstVote();
 			secondClonageUser.submitFirstVote();

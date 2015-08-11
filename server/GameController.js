@@ -309,7 +309,7 @@ module.exports = function(data) {
 
 						var result = {
 							player: bot,
-							answerText: answer.answerText,
+							answersText: answer.answersText,
 							playersWhoVotedForThis: answer.playersVote,
 						};
 
@@ -458,6 +458,8 @@ module.exports = function(data) {
 	*/
 	var addFakeAnswers = function(round) {
 
+		var answersToPick = round.question.pick;
+
 		for (var i = 0; i < BOT_NUMBER; i++) {
 
 			// Ethier create new bots or use the exisiting ones
@@ -475,19 +477,22 @@ module.exports = function(data) {
 				fakePlayer = bots[i];
 			}
 
-			var index = Math.floor(Math.random() * HANDSIZE);
-			var randomAns = fakePlayer.hand[index];
+			var randomAnswers = [];
+
+			for (var j = 0; j < answersToPick; j++) {
+				var index = Math.floor(Math.random() * HANDSIZE);
+				var randomAns = fakePlayer.hand[index];
+				randomAnswers.push(randomAns);
+				updateHand(fakePlayer.uId, randomAns);
+			}
 
 			// Build the submitted answer
 			var ans = {
 				player: fakePlayer,
-				answerText: randomAns,
+				answersText: randomAnswers,
 				playersVote: [],
 				rank: ""
 			};
-
-			//update bot hand
-			updateHand(fakePlayer.uId, randomAns);
 
 			//Get the current round object, which will hold all the answers for that round
 			round.answers.push(ans);
