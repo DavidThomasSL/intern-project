@@ -1,4 +1,4 @@
-ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService,errorService,  toastr) {
+ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, errorService,  toastr) {
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
