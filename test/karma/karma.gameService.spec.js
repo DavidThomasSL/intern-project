@@ -74,7 +74,7 @@ describe("Testing Game Service", function() {
 			},
 			round: 1
 		});
-		expect(gameService.getRoundQuestionText()).toEqual("test question?");
+		expect(gameService.getCurrentQuestion().text).toEqual("test question?");
 	});
 
 	it("getRoundQuestion gets round", function() {
@@ -98,7 +98,7 @@ describe("Testing Game Service", function() {
 			},
 			round: 1
 		});
-		expect(gameService.getCurrentQuestionBlanks()).toEqual(1);
+		expect(gameService.getCurrentQuestion().pick).toEqual(1);
 	});
 
 	it("getAnswers gets answers", function() {

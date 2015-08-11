@@ -64,7 +64,7 @@ module.exports = function(browserInstance) {
 	};
 
 	var getBlankSpaces = function() {
-		return element(by.binding('currentQuestionBlanks()')).getText();
+		return element(by.binding('currentQuestion().pick')).getText();
 	};
 
 	var startGame = function() {
