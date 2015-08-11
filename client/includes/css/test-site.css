@@ -206,6 +206,26 @@ body, html {
   background-color: #5cb85c;
 }
 
+.panel-body {
+  display: -webkit-flex;
+  display: flex;
+}
+
+.panel-body p {
+  margin-top: 70px;
+  /*padding-right: 200px;*/
+}
+
+.flex1 {
+  -webkit-flex: 1;
+          flex: 1;
+}
+
+.flex2 {
+  -webkit-flex: 2;
+          flex: 2;
+}
+
 
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */

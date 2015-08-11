@@ -12,7 +12,7 @@ ClonageApp.directive('userProfile', function() {
 		transclude: true,
 		replace: true,
 		restrict: 'E', // E = Element
-		template: "<canvas width='300' height='300' style=\"padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block;\"/>",
+		template: "<canvas width='300' height='300'/>",
 		link: function(scope, element, attrs) {
 
 			// Number of possible drawing colors;

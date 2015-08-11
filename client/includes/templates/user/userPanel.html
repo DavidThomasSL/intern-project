@@ -1,0 +1,11 @@
+<div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
+    <div class="panel-body">
+        <user-profile class="flex1" control="user.canvasControl" ></user-profile>
+        <div class="flex1" text-center>
+            <p >{{user.name}}
+                <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user " aria-hidden="true" >
+                </span>
+            </p>
+        </div>
+    </div>
+</div>
