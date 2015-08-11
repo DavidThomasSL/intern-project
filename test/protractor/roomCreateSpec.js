@@ -29,7 +29,7 @@ describe('When creating a room', function() {
 
 	it('users can change the number of bots in the room and that update on the page', function() {
 		firstClonageUser.setBotsOn(3);
-		expect(element(by.binding("getBotNumber()")).getText()).toMatch("(3 addition users = 3x the fun!)");
+		expect(element(by.binding("getBotNumber()")).getText()).toMatch("(3 bots = 3x the fun!)");
 	});
 
 	it('user can see themselves in the room', function() {
