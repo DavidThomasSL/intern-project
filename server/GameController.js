@@ -224,10 +224,6 @@ module.exports = function(data) {
 
 			//check if everyone submitted and sends back all the currently submitted answers
 			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
-				// change gametsate to the next stage
-
-				//allow everyone to vote again
-				setAllPlayersAbleToSubmit();
 
 				//add bot answers for people to vote on
 				addFakeAnswers(currentRound);
