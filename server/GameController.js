@@ -12,7 +12,6 @@ module.exports = function(data) {
 	var whiteCardsMaster = [];
 	var blackCardsCurrent = [];
 	var whiteCardsCurrent = [];
-	var FAKE_ANSWERS = 3; //Number of fake answers to put in every round
 	var HANDSIZE = 10; //Number of white cards a user should always have
 	var BOT_NUMBER = 0;
 	var bots = [];

@@ -27,10 +27,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		return maxRounds;
 	}
 
-	function sendReadyStatus(roomId, botsEnabled) {
+	function sendReadyStatus(roomId) {
 		sendMessage("GAME ready status", {
-			roomId: roomId,
-			botsEnabled: botsEnabled
+			roomId: roomId
 		});
 	}
 
