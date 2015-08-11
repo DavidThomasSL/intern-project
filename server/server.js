@@ -108,6 +108,14 @@ module.exports = function(port, enableLogging) {
             logger.debug("User set name as: " + msg.name);
         });
 
+        socket.on('USER set profile', function(data){
+            user.name = data.name;
+            user.image = data.image;
+            logger.debug("User set name as: " + data.name);
+            user.sendUserDetails();
+            putUserInJoining();
+        });
+
         /*
             create room, assign id, add current player and return room id to player
         */
@@ -245,6 +253,7 @@ module.exports = function(port, enableLogging) {
             var room = getRoomFromId(roomId);
 
             room.gameController.newRound(function(data) {
+
                 if (data.gameIsOver === true) {
 
                     room.broadcastRoom("ROUTING", {
@@ -274,10 +283,33 @@ module.exports = function(port, enableLogging) {
                             }
                         });
                     });
+
+                    // once a new round has started (aka we are on question page)
+                    // start a timer
+                    // and wait until it has ran out (triggers a callback)
+                    room.gameController.startTimer(function() {
+
+                            // time has ran out so everyone is routed to the voting page
+                            room.broadcastRoom("ROUTING", {
+                                location: 'vote'
+                            });
+
+                            // start new timer for the voting page
+                            // and wait until time rans out
+                            room.gameController.startTimer(function() {
+
+                                //time has ran out so everyone is routed to the results page
+                                room.broadcastRoom("ROUTING", {
+                                    location: 'results'
+                                });
+                            });
+                    });
                 }
 
                 logger.info("Starting new round in room " + room.id);
             });
+
+
         }
 
         // submit answer
@@ -298,9 +330,20 @@ module.exports = function(port, enableLogging) {
                     answers: data.answers
                 });
 
+                // once everyone submitted an answer
                 if (data.allChoicesSubmitted === true) {
+
                     room.broadcastRoom("ROUTING", {
                         location: 'vote'
+                    });
+
+                    // start a timer for the voting page
+                    room.gameController.startTimer(function() {
+
+                        // once the time has ran out route everyone to the results page
+                        room.broadcastRoom("ROUTING", {
+                            location: 'results'
+                        });
                     });
                 }
             });
@@ -484,6 +527,8 @@ module.exports = function(port, enableLogging) {
         });
         return false;
     }
+
+
 
     server.listen(port, function() {
         var addr = server.address();

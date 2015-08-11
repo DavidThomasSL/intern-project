@@ -198,6 +198,10 @@ body, html {
   text-align: center;
 }
 
+/* Center the fabric container in the page */
+.canvas-container {
+  margin: 0 auto;
+}
 .table td {
   text-align: center;
 }

@@ -48,7 +48,6 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 
 	socket.on("USER details", function(data) {
 		_setListenerEventAction("USER details");
-		console.log(onMessageFunction);
 		onMessageFunction(data);
 	});
 

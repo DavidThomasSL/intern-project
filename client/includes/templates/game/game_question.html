@@ -8,7 +8,7 @@
     </div>
     <div id="user-hand-container">
         <div class="row">
-            <div class="col-md-12 text-center" ng-repeat="answer in userHand()">
+            <div class="col-md-12 text-center" ng-repeat="answer in userHand()" data-ng-init="startCountdown()">
                 <div class="card-text-container">
                     <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitAnswer(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
                     <span class="pull-right" ng-show="selected">{{answerPosition(answer)}}</span>
@@ -17,4 +17,6 @@
             </div>
         </div>
     </div>
+
+    <div class="progress"> <div ng-class="counter>15 ? 'progress-bar progress-bar-striped active' : ( counter>5 ? 'progress-bar progress-bar-warning progress-bar-striped active' : 'progress-bar progress-bar-danger progress-bar-striped active' ) " style="width: {{counter*3.33}}%;"> <p ng-bind="counter"></p></div> </div>
 </div>

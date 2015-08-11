@@ -27,9 +27,21 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             return gameHand;
         }
 
+        function getUserImage() {
+            return user.image;
+        }
+
         function setName(name) {
             sendMessage('USER set name', {
                 name: name
+            });
+        }
+
+        function setNameAndImage(name, image) {
+            console.log("sent name and image");
+            sendMessage('USER set profile', {
+                name: name,
+                image: image
             });
         }
 
@@ -122,6 +134,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             getUserHand: getUserHand,
             getRank: getRank,
             setRank: setRank,
+            setNameAndImage: setNameAndImage,
+            getUserImage: getUserImage,
             _setUserDetails: _setUserDetails,
             _setHand: _setHand,
             _joinRoom: _joinRoom,
