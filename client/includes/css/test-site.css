@@ -226,7 +226,6 @@ body, html {
           flex: 2;
 }
 
-
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
     .jumbotron {
