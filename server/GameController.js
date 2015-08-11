@@ -474,15 +474,19 @@ module.exports = function(data) {
 				fakePlayer = bots[i];
 			}
 
-			var randomAns = Math.floor(Math.random() * HANDSIZE);
+			var index = Math.floor(Math.random() * HANDSIZE);
+			var randomAns = fakePlayer.hand[index];
 
 			// Build the submitted answer
 			var ans = {
 				player: fakePlayer,
-				answerText: fakePlayer.hand[randomAns],
+				answerText: randomAns,
 				playersVote: [],
 				rank: ""
 			};
+
+			//update bot hand
+			updateHand(fakePlayer.uId, randomAns);
 
 			//Get the current round object, which will hold all the answers for that round
 			round.answers.push(ans);
@@ -648,7 +652,11 @@ module.exports = function(data) {
 	update a users hand by replacing the used card with a new random one
 	*/
 	var updateHand = function(userId, usedCard) {
-		players.forEach(function(player) {
+
+		// Need to look at both bots and player
+		var allPlayers = players.concat(bots);
+
+		allPlayers.forEach(function(player) {
 			if (player.uId === userId) {
 				player.hand = player.hand.filter(function(card) {
 					if (card !== usedCard)
