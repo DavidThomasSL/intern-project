@@ -78,6 +78,12 @@ describe("Testing Game Service", function() {
 		expect(gameService.getCountdown()).toEqual(2);
 	});
 
+	it("setCountdown sets countdown seconds left", function() {
+		//set the round question
+		gameService.setCountdown(2);
+		expect(gameService.getCountdown()).toEqual(2);
+	});
+
 	it("communicationService can call events in the Game Service", function() {
 
 		var listenerEvent;
