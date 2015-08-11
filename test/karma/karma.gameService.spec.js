@@ -68,6 +68,16 @@ describe("Testing Game Service", function() {
 		expect(gameService.getCurrentVotes()).toEqual(2);
 	});
 
+	it("getCountdown gets countdown seconds left", function() {
+		//set the round question
+		gameService._receiveQuestion({
+			question: "test question?",
+			round: 1,
+			countdown: 2
+		});
+		expect(gameService.getCountdown()).toEqual(2);
+	});
+
 	it("communicationService can call events in the Game Service", function() {
 
 		var listenerEvent;
