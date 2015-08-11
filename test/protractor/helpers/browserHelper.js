@@ -46,6 +46,13 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var setBotsOn = function(number) {
+		element(by.id('set-bot-dropdown')).click();
+		var text = parseInt(number, 10);
+		element.all(by.css(".dropdown-menu")).get(0).element(by.linkText(number.toString())).click();
+		browserInstance.waitForAngular();
+	};
+
 	var leaveLobby = function() {
 		var leaveLobbyButton = element(by.id('leave-lobby-button'));
 		leaveLobbyButton.click();
@@ -138,6 +145,7 @@ module.exports = function(browserInstance) {
 		finishGame: finishGame,
 		backToStart: backToStart,
 		activateSidebar: activateSidebar,
-		ready: ready
+		ready: ready,
+		setBotsOn: setBotsOn
 	};
 };

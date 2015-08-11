@@ -12,7 +12,7 @@
                     <button ng-if="getUserId() === answer.player.uId" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
                     <span ng-repeat="text in answer.answersText track by $index">{{text}}<br></span><i>(Your answer)</i>
                     </button>
-                    <button ng-if="getUserId() !== answer.player.uId" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitVote(answer.answersText)">
+                    <button ng-if="getUserId() !== answer.player.uId" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitVote(answer)">
                     <span ng-repeat="text in answer.answersText track by $index">{{text}}<br></span>
                     </button>
                     </button>

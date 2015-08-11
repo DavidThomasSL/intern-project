@@ -68,6 +68,7 @@ describe("Testing Room Service", function() {
 
 		roomService._setRoomDetails({
 			roomId: "ABCDE",
+			botsEnabled: false,
 			usersInRoom: usersInRoom,
 			gameInProgress: false
 		});
@@ -95,6 +96,7 @@ describe("Testing Room Service", function() {
 		roomService._setRoomDetails({
 			roomId: "ABCDE",
 			usersInRoom: usersInRoom,
+			botsEnabled: false,
 			gameInProgress: false
 		});
 
@@ -114,7 +116,8 @@ describe("Testing Room Service", function() {
 		roomService._setRoomDetails({
 			roomId: "ABCDE",
 			usersInRoom: [1],
-			gameInProgress: false
+			gameInProgress: false,
+			botsEnabled: false
 		});
 
 		expect(roomService.getRoomId()).toEqual("ABCDE");

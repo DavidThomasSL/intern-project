@@ -86,8 +86,10 @@ module.exports = function(port, enableLogging) {
                 logger.debug("User " + user.uId + "was in room " + user.roomId + " previously");
                 putUserInRoom(user.roomId);
             } else if (user.name !== undefined) {
+                logger.debug("Putting user in joining");
                 putUserInJoining();
             } else {
+                logger.debug("Putting user in set name");
                 putUserInSetName();
             }
 
@@ -101,9 +103,7 @@ module.exports = function(port, enableLogging) {
             user.name = msg.name;
             user.sendUserDetails();
 
-            socket.emit('ROUTING', {
-                location: 'joining'
-            });
+            putUserInJoining();
 
             logger.debug("User set name as: " + msg.name);
         });
@@ -154,19 +154,22 @@ module.exports = function(port, enableLogging) {
                 room.broadcastRoom('ROOM details');
             }
 
-            //remove room from user
-            users.forEach(function(otherUser) {
-                if (otherUser.uId === user.uId) {
-                    otherUser.roomId = "";
-                    otherUser.sendUserDetails();
-                }
-            });
+            user.roomId = "";
+            user.sendUserDetails();
 
-            socket.emit('ROUTING', {
-                location: 'joining'
-            });
+            putUserInJoining();
 
             logger.debug("Removed user " + user.name + " from room " + room.id);
+        });
+
+        /*
+            Set by the players in the room lobby if they want to enable bots during the game or not
+        */
+        socket.on('ROOM setBotNumber', function(data) {
+            var room = getRoomFromId(data.roomId);
+            room.botNumber = data.botNumber;
+            room.broadcastRoom("ROOM details");
+            return;
         });
 
         /*
@@ -237,7 +240,7 @@ module.exports = function(port, enableLogging) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room.usersInRoom, function() {
+            room.gameController.initialize(room, function() {
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
             });
