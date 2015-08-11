@@ -73,6 +73,16 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
         botNumber = data.botNumber;
+
+        //add on canvas control elements to each user
+        //Allows the canvas to access the user's image
+        usersInRoom.forEach(function(user) {
+            user.canvasControl = {
+                getUserImage: function() {
+                    return user.image;
+                }
+            };
+        });
     }
 
     function _setError(data) {

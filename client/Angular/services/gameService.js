@@ -1,4 +1,4 @@
-ClonageApp.service('gameService', ['communicationService', function(communicationService) {
+ClonageApp.service('gameService', ['communicationService', function(communicationService, $timeout) {
 
 	/*--------------------
 	//PUBLIC API
@@ -13,6 +13,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	var currentscores = [];
 	var voteCounter = 0;
 	var maxRounds = 0; //variable holding the number of rounds wanted
+	var countdown = undefined;
 
 	function getRoundQuestion() {
 		return currentQuestion;
@@ -48,6 +49,19 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		round = -1;
 	}
 
+	//return countdown -> undefined normally or number of seconds left when reconnecting
+	function getCountdown() {
+		return countdown;
+	}
+
+	/*
+		set the countdown to a certain value
+		 - function called to retain the counter value when redirected to the waiting page
+	*/
+	function setCountdown(value) {
+		countdown = value;
+	}
+
 	//get results of voting
 	function getPlayerRoundResults() {
 		return playerRoundResults;
@@ -66,6 +80,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 		return returnValue;
 	}
+
+
 	/*
 	---------------
 	    COMMUNCATION LAYER API
@@ -78,15 +94,19 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		currentQuestion = data.question;
 		round = data.round;
 		maxRounds = data.maxRounds;
+		countdown = data.countdown;
+		if (countdown === undefined) {
+			answers = [];
+			voteCounter = 0;
+		}
 	}
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
-		console.log(answers);
+		countdown = data.countdown;
 	}
 
 	function _setPlayerRoundResults(data) {
-		console.log(data);
 		playerRoundResults = data.results;
 		voteCounter = data.voteNumber;
 	}
@@ -140,7 +160,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
 		_setMaxRounds: _setMaxRounds,
-		clearGameData: clearGameData
+		clearGameData: clearGameData,
+		getCountdown: getCountdown,
+		setCountdown: setCountdown
 	};
 
 }]);

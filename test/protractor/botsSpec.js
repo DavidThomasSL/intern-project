@@ -65,7 +65,6 @@ describe('When starting a game with BOTS', function() {
 
 		//change value here if we change the number of rounds
 		for (var i = 0; i < MAX_ROUNDS - 1; i++) {
-			console.log("round " + i);
 			firstClonageUser.submitFirstAnswer();
 			secondClonageUser.submitFirstAnswer();
 

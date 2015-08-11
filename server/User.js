@@ -4,11 +4,12 @@ function User(socket) {
 
 	var self = this;
 	//Create a new user (called when creating a new user )
-	self.uId = uuid.v1();
-	self.name = undefined;
-	self.roomId = "";
-	self.socket = socket;
-	self.readyToProceed = false;
+	this.uId = uuid.v1();
+	this.name = undefined;
+	this.roomId = "";
+	this.socket = socket;
+	this.readyToProceed = false;
+	this.image = "";
 
 	/*
 	Sends the user details to the client via the users socket
@@ -36,19 +37,18 @@ function User(socket) {
 	self.getUserDetails = function() {
 
 		var userDetails = {
-			uId: self.uId,
-			name: self.name,
-			roomId: self.roomId,
-			readyToProceed: self.readyToProceed
+			uId: this.uId,
+			name: this.name,
+			roomId: this.roomId,
+			readyToProceed: this.readyToProceed,
+			image: this.image
 		};
 
 		return userDetails;
 	};
 
 	self.toString = function() {
-		// body...
 		var string = self.getUserDetails();
-
 		return string;
 	};
 }

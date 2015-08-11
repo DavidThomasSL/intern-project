@@ -5,16 +5,16 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getUserId = userService.getUserId; //Display user icon on card in lobby
     $scope.getUsersInRoom = roomService.getUsersInRoom;
-    // $scope.botNumber = 0;
     $scope.getBotNumber = roomService.getBotNumber;
-
 
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());
+        $scope.multipleCanvasEnabled = true;
     };
 
     $scope.joinRoom = function(roomId) {
         roomService.joinRoom(roomId);
+        $scope.multipleCanvasEnabled = true;
     };
 
     $scope.leaveRoom = function() {
