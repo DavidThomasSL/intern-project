@@ -452,8 +452,7 @@ module.exports = function(port, enableLogging) {
 
         function putUserInJoining() {
             socket.emit("ROUTING", {
-                location: 'joining',
-                messgae: "fuck"
+                location: 'joining'
             });
         }
 
