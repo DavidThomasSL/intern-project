@@ -23,7 +23,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		var alreadySelected = false;
 		currentlySubmittedAnswers.forEach(function(currentAnswer) {
 			if (currentAnswer === enteredAnswer) {
-
 				//if reselecting an answer remove it from the array to send
 				alreadySelected = true;
 				currentlySubmittedAnswers = currentlySubmittedAnswers.filter(function(answer) {
@@ -37,7 +36,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 			currentlySubmittedAnswers.push(enteredAnswer);
 			currentFilledInQuestion = fillInSelections(currentQuestionText, currentlySubmittedAnswers);
 			if (currentlySubmittedAnswers.length === currentQuestionBlanks) {
-				//when the user has selected enough answers, send them as an array
+				//only actually send the answers when the player has clicked enough cards
 				_emitChoice(currentlySubmittedAnswers);
 				currentlySubmittedAnswers = [];
 			}
@@ -51,10 +50,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	function getRoundQuestionText() {
 		return currentQuestionText;
-	}
-
-	function getCurrentlySubmittedAnswers() {
-		return currentlySubmittedAnswers;
 	}
 
 	function getCurrentFilledInQuestion() {
@@ -214,6 +209,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		communicationService.sendMessage(eventName, data, callback);
 	}
 
+	//Used to dynamically fill in the blanks of the question as the player selects them
 	function fillInSelections(questionText, currentSelections) {
 		var outputText = questionText;
 		var removedFullStops = [];
@@ -241,7 +237,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	return {
 		getRoundQuestionText: getRoundQuestionText,
-		getCurrentlySubmittedAnswers: getCurrentlySubmittedAnswers,
 		getCurrentFilledInQuestion: getCurrentFilledInQuestion,
 		getAnswerPosition: getAnswerPosition,
 		getCurrentQuestionBlanks: getCurrentQuestionBlanks,

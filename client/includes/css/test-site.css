@@ -259,5 +259,17 @@ body, html {
     to {opacity: 0;}
 }
 
+[animate-on-change] {
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+}
+
+[animate-on-change].changed {
+  color: #039BE5;
+  transition: none;
+  -webkit-transition: none;
+}
+
+
 /*.ng-enter           { animation: fadeIn 0.2s both ease-in;}
 .ng-leave           { animation: fadeOut 0.2s both ease-in;}*/
