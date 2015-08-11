@@ -2,13 +2,13 @@ module.exports = function(browserInstance) {
 
 	var element = browserInstance.element;
 
-	var clearUser = function(){
+	var clearUser = function() {
 		clearLocalStorage();
 		refresh();
 		getIndex();
 	};
 
-	var getIndex = function(){
+	var getIndex = function() {
 		browserInstance.get('/');
 		browserInstance.waitForAngular();
 	};
@@ -21,18 +21,18 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var refresh = function(){
+	var refresh = function() {
 		browserInstance.refresh();
 		browserInstance.waitForAngular();
 	};
 
-	var clearLocalStorage = function(){
+	var clearLocalStorage = function() {
 		browserInstance.executeScript('window.sessionStorage.clear();');
 		browserInstance.executeScript('window.localStorage.clear();');
 		browserInstance.waitForAngular();
 	};
 
-	var createRoom = function(){
+	var createRoom = function() {
 		var createRoomButton = element(by.id('create-room-button'));
 		createRoomButton.click();
 		browserInstance.waitForAngular();
@@ -43,6 +43,13 @@ module.exports = function(browserInstance) {
 		var roomCodeBox = element(by.id('room-input-box'));
 		roomCodeBox.sendKeys(roomId);
 		joinRoomButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var setBotsOn = function(number) {
+		element(by.id('set-bot-dropdown')).click();
+		var text = parseInt(number, 10);
+		element.all(by.css(".dropdown-menu")).get(0).element(by.linkText(number.toString())).click();
 		browserInstance.waitForAngular();
 	};
 
@@ -122,6 +129,7 @@ module.exports = function(browserInstance) {
 		finishGame: finishGame,
 		backToStart: backToStart,
 		activateSidebar: activateSidebar,
-		ready: ready
+		ready: ready,
+		setBotsOn: setBotsOn
 	};
 };

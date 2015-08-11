@@ -19,8 +19,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         //call function that emits to server the vote that was just submitted
-        function submitVote(enteredAnswer) {
-            _emitVote(enteredAnswer);
+        function submitVote(answer) {
+            _emitVote(answer);
         }
 
         function getUserName() {
@@ -83,7 +83,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         function _setUserDetails(data) {
             user = data.user;
-            console.log(user);
             $sessionStorage.userId = user.uId;
             $sessionStorage.roomId = user.roomId;
         }
