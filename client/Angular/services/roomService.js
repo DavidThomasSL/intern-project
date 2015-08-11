@@ -11,6 +11,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var roomId = -1;
     var usersInRoom = [];
     var errorMessage = "";
+    var botNumber = 0;
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -39,6 +40,16 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return roomId;
     }
 
+    function setBotNumber (number) {
+        botNumber = number;
+        sendMessage('ROOM setBotNumber', {botNumber: botNumber, roomId: roomId});
+        return;
+    }
+
+    function getBotNumber() {
+        return botNumber;
+    }
+
     //----------------------
     //SOCKET EVENT LISTENERS
     //-=-----------------
@@ -61,8 +72,10 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     function _setRoomDetails(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
+        botNumber = data.botNumber;
 
-        //add on canvas control elements
+        //add on canvas control elements to each user
+        //Allows the canvas to access the user's image
         usersInRoom.forEach(function(user) {
             user.canvasControl = {
                 getUserImage: function() {
@@ -108,6 +121,8 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
+        setBotNumber: setBotNumber,
+        getBotNumber: getBotNumber,
         getRoomId: getRoomId,
         _setRoomDetails: _setRoomDetails
     };

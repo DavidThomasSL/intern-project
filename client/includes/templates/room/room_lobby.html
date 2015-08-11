@@ -11,11 +11,30 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-center">
-                <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+                <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(botsStatus); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2 && getBotNumber() < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
             </div>
         </div>
         <div class="row text-center">
-            <h4 ng-show="getRoomUserCount() < 2">You need at least 2 players to start!</h4>
+            <h4> ({{getBotNumber()}} bots = {{getBotNumber()}}x the fun!) </h4>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-bot-dropdown">
+                Set number of Bots <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="setBotNumber(0)">None</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a ng-click="setBotNumber(1)">1</a></li>
+                    <li><a ng-click="setBotNumber(2)">2</a></li>
+                    <li><a ng-click="setBotNumber(3)">3</a></li>
+                    <li><a ng-click="setBotNumber(4)">4</a></li>
+                    <li><a ng-click="setBotNumber(5)">5</a></li>
+                    <li><a ng-click="setBotNumber(6)">6</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row text-center">
+            <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() < 1">You need at least 2 players to start!</h4>
+            <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() >= 1">Wow, look at all the friends you have...</h4>
             <h4 ng-hide="getRoomUserCount() < 2">The game will start when everyone is ready </h4>
         </div>
         <div class="row bottom-buttons">

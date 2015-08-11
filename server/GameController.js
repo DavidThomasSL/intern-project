@@ -12,6 +12,9 @@ module.exports = function(data) {
 	var whiteCardsMaster = [];
 	var blackCardsCurrent = [];
 	var whiteCardsCurrent = [];
+	var HANDSIZE = 10; //Number of white cards a user should always have
+	var BOT_NUMBER = 0;
+	var bots = [];
 	var voteNumber;
 
 	// Indicate what gamestate the gamecontroller is currently in
@@ -21,15 +24,6 @@ module.exports = function(data) {
 		'ROUND_RESULTS': 3,
 		'FINAL_RESULTS': 4
 	};
-
-	/*
-		Message Functions pass in on creation from the server
-		Allows the gameController to send messages via to server to clients
-		deal from current arrays, when card it dealt remove it to stop player getting same cards
-	*/
-
-	//Number of white cards a user should always have
-	var HANDSIZE = 10;
 
     var GameState = '0';
 
@@ -85,11 +79,10 @@ module.exports = function(data) {
 
 	};
 
-
 	/*
 		Called by the server when a game starts
 	*/
-	var initialize = function(usersInRoom, callback) {
+	var initialize = function(room, callback) {
 
 		path.join(__dirname, './BlackWhiteCards.json');
 
@@ -111,9 +104,11 @@ module.exports = function(data) {
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);
 
-				usersInRoom.forEach(function(user) {
+				room.usersInRoom.forEach(function(user) {
 					setupPlayer(user);
 				});
+
+				BOT_NUMBER = room.botNumber;
 
 				callback();
 			}
@@ -215,7 +210,7 @@ module.exports = function(data) {
 			var ans = {
 				player: submittingPlayer,
 				answerText: answerText,
-				playersVote: []
+				playersVote: [],
 			};
 
 			//Get the current round object, which will hold all the answers for that round
@@ -225,14 +220,19 @@ module.exports = function(data) {
 			//Update this players hand with a new card, as they have just played one
 			updateHand(playerId, answerText);
 
-			//check if everyone submitted and sends back all the currently submitted answers
 			var allChoicesSubmitted;
 
+			//check if everyone submitted and sends back all the currently submitted answers
 			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
-				// change gametsate to the next stage
+
+				//add bot answers for people to vote on
+				addFakeAnswers(currentRound);
+
+				// Move to the voting stage of the game
 				updateGameState(POSSIBLE_GAMESTATES.VOTING);
 
 				allChoicesSubmitted = true;
+
 			} else {
 				allChoicesSubmitted = false;
 			}
@@ -246,7 +246,7 @@ module.exports = function(data) {
 
 
 	/*
-		Submit a user vote for an snwer
+		Submit a user vote for an answer
 
 		Answers are the submissiions from users
 		Gets the answer this vote is for
@@ -259,7 +259,7 @@ module.exports = function(data) {
 		Return results, an array of objects for each answer that has been submitted
 		The result object holds who submitted it, voted for it, the voters rank and points
 	 */
-	var submitVote = function(playerId, votedForText, callback) {
+	var submitVote = function(playerId, votedForAnswer, callback) {
 
 		// TO DO : before submitting a vote check that the player hasn't already submitted one
 
@@ -277,7 +277,9 @@ module.exports = function(data) {
 			submittingPlayer.hasSubmitted = true;
 			// Add the user's vote to the answer
 			currentRound.answers.forEach(function(answer) {
-				if (answer.answerText === votedForText) {
+
+				//Find the anwser matching the one selected
+				if (answer.player.uId === votedForAnswer.player.uId) {
 					answer.playersVote.push(submittingPlayer.name);
 				}
 
@@ -294,34 +296,46 @@ module.exports = function(data) {
 						currentRound.results.push(result);
 					}
 				});
+
+
+				bots.forEach(function(bot) {
+					if (bot.uId === answer.player.uId) {
+
+						var result = {
+							player: bot,
+							answerText: answer.answerText,
+							playersWhoVotedForThis: answer.playersVote,
+						};
+
+						currentRound.results.push(result);
+					}
+				});
+
 			});
 
 			var allVotesSubmitted;
+			var voteNumber = countVotes(currentRound);
 
 			//check if everyone voted
-			if (countVotes(currentRound) === getNumOfConnectedPlayers()) {
+			if (voteNumber === getNumOfConnectedPlayers()) {
 
-				//change the gamestate to the next stage
+				// Change the gamestate to the next stage
+				// Add the points for the game
 				updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
 
 				voteNumber = 0 ;
 				allVotesSubmitted = true;
 
 			} else {
-				voteNumber = countVotes(currentRound);
 				allVotesSubmitted = false;
 			}
 
 			callback({
 				res: currentRound.results,
 				allVotesSubmitted: allVotesSubmitted,
-				voteNumber: countVotes(currentRound)
+				voteNumber: voteNumber
 			});
-
 		}
-
-
-
 	};
 
 	/*
@@ -331,7 +345,6 @@ module.exports = function(data) {
 			routing information (what page are we on)
 			game information (game question, user hand)
 			round information (current votes, etc for table)
-
 	*/
 	var getInfoForReconnectingUser = function(userId, callback) {
 
@@ -431,7 +444,48 @@ module.exports = function(data) {
 		data.push(userHand);
 
 		callback(routingInfo, data);
+	};
 
+	/*
+		Adds several fake answers (random white cards) to each rounds answers
+		Increases the number of responses when not many players present
+	*/
+	var addFakeAnswers = function(round) {
+
+		for (var i = 0; i < BOT_NUMBER; i++) {
+
+			// Ethier create new bots or use the exisiting ones
+			var fakePlayer;
+			if (bots.length === i) {
+				// Build fake player
+				fakePlayer = {
+					name: "BOT " + i,
+					uId: i,
+					hand: dealUserHand(),
+					points: 0
+				};
+				bots.push(fakePlayer);
+			} else {
+				fakePlayer = bots[i];
+			}
+
+			var index = Math.floor(Math.random() * HANDSIZE);
+			var randomAns = fakePlayer.hand[index];
+
+			// Build the submitted answer
+			var ans = {
+				player: fakePlayer,
+				answerText: randomAns,
+				playersVote: [],
+				rank: ""
+			};
+
+			//update bot hand
+			updateHand(fakePlayer.uId, randomAns);
+
+			//Get the current round object, which will hold all the answers for that round
+			round.answers.push(ans);
+		}
 	};
 
 	/*
@@ -492,7 +546,6 @@ module.exports = function(data) {
 
 			// Update every player's rank in the room
 			setRank();
-
 		}
 
 		 else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
@@ -502,7 +555,6 @@ module.exports = function(data) {
 					pl.hasSubmitted = true;
 				}
 			});
-
 		}
 	};
 
@@ -516,11 +568,17 @@ module.exports = function(data) {
 
 	/*
 		add 50 points to player -> called on each vote
+		Also adds points to the bots if someone voted for them
 	*/
 	var addPoints = function(playerId) {
 		players.forEach(function(player) {
 			if (player.uId === playerId) {
 				player.points += POINTS_PER_VOTE;
+			}
+		});
+		bots.forEach(function(bot) {
+			if (bot.uId === playerId) {
+				bot.points += POINTS_PER_VOTE;
 			}
 		});
 	};
@@ -530,6 +588,7 @@ module.exports = function(data) {
 	*/
 	var countVotes = function(currentRound) {
 		var votes = 0;
+
 		if (currentRound !== undefined) {
 			currentRound.answers.forEach(function(option) {
 				votes += option.playersVote.length;
@@ -543,19 +602,23 @@ module.exports = function(data) {
 	*/
 	var setRank = function() {
 
+		var allPlayers = players.concat(bots);
+
 		//sorting the players and getting their ranks
-		players.sort(function(a, b) {return parseInt(b.points) - parseInt(a.points);});
-		var ranks = players.slice().map(function(v){
-			return players.indexOf(v)+1;
+		allPlayers.sort(function(a, b) {
+			return parseInt(b.points) - parseInt(a.points);
+		});
+		var ranks = allPlayers.slice().map(function(v) {
+			return allPlayers.indexOf(v) + 1;
 		});
 		//assigning ranks to players
-		for (var i = 0; i < players.length; i++) {
-			players[i].rank = ranks[i];
+		for (var i = 0; i < allPlayers.length; i++) {
+			allPlayers[i].rank = ranks[i];
 		}
 		//if players have the same score they are given the same rank
-		for (var j=1; j<players.length; j++) {
-			if (players[j-1].points === players[j].points) {
-				players[j].rank = players[j-1].rank;
+		for (var j = 1; j < players.length; j++) {
+			if (allPlayers[j - 1].points === allPlayers[j].points) {
+				allPlayers[j].rank = allPlayers[j - 1].rank;
 			}
 		}
 	};
@@ -584,7 +647,11 @@ module.exports = function(data) {
 	update a users hand by replacing the used card with a new random one
 	*/
 	var updateHand = function(userId, usedCard) {
-		players.forEach(function(player) {
+
+		// Need to look at both bots and player
+		var allPlayers = players.concat(bots);
+
+		allPlayers.forEach(function(player) {
 			if (player.uId === userId) {
 				player.hand = player.hand.filter(function(card) {
 					if (card !== usedCard)

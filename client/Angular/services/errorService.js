@@ -48,7 +48,6 @@ ClonageApp.service('errorService', ['communicationService', function(communicati
 	*/
 	function notifyListeners(){
 		errorListenerList.forEach(function(errorListener) {
-			console.log("notifyListeners " + errorListener.errorCallback);
 			errorListener.errorCallback(currentErrorMessage);
 		});
 	}
@@ -57,7 +56,7 @@ ClonageApp.service('errorService', ['communicationService', function(communicati
 	return {
 		getCurrentErrorMessage: getCurrentErrorMessage,
 		registerErrorListener: registerErrorListener
-	}
+	};
 
 
 }]);

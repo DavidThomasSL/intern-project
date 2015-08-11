@@ -49,7 +49,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	}
 
 	//return countdown -> undefined normally or number of seconds left when reconnecting
-	function getCountdown () {
+	function getCountdown() {
 		return countdown;
 	}
 
@@ -58,7 +58,7 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		 - function called to retain the counter value when redirected to the waiting page
 	*/
 	function setCountdown(value) {
-		countdown = value ;
+		countdown = value;
 	}
 
 	//get results of voting
@@ -93,17 +93,16 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		currentQuestion = data.question;
 		round = data.round;
 		maxRounds = data.maxRounds;
-		countdown = data.countdown ;
+		countdown = data.countdown;
 		if (countdown === undefined) {
 			answers = [];
 			voteCounter = 0;
 		}
-		console.log(countdown);
 	}
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
-		countdown = data.countdown ;
+		countdown = data.countdown;
 	}
 
 	function _setPlayerRoundResults(data) {
