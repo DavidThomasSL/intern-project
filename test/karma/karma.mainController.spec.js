@@ -39,60 +39,50 @@ describe("Testing Main Controller", function() {
 		        expect(scope.counter).toBeDefined();
 		});
 
-		it("when it starts, countdown should be initialised with 30 when getCountdown is undefined", function() {
+		it("when it starts, countdown should be initialised with 30 if getCountdown is undefined", function() {
 
 			var spyEvent = spyOn(gameService, 'getCountdown');
 			scope.startCountdown();
 			expect(spyEvent).toHaveBeenCalled();
 			expect(scope.counter).toBe(30);
 
-			// spyOn(scope, 'stopCountdown');
-			// expect(scope.stopCountdown).toHaveBeenCalled();
 		});
 
-		// it("when it starts, countdown can get value from server", function() {
+		it("when it starts, countdown can get value from server", function() {
+			angular.mock.inject(function (_$interval_) {
+	            $interval = _$interval_;
+	        });
 
-		// 	//set the round question
-		// 	gameService._receiveQuestion({
-		// 		question: "test question?",
-		// 		round: 1,
-		// 		countdown: 2
-		// 	});
-		// 	var spyEvent = spyOn(gameService, 'getCountdown');
-		// 	scope.startCountdown();
-		// 	expect(spyEvent).toHaveBeenCalled();
-		// 	expect(scope.counter).toBe(1);
+			gameService._receiveQuestion({
+				question: "test question?",
+				round: 1,
+				countdown: 2
+			});
 
-		// 	// spyOn(scope, 'stopCountdown');
-		// 	// expect(scope.stopCountdown).toHaveBeenCalled();
-		// });
+			scope.startCountdown();
+		    expect(gameService.getCountdown()).toEqual(2);
+		    $interval.flush(1000);
+			expect(scope.counter).toBe(1);
+		});
 
-		// it("when countdown gets to 0, stopCountdown should be called", function() {
+		it("when countdown gets to 0, stopCountdown should be called", function() {
+			angular.mock.inject(function (_$interval_) {
+	            $interval = _$interval_;
+	        });
 
-		// 	//set the round question
-		// 	gameService._receiveQuestion({
-		// 		question: "test question?",
-		// 		round: 1,
-		// 		countdown: 2
-		// 	});
-		// 	var spyEvent = spyOn(gameService, 'getCountdown');
-		// 	scope.startCountdown();
-		// 	expect(spyEvent).toHaveBeenCalled();
-		// 	expect(scope.counter).toBe(1);
+			gameService._receiveQuestion({
+				question: "test question?",
+				round: 1,
+				countdown: 2
+			});
 
-		// 	// spyOn(scope, 'stopCountdown');
-		// 	// expect(scope.stopCountdown).toHaveBeenCalled();
-		// });
+			var spyEvent = spyOn(scope, 'stopCountdown');
 
-		// it("after stopCountdown is called, countdown should be undefined", function() {
-		// 	//set the round question
-		// 	gameService._receiveQuestion({
-		// 		question: "test question?",
-		// 		round: 1,
-		// 		countdown: 2
-		// 	});
-		// 	expect(gameService.getCountdown()).toEqual(2);
-		// });
+			scope.startCountdown();
+		    $interval.flush(3000);
+
+			expect(spyEvent).toHaveBeenCalled();
+		});
 
 	});
 
