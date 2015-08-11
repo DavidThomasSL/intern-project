@@ -2,13 +2,13 @@ module.exports = function(browserInstance) {
 
 	var element = browserInstance.element;
 
-	var clearUser = function(){
+	var clearUser = function() {
 		clearLocalStorage();
 		refresh();
 		getIndex();
 	};
 
-	var getIndex = function(){
+	var getIndex = function() {
 		browserInstance.get('/');
 		browserInstance.waitForAngular();
 	};
@@ -21,18 +21,18 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var refresh = function(){
+	var refresh = function() {
 		browserInstance.refresh();
 		browserInstance.waitForAngular();
 	};
 
-	var clearLocalStorage = function(){
+	var clearLocalStorage = function() {
 		browserInstance.executeScript('window.sessionStorage.clear();');
 		browserInstance.executeScript('window.localStorage.clear();');
 		browserInstance.waitForAngular();
 	};
 
-	var createRoom = function(){
+	var createRoom = function() {
 		var createRoomButton = element(by.id('create-room-button'));
 		createRoomButton.click();
 		browserInstance.waitForAngular();
@@ -56,6 +56,10 @@ module.exports = function(browserInstance) {
 		return element(by.binding('roomId')).getText();
 	};
 
+	var getBlankSpaces = function() {
+		return element(by.binding('currentQuestionBlanks()')).getText();
+	};
+
 	var startGame = function() {
 		var startGameButton = element(by.id('start-game-button'));
 		startGameButton.click();
@@ -65,6 +69,16 @@ module.exports = function(browserInstance) {
 	var ready = function() {
 		var readyButton = element(by.id('ready-button'));
 		readyButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var submitFirstAnswers = function(numberToSubmit) {
+		element.all(by.exactRepeater("answer in userHand()")).then(function(answers) {
+			for (var i = 0; i < numberToSubmit; i++) {
+				answers[i].click();
+				browserInstance.waitForAngular();
+			}
+		});
 		browserInstance.waitForAngular();
 	};
 
@@ -115,8 +129,10 @@ module.exports = function(browserInstance) {
 		joinRoom: joinRoom,
 		leaveLobby: leaveLobby,
 		getRoomId: getRoomId,
+		getBlankSpaces: getBlankSpaces,
 		startGame: startGame,
 		submitFirstAnswer: submitFirstAnswer,
+		submitFirstAnswers: submitFirstAnswers,
 		submitFirstVote: submitFirstVote,
 		startNewRound: startNewRound,
 		finishGame: finishGame,

@@ -25,8 +25,11 @@ describe('After each round', function() {
 			secondClonageUser.ready();
 		});
 
-		firstClonageUser.submitFirstAnswer();
-		secondClonageUser.submitFirstAnswer();
+		firstClonageUser.getBlankSpaces().then(function(text) {
+			cardsToSubmit = parseInt(text[5]); //PICK X.
+			firstClonageUser.submitFirstAnswers(cardsToSubmit);
+			secondClonageUser.submitFirstAnswers(cardsToSubmit);
+		});
 
 		firstClonageUser.submitFirstVote();
 		secondClonageUser.submitFirstVote();

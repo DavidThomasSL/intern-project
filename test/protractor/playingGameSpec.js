@@ -4,6 +4,7 @@ describe('When playing a game', function() {
 
 	var MAX_ROUNDS = 8;
 	var roomId;
+	var cardsToSubmit;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
@@ -26,7 +27,11 @@ describe('When playing a game', function() {
 			secondClonageUser.ready();
 		});
 
-		firstClonageUser.submitFirstAnswer();
+		firstClonageUser.getBlankSpaces().then(function(text) {
+			cardsToSubmit = parseInt(text[5]); //PICK X.
+			firstClonageUser.submitFirstAnswers(cardsToSubmit);
+		});
+
 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
 
 	});
@@ -37,7 +42,7 @@ describe('When playing a game', function() {
 	});
 
 	it('can be redirected to a voting page once everyone submitted', function() {
-		secondClonageUser.submitFirstAnswer();
+		secondClonageUser.submitFirstAnswers(cardsToSubmit);
 		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/vote/);
 	});

@@ -104,10 +104,10 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards;
-				// blackCardsMaster = cards.blackCards.filter(function(card) {
-				// 	return (card.pick !== 1);
-				// });
+				// blackCardsMaster = cards.blackCards;
+				blackCardsMaster = cards.blackCards.filter(function(card) {
+					return (card.pick !== 1);
+				});
 				whiteCardsMaster = cards.whiteCards;
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);

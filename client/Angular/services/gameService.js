@@ -146,7 +146,6 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 			answers = [];
 			voteCounter = 0;
 		}
-		console.log(countdown);
 	}
 
 	function _setChosenAnswers(data) {
@@ -213,8 +212,11 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	function fillInSelections(questionText, currentSelections) {
 		var outputText = questionText;
 		var removedFullStops = [];
+
 		//formatting selected answers so they can be put into the question
 		currentSelections.forEach(function(selection){
+			console.log(typeof(selection));
+			console.log(selection);
 			var selectionToPush = selection.replace(/.\s*$/, "");
 			selectionToPush = "[" + selectionToPush + "]";
 			removedFullStops.push(selectionToPush);
