@@ -553,6 +553,8 @@ module.exports = function(data) {
 				}
 			});
 
+			penaliseNonVotingPlayers(currentRound.answers);
+
 			voteNumber = 0 ;
 
 			// Update every player's rank in the room
@@ -578,8 +580,7 @@ module.exports = function(data) {
 	}
 
 	/*
-		add 50 points to player -> called on each vote
-		Also adds points to the bots if someone voted for them
+		Adds 50 points to a give player or bot
 	*/
 	var addPoints = function(playerId) {
 		players.forEach(function(player) {
@@ -593,6 +594,41 @@ module.exports = function(data) {
 			}
 		});
 	};
+
+	/*
+		Removes 50 points from a given player or bot
+	*/
+	var removePoints = function(playerId) {
+		players.forEach(function(player) {
+			if (player.uId === playerId) {
+				player.points -= POINTS_PER_VOTE;
+			}
+		});
+		bots.forEach(function(bot) {
+			if (bot.uId === playerId) {
+				bot.points -= POINTS_PER_VOTE;
+			}
+		});
+	};
+
+	/*
+		finds players haven't voted in a certain round's answer set and takes points off them
+	*/
+	var penaliseNonVotingPlayers = function (answers) {
+		var playersWhoHaventVoted = players.slice();
+		var currentAnswers = answers.slice();
+		currentAnswers.forEach(function (answer) {
+			answer.playersVote.forEach(function(votingPlayer) {
+				playersWhoHaventVoted = playersWhoHaventVoted.filter(function(iteratedPlayer) {
+					return (iteratedPlayer.name !== votingPlayer);
+				});
+			});
+		});
+		playersWhoHaventVoted.forEach(function(player){
+			removePoints(player.uId);
+		});
+	};
+
 
 	/*
 		count the overall votes in this round
