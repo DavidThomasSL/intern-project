@@ -1,7 +1,7 @@
 <div class="container">
     <div class="header clearfix">
         <h2> Round results: </h2>
-        <h4> {{roundQuestion()}}</h4>
+        <h4> {{roundQuestionText()}}</h4>
     </div>
     <div class="text-center">
         <table class="table table-striped">
@@ -13,7 +13,9 @@
                 <th>Points</th>
             </tr>
             <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
-                <td>{{result.answerText}}</td>
+                <td>
+                    <span ng-repeat="text in result.answersText track by $index">{{text}}<br></span>
+                </td>
                 <td>{{result.player.name}}</td>
                 <td>{{result.playersWhoVotedForThis.length}}</td>
                 <td>
@@ -25,7 +27,7 @@
         <br>
         <div class ="row">
             <div class="col-md-12 text-center">
-                <button id="ready-button" type="button" class="btn btn-lg btn-primary" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+                <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
                 <h4>Waiting for everyone to be ready</h4>
             </div>
         </div>

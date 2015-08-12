@@ -178,9 +178,14 @@ body, html {
   margin-bottom: 20px;
 }
 
-/*used to let text wrap on buttons for smaller screens*/
-.card-text-button {
+/* whitespace:normal; lets the button text wrap*/
+.card-text-button{
   white-space: normal;
+  border:none;
+}
+
+.card-text-button:focus {
+  outline: none;
 }
 
 .table th {
@@ -219,6 +224,11 @@ body, html {
   -webkit-flex: 2;
           flex: 2;
 }
+.ready-button:focus {
+  outline: none;
+  border : none;
+}
+
 
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
@@ -266,6 +276,18 @@ body, html {
     from {opacity:1;}
     to {opacity: 0;}
 }
+
+[animate-on-change] {
+  transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+}
+
+[animate-on-change].changed {
+  color: #039BE5;
+  transition: none;
+  -webkit-transition: none;
+}
+
 
 /*.ng-enter           { animation: fadeIn 0.2s both ease-in;}
 .ng-leave           { animation: fadeOut 0.2s both ease-in}*/

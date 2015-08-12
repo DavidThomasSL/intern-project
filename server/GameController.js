@@ -97,9 +97,10 @@ module.exports = function(data) {
 
 				//set up each user
 				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards.filter(function(card) {
-					return (card.pick === 1);
-				});
+				blackCardsMaster = cards.blackCards;
+				// blackCardsMaster = cards.blackCards.filter(function(card) {
+				// 	return (card.pick !== 1);
+				// });
 				whiteCardsMaster = cards.whiteCards;
 				blackCardsCurrent = blackCardsMaster.slice(0);
 				whiteCardsCurrent = whiteCardsMaster.slice(0);
@@ -178,7 +179,8 @@ module.exports = function(data) {
 		blackCardsCurrent.splice(index, 1);
 		//removing dealt card from card list
 
-		return question.text;
+
+		return question;
 	};
 
 
@@ -194,7 +196,7 @@ module.exports = function(data) {
 		to next stage
 
 	 */
-	var submitAnswer = function(playerId, playerName, answerText, callback) {
+	var submitAnswer = function(playerId, answersText, callback) {
 
 		var submittingPlayer = getPlayerFromId(playerId);
 
@@ -209,8 +211,8 @@ module.exports = function(data) {
 			// Build the submitted answer
 			var ans = {
 				player: submittingPlayer,
-				answerText: answerText,
-				playersVote: [],
+				answersText: answersText,
+				playersVote: []
 			};
 
 			//Get the current round object, which will hold all the answers for that round
@@ -218,7 +220,9 @@ module.exports = function(data) {
 			currentRound.answers.push(ans);
 
 			//Update this players hand with a new card, as they have just played one
-			updateHand(playerId, answerText);
+			answersText.forEach(function (answer){
+				updateHand(playerId, answer);
+			});
 
 			var allChoicesSubmitted;
 
@@ -280,6 +284,7 @@ module.exports = function(data) {
 
 				//Find the anwser matching the one selected
 				if (answer.player.uId === votedForAnswer.player.uId) {
+
 					answer.playersVote.push(submittingPlayer.name);
 				}
 
@@ -289,8 +294,9 @@ module.exports = function(data) {
 
 						var result = {
 							player: pl,
-							answerText: answer.answerText,
-							playersWhoVotedForThis: answer.playersVote
+							answersText: answer.answersText,
+							playersWhoVotedForThis: answer.playersVote,
+
 						};
 
 						currentRound.results.push(result);
@@ -303,7 +309,7 @@ module.exports = function(data) {
 
 						var result = {
 							player: bot,
-							answerText: answer.answerText,
+							answersText: answer.answersText,
 							playersWhoVotedForThis: answer.playersVote,
 						};
 
@@ -452,6 +458,8 @@ module.exports = function(data) {
 	*/
 	var addFakeAnswers = function(round) {
 
+		var answersToPick = round.question.pick;
+
 		for (var i = 0; i < BOT_NUMBER; i++) {
 
 			// Ethier create new bots or use the exisiting ones
@@ -469,19 +477,22 @@ module.exports = function(data) {
 				fakePlayer = bots[i];
 			}
 
-			var index = Math.floor(Math.random() * HANDSIZE);
-			var randomAns = fakePlayer.hand[index];
+			var randomAnswers = [];
+
+			for (var j = 0; j < answersToPick; j++) {
+				var index = Math.floor(Math.random() * HANDSIZE);
+				var randomAns = fakePlayer.hand[index];
+				randomAnswers.push(randomAns);
+				updateHand(fakePlayer.uId, randomAns);
+			}
 
 			// Build the submitted answer
 			var ans = {
 				player: fakePlayer,
-				answerText: randomAns,
+				answersText: randomAnswers,
 				playersVote: [],
 				rank: ""
 			};
-
-			//update bot hand
-			updateHand(fakePlayer.uId, randomAns);
 
 			//Get the current round object, which will hold all the answers for that round
 			round.answers.push(ans);

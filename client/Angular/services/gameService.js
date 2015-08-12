@@ -1,4 +1,4 @@
-ClonageApp.service('gameService', ['communicationService', function(communicationService, $timeout) {
+ClonageApp.service('gameService', ['communicationService', 'dynamicTextService', function(communicationService, dynamicTextService, $timeout) {
 
 	/*--------------------
 	//PUBLIC API
@@ -6,17 +6,49 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 	    and others who who use this service
 	//-------------------	*/
 
-	var currentQuestion = "";
+	var currentQuestion = undefined; // the current question containing the text and how many answers to submit
+	var currentlySubmittedAnswers = []; //if multiple blanks then hold the currently selected answers
 	var round = -1;
 	var answers = [];
 	var playerRoundResults = [];
-	var currentscores = [];
 	var voteCounter = 0;
 	var maxRounds = 0; //variable holding the number of rounds wanted
+	var currentFilledInQuestion = "";
 	var countdown = undefined;
 
-	function getRoundQuestion() {
+
+	//call function that emits to server the answer that was just submitted
+	function submitChoice(enteredAnswer) {
+		var submissionState = dynamicTextService.getSubmissionState(currentQuestion,enteredAnswer,currentlySubmittedAnswers);
+		currentlySubmittedAnswers = submissionState.currentlySubmittedAnswers;
+		currentFilledInQuestion = submissionState.currentFilledInQuestion;
+
+		//if enough answers have been selected to fill in the blanks then send off the array
+		if (submissionState.readyToSend){
+			_emitChoice(currentlySubmittedAnswers);
+			currentlySubmittedAnswers = [];
+		}
+	}
+
+	//call function that emits to server the vote that was just submitted
+	function submitVote(enteredAnswer) {
+		_emitVote(enteredAnswer);
+	}
+
+	//get the current question being asked, object contains text and amount of answers to pick
+	function getCurrentQuestion() {
 		return currentQuestion;
+	}
+
+	//the question with the currently selected answers filled in
+	function getCurrentFilledInQuestion() {
+		return currentFilledInQuestion;
+	}
+
+	//the position in the order of answers for multiple answer selections
+	function getAnswerPosition(answer) {
+		var position = currentlySubmittedAnswers.indexOf(answer) + 1;
+		return position;
 	}
 
 	function getCurrentRound() {
@@ -91,6 +123,9 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 
 	function _receiveQuestion(data) {
 		currentQuestion = data.question;
+		currentQuestionText = data.question.text;
+		currentFilledInQuestion = data.question.text;
+		currentQuestionBlanks = data.question.pick;
 		round = data.round;
 		maxRounds = data.maxRounds;
 		countdown = data.countdown;
@@ -139,6 +174,20 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
     -----------------
     */
 
+	//emit the answer that was just submitted: who submitted what and what room they are in
+	function _emitChoice(answer) {
+		sendMessage('USER submitChoice', {
+			answer: answer,
+		});
+	}
+
+	//emit the vote that was just submitted: who voted for what and what room they are in
+	function _emitVote(answer) {
+		sendMessage('USER vote', {
+			answer: answer,
+		});
+	}
+
 	function sendMessage(eventName, data, callback) {
 		if (callback === undefined) {
 			callback = function() {};
@@ -146,8 +195,12 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		communicationService.sendMessage(eventName, data, callback);
 	}
 
+
+
 	return {
-		getRoundQuestion: getRoundQuestion,
+		getCurrentQuestion: getCurrentQuestion,
+		getCurrentFilledInQuestion: getCurrentFilledInQuestion,
+		getAnswerPosition: getAnswerPosition,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
@@ -155,6 +208,8 @@ ClonageApp.service('gameService', ['communicationService', function(communicatio
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
 		sendReadyStatus: sendReadyStatus,
+		submitChoice: submitChoice,
+		submitVote: submitVote,
 		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,

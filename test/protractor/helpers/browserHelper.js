@@ -63,6 +63,10 @@ module.exports = function(browserInstance) {
 		return element(by.binding('roomId')).getText();
 	};
 
+	var getBlankSpaces = function() {
+		return element(by.binding('currentQuestion().pick')).getText();
+	};
+
 	var startGame = function() {
 		var startGameButton = element(by.id('start-game-button'));
 		startGameButton.click();
@@ -72,6 +76,16 @@ module.exports = function(browserInstance) {
 	var ready = function() {
 		var readyButton = element(by.id('ready-button'));
 		readyButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var submitFirstAnswers = function(numberToSubmit) {
+		element.all(by.exactRepeater("answer in userHand()")).then(function(answers) {
+			for (var i = 0; i < numberToSubmit; i++) {
+				answers[i].click();
+				browserInstance.waitForAngular();
+			}
+		});
 		browserInstance.waitForAngular();
 	};
 
@@ -122,8 +136,10 @@ module.exports = function(browserInstance) {
 		joinRoom: joinRoom,
 		leaveLobby: leaveLobby,
 		getRoomId: getRoomId,
+		getBlankSpaces: getBlankSpaces,
 		startGame: startGame,
 		submitFirstAnswer: submitFirstAnswer,
+		submitFirstAnswers: submitFirstAnswers,
 		submitFirstVote: submitFirstVote,
 		startNewRound: startNewRound,
 		finishGame: finishGame,

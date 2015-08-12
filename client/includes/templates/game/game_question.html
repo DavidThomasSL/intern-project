@@ -1,15 +1,18 @@
 <div class="container">
     <div class="header clearfix">
         <div id="roundQuestion">
-            <h2>{{roundQuestion()}}</h2>
-            <h4>Submit your favourite answer to this question</h4>
+            <h2 animate-on-change="filledInQuestion()">{{filledInQuestion()}}</h2>
+            <h4>Submit your favourite answer.</h4>
+            <h4 id="amount-to-submit">Pick {{currentQuestion().pick}}.</h4>
         </div>
     </div>
     <div id="user-hand-container">
         <div class="row">
             <div class="col-md-12 text-center" ng-repeat="answer in userHand()" data-ng-init="startCountdown()">
                 <div class="card-text-container">
-                    <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitAnswer(answer)">{{answer}}</button>
+                    <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitAnswer(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
+                    <span class="pull-right" ng-show="selected">{{answerPosition(answer)}}</span>
+                    </button>
                 </div>
             </div>
         </div>
