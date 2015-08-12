@@ -102,18 +102,18 @@ module.exports = function(port, enableLogging) {
         socket.on('USER set name', function(msg) {
             user.name = msg.name;
             user.sendUserDetails();
-
             putUserInJoining();
 
             logger.debug("User set name as: " + msg.name);
         });
 
-        socket.on('USER set profile', function(data){
+        socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
-            logger.debug("User set name as: " + data.name);
             user.sendUserDetails();
             putUserInJoining();
+
+            logger.debug("User set name as: " + data.name);
         });
 
         /*
@@ -144,8 +144,6 @@ module.exports = function(port, enableLogging) {
             and the server needs to have a reference to the user removed
         */
         socket.on('ROOM leave', function(msg) {
-
-            var removed = false;
 
             var room = getRoomFromId(msg.roomId);
 
@@ -293,27 +291,25 @@ module.exports = function(port, enableLogging) {
                     // and wait until it has ran out (triggers a callback)
                     room.gameController.startTimer(function() {
 
-                            // time has ran out so everyone is routed to the voting page
+                        // time has ran out so everyone is routed to the voting page
+                        room.broadcastRoom("ROUTING", {
+                            location: 'vote'
+                        });
+
+                        // start new timer for the voting page
+                        // and wait until time rans out
+                        room.gameController.startTimer(function() {
+
+                            //time has ran out so everyone is routed to the results page
                             room.broadcastRoom("ROUTING", {
-                                location: 'vote'
+                                location: 'results'
                             });
-
-                            // start new timer for the voting page
-                            // and wait until time rans out
-                            room.gameController.startTimer(function() {
-
-                                //time has ran out so everyone is routed to the results page
-                                room.broadcastRoom("ROUTING", {
-                                    location: 'results'
-                                });
-                            });
+                        });
                     });
                 }
 
                 logger.info("Starting new round in room " + room.id);
             });
-
-
         }
 
         // submit answer
@@ -534,8 +530,6 @@ module.exports = function(port, enableLogging) {
         });
         return false;
     }
-
-
 
     server.listen(port, function() {
         var addr = server.address();
