@@ -69,7 +69,8 @@
       "pick": 1
     },
     {
-      "Can you tell what it is yet? _."
+      "text" : "Can you tell what it is yet? _.",
+      "pick" : 1
     },
     {
       "text": "What did Nick Clegg promise?",
@@ -166,7 +167,7 @@
     {
       "text": "I went to Lidl for a loaf of bread and came home with _.",
       "pick": 1
-    }
+    },
     {
       "text": "How am I maintaining my relationship status?",
       "pick": 1
@@ -530,7 +531,7 @@
     {
       "text": "Tonight on the One Show, Joanna Lumley will be talking about _.",
       "pick": 1
-    }
+    },
     {
       "text": "The votes are in, and the new high school mascot is _.",
       "pick": 1
