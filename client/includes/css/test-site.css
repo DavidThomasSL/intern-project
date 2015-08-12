@@ -211,6 +211,10 @@ body, html {
   background-color: #5cb85c;
 }
 
+.player-not-submitted {
+  opacity: 0.2;
+}
+
 .ready-button:focus {
   outline: none;
   border : none;
