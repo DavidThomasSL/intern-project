@@ -59,11 +59,39 @@ module.exports = function(data) {
 				timerIsActive = false;
 				// trigger callback so the server sees the time has ran out
 				stopTimer();
-				callback();
+
+				// if no votes have been submitted then need to build a new results array for the results screen
+				// this results object will just contain the players and what answers they submitted with a blank
+				// playersWhoVotedForThis array.
+				var currentResults = rounds[roundCount - 1].results;
+				if (currentResults.length === 0){
+					currentResults  = buildBlankResults();
+				}
+				var roundData = {
+					results: currentResults,
+					voteCounter:0
+				};
+				callback(roundData);
 			}
 
 		}, 1000);  // 1000 will  run it every 1 second
 
+	};
+
+	var buildBlankResults = function() {
+
+		var currentRound = rounds[roundCount - 1];
+		var results = [];
+
+		currentRound.answers.forEach(function(currentAnswer){
+			var result = {
+				player:currentAnswer.player,
+				answersText:currentAnswer.answersText,
+				playersWhoVotedForThis:[]
+			};
+			results.push(result);
+		});
+		return results;
 	};
 
 	/*
@@ -272,6 +300,8 @@ module.exports = function(data) {
 		currentRound.results = [];
 
 		var submittingPlayer = getPlayerFromId(playerId);
+
+
 
 		if (submittingPlayer.hasSubmitted) {
 
@@ -553,6 +583,8 @@ module.exports = function(data) {
 				}
 			});
 
+			penaliseNonVotingPlayers(currentRound.answers);
+
 			voteNumber = 0 ;
 
 			// Update every player's rank in the room
@@ -578,8 +610,7 @@ module.exports = function(data) {
 	}
 
 	/*
-		add 50 points to player -> called on each vote
-		Also adds points to the bots if someone voted for them
+		Adds 50 points to a give player or bot
 	*/
 	var addPoints = function(playerId) {
 		players.forEach(function(player) {
@@ -593,6 +624,41 @@ module.exports = function(data) {
 			}
 		});
 	};
+
+	/*
+		Removes 50 points from a given player or bot
+	*/
+	var removePoints = function(playerId) {
+		players.forEach(function(player) {
+			if (player.uId === playerId) {
+				player.points -= POINTS_PER_VOTE;
+			}
+		});
+		bots.forEach(function(bot) {
+			if (bot.uId === playerId) {
+				bot.points -= POINTS_PER_VOTE;
+			}
+		});
+	};
+
+	/*
+		finds players haven't voted in a certain round's answer set and takes points off them
+	*/
+	var penaliseNonVotingPlayers = function (answers) {
+		var playersWhoHaventVoted = players.slice();
+		var currentAnswers = answers.slice();
+		currentAnswers.forEach(function (answer) {
+			answer.playersVote.forEach(function(votingPlayer) {
+				playersWhoHaventVoted = playersWhoHaventVoted.filter(function(iteratedPlayer) {
+					return (iteratedPlayer.name !== votingPlayer);
+				});
+			});
+		});
+		playersWhoHaventVoted.forEach(function(player){
+			removePoints(player.uId);
+		});
+	};
+
 
 	/*
 		count the overall votes in this round
@@ -627,7 +693,7 @@ module.exports = function(data) {
 			allPlayers[i].rank = ranks[i];
 		}
 		//if players have the same score they are given the same rank
-		for (var j = 1; j < players.length; j++) {
+		for (var j = 1; j < allPlayers.length; j++) {
 			if (allPlayers[j - 1].points === allPlayers[j].points) {
 				allPlayers[j].rank = allPlayers[j - 1].rank;
 			}

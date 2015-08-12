@@ -7,7 +7,7 @@
     </div>
     <div id="question-responses-container">
         <div class="row">
-            <div class="col-md-12 text-center" ng-repeat="answer in answers() | orderBy:'answerText'">
+            <div class="col-md-12 text-center" ng-repeat="answer in answers() | orderBy:'answersText[0]'">
                 <div class="card-text-container">
                     <button ng-if="getUserId() === answer.player.uId" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
                     <span ng-repeat="text in answer.answersText track by $index">{{text}}<br></span><i>(Your answer)</i>
