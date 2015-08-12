@@ -13,10 +13,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         var gameHand = {};
         var rank = "";
 
-        //call function that emits to server the answer that was just submitted
-        function submitChoice(enteredAnswer) {
-            _emitChoice(enteredAnswer);
-        }
 
         //call function that emits to server the vote that was just submitted
         function submitVote(answer) {
@@ -126,25 +122,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         -----------------
         */
 
-        //emit the answer that was just submitted: who submitted what and what room they are in
-        function _emitChoice(answer) {
-            sendMessage('USER submitChoice', {
-                playerId: user.uId,
-                playerName: user.name,
-                answer: answer,
-                roomId: user.roomId
-            });
-        }
-
-        //emit the vote that was just submitted: who voted for what and what room they are in
-        function _emitVote(answer) {
-            sendMessage('USER vote', {
-                playerId: user.uId,
-                playerName: user.name,
-                answer: answer,
-                roomId: user.roomId
-            });
-        }
 
         function sendMessage(eventName, data, callback) {
             if (callback === undefined) {
@@ -158,8 +135,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             getUserName: getUserName,
             getUserId: getUserId,
             getUserHand: getUserHand,
-            submitChoice: submitChoice,
-            submitVote: submitVote,
             getRank: getRank,
             setRank: setRank,
             setNameAndImage: setNameAndImage,

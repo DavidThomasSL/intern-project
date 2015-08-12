@@ -28,11 +28,16 @@ describe('After ending the game', function() {
 			secondClonageUser.ready();
 		});
 
+		//taking function out of loop as jshint complains
+		var userSubmitAnswer = function(text) {
+			cardsToSubmit = parseInt(text[5]); //PICK X.
+			firstClonageUser.submitFirstAnswers(cardsToSubmit);
+			secondClonageUser.submitFirstAnswers(cardsToSubmit);
+		};
 
 		//change value here if we change the number of rounds
 		for (var i = 0; i < MAX_ROUNDS; i++) {
-			firstClonageUser.submitFirstAnswer();
-			secondClonageUser.submitFirstAnswer();
+			firstClonageUser.getBlankSpaces().then(userSubmitAnswer);
 
 			firstClonageUser.submitFirstVote();
 			secondClonageUser.submitFirstVote();

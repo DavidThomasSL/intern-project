@@ -87,49 +87,6 @@ describe("Testing User Service", function() {
 		expect(mockStorageService.roomId).toBe("B00B5");
 	});
 
-	it("submitChoice calls communicationService with correct data", function() {
-		spyOn(mockCommunicationService, 'sendMessage');
-
-		userService._setUserDetails({
-			user: testUser
-		});
-
-		userService._joinRoom({
-			roomId: "B00B5"
-		});
-
-		userService.submitChoice("answer");
-
-		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER submitChoice", {
-			playerId: 1,
-			playerName: "bob",
-			answer: 'answer',
-			roomId: "B00B5"
-		}, jasmine.any(Function));
-	});
-
-	it("submitVote calls communicationService with correct data", function() {
-		spyOn(mockCommunicationService, 'sendMessage');
-
-
-		userService._setUserDetails({
-			user: testUser
-		});
-
-		userService._joinRoom({
-			roomId: "B00B5"
-		});
-
-		userService.submitVote("answer");
-
-		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER vote", {
-			playerId: 1,
-			playerName: "bob",
-			answer: 'answer',
-			roomId: "B00B5"
-		}, jasmine.any(Function));
-	});
-
 	it("setName calls communicationService", function() {
 		spyOn(mockCommunicationService, 'sendMessage');
 		userService.setName({});
