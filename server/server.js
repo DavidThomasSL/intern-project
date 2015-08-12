@@ -108,7 +108,7 @@ module.exports = function(port, enableLogging) {
             logger.debug("User set name as: " + msg.name);
         });
 
-        socket.on('USER set profile', function(data){
+        socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
             logger.debug("User set name as: " + data.name);
@@ -290,22 +290,27 @@ module.exports = function(port, enableLogging) {
                     // once a new round has started (aka we are on question page)
                     // start a timer
                     // and wait until it has ran out (triggers a callback)
-                    room.gameController.startTimer(function() {
+                    room.gameController.startTimer(function(data) {
 
-                            // time has ran out so everyone is routed to the voting page
+                        // time has ran out so everyone is routed to the voting page
+                        room.broadcastRoom("ROUTING", {
+                            location: 'vote'
+                        });
+
+                        // start new timer for the voting page
+                        // and wait until time rans out
+                        room.gameController.startTimer(function(data) {
+
+                            //time has ran out so everyone is routed to the results page
                             room.broadcastRoom("ROUTING", {
-                                location: 'vote'
+                                location: 'results'
                             });
 
-                            // start new timer for the voting page
-                            // and wait until time rans out
-                            room.gameController.startTimer(function() {
-
-                                //time has ran out so everyone is routed to the results page
-                                room.broadcastRoom("ROUTING", {
-                                    location: 'results'
-                                });
+                            room.broadcastRoom("GAME playerRoundResults", {
+                                results: data.results,
+                                voteCounter: data.voteCounter
                             });
+                        });
                     });
                 }
 
@@ -341,11 +346,15 @@ module.exports = function(port, enableLogging) {
                     });
 
                     // start a timer for the voting page
-                    room.gameController.startTimer(function() {
+                    room.gameController.startTimer(function(data) {
 
                         // once the time has ran out route everyone to the results page
                         room.broadcastRoom("ROUTING", {
                             location: 'results'
+                        });
+                        room.broadcastRoom("GAME playerRoundResults", {
+                            results: data.results,
+                            voteCounter: data.voteCounter
                         });
                     });
                 }

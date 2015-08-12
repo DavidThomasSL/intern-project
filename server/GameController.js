@@ -59,7 +59,13 @@ module.exports = function(data) {
 				timerIsActive = false;
 				// trigger callback so the server sees the time has ran out
 				stopTimer();
-				callback();
+
+				// resending the round result data if the timer ends
+				var roundData = {
+					results: rounds[roundCount - 1].results,
+					voteCounter:0
+				}
+				callback(roundData);
 			}
 
 		}, 1000);  // 1000 will  run it every 1 second
@@ -272,6 +278,8 @@ module.exports = function(data) {
 		currentRound.results = [];
 
 		var submittingPlayer = getPlayerFromId(playerId);
+
+
 
 		if (submittingPlayer.hasSubmitted) {
 
@@ -663,7 +671,7 @@ module.exports = function(data) {
 			allPlayers[i].rank = ranks[i];
 		}
 		//if players have the same score they are given the same rank
-		for (var j = 1; j < players.length; j++) {
+		for (var j = 1; j < allPlayers.length; j++) {
 			if (allPlayers[j - 1].points === allPlayers[j].points) {
 				allPlayers[j].rank = allPlayers[j - 1].rank;
 			}
