@@ -12,22 +12,44 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         gameService.sendReadyStatus($scope.roomId(), botsEnabled);
     };
 
+    /*
+        check if a certain user had submitted an answer yet
+        function called in order to visualise on the timer when a certain player has submited
+    */
     $scope.hasSubmitted = function(user) {
-        console.log("called hasSubmitted");
-        console.log("user : " + user);
 
         var submitted = false;
 
         if (gameService.getAnswers().length > 0) {
-            console.log("found answers");
-        gameService.getAnswers().forEach( function(answer){
-            console.log("answer : " + answer);
-            if (answer.player.uId === user)
-                submitted = true;
-        });
-    } else console.log("length is 0");
-        console.log(submitted);
+            gameService.getAnswers().forEach( function(answer){
+                if (answer.player.uId === user)
+                    submitted = true;
+            });
+         }
+
         return submitted;
+    };
+
+    /*
+        check if a certain user had voted for an answer yet
+        function called in order to visualise on the timer when a certain player has submitted
+    */
+    $scope.hasVoted = function(user) {
+
+        var voted = false;
+
+        if (gameService.getPlayerRoundResults().length > 0) {
+            gameService.getPlayerRoundResults().forEach( function(vote) {
+                if (vote.playersWhoVotedForThis.length > 0) {
+                    vote.playersWhoVotedForThis.forEach ( function(player) {
+                        if (player === user)
+                            voted = true;
+                    });
+                }
+            });
+         }
+
+        return voted;
     };
 
     //get user rank

@@ -132,12 +132,14 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		if (countdown === undefined) {
 			answers = [];
 			voteCounter = 0;
+			playerRoundResults = [];
 		}
 	}
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
 		countdown = data.countdown;
+		playerRoundResults = [];
 	}
 
 	function _setPlayerRoundResults(data) {
