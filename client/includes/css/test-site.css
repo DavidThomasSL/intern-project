@@ -164,12 +164,6 @@ body, html {
   font-size: 90px;
 }
 
-.white-card {
-  position: relative;
-  min-height: 150px;
-  font-size: 17px;
-}
-
 .name-submit-container {
   margin-top: 30px;
   margin-bottom: 100px;
@@ -274,4 +268,5 @@ body, html {
 }
 
 /*.ng-enter           { animation: fadeIn 0.2s both ease-in;}
-.ng-leave           { animation: fadeOut 0.2s both ease-in;}*/
+.ng-leave           { animation: fadeOut 0.2s both ease-in}*/
+

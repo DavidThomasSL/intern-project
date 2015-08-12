@@ -154,6 +154,7 @@ module.exports = function(port, enableLogging) {
                 room.broadcastRoom('ROOM details');
             }
 
+            user.readyToProceed = false;
             user.roomId = "";
             user.sendUserDetails();
 
@@ -399,6 +400,9 @@ module.exports = function(port, enableLogging) {
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
                 room.removeUser(user);
+
+                user.readyToProceed = false;
+
                 logger.debug("Removing player from room" + room.id);
             } else {
                 logger.debug("User was not in a room");
