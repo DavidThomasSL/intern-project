@@ -42,7 +42,7 @@ ClonageApp.directive('userProfile', function() {
 			}
 
 			canvas.loadFromDatalessJSON(imageData, function() {
-				scaleCanvas(0.5, 0.5);
+				scaleCanvas(0.4, 0.4);
 			});
 
 			function scaleCanvas(xScale, yScale) {

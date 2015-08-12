@@ -200,6 +200,8 @@ body, html {
 
 /* Center the fabric container in the page */
 .canvas-container {
+  width: 70%;
+  height: 70%;
   margin: 0 auto;
 }
 .table td {
