@@ -15,6 +15,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var maxRounds = 0; //variable holding the number of rounds wanted
 	var currentFilledInQuestion = "";
 	var countdown = undefined;
+	var votes = [];
 
 
 	//call function that emits to server the answer that was just submitted
@@ -138,8 +139,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
         var voted = false;
 
-        if (playerRoundResults.length > 0) {
-            playerRoundResults.forEach( function(vote) {
+        if (votes.length > 0) {
+            votes.forEach( function(vote) {
                 if (vote.playersWhoVotedForThis.length > 0) {
                     vote.playersWhoVotedForThis.forEach ( function(player) {
                         if (player === user)
@@ -172,18 +173,19 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		if (countdown === undefined) {
 			answers = [];
 			voteCounter = 0;
-			playerRoundResults = [];
+			votes = [];
 		}
 	}
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
 		countdown = data.countdown;
-		playerRoundResults = [];
+		votes = [];
 	}
 
 	function _setPlayerRoundResults(data) {
 		playerRoundResults = data.results;
+		votes = playerRoundResults;
 		voteCounter = data.voteNumber;
 	}
 
