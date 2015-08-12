@@ -60,16 +60,38 @@ module.exports = function(data) {
 				// trigger callback so the server sees the time has ran out
 				stopTimer();
 
-				// resending the round result data if the timer ends
-				var roundData = {
-					results: rounds[roundCount - 1].results,
-					voteCounter:0
+				// if no votes have been submitted then need to build a new results array for the results screen
+				// this results object will just contain the players and what answers they submitted with a blank
+				// playersWhoVotedForThis array.
+				var currentResults = rounds[roundCount - 1].results;
+				if (currentResults.length === 0){
+					currentResults  = buildBlankResults();
 				}
+				var roundData = {
+					results: currentResults,
+					voteCounter:0
+				};
 				callback(roundData);
 			}
 
 		}, 1000);  // 1000 will  run it every 1 second
 
+	};
+
+	var buildBlankResults = function() {
+
+		var currentRound = rounds[roundCount - 1];
+		var results = [];
+
+		currentRound.answers.forEach(function(currentAnswer){
+			var result = {
+				player:currentAnswer.player,
+				answersText:currentAnswer.answersText,
+				playersWhoVotedForThis:[]
+			};
+			results.push(result);
+		});
+		return results;
 	};
 
 	/*
