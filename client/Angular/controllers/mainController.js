@@ -16,41 +16,12 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         check if a certain user had submitted an answer yet
         function called in order to visualise on the timer when a certain player has submited
     */
-    $scope.hasSubmitted = function(user) {
-
-        var submitted = false;
-
-        if (gameService.getAnswers().length > 0) {
-            gameService.getAnswers().forEach( function(answer){
-                if (answer.player.uId === user)
-                    submitted = true;
-            });
-         }
-
-        return submitted;
-    };
-
+    $scope.hasSubmitted = gameService.hasSubmitted;
     /*
         check if a certain user had voted for an answer yet
         function called in order to visualise on the timer when a certain player has submitted
     */
-    $scope.hasVoted = function(user) {
-
-        var voted = false;
-
-        if (gameService.getPlayerRoundResults().length > 0) {
-            gameService.getPlayerRoundResults().forEach( function(vote) {
-                if (vote.playersWhoVotedForThis.length > 0) {
-                    vote.playersWhoVotedForThis.forEach ( function(player) {
-                        if (player === user)
-                            voted = true;
-                    });
-                }
-            });
-         }
-
-        return voted;
-    };
+    $scope.hasVoted = gameService.hasVoted;
 
     //get user rank
     $scope.rank = function() {

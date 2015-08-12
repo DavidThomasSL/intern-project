@@ -112,6 +112,46 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return returnValue;
 	}
 
+	/*
+        check if a certain user had submitted an answer yet
+        function called in order to visualise on the timer when a certain player has submited
+    */
+	function hasSubmitted(user) {
+
+        var submitted = false;
+
+        if (answers.length > 0) {
+            answers.forEach( function(answer){
+                if (answer.player.uId === user)
+                    submitted = true;
+            });
+         }
+
+        return submitted;
+    };
+
+     /*
+        check if a certain user had voted for an answer yet
+        function called in order to visualise on the timer when a certain player has submitted
+    */
+    function hasVoted(user) {
+
+        var voted = false;
+
+        if (playerRoundResults.length > 0) {
+            playerRoundResults.forEach( function(vote) {
+                if (vote.playersWhoVotedForThis.length > 0) {
+                    vote.playersWhoVotedForThis.forEach ( function(player) {
+                        if (player === user)
+                            voted = true;
+                    });
+                }
+            });
+         }
+
+        return voted;
+    };
+
 
 	/*
 	---------------
@@ -218,7 +258,9 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		_setMaxRounds: _setMaxRounds,
 		clearGameData: clearGameData,
 		getCountdown: getCountdown,
-		setCountdown: setCountdown
+		setCountdown: setCountdown,
+		hasVoted: hasVoted,
+		hasSubmitted: hasSubmitted
 	};
 
 }]);
