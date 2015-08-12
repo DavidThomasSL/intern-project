@@ -12,6 +12,24 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         gameService.sendReadyStatus($scope.roomId(), botsEnabled);
     };
 
+    $scope.hasSubmitted = function(user) {
+        console.log("called hasSubmitted");
+        console.log("user : " + user);
+
+        var submitted = false;
+
+        if (gameService.getAnswers().length > 0) {
+            console.log("found answers");
+        gameService.getAnswers().forEach( function(answer){
+            console.log("answer : " + answer);
+            if (answer.player.uId === user)
+                submitted = true;
+        });
+    } else console.log("length is 0");
+        console.log(submitted);
+        return submitted;
+    };
+
     //get user rank
     $scope.rank = function() {
         var playerId = userService.getUserId();

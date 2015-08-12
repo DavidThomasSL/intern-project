@@ -19,4 +19,14 @@
     </div>
 
     <div class="progress"> <div ng-class="counter>15 ? 'progress-bar progress-bar-striped active' : ( counter>5 ? 'progress-bar progress-bar-warning progress-bar-striped active' : 'progress-bar progress-bar-danger progress-bar-striped active' ) " style="width: {{counter*3.33}}%;"> <p ng-bind="counter"></p></div> </div>
+
+    <div class="col-md-3 text-center" ng-repeat="user in getUsersInRoom()">
+        <div id="user-panel" class="panel panel-default" ng-class="{'player-ready': hasSubmitted(user.uId)}">
+            <div class="panel-body">
+                <user-profile control="user.canvasControl" ></user-profile>
+                {{user.name}}
+                <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left:20px"></span>
+            </div>
+        </div>
+    </div>
 </div>
