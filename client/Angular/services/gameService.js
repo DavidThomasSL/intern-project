@@ -61,6 +61,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return (cardReplaceCost * cardsToReplace.length);
 	}
 
+	function getReplaceCostPerCard() {
+		return cardReplaceCost;
+	}
+
 	//get the current question being asked, object contains text and amount of answers to pick
 	function getCurrentQuestion() {
 		return currentQuestion;
@@ -276,6 +280,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
 		getCurrentReplaceCost: getCurrentReplaceCost,
+		getReplaceCostPerCard: getReplaceCostPerCard,
 		sendReadyStatus: sendReadyStatus,
 		submitChoice: submitChoice,
 		submitVote: submitVote,

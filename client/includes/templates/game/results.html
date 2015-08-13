@@ -39,11 +39,11 @@
         </div>
         <div id="replace-cards-container" style="margin-top:30px;">
             <div class="col-md-12 text-center">
-                <button ng-hide="replaceToggle === true"type="button" class="btn btn-lg btn-success" ng-click="replaceToggle=true">Select the cards you want to replace</button>
+                <button ng-hide="replaceToggle === true"type="button" class="btn btn-lg btn-success" ng-click="replaceToggle=true">Replace Cards</button>
             </div>
             <div id="user-hand-container" ng-show="replaceToggle === true">
                 <div class="row">
-                    <h4> Replace cards</h4>
+                    <h4>Select the cards you want to replace ({{replaceCostPerCard()}} points per card)</h4>
                     <div class="col-md-12 text-center" ng-repeat="answer in userHand()">
                         <div class="card-text-container">
                             <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="replaceCardsSelect(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
