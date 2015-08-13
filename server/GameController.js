@@ -7,19 +7,18 @@ var CardController = require('./CardController');
 module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
-	var cardController; // holds the white and black cards
-	var roundCount = 0;
-	var maxRounds = 8;
-	var rounds = [];
-	var POINTS_PER_VOTE = 50;
-	var blackCardsMaster = [];
-	var whiteCardsMaster = [];
-	var blackCardsCurrent = [];
-	var whiteCardsCurrent = [];
-	var HANDSIZE = 10; //Number of white cards a user should always have
-	var BOT_NUMBER = 0;
 	var bots = [];
+
+	var cardController; // holds the white and black cards
+	var rounds = [];
+
 	var voteNumber;
+	var roundCount = 0;
+
+	var MAX_ROUNDS = 8;
+	var BOT_NUMBER = 0;
+	var POINTS_PER_VOTE = 50;
+	var HANDSIZE = 10; //Number of white cards a user should always have
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -135,7 +134,7 @@ module.exports = function(data) {
 	*/
 	var newRound = function(callback) {
 
-		var gameOver = (roundCount >= maxRounds);
+		var gameOver = (roundCount >= MAX_ROUNDS);
 		var data;
 
 		// Check if game over
@@ -166,7 +165,7 @@ module.exports = function(data) {
 				players: players,
 				roundQuestion: round.question,
 				round: roundCount,
-				maxRounds: maxRounds,
+				maxRounds: MAX_ROUNDS,
 				gameIsOver: false
 			};
 		}
@@ -391,7 +390,7 @@ module.exports = function(data) {
 			data: {
 				question: currentRound.question,
 				round: currentRound.count,
-				maxRounds: maxRounds,
+				maxRounds: MAX_ROUNDS,
 				countdown: count
 			}
 		};
