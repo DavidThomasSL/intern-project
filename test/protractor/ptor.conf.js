@@ -12,7 +12,7 @@ exports.config = {
 		'afterRoundSpec.js',
 		'afterGameSpec.js',
 		'botsSpec.js'
-		],
+	],
 	baseUrl: 'http://localhost:8080/',
 	params: {
 		name: 'CLONAGE'
@@ -22,6 +22,7 @@ exports.config = {
 		jasmine.getEnv().addReporter(new SpecReporter({
 			displayStacktrace: true
 		}));
+		jasmine.getEnv().defaultTimeoutInterval = 30000;
 	},
 	capabilities: {
 		'browserName': 'chrome',
