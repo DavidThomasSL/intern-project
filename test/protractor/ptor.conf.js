@@ -30,6 +30,6 @@ exports.config = {
 		}
 	},
 	framework: 'jasmine2',
-	getPageTimeout: 10000,
-	allScriptsTimeout: 10000
+	getPageTimeout: 20000,
+	allScriptsTimeout: 20000
 };
