@@ -8,8 +8,9 @@ function Player(user) {
 	self.points = 0;
 	self.rank = "";
 	self.connectedToServer = true;
+	self.isBot = false;
 
-	self.dealUserHand = function(handSize, whiteCards) {
+	self.dealHand = function(handSize, whiteCards) {
 		for (var i = 0; i < handSize; i++) {
 			addCardToHand(whiteCards);
 		}
@@ -32,6 +33,20 @@ function Player(user) {
 
 	self.removePoints = function(points) {
 		self.points = self.points - points;
+	};
+
+	// Used to get a random card from the hand
+	// Called by bots
+	self.pickRandomCard = function(whiteCards) {
+
+		// Pick Random one
+		var index = Math.floor(Math.random() * self.hand.length);
+		var randomAns = self.hand[index];
+
+		// Get a new card to the hand
+		self.updateHand(randomAns, whiteCards);
+
+		return randomAns;
 	};
 
 	function addCardToHand(whiteCards) {
