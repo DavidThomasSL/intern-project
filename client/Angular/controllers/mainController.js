@@ -12,6 +12,17 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         gameService.sendReadyStatus($scope.roomId(), botsEnabled);
     };
 
+    /*
+        check if a certain user had submitted an answer yet
+        function called in order to visualise on the timer when a certain player has submited
+    */
+    $scope.hasSubmitted = gameService.hasSubmitted;
+    /*
+        check if a certain user had voted for an answer yet
+        function called in order to visualise on the timer when a certain player has submitted
+    */
+    $scope.hasVoted = gameService.hasVoted;
+
     //get user rank
     $scope.rank = function() {
         var playerId = userService.getUserId();

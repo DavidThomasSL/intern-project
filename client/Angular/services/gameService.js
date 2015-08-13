@@ -16,6 +16,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var currentFilledInQuestion = "";
 	var countdown = undefined;
 	var cardsToReplace = [];
+	var votes = [];
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
@@ -133,6 +134,46 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return returnValue;
 	}
 
+	/*
+        check if a certain user had submitted an answer yet
+        function called in order to visualise on the timer when a certain player has submited
+    */
+	function hasSubmitted(user) {
+
+        var submitted = false;
+
+        if (answers.length > 0) {
+            answers.forEach( function(answer){
+                if (answer.player.uId === user)
+                    submitted = true;
+            });
+         }
+
+        return submitted;
+    };
+
+     /*
+        check if a certain user had voted for an answer yet
+        function called in order to visualise on the timer when a certain player has submitted
+    */
+    function hasVoted(user) {
+
+        var voted = false;
+
+        if (votes.length > 0) {
+            votes.forEach( function(vote) {
+                if (vote.playersWhoVotedForThis.length > 0) {
+                    vote.playersWhoVotedForThis.forEach ( function(player) {
+                        if (player === user)
+                            voted = true;
+                    });
+                }
+            });
+         }
+
+        return voted;
+    };
+
 
 	/*
 	---------------
@@ -153,16 +194,19 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		if (countdown === undefined) {
 			answers = [];
 			voteCounter = 0;
+			votes = [];
 		}
 	}
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
 		countdown = data.countdown;
+		votes = [];
 	}
 
 	function _setPlayerRoundResults(data) {
 		playerRoundResults = data.results;
+		votes = playerRoundResults;
 		voteCounter = data.voteNumber;
 	}
 
@@ -239,7 +283,9 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		_setMaxRounds: _setMaxRounds,
 		clearGameData: clearGameData,
 		getCountdown: getCountdown,
-		setCountdown: setCountdown
+		setCountdown: setCountdown,
+		hasVoted: hasVoted,
+		hasSubmitted: hasSubmitted
 	};
 
 }]);
