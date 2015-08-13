@@ -32,6 +32,14 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
         gameService.submitVote(enteredAnswer);
     };
 
+    $scope.replaceCardsSelect = function (selectedCardText) {
+        gameService.replaceCardsSelect(selectedCardText)
+    };
+
+    $scope.replaceCardsSubmit = function () {
+        gameService.replaceCardsSubmit();
+    };
+
     $scope.leaveRoom = function() {
         roomService.leaveRoom();
         gameService.clearGameData();

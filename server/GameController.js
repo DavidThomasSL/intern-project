@@ -271,7 +271,8 @@ module.exports = function(data) {
 
 			callback({
 				answers: currentRound.answers,
-				allChoicesSubmitted: allChoicesSubmitted
+				allChoicesSubmitted: allChoicesSubmitted,
+				submittingPlayersNewHand: submittingPlayer.hand
 			});
 		}
 	};
@@ -601,6 +602,16 @@ module.exports = function(data) {
 		}
 	};
 
+	var replaceCards = function(userId, cardsToReplace, callback){
+		var newHand;
+		var player = getPlayerFromId(userId);
+
+		// for (var i =0; i< player.hand.length; i++) {
+		// 	if
+		// }
+		// replace all request cards with a set of new cards
+	};
+
 	// TO DO : check game state before every move!
 
 	function setAllPlayersAbleToSubmit() {
@@ -730,15 +741,25 @@ module.exports = function(data) {
 
 		allPlayers.forEach(function(player) {
 			if (player.uId === userId) {
-				player.hand = player.hand.filter(function(card) {
-					if (card !== usedCard)
-						return card;
-				});
+
 				var index = Math.floor((Math.random() * whiteCardsCurrent.length));
-				card = whiteCardsCurrent[index];
+				newCard = whiteCardsCurrent[index];
 				whiteCardsCurrent.splice(index, 1);
 				//removing dealt card from card list
-				player.hand.push(card);
+
+				//replaces the new card in the same position of the old card
+				//only replaces the card if the old one can be found in the hand
+				var indexOfUsedCard = player.hand.indexOf(usedCard)
+				if(indexOfUsedCard!==-1){
+					player.hand[indexOfUsedCard] = newCard;
+				}
+				// player.hand = player.hand.filter(function(card) {
+				// 	if (card !== usedCard)
+				// 		return card;
+				// });
+
+
+				// player.hand.push(card);
 			}
 		});
 	};

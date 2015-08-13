@@ -226,6 +226,16 @@ module.exports = function(port, enableLogging) {
             }
         });
 
+        socket.on('GAME replace cards', function(data) {
+            var room = getRoomFromId(user.roomId);
+
+            room.gameController.replaceCards(user.uId, data.cardsToReplace, function(newHand) {
+                user.emit('USER hand', {
+                    hand: newHand
+                });
+            });
+        });
+
         /*
             Starts a new game for the room
 
@@ -336,6 +346,11 @@ module.exports = function(port, enableLogging) {
                 //sends the list of answers each time someone submits one
                 room.broadcastRoom("GAME answers", {
                     answers: data.answers
+                });
+
+                //immediately updates the hand of the player who submitted the answer
+                user.emit('USER hand', {
+                    hand: data.submittingPlayersNewHand
                 });
 
                 // once everyone submitted an answer

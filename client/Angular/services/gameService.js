@@ -15,7 +15,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var maxRounds = 0; //variable holding the number of rounds wanted
 	var currentFilledInQuestion = "";
 	var countdown = undefined;
-
+	var cardsToReplace = [];
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
@@ -34,6 +34,24 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	function submitVote(enteredAnswer) {
 		_emitVote(enteredAnswer);
 	}
+
+	function replaceCardsSelect(selectedCardText) {
+		//adds selected cards to the array of cards we want to submit
+		//if the card is already in the array then remove it
+		var i = cardsToReplace.indexOf(selectedCardText);
+		if (i === -1){
+			cardsToReplace.push(selectedCardText);
+		} else {
+			cardsToReplace.splice(i, 1);
+		}
+		console.log(cardsToReplace);
+	};
+
+	function replaceCardsSubmit() {
+		sendMessage("GAME replace cards", {
+			cardsToReplace : cardsToReplace
+		});
+	};
 
 	//get the current question being asked, object contains text and amount of answers to pick
 	function getCurrentQuestion() {
@@ -210,6 +228,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		sendReadyStatus: sendReadyStatus,
 		submitChoice: submitChoice,
 		submitVote: submitVote,
+		replaceCardsSelect:replaceCardsSelect,
+		replaceCardsSubmit:replaceCardsSubmit,
 		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
