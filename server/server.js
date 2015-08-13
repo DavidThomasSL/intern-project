@@ -102,7 +102,6 @@ module.exports = function(port, enableLogging) {
         socket.on('USER set name', function(msg) {
             user.name = msg.name;
             user.sendUserDetails();
-
             putUserInJoining();
 
             logger.debug("User set name as: " + msg.name);
@@ -111,9 +110,10 @@ module.exports = function(port, enableLogging) {
         socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
-            logger.debug("User set name as: " + data.name);
             user.sendUserDetails();
             putUserInJoining();
+
+            logger.debug("User set name as: " + data.name);
         });
 
         /*
@@ -145,8 +145,6 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('ROOM leave', function(msg) {
 
-            var removed = false;
-
             var room = getRoomFromId(msg.roomId);
 
             if (room !== undefined) {
@@ -154,6 +152,7 @@ module.exports = function(port, enableLogging) {
                 room.broadcastRoom('ROOM details');
             }
 
+            user.readyToProceed = false;
             user.roomId = "";
             user.sendUserDetails();
 
@@ -331,8 +330,6 @@ module.exports = function(port, enableLogging) {
 
                 logger.info("Starting new round in room " + room.id);
             });
-
-
         }
 
         // submit answer
@@ -428,6 +425,9 @@ module.exports = function(port, enableLogging) {
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
                 room.removeUser(user);
+
+                user.readyToProceed = false;
+
                 logger.debug("Removing player from room" + room.id);
             } else {
                 logger.debug("User was not in a room");
@@ -559,8 +559,6 @@ module.exports = function(port, enableLogging) {
         });
         return false;
     }
-
-
 
     server.listen(port, function() {
         var addr = server.address();
