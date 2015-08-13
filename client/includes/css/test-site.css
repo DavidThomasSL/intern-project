@@ -243,6 +243,11 @@ body, html {
   border : none;
 }
 
+.replace-card-submit-button:focus {
+  outline: none;
+  border: none;
+}
+
 
 @media only screen and (max-device-width: 480px) {
   /* Main marketing message and sign up button */
