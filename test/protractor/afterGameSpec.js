@@ -28,7 +28,7 @@ describe('After ending the game', function() {
 			secondClonageUser.ready();
 		});
 
-		jasmine.getEnv().defaultTimeoutInterval = 30000;
+
 		//taking function out of loop as jshint complains
 		var userSubmitAnswer = function(text) {
 			cardsToSubmit = parseInt(text[5]); //PICK X.

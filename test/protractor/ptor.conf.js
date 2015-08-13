@@ -22,7 +22,6 @@ exports.config = {
 		jasmine.getEnv().addReporter(new SpecReporter({
 			displayStacktrace: true
 		}));
-		jasmine.getEnv().defaultTimeoutInterval = 30000;
 	},
 	capabilities: {
 		'browserName': 'chrome',
