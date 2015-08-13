@@ -71,6 +71,8 @@ function Room(roomCode) {
                 error: "in checking if game controller undefined"
             });
 
+            self.broadcastRoom('ROOM messages');
+
             gameInProgress = false;
 
         } else {
