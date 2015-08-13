@@ -42,6 +42,16 @@ describe('When playing a game', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
 	});
 
+	it('can see a timer', function() {
+		var timer = firstClonageUser.element(by.id('countdown'));
+		expect(timer.isPresent()).toBe(true);
+	});
+
+	it('can have a counter that indicates number of seconds left', function() {
+		var counter = firstClonageUser.element(by.binding('counter'));
+		expect(counter.isPresent()).toBeLessThan(31);
+	});
+
 	it('can be redirected to a voting page once everyone submitted', function() {
 		secondClonageUser.submitFirstAnswers(cardsToSubmit);
 		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
