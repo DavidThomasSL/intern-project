@@ -137,6 +137,17 @@ module.exports = function(port, enableLogging) {
             putUserInRoom(msg.roomId);
         });
 
+        /*
+            send message in room loby
+            and broadcast that message to everyone in the room
+        */
+        socket.on('USER send message', function(msg) {
+
+            var room = getRoomFromId(msg.roomId);
+
+            if ( room.submitMessage(msg) === true)
+                room.broadcastRoom('ROOM messages');
+        });
 
         /*
             Removes a given user from a given room

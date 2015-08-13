@@ -4,6 +4,7 @@ function Room(roomCode) {
     self.usersInRoom = [];
     self.gameController = undefined;
     self.botNumber = 0;
+    self.messages = [];
 
     /*
         Returns a user from the room
@@ -18,6 +19,22 @@ function Room(roomCode) {
         });
 
         return user;
+    };
+
+    self.submitMessage = function(data) {
+
+        if (self.gameController === undefined) {
+            var message = {
+                playerName: data.playerName,
+                messageText: data.messageText
+            };
+
+            self.messages.push(message);
+
+            return true;
+        }
+
+        return false;
     };
 
 
@@ -147,6 +164,11 @@ function Room(roomCode) {
                 usersInRoom: usersInRoomJSON,
                 botNumber: self.botNumber
             };
+
+        }
+
+        else if (eventName === "ROOM messages") {
+            data = self.messages ;
 
         }
 

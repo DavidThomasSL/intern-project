@@ -12,6 +12,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var usersInRoom = [];
     var errorMessage = "";
     var botNumber = 0;
+    var messages = [];
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -42,13 +43,22 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
 
     function setBotNumber (number) {
         botNumber = number;
-        sendMessage('ROOM setBotNumber', {botNumber: botNumber, roomId: roomId});
+        sendMessage('ROOM setBotNumber', {
+            botNumber: botNumber,
+            roomId: roomId
+        });
         return;
     }
 
     function getBotNumber() {
         return botNumber;
     }
+
+    function getMessages() {
+        //console.log(messages);
+        return messages;
+    }
+
 
     //----------------------
     //SOCKET EVENT LISTENERS
@@ -85,6 +95,10 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         });
     }
 
+    function _setMessages(data) {
+        messages = data ;
+    }
+
     function _setError(data) {
         errorMessage = data.msg;
     }
@@ -100,6 +114,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     communicationService.registerListener("ROOM", [{
         eventName: "details",
         eventAction: _setRoomDetails
+    }, {
+        eventName: "messages",
+        eventAction: _setMessages
     }]);
 
     /*
@@ -124,7 +141,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         setBotNumber: setBotNumber,
         getBotNumber: getBotNumber,
         getRoomId: getRoomId,
-        _setRoomDetails: _setRoomDetails
+        _setRoomDetails: _setRoomDetails,
+        _setMessages: _setMessages,
+        getMessages: getMessages
     };
 
 }]);
