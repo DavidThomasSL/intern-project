@@ -18,7 +18,7 @@ function User(socket) {
 
 		//get the users data as an object first
 		var data = self.getUserDetails();
-		self.socket.emit("USER details", {
+		self.emit("USER details", {
 			user: data
 		});
 	};
@@ -27,7 +27,6 @@ function User(socket) {
 		Emits an event with given data on the user's socket
 	*/
 	self.emit = function(eventName, data) {
-
 		self.socket.emit(eventName, data);
 	};
 
