@@ -73,10 +73,6 @@ body, html {
 
 /* Custom page footer */
 .footer {
-  /*position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);*/
   padding-top: 19px;
   color: #777;
   border-top: 1px solid #e5e5e5;
@@ -210,9 +206,22 @@ body, html {
   display: flex;
 }
 
-.panel-body p {
-  margin-top: 70px;
-  /*padding-right: 200px;*/
+
+.flex-column {
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+.flex-row {
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+.flex-align-center {
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
 }
 
 .flex1 {
@@ -224,6 +233,11 @@ body, html {
   -webkit-flex: 2;
           flex: 2;
 }
+
+.player-not-submitted {
+  opacity: 0.2;
+}
+
 .ready-button:focus {
   outline: none;
   border : none;

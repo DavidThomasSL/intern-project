@@ -7,7 +7,8 @@ ClonageApp.directive('userProfile', function() {
 	return {
 
 		scope: {
-			control: '='
+			control: '=',
+			scale: '='
 		},
 		transclude: true,
 		replace: true,
@@ -42,7 +43,7 @@ ClonageApp.directive('userProfile', function() {
 			}
 
 			canvas.loadFromDatalessJSON(imageData, function() {
-				scaleCanvas(0.5, 0.5);
+				scaleCanvas(scope.scale, scope.scale);
 			});
 
 			function scaleCanvas(xScale, yScale) {
