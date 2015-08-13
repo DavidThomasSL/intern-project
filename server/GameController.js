@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 
+var Player = require('./Player');
+
 module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
@@ -248,8 +250,10 @@ module.exports = function(data) {
 			currentRound.answers.push(ans);
 
 			//Update this players hand with a new card, as they have just played one
+			// Loop throughas there can be multiple cards played on one answer
 			answersText.forEach(function (answer){
-				updateHand(playerId, answer);
+				submittingPlayer.updateHand(answer, whiteCardsCurrent);
+				// updateHand(playerId, answer);
 			});
 
 			var allChoicesSubmitted;
@@ -748,17 +752,10 @@ module.exports = function(data) {
 		Adds them to the player list
 	*/
 	var setupPlayer = function(user) {
+		var player = new Player(user);
 
-		var player = {
-			uId: user.uId,
-			name: user.name,
-			hand: dealUserHand(),
-			hasSubmitted: false,
-			points: 0,
-			rank: "",
-			connectedToServer: true
-		};
-
+		// Removes the cards from list of possible cards for other player
+		player.dealUserHand(HANDSIZE, whiteCardsCurrent);
 		players.push(player);
 	};
 
