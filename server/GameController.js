@@ -210,7 +210,7 @@ module.exports = function(data) {
 			//Update this players hand with a new card, as they have just played one
 			// Loop throughas there can be multiple cards played on one answer
 			answersText.forEach(function(answer) {
-				submittingPlayer.updateHand(answer, cardController.whiteCards);
+				submittingPlayer.updateHand(answer);
 			});
 
 			var allChoicesSubmitted;
@@ -443,9 +443,9 @@ module.exports = function(data) {
 				fakePlayer = new Player({
 					uId: i,
 					name: "BOT " + i
-				});
+				}, cardController);
 
-				fakePlayer.dealHand(HANDSIZE, cardController.whiteCards);
+				fakePlayer.dealHand(HANDSIZE);
 				fakePlayer.isBot = true;
 				bots.push(fakePlayer);
 			} else {
@@ -454,7 +454,7 @@ module.exports = function(data) {
 
 			for (var j = 0; j < answersToPick; j++) {
 				var randomAns = fakePlayer.pickRandomCard();
-				fakePlayer.updateHand(randomAns, cardController.whiteCards);
+				fakePlayer.updateHand(randomAns);
 				randomAnswers.push(randomAns);
 			}
 
@@ -598,10 +598,10 @@ module.exports = function(data) {
 		Adds them to the player list
 	*/
 	var setupPlayer = function(user) {
-		var player = new Player(user);
+		var player = new Player(user, cardController);
 
 		// Removes the cards from list of possible cards for other player
-		player.dealHand(HANDSIZE, cardController.whiteCards);
+		player.dealHand(HANDSIZE);
 		players.push(player);
 	};
 

@@ -23,6 +23,15 @@ function CardController(afterLoad) {
 		return question;
 	};
 
+	self.getWhiteCard = function() {
+		// removing dealt card from card list
+		var index = Math.floor((Math.random() * self.whiteCards.length));
+		card = self.whiteCards[index];
+		self.whiteCards.splice(index, 1);
+
+		return card;
+	};
+
 	/*
 		Load the Black and White Cards from Json
 	*/

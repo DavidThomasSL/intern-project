@@ -1,4 +1,4 @@
-function Player(user) {
+function Player(user, cardController) {
 
 	var self = this;
 	self.uId = user.uId;
@@ -9,14 +9,15 @@ function Player(user) {
 	self.rank = "";
 	self.connectedToServer = true;
 	self.isBot = false;
+	self.cardController = cardController;
 
-	self.dealHand = function(handSize, whiteCards) {
+	self.dealHand = function(handSize) {
 		for (var i = 0; i < handSize; i++) {
-			addCardToHand(whiteCards);
+			addCardToHand();
 		}
 	};
 
-	self.updateHand = function(usedCard, whiteCards) {
+	self.updateHand = function(usedCard) {
 
 		// Remove used card from hand
 		self.hand = self.hand.filter(function(card) {
@@ -24,7 +25,7 @@ function Player(user) {
 				return card;
 		});
 
-		addCardToHand(whiteCards);
+		addCardToHand();
 	};
 
 	self.addPoints = function(points) {
@@ -46,13 +47,8 @@ function Player(user) {
 		return randomAns;
 	};
 
-	function addCardToHand(whiteCards) {
-
-		// removing dealt card from card list
-		var index = Math.floor((Math.random() * whiteCards.length));
-		card = whiteCards[index];
-		whiteCards.splice(index, 1);
-
+	function addCardToHand() {
+		var card = self.cardController.getWhiteCard();
 		self.hand.push(card);
 	}
 }
