@@ -33,13 +33,7 @@
         </div>
         <div class="row">
             <div class="col-md-6 text-center" ng-repeat="user in getUsersInRoom()">
-                <div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
-                    <div class="panel-body">
-                        <user-profile control="user.canvasControl" ></user-profile>
-                        {{user.name}}
-                        <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left:20px"></span>
-                    </div>
-                </div>
+                <ng-include src="'includes/templates/user/userPanelLarge.html'"></ng-include>
             </div>
         </div>
     </div>

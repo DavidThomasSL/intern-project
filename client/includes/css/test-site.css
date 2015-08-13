@@ -73,10 +73,6 @@ body, html {
 
 /* Custom page footer */
 .footer {
-  /*position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);*/
   padding-top: 19px;
   color: #777;
   border-top: 1px solid #e5e5e5;
@@ -164,12 +160,6 @@ body, html {
   font-size: 90px;
 }
 
-.white-card {
-  position: relative;
-  min-height: 150px;
-  font-size: 17px;
-}
-
 .name-submit-container {
   margin-top: 30px;
   margin-bottom: 100px;
@@ -209,6 +199,39 @@ body, html {
 .player-ready {
   color:#ffffff;
   background-color: #5cb85c;
+}
+
+.panel-body {
+  display: -webkit-flex;
+  display: flex;
+}
+
+
+.flex-column {
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+.flex-row {
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+.flex-align-center {
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+.flex1 {
+  -webkit-flex: 1;
+          flex: 1;
+}
+
+.flex2 {
+  -webkit-flex: 2;
+          flex: 2;
 }
 
 .player-not-submitted {
@@ -281,4 +304,5 @@ body, html {
 
 
 /*.ng-enter           { animation: fadeIn 0.2s both ease-in;}
-.ng-leave           { animation: fadeOut 0.2s both ease-in;}*/
+.ng-leave           { animation: fadeOut 0.2s both ease-in}*/
+

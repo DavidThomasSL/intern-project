@@ -122,10 +122,6 @@ function Room(roomCode) {
             self.gameController.disconnectPlayer(user.uId);
         }
 
-        self.usersInRoom = self.usersInRoom.filter(function(userInRoom) {
-            return userInRoom.uId !== user.uId;
-        });
-
         self.broadcastRoom("ROOM details");
     };
 
