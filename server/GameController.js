@@ -753,7 +753,7 @@ module.exports = function(data) {
 
 				//replaces the new card in the same position of the old card
 				//only replaces the card if the old one can be found in the hand
-				var indexOfUsedCard = player.hand.indexOf(usedCard)
+				var indexOfUsedCard = player.hand.indexOf(usedCard);
 				if (indexOfUsedCard !== -1) {
 					player.hand[indexOfUsedCard] = newCard;
 				} else {

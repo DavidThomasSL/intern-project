@@ -63,6 +63,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
             (=> page is loaded for the first time not refreshed)
         */
         if (gameService.getCountdown() === undefined) {
+            console.log("restarting counter");
             $scope.counter = 30;
         }
 
