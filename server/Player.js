@@ -37,14 +37,11 @@ function Player(user) {
 
 	// Used to get a random card from the hand
 	// Called by bots
-	self.pickRandomCard = function(whiteCards) {
+	self.pickRandomCard = function() {
 
 		// Pick Random one
 		var index = Math.floor(Math.random() * self.hand.length);
 		var randomAns = self.hand[index];
-
-		// Get a new card to the hand
-		self.updateHand(randomAns, whiteCards);
 
 		return randomAns;
 	};

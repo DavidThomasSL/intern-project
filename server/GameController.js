@@ -2,10 +2,12 @@ var fs = require('fs');
 var path = require('path');
 
 var Player = require('./Player');
+var CardController = require('./CardController');
 
 module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
+	var cardController; // holds the white and black cards
 	var roundCount = 0;
 	var maxRounds = 8;
 	var rounds = [];
@@ -113,35 +115,15 @@ module.exports = function(data) {
 	*/
 	var initialize = function(room, callback) {
 
-		path.join(__dirname, './BlackWhiteCards.json');
+		cardController = new CardController(function() {
+			room.usersInRoom.forEach(function(user) {
+				setupPlayer(user);
+			});
 
-		//Read in the Black and white cards
-		fs.readFile(__dirname + '/BlackWhiteCards.json', 'utf8', function(err, data) {
-			if (err) {
-				console.log(err);
-				throw err;
-			} else {
+			BOT_NUMBER = room.botNumber;
 
-				//round 1 started in phase 1 of the game: players are submitting their choices
-
-				//set up each user
-				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards;
-				// blackCardsMaster = cards.blackCards.filter(function(card) {
-				// 	return (card.pick !== 1);
-				// });
-				whiteCardsMaster = cards.whiteCards;
-				blackCardsCurrent = blackCardsMaster.slice(0);
-				whiteCardsCurrent = whiteCardsMaster.slice(0);
-
-				room.usersInRoom.forEach(function(user) {
-					setupPlayer(user);
-				});
-
-				BOT_NUMBER = room.botNumber;
-
-				callback();
-			}
+			//Call back to server after finish setting up
+			callback();
 		});
 	};
 
@@ -171,7 +153,7 @@ module.exports = function(data) {
 
 			var round = {
 				count: roundCount,
-				question: getRoundQuestion(),
+				question: cardController.getQuestion(),
 				answers: [],
 				results: []
 			};
@@ -191,27 +173,6 @@ module.exports = function(data) {
 		callback(data);
 	};
 
-	/*
-		Returns a random questions
-	*/
-	var getRoundQuestion = function() {
-
-		if (blackCardsCurrent.length <= 0) {
-			blackCardsMaster.forEach(function(card) {
-				blackCardsCurrent.push(card);
-			});
-		} //refreshing the card list if we reach the end of questions;
-
-		var index = Math.floor((Math.random() * blackCardsCurrent.length));
-
-		var question = blackCardsCurrent[index];
-		blackCardsCurrent.splice(index, 1);
-		//removing dealt card from card list
-
-
-		return question;
-	};
-
 
 	/*
 		Submit a user answer to a question
@@ -228,8 +189,6 @@ module.exports = function(data) {
 	var submitAnswer = function(playerId, answersText, callback) {
 
 		var submittingPlayer = getPlayerFromId(playerId);
-
-		//TO DO: before submitting check that the player hasn't submitted yet
 
 		if (submittingPlayer.hasSubmitted) {
 			//can't submit twice
@@ -251,7 +210,7 @@ module.exports = function(data) {
 			//Update this players hand with a new card, as they have just played one
 			// Loop throughas there can be multiple cards played on one answer
 			answersText.forEach(function(answer) {
-				submittingPlayer.updateHand(answer, whiteCardsCurrent);
+				submittingPlayer.updateHand(answer, cardController.whiteCards);
 			});
 
 			var allChoicesSubmitted;
@@ -325,15 +284,16 @@ module.exports = function(data) {
 
 				// Only add result if player was found with that id
 				if (answerPlayer !== undefined) {
+
 					result = {
 						player: answerPlayer,
 						answersText: answer.answersText,
 						playersWhoVotedForThis: answer.playersVote,
 
 					};
+
 					currentRound.results.push(result);
 				}
-
 			});
 
 			var allVotesSubmitted;
@@ -485,16 +445,16 @@ module.exports = function(data) {
 					name: "BOT " + i
 				});
 
-				fakePlayer.dealHand(HANDSIZE, whiteCardsCurrent);
+				fakePlayer.dealHand(HANDSIZE, cardController.whiteCards);
 				fakePlayer.isBot = true;
-
 				bots.push(fakePlayer);
 			} else {
 				fakePlayer = bots[i];
 			}
 
 			for (var j = 0; j < answersToPick; j++) {
-				var randomAns = fakePlayer.pickRandomCard(whiteCardsCurrent);
+				var randomAns = fakePlayer.pickRandomCard();
+				fakePlayer.updateHand(randomAns, cardController.whiteCards);
 				randomAnswers.push(randomAns);
 			}
 
@@ -506,7 +466,6 @@ module.exports = function(data) {
 				rank: ""
 			};
 
-			//Get the current round object, which will hold all the answers for that round
 			round.answers.push(ans);
 		}
 	};
@@ -530,8 +489,6 @@ module.exports = function(data) {
 		});
 		return counter;
 	};
-
-
 
 	/*
 	update to the next GameState depending on the current state
@@ -644,7 +601,7 @@ module.exports = function(data) {
 		var player = new Player(user);
 
 		// Removes the cards from list of possible cards for other player
-		player.dealHand(HANDSIZE, whiteCardsCurrent);
+		player.dealHand(HANDSIZE, cardController.whiteCards);
 		players.push(player);
 	};
 
