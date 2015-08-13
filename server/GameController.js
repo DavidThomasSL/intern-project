@@ -430,12 +430,11 @@ module.exports = function(data) {
 	var addFakeAnswers = function(round) {
 
 		var answersToPick = round.question.pick;
-		var randomAnswers = [];
-		var fakePlayer;
 		var ans;
 
 		for (var i = 0; i < BOT_NUMBER; i++) {
 
+			var fakePlayer;
 			// Ethier create new bots or use the exisiting ones
 			if (bots.length === i) {
 
@@ -451,11 +450,17 @@ module.exports = function(data) {
 				fakePlayer = bots[i];
 			}
 
+			var randomAnswers = [];
+			var randomAns;
+
 			for (var j = 0; j < answersToPick; j++) {
-				var randomAns = fakePlayer.pickRandomCard();
+				randomAns = fakePlayer.pickRandomCard();
 				fakePlayer.updateHand(randomAns);
+				console.log(randomAns);
 				randomAnswers.push(randomAns);
 			}
+
+			// console.log(randomAnswers);
 
 			// Build the submitted answer
 			ans = {
@@ -464,6 +469,8 @@ module.exports = function(data) {
 				playersVote: [],
 				rank: ""
 			};
+
+			console.log(ans);
 
 			round.answers.push(ans);
 		}
