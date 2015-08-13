@@ -253,7 +253,6 @@ module.exports = function(data) {
 			// Loop throughas there can be multiple cards played on one answer
 			answersText.forEach(function (answer){
 				submittingPlayer.updateHand(answer, whiteCardsCurrent);
-				// updateHand(playerId, answer);
 			});
 
 			var allChoicesSubmitted;
@@ -702,49 +701,6 @@ module.exports = function(data) {
 				allPlayers[j].rank = allPlayers[j - 1].rank;
 			}
 		}
-	};
-
-	/*
-		Gives a players an inital set of respones
-	*/
-	var dealUserHand = function() {
-
-		var hand = [];
-		for (var i = 0; i < HANDSIZE; i++) {
-
-			var index = Math.floor((Math.random() * whiteCardsCurrent.length));
-
-			var card = whiteCardsCurrent[index];
-			whiteCardsCurrent.splice(index, 1);
-			//removing dealt card from card list
-
-			hand.push(card);
-		}
-
-		return hand;
-	};
-
-	/*
-	update a users hand by replacing the used card with a new random one
-	*/
-	var updateHand = function(userId, usedCard) {
-
-		// Need to look at both bots and player
-		var allPlayers = players.concat(bots);
-
-		allPlayers.forEach(function(player) {
-			if (player.uId === userId) {
-				player.hand = player.hand.filter(function(card) {
-					if (card !== usedCard)
-						return card;
-				});
-				var index = Math.floor((Math.random() * whiteCardsCurrent.length));
-				card = whiteCardsCurrent[index];
-				whiteCardsCurrent.splice(index, 1);
-				//removing dealt card from card list
-				player.hand.push(card);
-			}
-		});
 	};
 
 	/*
