@@ -19,12 +19,12 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
-		var submissionState = dynamicTextService.getSubmissionState(currentQuestion,enteredAnswer,currentlySubmittedAnswers);
+		var submissionState = dynamicTextService.getSubmissionState(currentQuestion, enteredAnswer, currentlySubmittedAnswers);
 		currentlySubmittedAnswers = submissionState.currentlySubmittedAnswers;
 		currentFilledInQuestion = submissionState.currentFilledInQuestion;
 
 		//if enough answers have been selected to fill in the blanks then send off the array
-		if (submissionState.readyToSend){
+		if (submissionState.readyToSend) {
 			_emitChoice(currentlySubmittedAnswers);
 			currentlySubmittedAnswers = [];
 		}
@@ -35,11 +35,12 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		_emitVote(enteredAnswer);
 	}
 
+	//adds selected cards to the array of cards we want to submit
+	//if the card is already in the array then remove it
 	function replaceCardsSelect(selectedCardText) {
-		//adds selected cards to the array of cards we want to submit
-		//if the card is already in the array then remove it
+
 		var i = cardsToReplace.indexOf(selectedCardText);
-		if (i === -1){
+		if (i === -1) {
 			cardsToReplace.push(selectedCardText);
 		} else {
 			cardsToReplace.splice(i, 1);
@@ -47,10 +48,12 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		console.log(cardsToReplace);
 	};
 
+	//sends off all the cards that the user wants to replace and resets array
 	function replaceCardsSubmit() {
 		sendMessage("GAME replace cards", {
-			cardsToReplace : cardsToReplace
+			cardsToReplace: cardsToReplace
 		});
+		cardsToReplace = [];
 	};
 
 	//get the current question being asked, object contains text and amount of answers to pick
@@ -228,8 +231,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		sendReadyStatus: sendReadyStatus,
 		submitChoice: submitChoice,
 		submitVote: submitVote,
-		replaceCardsSelect:replaceCardsSelect,
-		replaceCardsSubmit:replaceCardsSubmit,
+		replaceCardsSelect: replaceCardsSelect,
+		replaceCardsSubmit: replaceCardsSubmit,
 		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,

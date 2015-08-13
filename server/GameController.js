@@ -25,12 +25,12 @@ module.exports = function(data) {
 		'FINAL_RESULTS': 4
 	};
 
-    var GameState = '0';
+	var GameState = '0';
 
 	// true if there is a timer running -> checked in updateGameState
 	// in the case if everyone submitted and game state has changed -> timer needs to stop
 	var timerIsActive = false;
-	var count = 30 ;
+	var count = 30;
 
 	/*
 		holding the function called on a 1sec interval
@@ -40,20 +40,19 @@ module.exports = function(data) {
 	var counter;
 
 	// function to initialise the countdown
-    var startTimer = function(callback) {
+	var startTimer = function(callback) {
 
-    	count = 30 ;
+		count = 30;
 
-	    timerIsActive = true;
-	    setAllPlayersAbleToSubmit();
-		counter = setInterval( function() {
+		timerIsActive = true;
+		setAllPlayersAbleToSubmit();
+		counter = setInterval(function() {
 
-			count -- ;
+			count--;
 			if (count < 0) {
 				if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
 					updateGameState(POSSIBLE_GAMESTATES.VOTING);
-				}
-				else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+				} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
 					updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
 				}
 				timerIsActive = false;
@@ -64,17 +63,17 @@ module.exports = function(data) {
 				// this results object will just contain the players and what answers they submitted with a blank
 				// playersWhoVotedForThis array.
 				var currentResults = rounds[roundCount - 1].results;
-				if (currentResults.length === 0){
-					currentResults  = buildBlankResults();
+				if (currentResults.length === 0) {
+					currentResults = buildBlankResults();
 				}
 				var roundData = {
 					results: currentResults,
-					voteCounter:0
+					voteCounter: 0
 				};
 				callback(roundData);
 			}
 
-		}, 1000);  // 1000 will  run it every 1 second
+		}, 1000); // 1000 will  run it every 1 second
 
 	};
 
@@ -83,11 +82,11 @@ module.exports = function(data) {
 		var currentRound = rounds[roundCount - 1];
 		var results = [];
 
-		currentRound.answers.forEach(function(currentAnswer){
+		currentRound.answers.forEach(function(currentAnswer) {
 			var result = {
-				player:currentAnswer.player,
-				answersText:currentAnswer.answersText,
-				playersWhoVotedForThis:[]
+				player: currentAnswer.player,
+				answersText: currentAnswer.answersText,
+				playersWhoVotedForThis: []
 			};
 			results.push(result);
 		});
@@ -248,7 +247,7 @@ module.exports = function(data) {
 			currentRound.answers.push(ans);
 
 			//Update this players hand with a new card, as they have just played one
-			answersText.forEach(function (answer){
+			answersText.forEach(function(answer) {
 				updateHand(playerId, answer);
 			});
 
@@ -360,7 +359,7 @@ module.exports = function(data) {
 				// Add the points for the game
 				updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
 
-				voteNumber = 0 ;
+				voteNumber = 0;
 				allVotesSubmitted = true;
 
 			} else {
@@ -569,7 +568,7 @@ module.exports = function(data) {
 	var updateGameState = function(wantedState) {
 		GameState = wantedState;
 
-		if ( timerIsActive ) {
+		if (timerIsActive) {
 			stopTimer();
 		}
 
@@ -586,13 +585,11 @@ module.exports = function(data) {
 
 			penaliseNonVotingPlayers(currentRound.answers);
 
-			voteNumber = 0 ;
+			voteNumber = 0;
 
 			// Update every player's rank in the room
 			setRank();
-		}
-
-		 else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+		} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
 			players.forEach(function(pl) {
 
 				if (pl.hasSubmitted === false) {
@@ -602,14 +599,16 @@ module.exports = function(data) {
 		}
 	};
 
-	var replaceCards = function(userId, cardsToReplace, callback){
+	var replaceCards = function(userId, cardsToReplace, callback) {
 		var newHand;
-		var player = getPlayerFromId(userId);
+		var currentPlayer = getPlayerFromId(userId);
 
-		// for (var i =0; i< player.hand.length; i++) {
-		// 	if
-		// }
-		// replace all request cards with a set of new cards
+		//replace all request cards with a new cards
+		cardsToReplace.forEach(function(cardToReplace) {
+			updateHand(userId, cardToReplace);
+		});
+
+		callback(currentPlayer.hand);
 	};
 
 	// TO DO : check game state before every move!
@@ -655,17 +654,17 @@ module.exports = function(data) {
 	/*
 		finds players haven't voted in a certain round's answer set and takes points off them
 	*/
-	var penaliseNonVotingPlayers = function (answers) {
+	var penaliseNonVotingPlayers = function(answers) {
 		var playersWhoHaventVoted = players.slice();
 		var currentAnswers = answers.slice();
-		currentAnswers.forEach(function (answer) {
+		currentAnswers.forEach(function(answer) {
 			answer.playersVote.forEach(function(votingPlayer) {
 				playersWhoHaventVoted = playersWhoHaventVoted.filter(function(iteratedPlayer) {
 					return (iteratedPlayer.name !== votingPlayer);
 				});
 			});
 		});
-		playersWhoHaventVoted.forEach(function(player){
+		playersWhoHaventVoted.forEach(function(player) {
 			removePoints(player.uId);
 		});
 	};
@@ -750,16 +749,11 @@ module.exports = function(data) {
 				//replaces the new card in the same position of the old card
 				//only replaces the card if the old one can be found in the hand
 				var indexOfUsedCard = player.hand.indexOf(usedCard)
-				if(indexOfUsedCard!==-1){
+				if (indexOfUsedCard !== -1) {
 					player.hand[indexOfUsedCard] = newCard;
+				} else {
+					console.log("Cannot replace card, \"" + usedCard + "\" not found in hand");
 				}
-				// player.hand = player.hand.filter(function(card) {
-				// 	if (card !== usedCard)
-				// 		return card;
-				// });
-
-
-				// player.hand.push(card);
 			}
 		});
 	};
@@ -799,6 +793,7 @@ module.exports = function(data) {
 		initialize: initialize,
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
+		replaceCards: replaceCards,
 		newRound: newRound,
 		updateGameState: updateGameState,
 		startTimer: startTimer,
