@@ -51,7 +51,7 @@
             </div>
             <div id="user-hand-container">
                 <div class="row">
-                    <div class="col-md-12 text-center" ng-repeat="answer in userHand()" data-ng-init="startCountdown()">
+                    <div class="col-md-12 text-center" ng-repeat="answer in userHand()">
                         <div class="card-text-container">
                             <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="replaceCardsSelect(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
                             </button>
