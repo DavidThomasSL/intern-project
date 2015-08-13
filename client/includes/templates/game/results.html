@@ -29,7 +29,7 @@
             <div class="col-md-12 text-center">
                 <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
                 <h4>Waiting for everyone to be ready</h4>
-                <h4>Replace unwanted cards at the bottom of the page</h4>
+                <h4>Replace unwanted cards below</h4>
             </div>
         </div>
         <div class="row">
@@ -44,13 +44,12 @@
             </div>
         </div>
         <div id="replace-cards-container" style="margin-top:30px;">
-            <div class="row">
-                <div="col-md-12 text center">
-                    <h4>Replace cards</h4>
-                </div>
+            <div class="col-md-12 text-center">
+                <button ng-hide="replaceToggle === true"type="button" class="btn btn-lg btn-success" ng-click="replaceToggle=true">Select the cards you want to replace</button>
             </div>
-            <div id="user-hand-container">
+            <div id="user-hand-container" ng-show="replaceToggle === true">
                 <div class="row">
+                    <h4> Replace cards</h4>
                     <div class="col-md-12 text-center" ng-repeat="answer in userHand()">
                         <div class="card-text-container">
                             <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="replaceCardsSelect(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
@@ -59,8 +58,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 text-center">
-                <button id="replace-cards-button" type="button" class="btn btn-lg btn-success" ng-click="replaceCardsSubmit()" >Replace Cards (100 points)</button>
+            <div class="col-md-12 text-center" ng-show="replaceToggle === true">
+                <button id="replace-cards-button" type="button" class="btn btn-lg btn-success" ng-click="replaceCardsSubmit()" >Replace Cards (-{{cardReplaceCost()}} points)</button>
             </div>
         </div>
     </div>

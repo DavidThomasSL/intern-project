@@ -229,9 +229,13 @@ module.exports = function(port, enableLogging) {
         socket.on('GAME replace cards', function(data) {
             var room = getRoomFromId(user.roomId);
 
-            room.gameController.replaceCards(user.uId, data.cardsToReplace, function(newHand) {
+            room.gameController.replaceCards(user.uId, data.cardsToReplace, function(newHand, newResults) {
                 user.emit('USER hand', {
                     hand: newHand
+                });
+                room.broadcastRoom('GAME playerRoundResults', {
+                    results: newResults,
+                    voteNumber:0
                 });
             });
         });
@@ -282,7 +286,8 @@ module.exports = function(port, enableLogging) {
                     room.broadcastRoom("GAME question", {
                         question: data.roundQuestion,
                         round: data.round,
-                        maxRounds: data.maxRounds
+                        maxRounds: data.maxRounds,
+                        cardReplaceCost: data.cardReplaceCost
                     });
                     room.broadcastRoom('ROOM details');
 

@@ -8,6 +8,7 @@ module.exports = function(data) {
 	var maxRounds = 8;
 	var rounds = [];
 	var POINTS_PER_VOTE = 50;
+	var CARD_REPLACE_COST = 10;
 	var blackCardsMaster = [];
 	var whiteCardsMaster = [];
 	var blackCardsCurrent = [];
@@ -183,6 +184,7 @@ module.exports = function(data) {
 				roundQuestion: round.question,
 				round: roundCount,
 				maxRounds: maxRounds,
+				cardReplaceCost: CARD_REPLACE_COST,
 				gameIsOver: false
 			};
 		}
@@ -450,7 +452,8 @@ module.exports = function(data) {
 				question: currentRound.question,
 				round: currentRound.count,
 				maxRounds: maxRounds,
-				countdown: count
+				countdown: count,
+				cardReplaceCost: CARD_REPLACE_COST
 			}
 		};
 
@@ -606,9 +609,11 @@ module.exports = function(data) {
 		//replace all request cards with a new cards
 		cardsToReplace.forEach(function(cardToReplace) {
 			updateHand(userId, cardToReplace);
+			removePoints(userId, CARD_REPLACE_COST);
 		});
-
-		callback(currentPlayer.hand);
+		//need also the send new point values back, doing this through playerRoundResults
+		var currentResults = rounds[rounds.length - 1].results;
+		callback(currentPlayer.hand, currentResults);
 	};
 
 	// TO DO : check game state before every move!
@@ -638,15 +643,15 @@ module.exports = function(data) {
 	/*
 		Removes 50 points from a given player or bot
 	*/
-	var removePoints = function(playerId) {
+	var removePoints = function(playerId, pointsToRemove) {
 		players.forEach(function(player) {
 			if (player.uId === playerId) {
-				player.points -= POINTS_PER_VOTE;
+				player.points -= pointsToRemove;
 			}
 		});
 		bots.forEach(function(bot) {
 			if (bot.uId === playerId) {
-				bot.points -= POINTS_PER_VOTE;
+				bot.points -= pointsToRemove;
 			}
 		});
 	};
@@ -665,7 +670,7 @@ module.exports = function(data) {
 			});
 		});
 		playersWhoHaventVoted.forEach(function(player) {
-			removePoints(player.uId);
+			removePoints(player.uId, POINTS_PER_VOTE);
 		});
 	};
 

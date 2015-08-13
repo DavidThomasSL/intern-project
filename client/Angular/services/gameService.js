@@ -16,6 +16,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var currentFilledInQuestion = "";
 	var countdown = undefined;
 	var cardsToReplace = [];
+	var cardReplaceCost = 0; //variable holing the current cost of replacing a card
 	var votes = [];
 
 	//call function that emits to server the answer that was just submitted
@@ -46,7 +47,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		} else {
 			cardsToReplace.splice(i, 1);
 		}
-		console.log(cardsToReplace);
 	};
 
 	//sends off all the cards that the user wants to replace and resets array
@@ -56,6 +56,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		});
 		cardsToReplace = [];
 	};
+
+	function getCurrentReplaceCost() {
+		return (cardReplaceCost * cardsToReplace.length);
+	}
 
 	//get the current question being asked, object contains text and amount of answers to pick
 	function getCurrentQuestion() {
@@ -185,11 +189,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	function _receiveQuestion(data) {
 		currentQuestion = data.question;
-		currentQuestionText = data.question.text;
 		currentFilledInQuestion = data.question.text;
-		currentQuestionBlanks = data.question.pick;
 		round = data.round;
 		maxRounds = data.maxRounds;
+		cardReplaceCost = data.cardReplaceCost;
 		countdown = data.countdown;
 		if (countdown === undefined) {
 			answers = [];
@@ -272,6 +275,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getCurrentVotes: getCurrentVotes,
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
+		getCurrentReplaceCost: getCurrentReplaceCost,
 		sendReadyStatus: sendReadyStatus,
 		submitChoice: submitChoice,
 		submitVote: submitVote,
