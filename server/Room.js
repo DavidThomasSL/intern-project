@@ -33,6 +33,7 @@ function Room(roomCode) {
         var canJoin = true;
         var userAlreadyInRoom = false;
         var gameInProgress = true;
+        var routing = "";
 
         // Only join the room if user not already in ANY room
         // Handles user pressing join room multiple times
@@ -48,13 +49,8 @@ function Room(roomCode) {
         // Check if room has a game in proress
         if (self.gameController === undefined && canJoin) {
 
-            // Route them to the room lobby
-            user.emit('ROUTING', {
-                location: 'room',
-                error: "in checking if game controller undefined"
-            });
-
             gameInProgress = false;
+            routing = "room";
 
         } else {
 
@@ -67,10 +63,7 @@ function Room(roomCode) {
                 // Find out where to put this user, i.e where all the other players are
                 self.gameController.getInfoForReconnectingUser(user.uId, function(routingInfo, gameStateData) {
 
-                    //Put them to the page everyone is on
-                    user.emit('ROUTING', {
-                        location: routingInfo
-                    });
+                    routing = routingInfo;
 
                     // Send to the user all the information about the game
                     // Needed so they can start playing straight away
@@ -91,6 +84,11 @@ function Room(roomCode) {
 
             user.roomId = self.id;
             self.usersInRoom.push(user);
+
+             // Route them to the room lobby
+            user.emit('ROUTING', {
+                location: routing
+            });
 
             // Tell the user they have joined
             user.emit('USER room join', {
@@ -155,7 +153,5 @@ function Room(roomCode) {
         });
     };
 }
-
-
 
 module.exports = Room;
