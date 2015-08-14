@@ -19,13 +19,16 @@ function Player(user, cardController) {
 
 	self.updateHand = function(usedCard) {
 
-		// Remove used card from hand
-		self.hand = self.hand.filter(function(card) {
-			if (card !== usedCard)
-				return card;
-		});
+		var newCard = self.cardController.getWhiteCard();
 
-		addCardToHand();
+		//if the card is found in the users hand then replace it with a new one
+		var indexOfUsedCard = self.hand.indexOf(usedCard);
+		if (indexOfUsedCard !== -1) {
+			self.hand[indexOfUsedCard] = newCard;
+		} else {
+			console.log("Cannot replace card, \"" + usedCard + "\" not found in hand");
+		}
+
 	};
 
 	self.addPoints = function(points) {

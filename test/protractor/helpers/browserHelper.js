@@ -113,15 +113,22 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var startNewRound = function() {
-		var newRoundButton = element(by.id('next-round-button'));
-		newRoundButton.click();
+	var showReplaceableCards = function () {
+		var showReplaceCardsButton = element(by.id('replace-cards-show-button'));
+		showReplaceCardsButton.click();
 		browserInstance.waitForAngular();
 	};
 
-	var finishGame = function() {
-		var finishGameButton = element(by.id('finish-game-button'));
-		finishGameButton.click();
+	var getFirstReplaceCardText = function() {
+		var rows = element.all(by.exactRepeater("answer in userHand()"));
+		return rows.first().element(by.id("answer")).getText();
+	};
+
+	var replaceFirstCard = function() {
+		var rows = element.all(by.exactRepeater("answer in userHand()"));
+		rows.first().element(by.id("answer")).click();
+		var submitReplaceCardsButton = element(by.id('replace-cards-submit-button'));
+		submitReplaceCardsButton.click();
 		browserInstance.waitForAngular();
 	};
 
@@ -153,8 +160,9 @@ module.exports = function(browserInstance) {
 		submitFirstAnswer: submitFirstAnswer,
 		submitFirstAnswers: submitFirstAnswers,
 		submitFirstVote: submitFirstVote,
-		startNewRound: startNewRound,
-		finishGame: finishGame,
+		showReplaceableCards: showReplaceableCards,
+		getFirstReplaceCardText: getFirstReplaceCardText,
+		replaceFirstCard: replaceFirstCard,
 		backToStart: backToStart,
 		activateSidebar: activateSidebar,
 		ready: ready,

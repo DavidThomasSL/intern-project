@@ -18,6 +18,7 @@ module.exports = function(data) {
 	var MAX_ROUNDS = 8;
 	var BOT_NUMBER = 0;
 	var POINTS_PER_VOTE = 50;
+	var CARD_REPLACE_COST = 10;
 	var HANDSIZE = 10; //Number of white cards a user should always have
 
 	// Indicate what gamestate the gamecontroller is currently in
@@ -166,6 +167,7 @@ module.exports = function(data) {
 				players: players,
 				roundQuestion: round.question,
 				round: roundCount,
+				cardReplaceCost: CARD_REPLACE_COST,
 				maxRounds: MAX_ROUNDS,
 				gameIsOver: false
 			};
@@ -232,7 +234,8 @@ module.exports = function(data) {
 
 			callback({
 				answers: currentRound.answers,
-				allChoicesSubmitted: allChoicesSubmitted
+				allChoicesSubmitted: allChoicesSubmitted,
+				submittingPlayersNewHand: submittingPlayer.hand
 			});
 		}
 	};
@@ -391,6 +394,7 @@ module.exports = function(data) {
 			data: {
 				question: currentRound.question,
 				round: currentRound.count,
+				cardReplaceCost: CARD_REPLACE_COST,
 				maxRounds: MAX_ROUNDS,
 				countdown: count
 			}
@@ -529,6 +533,20 @@ module.exports = function(data) {
 		}
 	};
 
+	var replaceCards = function(userId, cardsToReplace, callback) {
+		var newHand;
+		var currentPlayer = getPlayerFromId(userId);
+
+		//replace all request cards with a new cards
+		cardsToReplace.forEach(function(cardToReplace) {
+			currentPlayer.updateHand(cardToReplace);
+			currentPlayer.removePoints(CARD_REPLACE_COST);
+		});
+		//need also the send new point values back, doing this through playerRoundResults
+		var currentResults = rounds[rounds.length - 1].results;
+		callback(currentPlayer.hand, currentResults);
+	};
+
 	// TO DO : check game state before every move!
 
 	function setAllPlayersAbleToSubmit() {
@@ -638,6 +656,7 @@ module.exports = function(data) {
 		initialize: initialize,
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
+		replaceCards: replaceCards,
 		newRound: newRound,
 		updateGameState: updateGameState,
 		startTimer: startTimer,

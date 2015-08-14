@@ -32,6 +32,7 @@ describe('After ending the game', function() {
 			secondClonageUser.ready();
 		});
 
+
 		//taking function out of loop as jshint complains
 		var userSubmitAnswer = function(text) {
 			cardsToSubmit = parseInt(text[5]); //PICK X.

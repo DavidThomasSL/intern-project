@@ -43,7 +43,7 @@ describe("Testing Communcation Service ", function() {
 			"GAME finish",
 			"ROOM details",
 			"ROUTING",
-			"ERROR message"
+			"NOTIFICATION message"
 		]);
 	});
 

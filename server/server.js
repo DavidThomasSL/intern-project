@@ -229,6 +229,24 @@ module.exports = function(port, enableLogging) {
             }
         });
 
+        socket.on('GAME replace cards', function(data) {
+            var room = getRoomFromId(user.roomId);
+
+            room.gameController.replaceCards(user.uId, data.cardsToReplace, function(newHand, newResults) {
+                user.emit('USER hand', {
+                    hand: newHand
+                });
+                room.broadcastRoom('GAME playerRoundResults', {
+                    results: newResults,
+                    voteNumber:0
+                });
+                user.emit("NOTIFICATION message", {
+                    text: "Replaced " + data.cardsToReplace.length + " card(s).",
+                    type: "success"
+                });
+            });
+        });
+
         /*
             Starts a new game for the room
 
@@ -275,7 +293,8 @@ module.exports = function(port, enableLogging) {
                     room.broadcastRoom("GAME question", {
                         question: data.roundQuestion,
                         round: data.round,
-                        maxRounds: data.maxRounds
+                        maxRounds: data.maxRounds,
+                        cardReplaceCost: data.cardReplaceCost
                     });
                     room.broadcastRoom('ROOM details');
 
@@ -309,6 +328,7 @@ module.exports = function(port, enableLogging) {
                                 location: 'results'
                             });
 
+
                             room.broadcastRoom("GAME playerRoundResults", {
                                 results: data.results,
                                 voteCounter: data.voteCounter
@@ -337,6 +357,11 @@ module.exports = function(port, enableLogging) {
                 //sends the list of answers each time someone submits one
                 room.broadcastRoom("GAME answers", {
                     answers: data.answers
+                });
+
+                //immediately updates the hand of the player who submitted the answer
+                user.emit('USER hand', {
+                    hand: data.submittingPlayersNewHand
                 });
 
                 // once everyone submitted an answer
@@ -456,8 +481,9 @@ module.exports = function(port, enableLogging) {
             if (result.joined) {
                 logger.debug("User " + user.name + " joined room " + roomId);
             } else {
-                socket.emit("ERROR message", {
-                    errorText: "Cannot join the room, " + errorText
+                socket.emit("NOTIFICATION message", {
+                    text: "Cannot join the room, " + errorText,
+                    type: "error"
                 });
                 logger.warn("User " + user.name + " could not join room " + roomId);
             }
