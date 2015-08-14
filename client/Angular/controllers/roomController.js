@@ -7,13 +7,10 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.getGameParameters = roomService.getGameParameters;
 
-    var botNumber = 0;
-    var numRounds = 8;
-
     $scope.sendMessage = function (messageText) {
         userService.sendMessage(messageText);
         $scope.messageText = '';
-    }
+    };
 
     $scope.getMessages = roomService.getMessages;
 
@@ -45,13 +42,11 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
     };
 
     $scope.setBotNumber = function(number) {
-        botNumber = number;
-        roomService.setGameParameters(numRounds, botNumber);
+        roomService.setBotNumber(number);
     };
 
     $scope.setRoundNumber = function(number) {
-        numRounds = number;
-        roomService.setGameParameters(numRounds, botNumber);
+        roomService.setRoundNumber(number);
     };
 
 });
