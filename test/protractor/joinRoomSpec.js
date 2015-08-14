@@ -52,6 +52,30 @@ describe('When joining an existing room', function() {
 		expect(firstClonageUser.element(by.binding("getGameParameters().numRounds")).getText()).toMatch("3 Rounds");
 	});
 
+	it('can not send an empty message or white spaces in the room', function() {
+		firstClonageUser.submitMessage('               ');
+		expect(firstClonageUser.element(by.repeater('message in getMessages()')).isPresent()).toBe(false);
+	});
+
+	it('can send a message in the room', function() {
+		firstClonageUser.submitMessage('Hi!');
+		expect(firstClonageUser.element(by.id('message-box')).getText()).toBe('');
+		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+	});
+
+	it('If one user submits a message everyone can see it without updating', function() {
+		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+	});
+
+	it('on refresh user can still see the messages in the room', function() {
+
+		firstClonageUser.refresh();
+
+		expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+
+	});
+
 	it('on refresh user is put back into the lobby', function() {
 
 		firstClonageUser.refresh();

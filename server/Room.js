@@ -25,15 +25,22 @@ function Room(roomCode) {
     self.submitMessage = function(data) {
 
         if (self.gameController === undefined) {
-            var message = {
-                playerName: data.playerName,
-                playerUid: data.playerUid,
-                messageText: data.messageText
-            };
 
-            self.messages.push(message);
+            if (data.messageText !== undefined ) {
 
-            return true;
+                if (data.messageText.trim() !== '') {
+
+                    var message = {
+                        playerName: data.playerName,
+                        playerUid: data.playerUid,
+                        messageText: data.messageText
+                    };
+
+                    self.messages.push(message);
+
+                    return true;
+                }
+            }
         }
 
         return false;
