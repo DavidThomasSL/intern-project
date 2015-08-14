@@ -21,6 +21,13 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var submitMessage = function(message) {
+		var messageInput = element(by.id('message-box'));
+		messageInput.sendKeys(message);
+		element(by.id('submit-message')).click();
+		browserInstance.waitForAngular();
+	};
+
 	var refresh = function() {
 		browserInstance.refresh();
 		browserInstance.waitForAngular();
@@ -167,6 +174,7 @@ module.exports = function(browserInstance) {
 		activateSidebar: activateSidebar,
 		ready: ready,
 		setBotsOn: setBotsOn,
-		setRoundNumber: setRoundNumber
+		setRoundNumber: setRoundNumber,
+		submitMessage: submitMessage
 	};
 };
