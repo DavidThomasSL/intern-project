@@ -42,7 +42,6 @@ describe('When starting a game', function() {
 		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(HAND_SIZE);
 	});
 
-
 	it('on refresh can see questions and answers again', function() {
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);

@@ -162,11 +162,15 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-            Set by the players in the room lobby if they want to enable bots during the game or not
+            Set by the players in the room lobby if they want to
+                enable bots during the game or not (and how many)
+                number of rounds to be played
+
         */
-        socket.on('ROOM setBotNumber', function(data) {
+        socket.on('ROOM setGameParameters', function(data) {
             var room = getRoomFromId(data.roomId);
             room.botNumber = data.botNumber;
+            room.numRounds = data.numRounds;
             room.broadcastRoom("ROOM details");
             return;
         });
@@ -313,7 +317,7 @@ module.exports = function(port, enableLogging) {
                     });
                 }
 
-                logger.info("Starting new round in room " + room.id);
+                logger.debug("Starting new round in room " + room.id);
             });
         }
 
@@ -450,7 +454,7 @@ module.exports = function(port, enableLogging) {
             }
 
             if (result.joined) {
-                logger.info("User " + user.name + " joined room " + roomId);
+                logger.debug("User " + user.name + " joined room " + roomId);
             } else {
                 socket.emit("ERROR message", {
                     errorText: "Cannot join the room, " + errorText
@@ -543,7 +547,7 @@ module.exports = function(port, enableLogging) {
     server.listen(port, function() {
         var addr = server.address();
 
-        logger.info("Chat server listening at port: " + addr.port);
+        logger.debug("Chat server listening at port: " + addr.port);
 
     });
 

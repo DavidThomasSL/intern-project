@@ -138,6 +138,7 @@ module.exports = function(data) {
 				});
 
 				BOT_NUMBER = room.botNumber;
+				maxRounds = room.numRounds;
 
 				callback();
 			}
