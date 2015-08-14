@@ -65,7 +65,7 @@ function Room(roomCode) {
             }
         });
 
-        self.broadcastRoom('ROOM messages');
+        user.emit("ROOM messages", self.messages);
 
         // Check if room has a game in proress
         if (self.gameController === undefined && canJoin) {
