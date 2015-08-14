@@ -41,15 +41,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return roomId;
     }
 
-    // function setBotNumber(number) {
-    //     botNumber = number;
-    //     sendMessage('ROOM setBotNumber', {
-    //         botNumber: botNumber,
-    //         roomId: roomId
-    //     });
-    //     return;
-    // }
-
     function setGameParameters(r, b) {
         botNumber = b;
         numRounds = r;
@@ -67,10 +58,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
             botNumber: botNumber
         };
     }
-
-    // function getBotNumber() {
-    //     return botNumber;
-    // }
 
     //----------------------
     //SOCKET EVENT LISTENERS

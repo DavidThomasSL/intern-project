@@ -162,7 +162,10 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-            Set by the players in the room lobby if they want to enable bots during the game or not
+            Set by the players in the room lobby if they want to
+                enable bots during the game or not (and how many)
+                number of rounds to be played
+
         */
         socket.on('ROOM setGameParameters', function(data) {
             var room = getRoomFromId(data.roomId);
