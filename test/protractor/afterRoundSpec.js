@@ -89,6 +89,15 @@ describe('After each round', function() {
 		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.name')).getText()).toContain('Alice');
 	});
 
+	it('can replace unwanted cards in hand and points are reduced as a result', function () {
+		firstClonageUser.showReplaceableCards();
+		firstClonageUser.getFirstReplaceCardText().then(function(originalText){
+			firstClonageUser.replaceFirstCard();
+			expect(element.all(by.exactRepeater("answer in userHand()")).first().element(by.id("answer")).getText()).not.toMatch(originalText);
+			expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('40 points');
+		});
+	});
+
 	it('can ready up for next round and this can be seen by everyone', function() {
 		secondClonageUser.ready();
 		expect(secondClonageUser.element(by.id('ready-button')).getText()).toEqual('Not Ready');

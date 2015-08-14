@@ -102,7 +102,6 @@ module.exports = function(port, enableLogging) {
         socket.on('USER set name', function(msg) {
             user.name = msg.name;
             user.sendUserDetails();
-
             putUserInJoining();
 
             logger.debug("User set name as: " + msg.name);
@@ -111,9 +110,10 @@ module.exports = function(port, enableLogging) {
         socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
-            logger.debug("User set name as: " + data.name);
             user.sendUserDetails();
             putUserInJoining();
+
+            logger.debug("User set name as: " + data.name);
         });
 
         /*
@@ -156,8 +156,6 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('ROOM leave', function(msg) {
 
-            var removed = false;
-
             var room = getRoomFromId(msg.roomId);
 
             if (room !== undefined) {
@@ -165,6 +163,7 @@ module.exports = function(port, enableLogging) {
                 room.broadcastRoom('ROOM details');
             }
 
+            user.readyToProceed = false;
             user.roomId = "";
             user.sendUserDetails();
 
@@ -174,11 +173,15 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
-            Set by the players in the room lobby if they want to enable bots during the game or not
+            Set by the players in the room lobby if they want to
+                enable bots during the game or not (and how many)
+                number of rounds to be played
+
         */
-        socket.on('ROOM setBotNumber', function(data) {
+        socket.on('ROOM setGameParameters', function(data) {
             var room = getRoomFromId(data.roomId);
             room.botNumber = data.botNumber;
+            room.numRounds = data.numRounds;
             room.broadcastRoom("ROOM details");
             return;
         });
@@ -237,6 +240,24 @@ module.exports = function(port, enableLogging) {
             }
         });
 
+        socket.on('GAME replace cards', function(data) {
+            var room = getRoomFromId(user.roomId);
+
+            room.gameController.replaceCards(user.uId, data.cardsToReplace, function(newHand, newResults) {
+                user.emit('USER hand', {
+                    hand: newHand
+                });
+                room.broadcastRoom('GAME playerRoundResults', {
+                    results: newResults,
+                    voteNumber:0
+                });
+                user.emit("NOTIFICATION message", {
+                    text: "Replaced " + data.cardsToReplace.length + " card(s).",
+                    type: "success"
+                });
+            });
+        });
+
         /*
             Starts a new game for the room
 
@@ -283,7 +304,8 @@ module.exports = function(port, enableLogging) {
                     room.broadcastRoom("GAME question", {
                         question: data.roundQuestion,
                         round: data.round,
-                        maxRounds: data.maxRounds
+                        maxRounds: data.maxRounds,
+                        cardReplaceCost: data.cardReplaceCost
                     });
                     room.broadcastRoom('ROOM details');
 
@@ -317,6 +339,7 @@ module.exports = function(port, enableLogging) {
                                 location: 'results'
                             });
 
+
                             room.broadcastRoom("GAME playerRoundResults", {
                                 results: data.results,
                                 voteCounter: data.voteCounter
@@ -325,10 +348,8 @@ module.exports = function(port, enableLogging) {
                     });
                 }
 
-                logger.info("Starting new round in room " + room.id);
+                logger.debug("Starting new round in room " + room.id);
             });
-
-
         }
 
         // submit answer
@@ -347,6 +368,11 @@ module.exports = function(port, enableLogging) {
                 //sends the list of answers each time someone submits one
                 room.broadcastRoom("GAME answers", {
                     answers: data.answers
+                });
+
+                //immediately updates the hand of the player who submitted the answer
+                user.emit('USER hand', {
+                    hand: data.submittingPlayersNewHand
                 });
 
                 // once everyone submitted an answer
@@ -419,6 +445,9 @@ module.exports = function(port, enableLogging) {
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
                 room.removeUser(user);
+
+                user.readyToProceed = false;
+
                 logger.debug("Removing player from room" + room.id);
             } else {
                 logger.debug("User was not in a room");
@@ -438,7 +467,7 @@ module.exports = function(port, enableLogging) {
 
             var result = {};
             var errorText = "";
-            var room = getRoomFromId(roomId);
+            var room = getRoomFromId(roomId.toUpperCase()); // accept lowercase spelling of room code
 
             logger.debug("trying to put user in room " + user.name + user.uId);
 
@@ -462,10 +491,11 @@ module.exports = function(port, enableLogging) {
 
             if (result.joined) {
                 room.broadcastRoom('ROOM messages');
-                logger.info("User " + user.name + " joined room " + roomId);
+                logger.debug("User " + user.name + " joined room " + roomId);
             } else {
-                socket.emit("ERROR message", {
-                    errorText: "Cannot join the room, " + errorText
+                socket.emit("NOTIFICATION message", {
+                    text: "Cannot join the room, " + errorText,
+                    type: "error"
                 });
                 logger.warn("User " + user.name + " could not join room " + roomId);
             }
@@ -552,12 +582,10 @@ module.exports = function(port, enableLogging) {
         return false;
     }
 
-
-
     server.listen(port, function() {
         var addr = server.address();
 
-        logger.info("Chat server listening at port: " + addr.port);
+        logger.debug("Chat server listening at port: " + addr.port);
 
     });
 

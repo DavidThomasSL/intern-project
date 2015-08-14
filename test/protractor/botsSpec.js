@@ -4,7 +4,7 @@ describe('When starting a game with BOTS', function() {
 
 	var HAND_SIZE = 10;
 	var BOT_NUM = 3;
-	var MAX_ROUNDS = 8;
+	var MAX_ROUNDS = 3;
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -25,9 +25,14 @@ describe('When starting a game with BOTS', function() {
 		firstClonageUser.getRoomId().then(function(text) {
 			roomId = text.split(" ")[2];
 			secondClonageUser.joinRoom(roomId);
+
+			// set round number low to prevent jasmine timeouts on circleCI
+			firstClonageUser.setRoundNumber(MAX_ROUNDS);
+
 			firstClonageUser.ready();
+			secondClonageUser.ready();
+
 		});
-		secondClonageUser.ready();
 
 		firstClonageUser.getBlankSpaces().then(function(text) {
 			cardsToSubmit = parseInt(text[5]); //PICK X.

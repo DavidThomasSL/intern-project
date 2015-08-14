@@ -7,12 +7,13 @@ ClonageApp.directive('userProfile', function() {
 	return {
 
 		scope: {
-			control: '='
+			control: '=',
+			scale: '='
 		},
 		transclude: true,
 		replace: true,
 		restrict: 'E', // E = Element
-		template: "<canvas width='300' height='300' style=\"padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block;\"/>",
+		template: "<canvas width='300' height='300'/>",
 		link: function(scope, element, attrs) {
 
 			// Number of possible drawing colors;
@@ -42,7 +43,7 @@ ClonageApp.directive('userProfile', function() {
 			}
 
 			canvas.loadFromDatalessJSON(imageData, function() {
-				scaleCanvas(0.4, 0.4);
+				scaleCanvas(scope.scale, scope.scale);
 			});
 
 			function scaleCanvas(xScale, yScale) {

@@ -42,7 +42,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         function setNameAndImage(name, image) {
-            console.log("sent name and image");
             sendMessage('USER set profile', {
                 name: name,
                 image: image

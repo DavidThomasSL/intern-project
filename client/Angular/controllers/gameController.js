@@ -8,6 +8,9 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     $scope.getUserId = userService.getUserId;
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getUsersInRoom = roomService.getUsersInRoom;
+    $scope.cardReplaceCost = gameService.getCurrentReplaceCost;
+    $scope.replaceCostPerCard = gameService.getReplaceCostPerCard;
+
 
     //get all answers submitted in order to visualise them on the voting page
     $scope.answers = gameService.getAnswers;
@@ -30,6 +33,14 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     //function call to submit a vote for the funniest answer
     $scope.submitVote = function(enteredAnswer) {
         gameService.submitVote(enteredAnswer);
+    };
+
+    $scope.replaceCardsSelect = function (selectedCardText) {
+        gameService.replaceCardsSelect(selectedCardText)
+    };
+
+    $scope.replaceCardsSubmit = function () {
+        gameService.replaceCardsSubmit();
     };
 
     $scope.leaveRoom = function() {

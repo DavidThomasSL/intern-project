@@ -69,7 +69,11 @@
       "pick": 1
     },
     {
-      "text": "What does Dick Cheney prefer?",
+      "text" : "Can you tell what it is yet? _.",
+      "pick" : 1
+    },
+    {
+      "text": "What did Nick Clegg promise?",
       "pick": 1
     },
     {
@@ -101,7 +105,7 @@
       "pick": 1
     },
     {
-      "text": "BILLY MAYS HERE FOR _.",
+      "text": "CILLIT BANG! BANG AND _ IS GONE!.",
       "pick": 1
     },
     {
@@ -153,11 +157,15 @@
       "pick": 1
     },
     {
-      "text": "When I am the President of the United States, I will create the Department of _.",
+      "text": "When I become Prime Minister, I will create the Ministry of _.",
       "pick": 1
     },
     {
       "text": "_. It's a trap!",
+      "pick": 1
+    },
+    {
+      "text": "I went to Lidl for a loaf of bread and came home with _.",
       "pick": 1
     },
     {
@@ -313,7 +321,7 @@
       "pick": 1
     },
     {
-      "text": "In L.A. County Jail, word is you can trade 200 cigarettes for _.",
+      "text": "In Wormwood Scrubs Prison, word is you can trade 200 cigarettes for _.",
       "pick": 1
     },
     {
@@ -325,7 +333,7 @@
       "pick": 1
     },
     {
-      "text": "Next on ESPN2, the World Series of _.",
+      "text": "Next on Sky Sports 2, the World Series of _.",
       "pick": 1
     },
     {
@@ -353,7 +361,7 @@
       "pick": 1
     },
     {
-      "text": "The Smithsonian Museum of Natural History has just opened an exhibit on _.",
+      "text": "The Natural History Museum has just opened an exhibit on _.",
       "pick": 1
     },
     {
@@ -417,7 +425,7 @@
       "pick": 2
     },
     {
-      "text": "In its new tourism campaign, Detroit proudly proclaims that it has finally eliminated _.",
+      "text": "In its new tourism campaign, Blackpool proudly proclaims that it has finally eliminated _.",
       "pick": 1
     },
     {
@@ -505,7 +513,7 @@
       "pick": 2
     },
     {
-      "text": "Next time on Dr. Phil: How to talk to your child about _.",
+      "text": "Next time on Jeremy Kyle: _.",
       "pick": 1
     },
     {
@@ -518,6 +526,10 @@
     },
     {
       "text": "The healing process began when I joined a support group for victims of _.",
+      "pick": 1
+    },
+    {
+      "text": "Tonight on the One Show, Joanna Lumley will be talking about _.",
       "pick": 1
     },
     {
@@ -545,7 +557,7 @@
       "pick": 1
     },
     {
-      "text": "My gym teacher got fired for adding _ to the obstacle course.",
+      "text": "My PE teacher got fired for adding _ to the obstacle course.",
       "pick": 1
     },
     {
@@ -577,7 +589,7 @@
       "pick": 1
     },
     {
-      "text": "Call the law offices of Goldstein Goldstein, because no one should have to tolerate _ in the workplace.",
+      "text": "Call the offices of Injury Lawyers 4U, because no one should have to tolerate _ in the workplace.",
       "pick": 1
     },
     {
@@ -605,7 +617,7 @@
       "pick": 1
     },
     {
-      "text": "As part of his daily regimen, Anderson Cooper sets aside 15 minutes for _.",
+      "text": "As part of his daily regimen, Jon Snow sets aside 15 minutes for _.",
       "pick": 1
     },
     {
@@ -641,7 +653,7 @@
       "pick": 1
     },
     {
-      "text": "Man, this is bullshit. Fuck _.",
+      "text": "This is bollocks. Fuck _.",
       "pick": 1
     },
     {
@@ -654,10 +666,6 @@
     },
     {
       "text": "She's up all night for good fun. I'm up all night for _.",
-      "pick": 1
-    },
-    {
-      "text": "Alright, bros. Our frat house is condemned, and all the hot slampieces are over at Gamma Phi. The time has come to commence Operation _.",
       "pick": 1
     },
     {
@@ -701,7 +709,7 @@
       "pick": 1
     },
     {
-      "text": "I'm sorry, sir, but we don't allow _ at the country club.",
+      "text": "I'm sorry, sir, but we don't allow _ at the golf club.",
       "pick": 1
     },
     {
@@ -713,7 +721,7 @@
       "pick": 1
     },
     {
-      "text": "Oprah's book of the month is \"_ For _: A Story of Hope.\"",
+      "text": "Loose Women's book of the month is \"_ For _: A Story of Hope.\"",
       "pick": 2
     },
     {
@@ -761,7 +769,7 @@
       "pick": 2
     },
     {
-      "text": "Do the Dew  with our most extreme flavor yet! Get ready for Mountain Dew _!",
+      "text": "Do the Dew with our most extreme flavor yet! Get ready for Mountain Dew _!",
       "pick": 1
     },
     {
@@ -773,7 +781,7 @@
       "pick": 1
     },
     {
-      "text": "Well what do you have to say for yourself, Casey? This is the third time you've been sent to the principal's office for _.",
+      "text": "Well what do you have to say for yourself, Emily? This is the third time you've been sent to the headmaster's office for _.",
       "pick": 1
     },
     {
@@ -797,7 +805,7 @@
       "pick": 1
     },
     {
-      "text": "Hi MTV! My name is Kendra, I live in Malibu, I'm into _, and I love to have a good time.",
+      "text": "Hi MTV! My name is Marnie, I from Newcastle, I'm into _, and I love to have a good time.",
       "pick": 1
     },
     {
@@ -841,7 +849,7 @@
       "pick": 2
     },
     {
-      "text": "Hi, this is Jim from accounting. We noticed a $1,200 charge labeled \"_\". Can you explain?",
+      "text": "Hi, this is Jim from accounting. We noticed a £1,200 charge labeled \"_\". Can you explain?",
       "pick": 1
     },
     {
@@ -898,7 +906,7 @@
     },
     {
       "pick": 1,
-      "text": "You are not alone. Millions of Americans struggle with _ every day."
+      "text": "You are not alone. Millions of Britons struggle with _ every day."
     },
     {
       "pick": 1,
@@ -938,7 +946,7 @@
     },
     {
       "pick": 1,
-      "text": "I'm Miss Tennessee, and if I could make the world better by changing one thing, I would get rid of _."
+      "text": "I'm Miss Wales, and if I could make the world better by changing one thing, I would get rid of _."
     },
     {
       "pick": 1,
@@ -1009,7 +1017,7 @@
     "Cuddling.",
     "Laying an egg.",
     "The Pope.",
-    "Aaron Burr.",
+    "Boris Johnson.",
     "Genital piercings.",
     "Fingering.",
     "A bleached asshole.",
@@ -1063,8 +1071,7 @@
     "Geese.",
     "Bling.",
     "Sniffing glue.",
-    "The South.",
-    "An Oedipus complex.",
+    "The North.",
     "Eating all of the cookies before the AIDS bake-sale.",
     "Sexting.",
     "YOU MUST CONSTRUCT ADDITIONAL PYLONS.",
@@ -1085,7 +1092,7 @@
     "Leaving an awkward voicemail.",
     "Dick Cheney.",
     "White people.",
-    "Penis envy.",
+    "Being attracted to your dad.",
     "Teaching a robot to love.",
     "Sperm whales.",
     "Scrubbing under the folds.",
@@ -1098,11 +1105,12 @@
     "A sassy black woman.",
     "AIDS.",
     "The KKK.",
+    "UKIP",
     "Figgy pudding.",
     "Seppuku.",
     "Gandhi.",
     "Preteens.",
-    "Toni Morrison's vagina.",
+    "Jo Brand's vagina.",
     "Five-Dollar Footlongs.",
     "Land mines.",
     "A sea of troubles.",
@@ -1117,7 +1125,7 @@
     "Authentic Mexican cuisine.",
     "Genghis Khan.",
     "Old-people smell.",
-    "Feeding Rosie O'Donnell.",
+    "Feeding Jo Brand.",
     "Pixelated bukkake.",
     "Friends with benefits.",
     "The token minority.",
@@ -1144,7 +1152,7 @@
     "Poor people.",
     "Edible underpants.",
     "Britney Spears at 55.",
-    "All-you-can-eat shrimp for $4.99.",
+    "All-you-can-eat prawns for £4.99.",
     "Pooping back and forth. Forever.",
     "Fancy Feast.",
     "Jewish fraternities.",
@@ -1163,7 +1171,7 @@
     "Daddy issues.",
     "The hardworking Mexican.",
     "Natalie Portman.",
-    "Waking up half-naked in a Denny's parking lot.",
+    "Waking up half-naked in a Little Chef parking lot.",
     "God.",
     "Sean Connery.",
     "Saxophone solos.",
@@ -1186,6 +1194,7 @@
     "Licking things to claim them as your own.",
     "The heart of a child.",
     "Robert Downey, Jr.",
+    "Benedict Cumberbatch",
     "Lockjaw.",
     "Eugenics.",
     "A good sniff.",
@@ -1196,20 +1205,25 @@
     "Free samples.",
     "Jerking off into a pool of children's tears.",
     "A foul mouth.",
+    "Michael Fish.",
+    "Operation Yewtree.",
+    "Rolf Harris.",
+    "Jimmy Saville.",
     "The glass ceiling.",
-    "Republicans.",
+    "Tories.",
+    "The Labour Party.",
     "Explosions.",
     "Michelle Obama's arms.",
     "Getting really high.",
     "Attitude.",
-    "Sarah Palin.",
-    "The Ubermensch.",
+    "Theresa May.",
+    "The Aryan master race.",
     "Altar boys.",
     "My soul.",
     "My sex life.",
     "Pedophiles.",
     "72 virgins.",
-    "Pabst Blue Ribbon.",
+    "Special Brew.",
     "Domino's Oreo Dessert Pizza.",
     "A snapping turtle biting the tip of your penis.",
     "The Blood of Christ.",
@@ -1218,6 +1232,7 @@
     "A middle-aged man on roller skates.",
     "Bitches.",
     "Bill Nye the Science Guy.",
+    "Brian Cox.",
     "Italians.",
     "A windmill full of corpses.",
     "Adderall.",
@@ -1252,6 +1267,7 @@
     "Lactation.",
     "Being fabulous.",
     "Shaquille O'Neal's acting career.",
+    "Wayne Rooney's new hair.",
     "My relationship status.",
     "Asians who aren't good at math.",
     "Alcoholism.",
@@ -1279,12 +1295,18 @@
     "Estrogen.",
     "Frubes.",
     "Judge Judy.",
+    "Jeremy Kyle.",
     "Dick fingers.",
     "Racism.",
     "Surprise sex!",
     "Police brutality.",
     "Passable transvestites.",
     "The Virginia Tech Massacre.",
+    "The Aurora Shooting.",
+    "The Sandy Hook Elementary School Massacre.",
+    "Tube Drivers.",
+    "The Hillsborough Disaster.",
+    "7/7 London Bombings.",
     "When you fart and a little bit comes out.",
     "Oompa-Loompas.",
     "A fetus.",
@@ -1296,9 +1318,10 @@
     "A gassy antelope.",
     "Sexual tension.",
     "Third base.",
-    "Racially-biased SAT questions.",
+    "Racially-biased GCSE questions.",
     "Porn stars.",
     "A Super Soaker full of cat pee.",
+    "Muslamic Ray Guns.",
     "Muhammed (Praise Be Unto Him).",
     "Puberty.",
     "A disappointing birthday party.",
@@ -1308,9 +1331,10 @@
     "Wifely duties.",
     "Two midgets shitting into a bucket.",
     "Queefing.",
-    "Wiping her butt.",
+    "Wiping her arse.",
     "Golden showers.",
     "Barack Obama.",
+    "David Cameron.",
     "Nazis.",
     "A robust mongoloid.",
     "An M. Night Shyamalan plot twist.",
@@ -1319,7 +1343,7 @@
     "Women in yogurt commercials.",
     "John Wilkes Booth.",
     "Powerful thighs.",
-    "Mr. Clean, right behind you.",
+    "Mr. Blobby, right behind you.",
     "Multiple stab wounds.",
     "Cybernetic enhancements.",
     "Serfdom.",
@@ -1333,12 +1357,14 @@
     "The Amish.",
     "Dead babies.",
     "Child beauty pageants.",
-    "AXE Body Spray.",
     "Centaurs.",
     "Copping a feel.",
     "Grandma.",
+    "The collapse of the Soviet Union.",
+    "The Berlin Wall.",
     "Famine.",
-    "The Trail of Tears.",
+    "The Irish Potato Famine.",
+    "4,000 Zulu warriors.",
     "The miracle of childbirth.",
     "Finger painting.",
     "A monkey smoking a cigar.",
@@ -1349,11 +1375,10 @@
     "Dry heaving.",
     "Active listening.",
     "Ghosts.",
-    "The Hustle.",
     "Peeing a little bit.",
     "Another goddamn vampire movie.",
     "Shapeshifters.",
-    "The Care Bear Stare.",
+    "The Cabbage Patch Kids.",
     "Hot cheese.",
     "A mopey zoo lion.",
     "A defective condom.",
@@ -1366,34 +1391,59 @@
     "Breaking out into song and dance.",
     "Soup that is too hot.",
     "Morgan Freeman's voice.",
-    "Getting naked and watching Nickelodeon.",
+    "Unexplained quantum tunneling effects.",
+    "String theory.",
+    "The Travelling Community.",
+    "Getting naked and watching CITV.",
+    "Dick and Dom in da Bungalow.",
     "MechaHitler.",
     "Flying sex snakes.",
     "The true meaning of Christmas.",
     "My inner demons.",
+    "My overwhelming feeling of insignificance in the universe.",
+    "Top Gun.",
+    "Sharknado.",
+    "Mega Shark vs Giant Octopus.",
+    "Flight MH-17.",
+    "Annexing the Crimean Peninsula.",
     "Pac-Man uncontrollably guzzling cum.",
     "My vagina.",
     "A homoerotic volleyball montage.",
     "Actually taking candy from a baby.",
     "Crystal meth.",
+    "Mandy.",
     "Exactly what you'd expect.",
     "Natural male enhancement.",
     "Passive-aggressive Post-it notes.",
     "Inappropriate yodeling.",
     "Lady Gaga.",
-    "The Little Engine That Could.",
+    "The Very Hungry Caterpillar.",
+    "Thomas the Tank Engine.",
     "Vigilante justice.",
+    "Mob rule.",
+    "Race war.",
     "A death ray.",
     "Poor life choices.",
     "A gentle caress of the inner thigh.",
     "Embryonic stem cells.",
+    "GM crops.",
+    "Anti-Vac Moms.",
+    "The Colonies.",
     "Nicolas Cage.",
+    "The IRA.",
+    "A car bomb in a busy Afgahn Market.",
     "Firing a rifle into the air while balls deep in a squealing hog.",
-    "Switching to Geico.",
-    "The chronic.",
+    "The ringing in my ears that never goes away.",
+    "The adrenaline rush of my first kill.",
+    "Bringing your kids to their first public lynching.",
+    "Jim Crow Laws.",
     "Erectile dysfunction.",
+    "Realising you're no longer attracted to your spouse.",
+    "Doin' it for the kids.",
     "Home video of Oprah sobbing into a Lean Cuisine.",
+    "Meals on Wheels.",
     "A bucket of fish heads.",
+    "Making eye contact with a stranger on public transport.",
     "50,000 volts straight to the nipples.",
     "Being fat and stupid.",
     "Hospice care.",
@@ -1401,9 +1451,21 @@
     "Getting married, having a few kids, buying some stuff, retiring to Florida, and dying.",
     "A subscription to Men's Fitness.",
     "Crucifixion.",
+    "£3 Meal Deal.",
+    "Jamie Oliver's stupid face.",
+    "Numberwang!",
     "A micropig wearing a tiny raincoat and booties.",
     "Some god-damn peace and quiet.",
-    "Used panties.",
+    "Used knickers.",
+    "A posh wank.",
+    "Going to Aldi for a loaf of bread and coming home with a tent.",
+    "Scottish independence.",
+    "Custard creams.",
+    "Devolution.",
+    "Adrian Chiles.",
+    "The One Show.",
+    "Blue Peter.",
+    "A trampoline with a wooden base.",
     "A tribe of warrior women.",
     "The penny whistle solo from \"My Heart Will Go On.\"",
     "An oversized lollipop.",
@@ -1426,24 +1488,25 @@
     "A live studio audience.",
     "The Great Depression.",
     "A spastic nerd.",
-    "Rush Limbaugh's soft, shitty body.",
-    "Tickling Sean Hannity, even after he tells you to stop.",
+    "Chris Moyles' soft, shitty body.",
+    "Andrew Marr's ears.",
+    "Tickling David Dimbleby, even after he tells you to stop.",
     "Stalin.",
     "Brown people.",
     "Rehab.",
-    "Capturing Newt Gingrich and forcing him to dance in a monkey suit.",
+    "Capturing Nick Clegg and forcing him to dance in a monkey suit.",
     "Battlefield amputations.",
     "An uppercut.",
     "Shiny objects.",
     "An ugly face.",
     "Menstrual rage.",
     "A bitch slap.",
-    "One trillion dollars.",
+    "One trillion pounds.",
     "Chunks of dead prostitute.",
-    "The entire Mormon Tabernacle Choir.",
+    "Songs from the Valleys of Wales.",
     "The female orgasm.",
     "Extremely tight pants.",
-    "The Boy Scouts of America.",
+    "The Boy Scouts.",
     "Stormtroopers.",
     "Throwing a virgin into a volcano.",
     "Getting in her pants, politely.",
@@ -1462,14 +1525,13 @@
     "Dancing with a broom.",
     "Deflowering the princess.",
     "Dorito breath.",
-    "One thousand Slim Jims.",
+    "One thousand salami sausages.",
     "My machete.",
     "Overpowering your father.",
     "Ominous background music.",
     "Media coverage.",
     "Making the penises kiss.",
     "Moral ambiguity.",
-    "Medieval Times Dinner Tournament.",
     "Mad hacky-sack skills.",
     "Just the tip.",
     "Literally eating shit.",
@@ -1499,11 +1561,11 @@
     "Tripping balls.",
     "Being a busy adult with many important things to do.",
     "The four arms of Vishnu.",
-    "The shambling corpse of Larry King.",
+    "The shambling corpse of Michael Parkinson.",
     "The hiccups.",
     "The harsh light of day.",
     "The Gulags.",
-    "The Fanta girls.",
+    "Siberian salt mines.",
     "A big black dick.",
     "A beached whale.",
     "A low standard of living.",
@@ -1529,6 +1591,7 @@
     "Being awesome at sex.",
     "Spring break!",
     "Another shot of morphine.",
+    "Saga Holidays.",
     "Dining with cardboard cutouts of the cast of \"Friends.\"",
     "A soulful rendition of \"Ol' Man River.\"",
     "Making a friend.",
@@ -1555,7 +1618,7 @@
     "A slightly shittier parallel universe.",
     "My first kill.",
     "Boris the Soviet Love Hammer.",
-    "The grey nutrient broth that sustains Mitt Romney.",
+    "The grey nutrient broth that sustains Michael Gove.",
     "Tiny nipples.",
     "Power.",
     "Death by Steven Seagal.",
@@ -1567,7 +1630,7 @@
     "Fetal alcohol syndrome.",
     "Graphic violence, adult language, and some sexual content.",
     "A bigger, blacker dick.",
-    "The mere concept of Applebee's.",
+    "Cheeky Nandos.",
     "A sad fat dragon with no friends.",
     "A pinata full of scorpions.",
     "Existing.",
@@ -1617,7 +1680,7 @@
     "Samuel L. Jackson.",
     "Self-flagellation.",
     "The systematic destruction of an entire people and their way of life.",
-    "The Quesadilla Explosion Salad from Chili's.",
+    "Eating a KFC Family Bucket alone.",
     "Reverse cowgirl.",
     "Vietnam flashbacks.",
     "Actually getting shot, for real.",
@@ -1637,13 +1700,14 @@
     "Blood farts.",
     "The Land of Chocolate.",
     "A botched circumcision.",
-    "My manservant, Claude.",
+    "My manservant, Jeeves.",
     "Vomiting mid-blowjob.",
     "Letting everyone down.",
     "Having shotguns for legs.",
     "Bill Clinton, naked on a bearskin rug with a saxophone.",
     "Mufasa's death scene.",
     "The Harlem Globetrotters.",
+    "A passing knowledge of Football",
     "Demonic possession.",
     "Fisting.",
     "The thin veneer of situational causality that underlies porn.",
@@ -1653,7 +1717,7 @@
     "A vagina that leads to another dimension.",
     "Disco fever.",
     "Getting your dick stuck in a Chinese finger trap with another dick.",
-    "Drinking ten 5-hour ENERGYs to get fifty continuous hours of energy.",
+    "Drinking ten 5-hour MONSTER ENERGYs to get fifty continuous hours of energy.",
     "Sneezing, farting, and coming at the same time.",
     "Some douche with an acoustic guitar.",
     "Spending lots of money.",
@@ -1662,7 +1726,6 @@
     "A greased-up Matthew McConaughey.",
     "Flying robots that kill people.",
     "Unlimited soup, salad, and breadsticks.",
-    "Crying into the pages of Sylvia Plath.",
     "The moist, demanding chasm of his mouth.",
     "Filling every orifice with butterscotch pudding.",
     "An all-midget production of Shakespeare's Richard III.",
@@ -1712,9 +1775,10 @@
     "My worthless son.",
     "Exploding pigeons.",
     "A Ugandan warlord.",
+    "The Islamic State of Iraq and the Levant",
     "My sex dungeon.",
     "A kiss on the lips.",
-    "Child Protective Services.",
+    "The NSPCC.",
     "A Native American who solves crimes by going into the spirit world.",
     "Doo-doo.",
     "The peaceful and nonthreatening rise of China.",
@@ -1756,7 +1820,6 @@
     "A disappointing salad.",
     "Mom's new boyfriend.",
     "Unrelenting genital punishment.",
-    "Denzel.",
     "The swim team, all at once.",
     "The eight gay warlocks who dictate the rules of fashion.",
     "Being nine years old.",
@@ -1768,6 +1831,7 @@
     "Backwards knees.",
     "Being paralyzed from the neck down.",
     "Seeing my village burned and my family slaughtered before my eyes.",
+    "Drone strikes",
     "A zero-risk way to make $2,000 from home.",
     "A crazy little thing called love.",
     "Ancient Athenian boy-fucking",
@@ -1799,7 +1863,7 @@
     "Anal fissures like you wouldn't believe.",
     "A giant powdery manbaby.",
     "Cutting off a flamingo's legs with garden shears.",
-    "P.F. Chang himself.",
+    "Papa John himself.",
     "An uninterrupted history of imperialism and exploitation.",
     "A one-way ticket to Gary, Indiana.",
     "Daddy's credit card.",
@@ -1808,12 +1872,12 @@
     "Social justice warriors with flamethrowers of compassion.",
     "Some shit-hot guitar licks.",
     "Butt stuff.",
-    "Blackface.",
+    "Blacking up.",
     "Blowjobs for everyone.",
-    "Getting eaten alive by Guy Fieri.",
+    "Getting eaten alive by Heston Blumenthal.",
     "Western standards of beauty.",
     "Ejaculating live bees and the bees are angry.",
-    "My dead son's baseball glove.",
+    "My dead son's mouthguard.",
     "Getting caught by the police and going to jail.",
     "A face full of horse cum.",
     "Free ice cream, yo.",
@@ -1877,7 +1941,7 @@
     "Walking into a glass door.",
     "The color \"puce\".",
     "Every ounce of charisma left in Mick Jagger's tired body.",
-    "The eighth graders.",
+    "The year 9's.",
     "Setting my balls on fire and cartwheeling to Ohio.",
     "The dentist.",
     "Gwyneth Paltrow's opinions.",

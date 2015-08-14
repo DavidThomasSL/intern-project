@@ -15,17 +15,18 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var maxRounds = 0; //variable holding the number of rounds wanted
 	var currentFilledInQuestion = "";
 	var countdown = undefined;
+	var cardsToReplace = [];
+	var cardReplaceCost = 0; //variable holing the current cost of replacing a card
 	var votes = [];
-
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
-		var submissionState = dynamicTextService.getSubmissionState(currentQuestion,enteredAnswer,currentlySubmittedAnswers);
+		var submissionState = dynamicTextService.getSubmissionState(currentQuestion, enteredAnswer, currentlySubmittedAnswers);
 		currentlySubmittedAnswers = submissionState.currentlySubmittedAnswers;
 		currentFilledInQuestion = submissionState.currentFilledInQuestion;
 
 		//if enough answers have been selected to fill in the blanks then send off the array
-		if (submissionState.readyToSend){
+		if (submissionState.readyToSend) {
 			_emitChoice(currentlySubmittedAnswers);
 			currentlySubmittedAnswers = [];
 		}
@@ -34,6 +35,34 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	//call function that emits to server the vote that was just submitted
 	function submitVote(enteredAnswer) {
 		_emitVote(enteredAnswer);
+	}
+
+	//adds selected cards to the array of cards we want to submit
+	//if the card is already in the array then remove it
+	function replaceCardsSelect(selectedCardText) {
+
+		var i = cardsToReplace.indexOf(selectedCardText);
+		if (i === -1) {
+			cardsToReplace.push(selectedCardText);
+		} else {
+			cardsToReplace.splice(i, 1);
+		}
+	};
+
+	//sends off all the cards that the user wants to replace and resets array
+	function replaceCardsSubmit() {
+		sendMessage("GAME replace cards", {
+			cardsToReplace: cardsToReplace
+		});
+		cardsToReplace = [];
+	};
+
+	function getCurrentReplaceCost() {
+		return (cardReplaceCost * cardsToReplace.length);
+	}
+
+	function getReplaceCostPerCard() {
+		return cardReplaceCost;
 	}
 
 	//get the current question being asked, object contains text and amount of answers to pick
@@ -164,11 +193,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	function _receiveQuestion(data) {
 		currentQuestion = data.question;
-		currentQuestionText = data.question.text;
 		currentFilledInQuestion = data.question.text;
-		currentQuestionBlanks = data.question.pick;
 		round = data.round;
 		maxRounds = data.maxRounds;
+		cardReplaceCost = data.cardReplaceCost;
 		countdown = data.countdown;
 		if (countdown === undefined) {
 			answers = [];
@@ -251,9 +279,13 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getCurrentVotes: getCurrentVotes,
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
+		getCurrentReplaceCost: getCurrentReplaceCost,
+		getReplaceCostPerCard: getReplaceCostPerCard,
 		sendReadyStatus: sendReadyStatus,
 		submitChoice: submitChoice,
 		submitVote: submitVote,
+		replaceCardsSelect: replaceCardsSelect,
+		replaceCardsSubmit: replaceCardsSubmit,
 		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,

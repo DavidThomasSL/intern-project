@@ -13,6 +13,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var errorMessage = "";
     var botNumber = 0;
     var messages = [];
+    var numRounds = 8;
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -41,17 +42,23 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return roomId;
     }
 
-    function setBotNumber (number) {
-        botNumber = number;
-        sendMessage('ROOM setBotNumber', {
+
+    function setGameParameters(r, b) {
+        botNumber = b;
+        numRounds = r;
+        sendMessage('ROOM setGameParameters', {
             botNumber: botNumber,
+            numRounds: numRounds,
             roomId: roomId
         });
         return;
     }
 
-    function getBotNumber() {
-        return botNumber;
+    function getGameParameters() {
+        return {
+            numRounds: numRounds,
+            botNumber: botNumber
+        };
     }
 
     function getMessages() {
@@ -82,6 +89,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
         botNumber = data.botNumber;
+        numRounds = data.numRounds;
 
         //add on canvas control elements to each user
         //Allows the canvas to access the user's image
@@ -137,12 +145,12 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
-        setBotNumber: setBotNumber,
-        getBotNumber: getBotNumber,
         getRoomId: getRoomId,
-        _setRoomDetails: _setRoomDetails,
         _setMessages: _setMessages,
-        getMessages: getMessages
+        getMessages: getMessages,
+        getGameParameters: getGameParameters,
+        setGameParameters: setGameParameters,
+        _setRoomDetails: _setRoomDetails
     };
 
 }]);

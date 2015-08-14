@@ -12,7 +12,7 @@ exports.config = {
 		'afterRoundSpec.js',
 		'afterGameSpec.js',
 		'botsSpec.js'
-		],
+	],
 	baseUrl: 'http://localhost:8080/',
 	params: {
 		name: 'CLONAGE'
@@ -30,6 +30,6 @@ exports.config = {
 		}
 	},
 	framework: 'jasmine2',
-	getPageTimeout: 10000,
-	allScriptsTimeout: 10000
+	getPageTimeout: 30000,
+	allScriptsTimeout: 30000
 };
