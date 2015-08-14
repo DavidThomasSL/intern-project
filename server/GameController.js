@@ -1,21 +1,24 @@
 var fs = require('fs');
 var path = require('path');
 
+var Player = require('./Player');
+var CardController = require('./CardController');
+
 module.exports = function(data) {
 
 	var players = []; //{userId: 123, hand: {} }
-	var roundCount = 0;
-	var maxRounds = 8;
-	var rounds = [];
-	var POINTS_PER_VOTE = 50;
-	var blackCardsMaster = [];
-	var whiteCardsMaster = [];
-	var blackCardsCurrent = [];
-	var whiteCardsCurrent = [];
-	var HANDSIZE = 10; //Number of white cards a user should always have
-	var BOT_NUMBER = 0;
 	var bots = [];
+
+	var cardController; // holds the white and black cards
+	var rounds = [];
+
 	var voteNumber;
+	var roundCount = 0;
+
+	var MAX_ROUNDS = 8;
+	var BOT_NUMBER = 0;
+	var POINTS_PER_VOTE = 50;
+	var HANDSIZE = 10; //Number of white cards a user should always have
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -25,12 +28,12 @@ module.exports = function(data) {
 		'FINAL_RESULTS': 4
 	};
 
-    var GameState = '0';
+	var GameState = '0';
 
 	// true if there is a timer running -> checked in updateGameState
 	// in the case if everyone submitted and game state has changed -> timer needs to stop
 	var timerIsActive = false;
-	var count = 30 ;
+	var count = 30;
 
 	/*
 		holding the function called on a 1sec interval
@@ -40,20 +43,19 @@ module.exports = function(data) {
 	var counter;
 
 	// function to initialise the countdown
-    var startTimer = function(callback) {
+	var startTimer = function(callback) {
 
-    	count = 30 ;
+		count = 30;
 
-	    timerIsActive = true;
-	    setAllPlayersAbleToSubmit();
-		counter = setInterval( function() {
+		timerIsActive = true;
+		setAllPlayersAbleToSubmit();
+		counter = setInterval(function() {
 
-			count -- ;
+			count--;
 			if (count < 0) {
 				if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
 					updateGameState(POSSIBLE_GAMESTATES.VOTING);
-				}
-				else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+				} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
 					updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
 				}
 				timerIsActive = false;
@@ -64,17 +66,17 @@ module.exports = function(data) {
 				// this results object will just contain the players and what answers they submitted with a blank
 				// playersWhoVotedForThis array.
 				var currentResults = rounds[roundCount - 1].results;
-				if (currentResults.length === 0){
-					currentResults  = buildBlankResults();
+				if (currentResults.length === 0) {
+					currentResults = buildBlankResults();
 				}
 				var roundData = {
 					results: currentResults,
-					voteCounter:0
+					voteCounter: 0
 				};
 				callback(roundData);
 			}
 
-		}, 1000);  // 1000 will  run it every 1 second
+		}, 1000); // 1000 will  run it every 1 second
 
 	};
 
@@ -83,11 +85,11 @@ module.exports = function(data) {
 		var currentRound = rounds[roundCount - 1];
 		var results = [];
 
-		currentRound.answers.forEach(function(currentAnswer){
+		currentRound.answers.forEach(function(currentAnswer) {
 			var result = {
-				player:currentAnswer.player,
-				answersText:currentAnswer.answersText,
-				playersWhoVotedForThis:[]
+				player: currentAnswer.player,
+				answersText: currentAnswer.answersText,
+				playersWhoVotedForThis: []
 			};
 			results.push(result);
 		});
@@ -112,36 +114,16 @@ module.exports = function(data) {
 	*/
 	var initialize = function(room, callback) {
 
-		path.join(__dirname, './BlackWhiteCards.json');
+		cardController = new CardController(function() {
+			room.usersInRoom.forEach(function(user) {
+				setupPlayer(user);
+			});
 
-		//Read in the Black and white cards
-		fs.readFile(__dirname + '/BlackWhiteCards.json', 'utf8', function(err, data) {
-			if (err) {
-				console.log(err);
-				throw err;
-			} else {
+			BOT_NUMBER = room.botNumber;
+			MAX_ROUNDS = room.numRounds;
 
-				//round 1 started in phase 1 of the game: players are submitting their choices
-
-				//set up each user
-				var cards = JSON.parse(data);
-				blackCardsMaster = cards.blackCards;
-				// blackCardsMaster = cards.blackCards.filter(function(card) {
-				// 	return (card.pick !== 1);
-				// });
-				whiteCardsMaster = cards.whiteCards;
-				blackCardsCurrent = blackCardsMaster.slice(0);
-				whiteCardsCurrent = whiteCardsMaster.slice(0);
-
-				room.usersInRoom.forEach(function(user) {
-					setupPlayer(user);
-				});
-
-				BOT_NUMBER = room.botNumber;
-				maxRounds = room.numRounds;
-
-				callback();
-			}
+			//Call back to server after finish setting up
+			callback();
 		});
 	};
 
@@ -153,7 +135,7 @@ module.exports = function(data) {
 	*/
 	var newRound = function(callback) {
 
-		var gameOver = (roundCount >= maxRounds);
+		var gameOver = (roundCount >= MAX_ROUNDS);
 		var data;
 
 		// Check if game over
@@ -171,7 +153,7 @@ module.exports = function(data) {
 
 			var round = {
 				count: roundCount,
-				question: getRoundQuestion(),
+				question: cardController.getQuestion(),
 				answers: [],
 				results: []
 			};
@@ -184,32 +166,11 @@ module.exports = function(data) {
 				players: players,
 				roundQuestion: round.question,
 				round: roundCount,
-				maxRounds: maxRounds,
+				maxRounds: MAX_ROUNDS,
 				gameIsOver: false
 			};
 		}
 		callback(data);
-	};
-
-	/*
-		Returns a random questions
-	*/
-	var getRoundQuestion = function() {
-
-		if (blackCardsCurrent.length <= 0) {
-			blackCardsMaster.forEach(function(card) {
-				blackCardsCurrent.push(card);
-			});
-		} //refreshing the card list if we reach the end of questions;
-
-		var index = Math.floor((Math.random() * blackCardsCurrent.length));
-
-		var question = blackCardsCurrent[index];
-		blackCardsCurrent.splice(index, 1);
-		//removing dealt card from card list
-
-
-		return question;
 	};
 
 
@@ -229,8 +190,6 @@ module.exports = function(data) {
 
 		var submittingPlayer = getPlayerFromId(playerId);
 
-		//TO DO: before submitting check that the player hasn't submitted yet
-
 		if (submittingPlayer.hasSubmitted) {
 			//can't submit twice
 		} else {
@@ -249,8 +208,9 @@ module.exports = function(data) {
 			currentRound.answers.push(ans);
 
 			//Update this players hand with a new card, as they have just played one
-			answersText.forEach(function (answer){
-				updateHand(playerId, answer);
+			// Loop throughas there can be multiple cards played on one answer
+			answersText.forEach(function(answer) {
+				submittingPlayer.updateHand(answer);
 			});
 
 			var allChoicesSubmitted;
@@ -298,11 +258,9 @@ module.exports = function(data) {
 
 		var currentRound = rounds[rounds.length - 1];
 		var results = [];
-		currentRound.results = [];
-
 		var submittingPlayer = getPlayerFromId(playerId);
 
-
+		currentRound.results = [];
 
 		if (submittingPlayer.hasSubmitted) {
 
@@ -319,35 +277,23 @@ module.exports = function(data) {
 					answer.playersVote.push(submittingPlayer.name);
 				}
 
-				//Build result object for each answer submitted
-				players.forEach(function(pl) {
-					if (pl.uId === answer.player.uId) {
+				// Build result object for each answer submitted
+				// Also works for bots
+				var answerPlayer = getPlayerFromId(answer.player.uId);
+				var result = {};
 
-						var result = {
-							player: pl,
-							answersText: answer.answersText,
-							playersWhoVotedForThis: answer.playersVote,
+				// Only add result if player was found with that id
+				if (answerPlayer !== undefined) {
 
-						};
+					result = {
+						player: answerPlayer,
+						answersText: answer.answersText,
+						playersWhoVotedForThis: answer.playersVote,
 
-						currentRound.results.push(result);
-					}
-				});
+					};
 
-
-				bots.forEach(function(bot) {
-					if (bot.uId === answer.player.uId) {
-
-						var result = {
-							player: bot,
-							answersText: answer.answersText,
-							playersWhoVotedForThis: answer.playersVote,
-						};
-
-						currentRound.results.push(result);
-					}
-				});
-
+					currentRound.results.push(result);
+				}
 			});
 
 			var allVotesSubmitted;
@@ -360,7 +306,7 @@ module.exports = function(data) {
 				// Add the points for the game
 				updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
 
-				voteNumber = 0 ;
+				voteNumber = 0;
 				allVotesSubmitted = true;
 
 			} else {
@@ -395,12 +341,7 @@ module.exports = function(data) {
 
 		var currentRound = rounds[roundCount - 1];
 
-		// Tell controller player is now active again
-		players.forEach(function(playerInGame) {
-			if (playerInGame.uId === userId) {
-				player = playerInGame;
-			}
-		});
+		player = getPlayerFromId(userId);
 
 		player.connectedToServer = true;
 
@@ -450,7 +391,7 @@ module.exports = function(data) {
 			data: {
 				question: currentRound.question,
 				round: currentRound.count,
-				maxRounds: maxRounds,
+				maxRounds: MAX_ROUNDS,
 				countdown: count
 			}
 		};
@@ -490,42 +431,43 @@ module.exports = function(data) {
 	var addFakeAnswers = function(round) {
 
 		var answersToPick = round.question.pick;
+		var ans;
+		var fakePlayer;
 
 		for (var i = 0; i < BOT_NUMBER; i++) {
 
 			// Ethier create new bots or use the exisiting ones
-			var fakePlayer;
 			if (bots.length === i) {
-				// Build fake player
-				fakePlayer = {
-					name: "BOT " + i,
+
+				fakePlayer = new Player({
 					uId: i,
-					hand: dealUserHand(),
-					points: 0
-				};
+					name: "BOT " + i
+				}, cardController);
+
+				fakePlayer.dealHand(HANDSIZE);
+				fakePlayer.isBot = true;
 				bots.push(fakePlayer);
 			} else {
 				fakePlayer = bots[i];
 			}
 
 			var randomAnswers = [];
+			var randomAns;
 
 			for (var j = 0; j < answersToPick; j++) {
-				var index = Math.floor(Math.random() * HANDSIZE);
-				var randomAns = fakePlayer.hand[index];
+				randomAns = fakePlayer.pickRandomCard();
+				fakePlayer.updateHand(randomAns);
 				randomAnswers.push(randomAns);
-				updateHand(fakePlayer.uId, randomAns);
 			}
 
 			// Build the submitted answer
-			var ans = {
+			ans = {
 				player: fakePlayer,
 				answersText: randomAnswers,
 				playersVote: [],
 				rank: ""
 			};
 
-			//Get the current round object, which will hold all the answers for that round
 			round.answers.push(ans);
 		}
 	};
@@ -534,13 +476,10 @@ module.exports = function(data) {
 		Given a user id, returns if that user is a player in this game
 	*/
 	var checkIfUserInGame = function(userId) {
-		var inRoom = false;
-		players.forEach(function(player) {
-			if (player.uId === userId) {
-				inRoom = true;
-			}
-		});
-		return inRoom;
+		if (getPlayerFromId(userId) !== undefined) {
+			return true;
+		}
+		return false;
 	};
 
 	var getNumOfConnectedPlayers = function() {
@@ -553,23 +492,13 @@ module.exports = function(data) {
 		return counter;
 	};
 
-	var getPlayerFromId = function(playerId) {
-		var player;
-		players.forEach(function(pl) {
-			if (pl.uId === playerId) {
-				player = pl;
-			}
-		});
-		return player;
-	};
-
 	/*
 	update to the next GameState depending on the current state
 	*/
 	var updateGameState = function(wantedState) {
 		GameState = wantedState;
 
-		if ( timerIsActive ) {
+		if (timerIsActive) {
 			stopTimer();
 		}
 
@@ -580,21 +509,19 @@ module.exports = function(data) {
 			//add the points to the players for each vote they received
 			currentRound.answers.forEach(function(answer) {
 				for (var i = 0; i < answer.playersVote.length; i++) {
-					addPoints(answer.player.uId);
+					answer.player.addPoints(POINTS_PER_VOTE);
 				}
 			});
 
 			penaliseNonVotingPlayers(currentRound.answers);
 
-			voteNumber = 0 ;
+			voteNumber = 0;
 
 			// Update every player's rank in the room
 			setRank();
-		}
 
-		 else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+		} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
 			players.forEach(function(pl) {
-
 				if (pl.hasSubmitted === false) {
 					pl.hasSubmitted = true;
 				}
@@ -611,55 +538,22 @@ module.exports = function(data) {
 	}
 
 	/*
-		Adds 50 points to a give player or bot
-	*/
-	var addPoints = function(playerId) {
-		players.forEach(function(player) {
-			if (player.uId === playerId) {
-				player.points += POINTS_PER_VOTE;
-			}
-		});
-		bots.forEach(function(bot) {
-			if (bot.uId === playerId) {
-				bot.points += POINTS_PER_VOTE;
-			}
-		});
-	};
-
-	/*
-		Removes 50 points from a given player or bot
-	*/
-	var removePoints = function(playerId) {
-		players.forEach(function(player) {
-			if (player.uId === playerId) {
-				player.points -= POINTS_PER_VOTE;
-			}
-		});
-		bots.forEach(function(bot) {
-			if (bot.uId === playerId) {
-				bot.points -= POINTS_PER_VOTE;
-			}
-		});
-	};
-
-	/*
 		finds players haven't voted in a certain round's answer set and takes points off them
 	*/
-	var penaliseNonVotingPlayers = function (answers) {
+	var penaliseNonVotingPlayers = function(answers) {
 		var playersWhoHaventVoted = players.slice();
 		var currentAnswers = answers.slice();
-		currentAnswers.forEach(function (answer) {
+		currentAnswers.forEach(function(answer) {
 			answer.playersVote.forEach(function(votingPlayer) {
 				playersWhoHaventVoted = playersWhoHaventVoted.filter(function(iteratedPlayer) {
 					return (iteratedPlayer.name !== votingPlayer);
 				});
 			});
 		});
-		playersWhoHaventVoted.forEach(function(player){
-			removePoints(player.uId);
+		playersWhoHaventVoted.forEach(function(player) {
+			player.removePoints(POINTS_PER_VOTE);
 		});
 	};
-
 
 	/*
 		count the overall votes in this round
@@ -702,77 +596,42 @@ module.exports = function(data) {
 	};
 
 	/*
-		Gives a players an inital set of respones
-	*/
-	var dealUserHand = function() {
-
-		var hand = [];
-		for (var i = 0; i < HANDSIZE; i++) {
-
-			var index = Math.floor((Math.random() * whiteCardsCurrent.length));
-
-			var card = whiteCardsCurrent[index];
-			whiteCardsCurrent.splice(index, 1);
-			//removing dealt card from card list
-
-			hand.push(card);
-		}
-
-		return hand;
-	};
-
-	/*
-	update a users hand by replacing the used card with a new random one
-	*/
-	var updateHand = function(userId, usedCard) {
-
-		// Need to look at both bots and player
-		var allPlayers = players.concat(bots);
-
-		allPlayers.forEach(function(player) {
-			if (player.uId === userId) {
-				player.hand = player.hand.filter(function(card) {
-					if (card !== usedCard)
-						return card;
-				});
-				var index = Math.floor((Math.random() * whiteCardsCurrent.length));
-				card = whiteCardsCurrent[index];
-				whiteCardsCurrent.splice(index, 1);
-				//removing dealt card from card list
-				player.hand.push(card);
-			}
-		});
-	};
-
-	/*
 		Sets up a player with a user id, a new hand and 0 points
 		Adds them to the player list
 	*/
 	var setupPlayer = function(user) {
+		var player = new Player(user, cardController);
 
-		var player = {
-			uId: user.uId,
-			name: user.name,
-			hand: dealUserHand(),
-			hasSubmitted: false,
-			points: 0,
-			rank: "",
-			connectedToServer: true
-		};
-
+		// Removes the cards from list of possible cards for other player
+		player.dealHand(HANDSIZE);
 		players.push(player);
 	};
 
 	var disconnectPlayer = function(playerId) {
-		var player;
+		var player = getPlayerFromId(playerId);
+		if (player !== undefined) {
+			player.connectedToServer = false;
+		}
+	};
 
-		//Find the player who submmited this
+	var getPlayerFromId = function(playerId) {
+		var player;
 		players.forEach(function(pl) {
 			if (pl.uId === playerId) {
 				player = pl;
 			}
 		});
-		player.connectedToServer = false;
+
+		//check if the id is for a bot
+		if (player === undefined) {
+			bots.forEach(function(bt) {
+				if (bt.uId === playerId) {
+					player = bt;
+				}
+			});
+		}
+
+		return player;
 	};
 
 	return {
