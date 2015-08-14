@@ -431,7 +431,7 @@ module.exports = function(port, enableLogging) {
 
             var result = {};
             var errorText = "";
-            var room = getRoomFromId(roomId);
+            var room = getRoomFromId(roomId.toUpperCase()); // accept lowercase spelling of room code
 
             logger.debug("trying to put user in room " + user.name + user.uId);
 
