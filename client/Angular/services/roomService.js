@@ -41,9 +41,18 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return roomId;
     }
 
-    function setGameParameters(r, b) {
-        botNumber = b;
-        numRounds = r;
+    function setBotNumber(num) {
+        botNumber = num;
+        sendMessage('ROOM setGameParameters', {
+            botNumber: botNumber,
+            numRounds: numRounds,
+            roomId: roomId
+        });
+        return;
+    }
+
+    function setRoundNumber(num) {
+        numRounds = num;
         sendMessage('ROOM setGameParameters', {
             botNumber: botNumber,
             numRounds: numRounds,
@@ -133,7 +142,8 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
         getGameParameters: getGameParameters,
-        setGameParameters: setGameParameters,
+        setBotNumber: setBotNumber,
+        setRoundNumber: setRoundNumber,
         _setRoomDetails: _setRoomDetails
     };
 

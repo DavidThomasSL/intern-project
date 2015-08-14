@@ -46,7 +46,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-center">
-                <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2 && getBotNumber() < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+                <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getUsersInRoom().length <= 1 && getGameParameters().botNumber < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
             </div>
         </div>
         <div class="row text-center">
