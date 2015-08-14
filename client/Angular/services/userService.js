@@ -13,14 +13,10 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         var gameHand = {};
         var rank = "";
 
-        //call function that emits to server the answer that was just submitted
-        function submitChoice(enteredAnswer) {
-            _emitChoice(enteredAnswer);
-        }
 
         //call function that emits to server the vote that was just submitted
-        function submitVote(enteredAnswer) {
-            _emitVote(enteredAnswer);
+        function submitVote(answer) {
+            _emitVote(answer);
         }
 
         function getUserName() {
@@ -46,7 +42,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         function setNameAndImage(name, image) {
-            console.log("sent name and image");
             sendMessage('USER set profile', {
                 name: name,
                 image: image
@@ -62,6 +57,15 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
                 if (score.playerId === user.uId) {
                     rank = score.rank;
                 }
+            });
+        }
+
+        function submitMessage(messageText) {
+            sendMessage('USER send message', {
+                playerName: user.name,
+                playerUid: user.uId,
+                messageText: messageText,
+                roomId: user.roomId
             });
         }
 
@@ -83,7 +87,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         function _setUserDetails(data) {
             user = data.user;
-            console.log(user);
             $sessionStorage.userId = user.uId;
             $sessionStorage.roomId = user.roomId;
         }
@@ -127,25 +130,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         -----------------
         */
 
-        //emit the answer that was just submitted: who submitted what and what room they are in
-        function _emitChoice(answer) {
-            sendMessage('USER submitChoice', {
-                playerId: user.uId,
-                playerName: user.name,
-                answer: answer,
-                roomId: user.roomId
-            });
-        }
-
-        //emit the vote that was just submitted: who voted for what and what room they are in
-        function _emitVote(answer) {
-            sendMessage('USER vote', {
-                playerId: user.uId,
-                playerName: user.name,
-                answer: answer,
-                roomId: user.roomId
-            });
-        }
 
         function sendMessage(eventName, data, callback) {
             if (callback === undefined) {
@@ -159,8 +143,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             getUserName: getUserName,
             getUserId: getUserId,
             getUserHand: getUserHand,
-            submitChoice: submitChoice,
-            submitVote: submitVote,
             getRank: getRank,
             setRank: setRank,
             setNameAndImage: setNameAndImage,
@@ -168,7 +150,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             _setUserDetails: _setUserDetails,
             _setHand: _setHand,
             _joinRoom: _joinRoom,
-            _registerUser: _registerUser
+            _registerUser: _registerUser,
+            sendMessage: submitMessage
         };
 
     }

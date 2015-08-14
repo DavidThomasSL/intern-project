@@ -2,13 +2,13 @@ module.exports = function(browserInstance) {
 
 	var element = browserInstance.element;
 
-	var clearUser = function(){
+	var clearUser = function() {
 		clearLocalStorage();
 		refresh();
 		getIndex();
 	};
 
-	var getIndex = function(){
+	var getIndex = function() {
 		browserInstance.get('/');
 		browserInstance.waitForAngular();
 	};
@@ -21,18 +21,25 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var refresh = function(){
+	var submitMessage = function(message) {
+		var messageInput = element(by.id('message-box'));
+		messageInput.sendKeys(message);
+		element(by.id('submit-message')).click();
+		browserInstance.waitForAngular();
+	};
+
+	var refresh = function() {
 		browserInstance.refresh();
 		browserInstance.waitForAngular();
 	};
 
-	var clearLocalStorage = function(){
+	var clearLocalStorage = function() {
 		browserInstance.executeScript('window.sessionStorage.clear();');
 		browserInstance.executeScript('window.localStorage.clear();');
 		browserInstance.waitForAngular();
 	};
 
-	var createRoom = function(){
+	var createRoom = function() {
 		var createRoomButton = element(by.id('create-room-button'));
 		createRoomButton.click();
 		browserInstance.waitForAngular();
@@ -46,6 +53,25 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var setBotsOn = function(number) {
+		element(by.id('set-bot-dropdown')).click();
+		element.all(by.id("bot-select-dropdown")).get(0).element(by.linkText(number.toString())).click();
+		browserInstance.waitForAngular();
+	};
+
+	var setRoundNumber = function(number) {
+
+		var text = number.toString();
+		if (text === '8') {
+			text = "8 (Default)";
+		} // This is the text in the link for number 8
+
+		element(by.id('set-round-dropdown')).click();
+		element.all(by.id("round-select-dropdown")).get(0).element(by.linkText(text)).click();
+		browserInstance.waitForAngular();
+
+	};
+
 	var leaveLobby = function() {
 		var leaveLobbyButton = element(by.id('leave-lobby-button'));
 		leaveLobbyButton.click();
@@ -54,6 +80,10 @@ module.exports = function(browserInstance) {
 
 	var getRoomId = function() {
 		return element(by.binding('roomId')).getText();
+	};
+
+	var getBlankSpaces = function() {
+		return element(by.binding('currentQuestion().pick')).getText();
 	};
 
 	var startGame = function() {
@@ -65,6 +95,16 @@ module.exports = function(browserInstance) {
 	var ready = function() {
 		var readyButton = element(by.id('ready-button'));
 		readyButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var submitFirstAnswers = function(numberToSubmit) {
+		element.all(by.exactRepeater("answer in userHand()")).then(function(answers) {
+			for (var i = 0; i < numberToSubmit; i++) {
+				answers[i].click();
+				browserInstance.waitForAngular();
+			}
+		});
 		browserInstance.waitForAngular();
 	};
 
@@ -80,15 +120,22 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var startNewRound = function() {
-		var newRoundButton = element(by.id('next-round-button'));
-		newRoundButton.click();
+	var showReplaceableCards = function () {
+		var showReplaceCardsButton = element(by.id('replace-cards-show-button'));
+		showReplaceCardsButton.click();
 		browserInstance.waitForAngular();
 	};
 
-	var finishGame = function() {
-		var finishGameButton = element(by.id('finish-game-button'));
-		finishGameButton.click();
+	var getFirstReplaceCardText = function() {
+		var rows = element.all(by.exactRepeater("answer in userHand()"));
+		return rows.first().element(by.id("answer")).getText();
+	};
+
+	var replaceFirstCard = function() {
+		var rows = element.all(by.exactRepeater("answer in userHand()"));
+		rows.first().element(by.id("answer")).click();
+		var submitReplaceCardsButton = element(by.id('replace-cards-submit-button'));
+		submitReplaceCardsButton.click();
 		browserInstance.waitForAngular();
 	};
 
@@ -115,13 +162,19 @@ module.exports = function(browserInstance) {
 		joinRoom: joinRoom,
 		leaveLobby: leaveLobby,
 		getRoomId: getRoomId,
+		getBlankSpaces: getBlankSpaces,
 		startGame: startGame,
 		submitFirstAnswer: submitFirstAnswer,
+		submitFirstAnswers: submitFirstAnswers,
 		submitFirstVote: submitFirstVote,
-		startNewRound: startNewRound,
-		finishGame: finishGame,
+		showReplaceableCards: showReplaceableCards,
+		getFirstReplaceCardText: getFirstReplaceCardText,
+		replaceFirstCard: replaceFirstCard,
 		backToStart: backToStart,
 		activateSidebar: activateSidebar,
-		ready: ready
+		ready: ready,
+		setBotsOn: setBotsOn,
+		setRoundNumber: setRoundNumber,
+		submitMessage: submitMessage
 	};
 };

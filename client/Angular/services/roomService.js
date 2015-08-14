@@ -11,6 +11,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var roomId = -1;
     var usersInRoom = [];
     var errorMessage = "";
+    var botNumber = 0;
+    var messages = [];
+    var numRounds = 8;
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -39,6 +42,38 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return roomId;
     }
 
+    function setBotNumber(num) {
+        botNumber = num;
+        sendMessage('ROOM setGameParameters', {
+            botNumber: botNumber,
+            numRounds: numRounds,
+            roomId: roomId
+        });
+        return;
+    }
+
+    function setRoundNumber(num) {
+        numRounds = num;
+        sendMessage('ROOM setGameParameters', {
+            botNumber: botNumber,
+            numRounds: numRounds,
+            roomId: roomId
+        });
+        return;
+    }
+
+    function getGameParameters() {
+        return {
+            numRounds: numRounds,
+            botNumber: botNumber
+        };
+    }
+
+    function getMessages() {
+        return messages;
+    }
+
+
     //----------------------
     //SOCKET EVENT LISTENERS
     //-=-----------------
@@ -61,8 +96,11 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     function _setRoomDetails(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
+        botNumber = data.botNumber;
+        numRounds = data.numRounds;
 
-        //add on canvas control elements
+        //add on canvas control elements to each user
+        //Allows the canvas to access the user's image
         usersInRoom.forEach(function(user) {
             user.canvasControl = {
                 getUserImage: function() {
@@ -70,6 +108,10 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
                 }
             };
         });
+    }
+
+    function _setMessages(data) {
+        messages = data ;
     }
 
     function _setError(data) {
@@ -87,6 +129,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     communicationService.registerListener("ROOM", [{
         eventName: "details",
         eventAction: _setRoomDetails
+    }, {
+        eventName: "messages",
+        eventAction: _setMessages
     }]);
 
     /*
@@ -109,6 +154,11 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
+        _setMessages: _setMessages,
+        getMessages: getMessages,
+        getGameParameters: getGameParameters,
+        setBotNumber: setBotNumber,
+        setRoundNumber: setRoundNumber,
         _setRoomDetails: _setRoomDetails
     };
 

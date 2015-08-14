@@ -3,7 +3,9 @@ var clonageUser = require("./helpers/browserHelper.js");
 describe('When playing a game', function() {
 
 	var MAX_ROUNDS = 8;
+	var FAKE_ANSWERS = 0;
 	var roomId;
+	var cardsToSubmit;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
@@ -26,7 +28,11 @@ describe('When playing a game', function() {
 			secondClonageUser.ready();
 		});
 
-		firstClonageUser.submitFirstAnswer();
+		firstClonageUser.getBlankSpaces().then(function(text) {
+			cardsToSubmit = parseInt(text[5]); //PICK X.
+			firstClonageUser.submitFirstAnswers(cardsToSubmit);
+		});
+
 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
 
 	});
@@ -36,8 +42,18 @@ describe('When playing a game', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
 	});
 
+	it('can see a timer', function() {
+		var timer = firstClonageUser.element(by.id('countdown'));
+		expect(timer.isPresent()).toBe(true);
+	});
+
+	it('can have a counter that indicates number of seconds left', function() {
+		var counter = firstClonageUser.element(by.binding('counter'));
+		expect(counter.isPresent()).toBeLessThan(61);
+	});
+
 	it('can be redirected to a voting page once everyone submitted', function() {
-		secondClonageUser.submitFirstAnswer();
+		secondClonageUser.submitFirstAnswers(cardsToSubmit);
 		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/vote/);
 	});
@@ -48,14 +64,14 @@ describe('When playing a game', function() {
 	});
 
 	it('can see what everyone submitted', function() {
-		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2);
-		expect(secondClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2);
+		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + FAKE_ANSWERS);
+		expect(secondClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + FAKE_ANSWERS);
 	});
 
 	it('can refresh and see voting page again', function() {
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
-		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2);
+		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + FAKE_ANSWERS);
 	});
 
 	it('can vote for an answer', function() {

@@ -1,13 +1,18 @@
-ClonageApp.controller("roomController", function($scope, userService, roomService, RoutingService, gameService, $location, $sessionStorage) {
+ClonageApp.controller("roomController", function($scope, userService, roomService, RoutingService, gameService) {
 
     $scope.getUserName = userService.getUserName;
     $scope.getUsersInRoom = roomService.getUsersInRoom; //List all the users in the lobby
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getUserId = userService.getUserId; //Display user icon on card in lobby
     $scope.getUsersInRoom = roomService.getUsersInRoom;
-    $scope.drawingEnabled = false; // Set whether the canvas can be drawn or not
-    $scope.multipleCanvasEnabled = false;
+    $scope.getGameParameters = roomService.getGameParameters;
 
+    $scope.sendMessage = function (messageText) {
+        userService.sendMessage(messageText);
+        $scope.messageText = '';
+    };
+
+    $scope.getMessages = roomService.getMessages;
 
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());
@@ -23,6 +28,9 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
         roomService.leaveRoom();
     };
 
+    $scope.toggleBots = function() {
+        roomService.toggleBotStatus();
+    };
 
     $scope.getUserId = function() {
         return userService.getUserId();
@@ -33,9 +41,12 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
         return num.length;
     };
 
+    $scope.setBotNumber = function(number) {
+        roomService.setBotNumber(number);
+    };
 
-    $scope.startGame = function() {
-        gameService.startGame($scope.roomId());
+    $scope.setRoundNumber = function(number) {
+        roomService.setRoundNumber(number);
     };
 
 });

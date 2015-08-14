@@ -33,17 +33,46 @@ describe('When joining an existing room', function() {
 	});
 
 	it('if a user leaves the lobby the other user can see that without updating', function() {
-
 		secondClonageUser.leaveLobby();
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(1);
-
 	});
 
 	it('if other user joins room, user in room can see that without updating', function() {
-
 		secondClonageUser.joinRoom(roomId);
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+	});
 
+	it('If other user sets the bot number, user can see that change without updating', function() {
+		secondClonageUser.setBotsOn(3);
+		expect(firstClonageUser.element(by.binding("getGameParameters().botNumber")).getText()).toMatch("3 Bots");
+	});
+
+	it('If other user sets the round number, user can see that change without updating', function() {
+		secondClonageUser.setRoundNumber(3);
+		expect(firstClonageUser.element(by.binding("getGameParameters().numRounds")).getText()).toMatch("3 Rounds");
+	});
+
+	it('can not send an empty message or white spaces in the room', function() {
+		firstClonageUser.submitMessage('               ');
+		expect(firstClonageUser.element(by.repeater('message in getMessages()')).isPresent()).toBe(false);
+	});
+
+	it('can send a message in the room', function() {
+		firstClonageUser.submitMessage('Hi!');
+		expect(firstClonageUser.element(by.id('message-box')).getText()).toBe('');
+		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+	});
+
+	it('If one user submits a message everyone can see it without updating', function() {
+		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+	});
+
+	it('on refresh user can still see the messages in the room', function() {
+
+		firstClonageUser.refresh();
+
+		expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
 
 	});
 
@@ -54,6 +83,8 @@ describe('When joining an existing room', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Alice');
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
+		expect(firstClonageUser.element(by.binding("getGameParameters().botNumber")).getText()).toMatch("3 Bots");
+		expect(firstClonageUser.element(by.binding("getGameParameters().numRounds")).getText()).toMatch("3 Rounds");
 
 		firstClonageUser.clearUser();
 		browser2.close();

@@ -2,7 +2,7 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('After ending the game', function() {
 
-	var MAX_ROUNDS = 8;
+	var MAX_ROUNDS = 2;
 	var POINTS_PER_VOTE = 50;
 
 	var roomId;
@@ -24,15 +24,25 @@ describe('After ending the game', function() {
 		firstClonageUser.getRoomId().then(function(text) {
 			roomId = text.split(" ")[2];
 			secondClonageUser.joinRoom(roomId);
+
+			// set round number low to prevent jasmine timeouts on circleCI
+			firstClonageUser.setRoundNumber(MAX_ROUNDS);
+
 			firstClonageUser.ready();
 			secondClonageUser.ready();
 		});
 
 
+		//taking function out of loop as jshint complains
+		var userSubmitAnswer = function(text) {
+			cardsToSubmit = parseInt(text[5]); //PICK X.
+			firstClonageUser.submitFirstAnswers(cardsToSubmit);
+			secondClonageUser.submitFirstAnswers(cardsToSubmit);
+		};
+
 		//change value here if we change the number of rounds
 		for (var i = 0; i < MAX_ROUNDS; i++) {
-			firstClonageUser.submitFirstAnswer();
-			secondClonageUser.submitFirstAnswer();
+			firstClonageUser.getBlankSpaces().then(userSubmitAnswer);
 
 			firstClonageUser.submitFirstVote();
 			secondClonageUser.submitFirstVote();
