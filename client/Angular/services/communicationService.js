@@ -91,8 +91,8 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
-	socket.on("ERROR message", function(data) {
-		_setListenerEventAction("ERROR message");
+	socket.on("NOTIFICATION message", function(data) {
+		_setListenerEventAction("NOTIFICATION message");
 		onMessageFunction(data);
 	});
 

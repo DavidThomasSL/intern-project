@@ -1,4 +1,4 @@
-ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, errorService,  toastr) {
+ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, notificationService, toastr) {
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
@@ -30,11 +30,27 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         return rank;
     };
 
-    function displayErrorMessage(errorMessage) {
-        toastr.error(errorMessage);
+    function displayNotificationMessage(notificationMessage, notificationType) {
+        console.log(notificationType);
+        switch (notificationType) {
+            case "error":
+                toastr.error(notificationMessage);
+                break;
+            case "success":
+                toastr.success(notificationMessage);
+                break;
+            case "info":
+                toastr.info(notificationMessage);
+                break;
+            case "warning":
+                toastr.info(notificationMessage);
+                break;
+            default:
+                toastr.error(notificationMessage);
+        }
     }
 
-    errorService.registerErrorListener(displayErrorMessage);
+    notificationService.registerNotificationListener(displayNotificationMessage);
 
     /*
     -------------------------------------------------------
@@ -55,7 +71,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.startCountdown = function() {
 
         //don't start a new countdown if one is already running ->>> it cancells the current one and start a new one
-        if ( angular.isDefined(countdown) ) $scope.stopCountdown();
+        if (angular.isDefined(countdown)) $scope.stopCountdown();
 
         /*
             if we don't get the value of the countdown from the server
@@ -67,7 +83,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
             $scope.counter = 30;
         }
 
-        countdown = $interval( function() {
+        countdown = $interval(function() {
 
             /*
                 on refresh we get the value from the server
@@ -82,7 +98,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
             // if time hasn't run out -> decrement counter
             if ($scope.counter > 0) {
 
-                $scope.counter -- ;
+                $scope.counter--;
 
             } else {
 

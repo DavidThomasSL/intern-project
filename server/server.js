@@ -236,6 +236,10 @@ module.exports = function(port, enableLogging) {
                     results: newResults,
                     voteNumber:0
                 });
+                user.emit("NOTIFICATION message", {
+                    text: "Replaced " + data.cardsToReplace.length + " card(s).",
+                    type: "success"
+                });
             });
         });
 
@@ -472,8 +476,9 @@ module.exports = function(port, enableLogging) {
             if (result.joined) {
                 logger.info("User " + user.name + " joined room " + roomId);
             } else {
-                socket.emit("ERROR message", {
-                    errorText: "Cannot join the room, " + errorText
+                socket.emit("NOTIFICATION message", {
+                    text: "Cannot join the room, " + errorText,
+                    type: "error"
                 });
                 logger.warn("User " + user.name + " could not join room " + roomId);
             }

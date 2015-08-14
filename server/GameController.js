@@ -460,11 +460,8 @@ module.exports = function(data) {
 			for (var j = 0; j < answersToPick; j++) {
 				randomAns = fakePlayer.pickRandomCard();
 				fakePlayer.updateHand(randomAns);
-				console.log(randomAns);
 				randomAnswers.push(randomAns);
 			}
-
-			// console.log(randomAnswers);
 
 			// Build the submitted answer
 			ans = {
@@ -473,8 +470,6 @@ module.exports = function(data) {
 				playersVote: [],
 				rank: ""
 			};
-
-			console.log(ans);
 
 			round.answers.push(ans);
 		}
