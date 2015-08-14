@@ -12,6 +12,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var usersInRoom = [];
     var errorMessage = "";
     var botNumber = 0;
+    var numRounds = 0;
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -40,15 +41,36 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return roomId;
     }
 
-    function setBotNumber (number) {
-        botNumber = number;
-        sendMessage('ROOM setBotNumber', {botNumber: botNumber, roomId: roomId});
+    // function setBotNumber(number) {
+    //     botNumber = number;
+    //     sendMessage('ROOM setBotNumber', {
+    //         botNumber: botNumber,
+    //         roomId: roomId
+    //     });
+    //     return;
+    // }
+
+    function setGameParameters(r, b) {
+        botNumber = b;
+        numRounds = r;
+        sendMessage('ROOM setGameParameters', {
+            botNumber: botNumber,
+            numRounds: numRounds,
+            roomId: roomId
+        });
         return;
     }
 
-    function getBotNumber() {
-        return botNumber;
+    function getGameParameters() {
+        return {
+            numRounds: numRounds,
+            botNumber: botNumber
+        };
     }
+
+    // function getBotNumber() {
+    //     return botNumber;
+    // }
 
     //----------------------
     //SOCKET EVENT LISTENERS
@@ -73,6 +95,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
         botNumber = data.botNumber;
+        numRounds = data.numRounds;
 
         //add on canvas control elements to each user
         //Allows the canvas to access the user's image
@@ -121,9 +144,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
-        setBotNumber: setBotNumber,
-        getBotNumber: getBotNumber,
         getRoomId: getRoomId,
+        getGameParameters: getGameParameters,
+        setGameParameters: setGameParameters,
         _setRoomDetails: _setRoomDetails
     };
 

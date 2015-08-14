@@ -164,9 +164,10 @@ module.exports = function(port, enableLogging) {
         /*
             Set by the players in the room lobby if they want to enable bots during the game or not
         */
-        socket.on('ROOM setBotNumber', function(data) {
+        socket.on('ROOM setGameParameters', function(data) {
             var room = getRoomFromId(data.roomId);
             room.botNumber = data.botNumber;
+            room.numRounds = data.numRounds;
             room.broadcastRoom("ROOM details");
             return;
         });
