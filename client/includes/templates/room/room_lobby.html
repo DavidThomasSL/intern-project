@@ -6,9 +6,9 @@
             <div class="flex1">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-bot-dropdown">
-                    {{getGameParameters().botNumber}} bots <span class="caret"></span>
+                    {{getGameParameters().botNumber}} Bots <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu" id="bot-select-dropdown">
                         <li><a ng-click="setBotNumber(0)">None</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a ng-click="setBotNumber(1)">1</a></li>
@@ -25,7 +25,7 @@
                     <button type="button" class="btn btn-default dropdown-toggle flex1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-round-dropdown">
                     {{getGameParameters().numRounds}} Rounds <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu" id="round-select-dropdown">
                         <li><a ng-click="setRoundNumber(1)">1</a></li>
                         <li><a ng-click="setRoundNumber(2)">2</a></li>
                         <li><a ng-click="setRoundNumber(3)">3</a></li>
