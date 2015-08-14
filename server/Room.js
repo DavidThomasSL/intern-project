@@ -4,6 +4,7 @@ function Room(roomCode) {
     self.usersInRoom = [];
     self.gameController = undefined;
     self.botNumber = 0;
+    self.numRounds = 8;
 
     /*
         Returns a user from the room
@@ -139,7 +140,8 @@ function Room(roomCode) {
             data = {
                 roomId: self.id,
                 usersInRoom: usersInRoomJSON,
-                botNumber: self.botNumber
+                botNumber: self.botNumber,
+                numRounds: self.numRounds
             };
 
         }

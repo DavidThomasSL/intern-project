@@ -1,12 +1,47 @@
 <div class="container">
     <div class="header clearfix">
         <h1>ROOM CODE: {{roomId()}}</h1>
-        <h4>Give this code to others you want to join this room.</h4>
+        <h4>Give this code to your friends to join and set the game parameters. <br/> Click ready when your want to start!</h4>
+        <div style="margin-top: 30px;" class="flex flex-row">
+            <div class="flex1">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-bot-dropdown">
+                    {{getGameParameters().botNumber}} Bots <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" id="bot-select-dropdown">
+                        <li><a ng-click="setBotNumber(0)">None</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a ng-click="setBotNumber(1)">1</a></li>
+                        <li><a ng-click="setBotNumber(2)">2</a></li>
+                        <li><a ng-click="setBotNumber(3)">3</a></li>
+                        <li><a ng-click="setBotNumber(4)">4</a></li>
+                        <li><a ng-click="setBotNumber(5)">5</a></li>
+                        <li><a ng-click="setBotNumber(6)">6</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex1">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle flex1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-round-dropdown">
+                    {{getGameParameters().numRounds}} Rounds <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" id="round-select-dropdown">
+                        <li><a ng-click="setRoundNumber(1)">1</a></li>
+                        <li><a ng-click="setRoundNumber(2)">2</a></li>
+                        <li><a ng-click="setRoundNumber(3)">3</a></li>
+                        <li><a ng-click="setRoundNumber(5)">5</a></li>
+                        <li><a ng-click="setRoundNumber(8)">8 (Default)</a></li>
+                        <li><a ng-click="setRoundNumber(13)">13</a></li>
+                        <li><a ng-click="setRoundNumber(21)">21</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
     <div id="room-lobby-container">
         <div class="row">
             <div class="col-md-6 col-sm-6 text-center" ng-repeat="user in getUsersInRoom()">
-                  <ng-include src="'includes/templates/user/userPanelLarge.html'"></ng-include>
+                <ng-include src="'includes/templates/user/userPanelLarge.html'"></ng-include>
             </div>
         </div>
         <div class="row">
@@ -16,21 +51,6 @@
         </div>
         <div class="row text-center">
             <h4> ({{getBotNumber()}} bots = {{getBotNumber()}}x the fun!) </h4>
-            <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-bot-dropdown">
-                Set number of Bots <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a ng-click="setBotNumber(0)">None</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a ng-click="setBotNumber(1)">1</a></li>
-                    <li><a ng-click="setBotNumber(2)">2</a></li>
-                    <li><a ng-click="setBotNumber(3)">3</a></li>
-                    <li><a ng-click="setBotNumber(4)">4</a></li>
-                    <li><a ng-click="setBotNumber(5)">5</a></li>
-                    <li><a ng-click="setBotNumber(6)">6</a></li>
-                </ul>
-            </div>
         </div>
         <div class="row text-center">
             <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() < 1">You need at least 2 players to start!</h4>
