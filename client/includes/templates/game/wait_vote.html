@@ -4,7 +4,7 @@
         <h4 ng-init="startCountdown()">{{ currentVotes() }} / {{getUsersInRoom().length}} votes cast</h4>
     </div>
     <div class="progress">
-        <div id="countdown" ng-class="counter>15 ? 'progress-bar progress-bar-striped active' : ( counter>5 ? 'progress-bar progress-bar-warning progress-bar-striped active' : 'progress-bar progress-bar-danger progress-bar-striped active' ) " style="width: {{counter*3.33}}%;">
+        <div id="countdown" ng-class="counter>15 ? 'progress-bar progress-bar-striped active' : ( counter>5 ? 'progress-bar progress-bar-warning progress-bar-striped active' : 'progress-bar progress-bar-danger progress-bar-striped active' ) " style="width: {{counter*1.66}}%;">
             <p ng-bind="counter"></p>
         </div>
     </div>
