@@ -324,6 +324,7 @@ module.exports = function(port, enableLogging) {
                                 location: 'results'
                             });
 
+
                             room.broadcastRoom("GAME playerRoundResults", {
                                 results: data.results,
                                 voteCounter: data.voteCounter
