@@ -39,12 +39,12 @@ describe("Testing Main Controller", function() {
 		        expect(scope.counter).toBeDefined();
 		});
 
-		it("when it starts, countdown should be initialised with 30 if getCountdown is undefined", function() {
+		it("when it starts, countdown should be initialised with 60 if getCountdown is undefined", function() {
 
 			var spyEvent = spyOn(gameService, 'getCountdown');
 			scope.startCountdown();
 			expect(spyEvent).toHaveBeenCalled();
-			expect(scope.counter).toBe(30);
+			expect(scope.counter).toBe(60);
 
 		});
 
@@ -79,7 +79,7 @@ describe("Testing Main Controller", function() {
 			var spyEvent = spyOn(scope, 'stopCountdown');
 
 			scope.startCountdown();
-		    $interval.flush(3000);
+		    $interval.flush(6000);
 
 			expect(spyEvent).toHaveBeenCalled();
 		});
