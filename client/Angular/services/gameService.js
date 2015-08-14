@@ -51,9 +51,11 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	//sends off all the cards that the user wants to replace and resets array
 	function replaceCardsSubmit() {
-		sendMessage("GAME replace cards", {
-			cardsToReplace: cardsToReplace
-		});
+		if (cardsToReplace.length > 0) {
+			sendMessage("GAME replace cards", {
+				cardsToReplace: cardsToReplace
+			});
+		}
 		cardsToReplace = [];
 	};
 
@@ -148,39 +150,39 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
     */
 	function hasSubmitted(user) {
 
-        var submitted = false;
+		var submitted = false;
 
-        if (answers.length > 0) {
-            answers.forEach( function(answer){
-                if (answer.player.uId === user)
-                    submitted = true;
-            });
-         }
+		if (answers.length > 0) {
+			answers.forEach(function(answer) {
+				if (answer.player.uId === user)
+					submitted = true;
+			});
+		}
 
-        return submitted;
-    };
+		return submitted;
+	};
 
-     /*
+	/*
         check if a certain user had voted for an answer yet
         function called in order to visualise on the timer when a certain player has submitted
     */
-    function hasVoted(user) {
+	function hasVoted(user) {
 
-        var voted = false;
+		var voted = false;
 
-        if (votes.length > 0) {
-            votes.forEach( function(vote) {
-                if (vote.playersWhoVotedForThis.length > 0) {
-                    vote.playersWhoVotedForThis.forEach ( function(player) {
-                        if (player === user)
-                            voted = true;
-                    });
-                }
-            });
-         }
+		if (votes.length > 0) {
+			votes.forEach(function(vote) {
+				if (vote.playersWhoVotedForThis.length > 0) {
+					vote.playersWhoVotedForThis.forEach(function(player) {
+						if (player === user)
+							voted = true;
+					});
+				}
+			});
+		}
 
-        return voted;
-    };
+		return voted;
+	};
 
 
 	/*
