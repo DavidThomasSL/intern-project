@@ -64,6 +64,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         function submitMessage(messageText) {
             sendMessage('USER send message', {
                 playerName: user.name,
+                playerUid: user.uId,
                 messageText: messageText,
                 roomId: user.roomId
             });

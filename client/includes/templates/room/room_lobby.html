@@ -21,9 +21,10 @@
                 <div class="panel panel-default" style="height: 200px; overflow-y: scroll;" scroll="getMessages()">
                     <table>
                         <tr ng-repeat="message in getMessages()" style="padding-bottom: 20px ">
-                            <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px">{{message.playerName}}</td>
-                            <td class="form-control" style="width: 400px; word-wrap: break-word; height: 100%; margin-bottom: 5px">{{message.messageText}}</td>
-                        </tr><br><br>
+                            <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; width: 20%"><div ng-hide="message.playerUid === getUserId()" style="right: 0px">{{message.playerName}}</div></td>
+                            <td style="width: 500px"><div class="form-control" ng-class="{'float-right': message.playerUid === getUserId(), 'float-left': message.playerUid !== getUserId()};" style="white-space: pre-wrap;white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;  margin-bottom: 5px; height: 100%; ">{{message.messageText}}</div></td>
+                            <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; right: 0; width: 20%"><div ng-show="message.playerUid === getUserId()">{{message.playerName}}</div></td>
+                        </tr><br>
                     </table>
                 </div>
             </div>

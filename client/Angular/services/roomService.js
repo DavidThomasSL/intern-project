@@ -55,7 +55,6 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     }
 
     function getMessages() {
-        //console.log(messages);
         return messages;
     }
 
