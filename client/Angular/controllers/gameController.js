@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, userService, roomService, RoutingService, gameService, $location, $sessionStorage) {
+ClonageApp.controller("gameController", function($scope, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -35,11 +35,11 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
         gameService.submitVote(enteredAnswer);
     };
 
-    $scope.replaceCardsSelect = function (selectedCardText) {
-        gameService.replaceCardsSelect(selectedCardText)
+    $scope.replaceCardsSelect = function(selectedCardText) {
+        gameService.replaceCardsSelect(selectedCardText);
     };
 
-    $scope.replaceCardsSubmit = function () {
+    $scope.replaceCardsSubmit = function() {
         gameService.replaceCardsSubmit();
     };
 
