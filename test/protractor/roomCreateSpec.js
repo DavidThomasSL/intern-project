@@ -27,9 +27,19 @@ describe('When creating a room', function() {
 
 	});
 
+	it('number of rounds should be visable and default to 8', function() {
+		expect(element(by.binding("getGameParameters().numRounds")).getText()).toMatch("8 Rounds");
+
+	});
+
 	it('users can change the number of bots in the room and that update on the page', function() {
 		firstClonageUser.setBotsOn(3);
-		expect(element(by.binding("getBotNumber()")).getText()).toMatch("(3 bots = 3x the fun!)");
+		expect(element(by.binding("getGameParameters().botNumber")).getText()).toMatch("3 Bots");
+	});
+
+	it('users can change the number of rounds in the room and updates on their page', function() {
+		firstClonageUser.setRoundNumber(8);
+		expect(element(by.binding("getGameParameters().numRounds")).getText()).toMatch("8 Rounds");
 	});
 
 	it('user can see themselves in the room', function() {

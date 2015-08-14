@@ -206,6 +206,11 @@ body, html {
   display: flex;
 }
 
+.flex {
+  display: -webkit-flex;
+  display: flex;
+}
+
 
 .flex-column {
   -webkit-flex-direction: column;

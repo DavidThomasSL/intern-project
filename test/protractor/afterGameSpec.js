@@ -2,7 +2,7 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('After ending the game', function() {
 
-	var MAX_ROUNDS = 8;
+	var MAX_ROUNDS = 2;
 	var POINTS_PER_VOTE = 50;
 
 	var roomId;
@@ -24,6 +24,10 @@ describe('After ending the game', function() {
 		firstClonageUser.getRoomId().then(function(text) {
 			roomId = text.split(" ")[2];
 			secondClonageUser.joinRoom(roomId);
+
+			// set round number low to prevent jasmine timeouts on circleCI
+			firstClonageUser.setRoundNumber(MAX_ROUNDS);
+
 			firstClonageUser.ready();
 			secondClonageUser.ready();
 		});

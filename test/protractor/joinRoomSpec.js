@@ -33,23 +33,23 @@ describe('When joining an existing room', function() {
 	});
 
 	it('if a user leaves the lobby the other user can see that without updating', function() {
-
 		secondClonageUser.leaveLobby();
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(1);
-
 	});
 
 	it('if other user joins room, user in room can see that without updating', function() {
-
 		secondClonageUser.joinRoom(roomId);
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
-
-
 	});
 
 	it('If other user sets the bot number, user can see that change without updating', function() {
 		secondClonageUser.setBotsOn(3);
-		expect(firstClonageUser.element(by.binding("getBotNumber()")).getText()).toMatch("(3 bots = 3x the fun!)");
+		expect(firstClonageUser.element(by.binding("getGameParameters().botNumber")).getText()).toMatch("3 Bots");
+	});
+
+	it('If other user sets the round number, user can see that change without updating', function() {
+		secondClonageUser.setRoundNumber(3);
+		expect(firstClonageUser.element(by.binding("getGameParameters().numRounds")).getText()).toMatch("3 Rounds");
 	});
 
 	it('on refresh user is put back into the lobby', function() {
@@ -59,7 +59,8 @@ describe('When joining an existing room', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Alice');
 		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
-		expect(firstClonageUser.element(by.binding("getBotNumber()")).getText()).toMatch("(3 bots = 3x the fun!)");
+		expect(firstClonageUser.element(by.binding("getGameParameters().botNumber")).getText()).toMatch("3 Bots");
+		expect(firstClonageUser.element(by.binding("getGameParameters().numRounds")).getText()).toMatch("3 Rounds");
 
 		firstClonageUser.clearUser();
 		browser2.close();
