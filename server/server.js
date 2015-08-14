@@ -317,7 +317,7 @@ module.exports = function(port, enableLogging) {
                     });
                 }
 
-                logger.info("Starting new round in room " + room.id);
+                logger.debug("Starting new round in room " + room.id);
             });
         }
 
@@ -454,7 +454,7 @@ module.exports = function(port, enableLogging) {
             }
 
             if (result.joined) {
-                logger.info("User " + user.name + " joined room " + roomId);
+                logger.debug("User " + user.name + " joined room " + roomId);
             } else {
                 socket.emit("ERROR message", {
                     errorText: "Cannot join the room, " + errorText
@@ -547,7 +547,7 @@ module.exports = function(port, enableLogging) {
     server.listen(port, function() {
         var addr = server.address();
 
-        logger.info("Chat server listening at port: " + addr.port);
+        logger.debug("Chat server listening at port: " + addr.port);
 
     });
 
