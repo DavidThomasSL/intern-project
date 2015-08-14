@@ -8,7 +8,7 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
     $scope.getGameParameters = roomService.getGameParameters;
 
     var botNumber = 0;
-    var numRounds = 0;
+    var numRounds = 8;
 
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());
