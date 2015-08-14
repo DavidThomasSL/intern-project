@@ -65,6 +65,28 @@ describe("Testing Game Service", function() {
 		}, jasmine.any(Function));
 	});
 
+	it("replaceCardsSelect doesn't call communicationService if cards no cards are selected", function() {
+		spyOn(mockCommunicationService, 'sendMessage');
+
+		gameService.replaceCardsSubmit();
+
+		expect(mockCommunicationService.sendMessage.calls.any()).toEqual(false);
+	});
+
+
+	it("replaceCardsSelect calls communicationService with correct data if cards are selected", function() {
+		spyOn(mockCommunicationService, 'sendMessage');
+
+		gameService.replaceCardsSelect("answer1");
+		gameService.replaceCardsSelect("answer2");
+		gameService.replaceCardsSubmit();
+
+		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("GAME replace cards", {
+			cardsToReplace: ["answer1", "answer2"],
+		}, jasmine.any(Function));
+	});
+
+
 	it("getRoundQuestion gets question", function() {
 		//set the round question
 		gameService._receiveQuestion({
