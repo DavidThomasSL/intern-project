@@ -34,7 +34,7 @@ module.exports = function(data) {
 	// true if there is a timer running -> checked in updateGameState
 	// in the case if everyone submitted and game state has changed -> timer needs to stop
 	var timerIsActive = false;
-	var count = 30;
+	var count = 60;
 
 	/*
 		holding the function called on a 1sec interval
@@ -46,7 +46,7 @@ module.exports = function(data) {
 	// function to initialise the countdown
 	var startTimer = function(callback) {
 
-		count = 30;
+		count = 60;
 
 		timerIsActive = true;
 		setAllPlayersAbleToSubmit();

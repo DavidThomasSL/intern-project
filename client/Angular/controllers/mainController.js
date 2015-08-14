@@ -79,7 +79,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         */
         if (gameService.getCountdown() === undefined) {
             console.log("restarting counter");
-            $scope.counter = 30;
+            $scope.counter = 60;
         }
 
         countdown = $interval(function() {

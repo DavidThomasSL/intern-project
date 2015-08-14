@@ -49,7 +49,7 @@ describe('When playing a game', function() {
 
 	it('can have a counter that indicates number of seconds left', function() {
 		var counter = firstClonageUser.element(by.binding('counter'));
-		expect(counter.isPresent()).toBeLessThan(31);
+		expect(counter.isPresent()).toBeLessThan(61);
 	});
 
 	it('can be redirected to a voting page once everyone submitted', function() {
