@@ -26,6 +26,7 @@ function Room(roomCode) {
         if (self.gameController === undefined) {
             var message = {
                 playerName: data.playerName,
+                playerUid: data.playerUid,
                 messageText: data.messageText
             };
 
@@ -62,6 +63,8 @@ function Room(roomCode) {
             }
         });
 
+        self.broadcastRoom('ROOM messages');
+
         // Check if room has a game in proress
         if (self.gameController === undefined && canJoin) {
 
@@ -70,8 +73,6 @@ function Room(roomCode) {
                 location: 'room',
                 error: "in checking if game controller undefined"
             });
-
-            self.broadcastRoom('ROOM messages');
 
             gameInProgress = false;
 

@@ -461,6 +461,7 @@ module.exports = function(port, enableLogging) {
             }
 
             if (result.joined) {
+                room.broadcastRoom('ROOM messages');
                 logger.info("User " + user.name + " joined room " + roomId);
             } else {
                 socket.emit("ERROR message", {
