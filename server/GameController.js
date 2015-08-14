@@ -436,10 +436,10 @@ module.exports = function(data) {
 
 		var answersToPick = round.question.pick;
 		var ans;
+		var fakePlayer;
 
 		for (var i = 0; i < BOT_NUMBER; i++) {
 
-			var fakePlayer;
 			// Ethier create new bots or use the exisiting ones
 			if (bots.length === i) {
 
