@@ -121,7 +121,7 @@ module.exports = function(data) {
 			});
 
 			BOT_NUMBER = room.botNumber;
-			maxRounds = room.numRounds;
+			MAX_ROUNDS = room.numRounds;
 
 			//Call back to server after finish setting up
 			callback();
