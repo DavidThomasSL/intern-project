@@ -10,6 +10,13 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
     var botNumber = 0;
     var numRounds = 8;
 
+    $scope.sendMessage = function (messageText) {
+        userService.sendMessage(messageText);
+        $scope.messageText = '';
+    }
+
+    $scope.getMessages = roomService.getMessages;
+
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());
         $scope.multipleCanvasEnabled = true;

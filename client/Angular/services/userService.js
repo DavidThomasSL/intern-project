@@ -60,6 +60,15 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             });
         }
 
+        function submitMessage(messageText) {
+            sendMessage('USER send message', {
+                playerName: user.name,
+                playerUid: user.uId,
+                messageText: messageText,
+                roomId: user.roomId
+            });
+        }
+
         /*
         ---------------
             COMMUNCATION LAYER API
@@ -141,7 +150,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             _setUserDetails: _setUserDetails,
             _setHand: _setHand,
             _joinRoom: _joinRoom,
-            _registerUser: _registerUser
+            _registerUser: _registerUser,
+            sendMessage: submitMessage
         };
 
     }

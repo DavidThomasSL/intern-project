@@ -4,6 +4,7 @@ function Room(roomCode) {
     self.usersInRoom = [];
     self.gameController = undefined;
     self.botNumber = 0;
+    self.messages = [];
     self.numRounds = 8;
 
     /*
@@ -19,6 +20,23 @@ function Room(roomCode) {
         });
 
         return user;
+    };
+
+    self.submitMessage = function(data) {
+
+        if (self.gameController === undefined) {
+            var message = {
+                playerName: data.playerName,
+                playerUid: data.playerUid,
+                messageText: data.messageText
+            };
+
+            self.messages.push(message);
+
+            return true;
+        }
+
+        return false;
     };
 
 
@@ -46,6 +64,8 @@ function Room(roomCode) {
                 errorText = "already in room";
             }
         });
+
+        user.emit("ROOM messages", self.messages);
 
         // Check if room has a game in proress
         if (self.gameController === undefined && canJoin) {
@@ -143,6 +163,11 @@ function Room(roomCode) {
                 botNumber: self.botNumber,
                 numRounds: self.numRounds
             };
+
+        }
+
+        else if (eventName === "ROOM messages") {
+            data = self.messages ;
 
         }
 

@@ -44,16 +44,37 @@
                 <ng-include src="'includes/templates/user/userPanelLarge.html'"></ng-include>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default" style="height: 200px; overflow-y: scroll;" scroll="getMessages()">
+                    <table>
+                        <tr ng-repeat="message in getMessages()" style="padding-bottom: 20px ">
+                            <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; width: 20%"><div ng-hide="message.playerUid === getUserId()" style="right: 0px">{{message.playerName}}</div></td>
+                            <td style="width: 500px"><div class="form-control" ng-class="{'float-right': message.playerUid === getUserId(), 'float-left': message.playerUid !== getUserId()};" style="white-space: pre-wrap;white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;  margin-bottom: 5px; height: 100%; ">{{message.messageText}}</div></td>
+                            <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; right: 0; width: 20%"><div ng-show="message.playerUid === getUserId()">{{message.playerName}}</div></td>
+                        </tr><br>
+                    </table>
+                </div>
+            </div>
+            <form name="message-form" ng-submit="sendMessage(messageText)" class="form-inline">
+                <input type="text" class="form-control" id="message-box" placeholder="Type a message" ng-model="messageText" autofocus required style="width: 80%">
+                <button type="submit" class="btn btn-default" style="width: 18%">Send</button>
+            </form>
+        </div>
+
         <div class="row">
             <div class="col-md-12 text-center">
                 <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2 && getBotNumber() < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
             </div>
         </div>
+
         <div class="row text-center">
             <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() < 1">You need at least 2 players to start!</h4>
             <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() >= 1">Wow, look at all the friends you have...</h4>
             <h4 ng-hide="getRoomUserCount() < 2">The game will start when everyone is ready </h4>
         </div>
+
         <div class="row bottom-buttons">
             <div class="col-md-12 text-center">
                 <button id="leave-lobby-button" type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()" >Go Back</button>

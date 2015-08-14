@@ -12,6 +12,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var usersInRoom = [];
     var errorMessage = "";
     var botNumber = 0;
+    var messages = [];
     var numRounds = 8;
 
     function createRoom(playerId) {
@@ -41,6 +42,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return roomId;
     }
 
+
     function setGameParameters(r, b) {
         botNumber = b;
         numRounds = r;
@@ -58,6 +60,11 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
             botNumber: botNumber
         };
     }
+
+    function getMessages() {
+        return messages;
+    }
+
 
     //----------------------
     //SOCKET EVENT LISTENERS
@@ -95,6 +102,10 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         });
     }
 
+    function _setMessages(data) {
+        messages = data ;
+    }
+
     function _setError(data) {
         errorMessage = data.msg;
     }
@@ -110,6 +121,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     communicationService.registerListener("ROOM", [{
         eventName: "details",
         eventAction: _setRoomDetails
+    }, {
+        eventName: "messages",
+        eventAction: _setMessages
     }]);
 
     /*
@@ -132,6 +146,8 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         getUsersInRoom: getUsersInRoom,
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
+        _setMessages: _setMessages,
+        getMessages: getMessages,
         getGameParameters: getGameParameters,
         setGameParameters: setGameParameters,
         _setRoomDetails: _setRoomDetails

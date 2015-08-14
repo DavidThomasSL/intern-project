@@ -35,6 +35,16 @@ body, html {
   line-height: 40px;
 }
 
+.float-right {
+  right: 0px;
+  background-color: rgb(51, 122, 183);
+  color: white;
+}
+
+.float-left {
+  left: 0px;
+}
+
 .sidebar {
   -moz-transition: left .2s;
   -webkit-transition: left .2s;
