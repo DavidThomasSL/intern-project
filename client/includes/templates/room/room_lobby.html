@@ -1,7 +1,7 @@
 <div class="container">
     <div class="header clearfix">
         <h1>ROOM CODE: {{roomId()}}</h1>
-        <h4>Give this code to your friends to join and set the game parameters. <br/> Click ready when your want to start!</h4>
+        <h4>Click ready when your want to start!</h4>
         <div style="margin-top: 30px;" class="flex flex-row">
             <div class="flex1">
                 <div class="btn-group">
@@ -40,8 +40,8 @@
     </div>
     <div id="room-lobby-container">
         <div class="row">
-            <div class="col-md-6 col-sm-6 text-center" ng-repeat="user in getUsersInRoom()">
-                <ng-include src="'includes/templates/user/userPanelLarge.html'"></ng-include>
+            <div class="col-md-4 col-sm-4 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
+                <ng-include src="userPanelTemplate"></ng-include>
             </div>
         </div>
 

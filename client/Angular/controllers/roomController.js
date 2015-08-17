@@ -1,4 +1,4 @@
-ClonageApp.controller("roomController", function($scope, userService, roomService, RoutingService, gameService) {
+ClonageApp.controller("roomController", function($scope, $window, userService, roomService, RoutingService, gameService) {
 
     $scope.getUserName = userService.getUserName;
     $scope.getUsersInRoom = roomService.getUsersInRoom; //List all the users in the lobby
@@ -7,7 +7,9 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.getGameParameters = roomService.getGameParameters;
 
-    $scope.sendMessage = function (messageText) {
+    $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
+
+    $scope.sendMessage = function(messageText) {
         userService.sendMessage(messageText);
         $scope.messageText = '';
     };
@@ -49,4 +51,14 @@ ClonageApp.controller("roomController", function($scope, userService, roomServic
         roomService.setRoundNumber(number);
     };
 
+    $scope.$watch(function() {
+        return $window.innerWidth;
+    }, function(value) {
+        if (value < 768) {
+            $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
+        } else {
+            $scope.userPanelTemplate = "includes/templates/user/userPanelLarge.html";
+        }
+        console.log(value);
+    });
 });

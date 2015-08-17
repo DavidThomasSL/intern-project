@@ -32,9 +32,9 @@
                 <a href="#/results#replace-cards-container">Replace unwanted cards at the bottom of the page</a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-sm-6 text-center" ng-repeat="user in getUsersInRoom()">
-                <ng-include src="'includes/templates/user/userPanelLarge.html'"></ng-include>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-lg-4 col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
+                <ng-include src="userPanelTemplate"></ng-include>
             </div>
         </div>
         <div id="replace-cards-container" style="margin-top:30px;">

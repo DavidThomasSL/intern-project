@@ -10,7 +10,7 @@
 		</div>
 	</div>
 	<div class="progress"> <div id="countdown" ng-class="counter>15 ? 'progress-bar progress-bar-striped active' : ( counter>5 ? 'progress-bar progress-bar-warning progress-bar-striped active' : 'progress-bar progress-bar-danger progress-bar-striped active' ) " style="width: {{counter*1.66}}%;"> <p ng-bind="counter"></p></div> </div>
-	<div class="col-md-3 text-center" ng-repeat="user in getUsersInRoom()">
+	<div class="col-md-3 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
 		<ng-include src="'includes/templates/user/userPanelSmallQuestion.html'"></ng-include>
 	</div>
 </div>
