@@ -218,7 +218,7 @@ module.exports = function(data) {
 			var allChoicesSubmitted;
 
 			//check if everyone submitted and sends back all the currently submitted answers
-			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
+			if (currentRound.answers.length >= getNumOfConnectedPlayers()) {
 
 				//add bot answers for people to vote on
 				addFakeAnswers(currentRound);
