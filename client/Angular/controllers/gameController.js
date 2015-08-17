@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
+ClonageApp.controller("gameController", function($scope, $window, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -10,6 +10,8 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.cardReplaceCost = gameService.getCurrentReplaceCost;
     $scope.replaceCostPerCard = gameService.getReplaceCostPerCard;
+
+    $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
 
 
     //get all answers submitted in order to visualise them on the voting page
@@ -64,4 +66,14 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
         gameService.clearGameData();
     };
 
+    $scope.$watch(function() {
+        return $window.innerWidth;
+    }, function(value) {
+        if (value < 768) {
+            $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
+        } else {
+            $scope.userPanelTemplate = "includes/templates/user/userPanelLarge.html";
+        }
+        console.log(value);
+    });
 });

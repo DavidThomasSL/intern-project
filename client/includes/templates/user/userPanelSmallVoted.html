@@ -1,9 +1,9 @@
 <div id="user-panel" class="panel panel-default" ng-class="{'player-not-submitted': !hasVoted(user.name)}">
 	<div class="panel-body flex-column flex-align-center">
-		<user-profile control="user.canvasControl" scale="0.3" ></user-profile>
+		<user-profile class="flex1" control="user.canvasControl" scale="0.3" ></user-profile>
 		<div>
 			{{user.name}}
-			<span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true" style="padding-left:20px"></span>
+			<span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true"></span>
 		</div>
 	</div>
 </div>
