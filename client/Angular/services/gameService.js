@@ -208,7 +208,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 		/*
 		generating the filled in question based on the question text and submitted answers
-		done in both the _recieveQuestion and _setChosenSnswers functions as we can't be sure what info
+		done in both the _recieveQuestion and _setChosenAnswers functions as we can't be sure what info
 		we will get first when refreshing
 		*/
 		if (answers !== undefined) {
