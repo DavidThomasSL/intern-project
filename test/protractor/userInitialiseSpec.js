@@ -14,17 +14,10 @@ describe('When registering as a user', function() {
 
 	});
 
-	it('users name is shown on the joining room page', function() {
-		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
-		expect(element(by.binding('getUserName')).getText()).toBe('Tom');
-		expect(element(by.id('room-input-box')).isPresent()).toBe(true);
-	});
-
-	it('on refresh, name is remebered and user goes straight to joining a room', function() {
+	it('on refresh, user goes straight to joining a room', function() {
 
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
-		expect(element(by.binding('getUserName')).getText()).toBe('Tom');
 		expect(element(by.id('room-join-container')).isDisplayed()).toBe(true);
 
 	});

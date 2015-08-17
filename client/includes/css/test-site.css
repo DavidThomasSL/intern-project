@@ -37,7 +37,7 @@ body, html {
 .float-right {
   right: 0px;
   background-color: rgb(51, 122, 183);
-  color: white;
+  color: black;
 }
 
 .float-left {
@@ -106,20 +106,20 @@ body, html {
 
 /* Main marketing message and sign up button */
 .jumbotron {
-  color:white;
+  color: black;
   position: relative;
   margin-bottom: 0px;
-  height: 200px;
+  height: 100px;
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0%,rgba(0,0,0,1)), color-stop(20%,rgba(0,0,0,0.65)),color-stop(40%,rgba(0,0,0,0.2)), color-stop(100%,rgba(0,0,0,0))), url('/../../includes/images/background.jpg'); /* Chrome,Safari4+ */
+  background-image: url('/../../includes/images/background.jpg'); /* Chrome,Safari4+ */
   /*background: url('/../../includes/images/background.jpg');*/
   background-color: #1976D2; /* blue background color incase background image cannot be loaded*/
   background-attachment: fixed;
   background-position: 50% -500px;
   background-size: cover;
   padding-left: 3%;
-  padding-top: 20px
+  padding-top: 10px
 }
 
 .jumbotron .lead {
@@ -148,17 +148,17 @@ body, html {
 .jumbotron .menu-button {
   margin-left: 3%;
   bottom: 0px;
-  left: 0px;
   border: none;
   background: transparent;
   position: absolute;
-  font-size: 40px;
+  font-size: 30px;
   outline: none;
+  left: 0px;
 }
 
 .jumbotron .rank {
   margin-left: 7%;
-  font-size: 35px;
+  font-size: 25px;
   position: absolute;
   bottom: 0px;
   margin-bottom: 10px;
