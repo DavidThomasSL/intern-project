@@ -39,7 +39,7 @@ ClonageApp.service('dynamicTextService', function() {
 		//formatting selected answers so they can be put into the question
 		currentSelections.forEach(function(selection) {
 			var selectionToPush = selection.slice();
-			if (selectionToPush.charAt(selectionToPush.length - 1) == ",") {
+			if (selectionToPush.charAt(selectionToPush.length - 1) == ".") {
 				selectionToPush = selectionToPush.slice(0, -1)
 			}
 			selectionToPush = "[" + selectionToPush + "]";

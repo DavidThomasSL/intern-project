@@ -3,7 +3,7 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
     $scope.currentQuestion = gameService.getCurrentQuestion;
-    $scope.filledInQuestion = gameService.getCurrentFilledInQuestion;
+    $scope.dynamicFilledInQuestion = gameService.getCurrentFilledInQuestion;
     $scope.userHand = userService.getUserHand;
     $scope.getUserId = userService.getUserId;
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
@@ -14,6 +14,17 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
 
     //get all answers submitted in order to visualise them on the voting page
     $scope.answers = gameService.getAnswers;
+
+    //getting the filled in question for the waiting page
+    $scope.filledInQuestion = function() {
+        var text = "";
+        $scope.answers().forEach(function(answer) {
+            if (answer.player.uId === userService.getUserId()) {
+                text = answer.filledInText;
+            }
+        });
+        return text;
+    };
 
     //get results after each round which involves: what each player submitted, who voted for their answer, and their score after the round
     //in order to calculate the points after the round multiply 50 with the number of votes

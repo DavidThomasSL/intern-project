@@ -205,15 +205,29 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			voteCounter = 0;
 			votes = [];
 		}
+
+		/*
+		generating the filled in question based on the question text and submitted answers
+		done in both the _recieveQuestion and _setChosenSnswers functions as we can't be sure what info
+		we will get first when refreshing
+		*/
+		if (answers !== undefined) {
+			answers.forEach(function(answer) {
+				answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, answer.answersText);
+			});
+		};
 	}
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
 
 		//generating the filled in question based on the question text and submitted answers
-		answers.forEach(function(answer){
-			answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text,answer.answersText);
-		});
+		if (currentQuestion !== undefined) {
+			answers.forEach(function(answer) {
+				answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, answer.answersText);
+			});
+		}
+
 		countdown = data.countdown;
 		votes = [];
 	}
