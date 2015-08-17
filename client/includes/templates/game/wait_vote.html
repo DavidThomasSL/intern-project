@@ -3,11 +3,9 @@
         <h2>Waiting for other players to vote</h1>
         <h4 ng-init="startCountdown()">{{ currentVotes() }} / {{getUsersInRoom().length}} votes cast</h4>
     </div>
-    <div class="progress">
-        <div id="countdown" ng-class="counter>15 ? 'progress-bar progress-bar-striped active' : ( counter>5 ? 'progress-bar progress-bar-warning progress-bar-striped active' : 'progress-bar progress-bar-danger progress-bar-striped active' ) " style="width: {{counter*1.66}}%;">
-            <p ng-bind="counter"></p>
-        </div>
-    </div>
+    <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
+
+
     <div class="col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
     </div>

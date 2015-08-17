@@ -1,4 +1,5 @@
 <div class="container">
+    <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
     <div class="header clearfix">
         <div id="round-question">
             <h2 ng-init="startCountdown()">{{currentQuestion().text}}</h2>
@@ -18,11 +19,6 @@
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="progress">
-        <div id="countdown" ng-class="counter>15 ? 'progress-bar progress-bar-striped active' : ( counter>5 ? 'progress-bar progress-bar-warning progress-bar-striped active' : 'progress-bar progress-bar-danger progress-bar-striped active' ) " style="width: {{counter*1.66}}%;">
-            <p ng-bind="counter"></p>
         </div>
     </div>
     <div class="col-md-3 col-xs-6  text-center" ng-repeat="user in getUsersInRoom()">
