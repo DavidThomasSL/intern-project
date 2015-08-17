@@ -42,7 +42,9 @@ module.exports = function(config) {
             "https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js",
             "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-animate.js",
             "https://rawgit.com/Foxandxss/angular-toastr/master/dist/angular-toastr.tpls.js",
+            "https://cdn.rawgit.com/d-oliveros/ngSmoothScroll/master/dist/angular-smooth-scroll.min.js",
             "node_modules/angular-mocks/angular-mocks.js",
+
             "client/Angular/**/*.js",
             "test/karma/*.js",
         ],
