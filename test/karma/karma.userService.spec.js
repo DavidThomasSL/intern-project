@@ -69,6 +69,28 @@ describe("Testing User Service", function() {
 		}, jasmine.any(Function));
 	});
 
+	it("submit message sends a message to the communicationService with userId, userName, messageText and roomId", function() {
+
+		spyOn(mockCommunicationService, 'sendMessage');
+
+		userService._setUserDetails({
+			user: testUser
+		});
+
+		userService._joinRoom({
+			roomId: "B00B5"
+		});
+
+		userService.sendMessage("Hi!");
+
+		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER send message", {
+			playerName: "bob",
+			playerUid: 1,
+			messageText: "Hi!",
+			roomId: "B00B5"
+		}, jasmine.any(Function));
+	});
+
 	it("can set userDetails in session storage with internal function _setUserDetails from communicationService, ", function() {
 
 		userService._setUserDetails({
