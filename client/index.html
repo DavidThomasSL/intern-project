@@ -21,22 +21,7 @@
     <body ng-app="ClonageApp" ng-controller="MainController">
         <!--COntent goes here -->
         <div class="wrapper">
-            <!-- <div class="jumbotron">
-                <div class="lead">
-                    <h2 style="margin-top: 0px; color: black;"><i>Clonage</i></h2>
-                </div>
-                <div class="text-left">
-                    <div ng-hide="rank() === ''">
-                        <button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">
-                        <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-                        </button>
-                        <p id="personal-rank" class="rank">#{{rank()}}</p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p id="current-round" class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
-                </div>
-            </div> -->
+            <!-- NAVBAR -->
             <nav class="navbar navbar-default navbar-static-top" style="margin: 10px">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
@@ -54,6 +39,7 @@
                         <p class="navbar-text navbar-right" style="font-size: 14px;line-height: 20px;margin-right: 5px"><b>{{getUserName()}}</b></p>
                         <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''">#{{rank()}}</p>
                         <p id="current-round" class="navbar-text navbar-right" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
+                        <!-- Game ranking dropdown -->
                         <ul class="nav navbar-nav navbar-left" ng-hide="rank() === ''">
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
@@ -69,33 +55,10 @@
                                 </ul>
                             </li>
                         </ul>
-                        <!-- <div ng-hide="rank() === ''">
-                            <button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">
-                            <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-                            </button>
-                            <p id="personal-rank" class="rank">#{{rank()}}</p>
-                        </div> -->
                     </div>
                 </nav>
                 <!-- END NAVBAR -->
                 <div class="content">
-                    <!-- sidebar -->
-                    <div class="sidebar" ng-show="toggle" ng-class="{'slide-out': toggle}">
-                        <div class="sidebar-header clearfix text-center"><br>
-                            <h4> Current Scores :</h4>
-                        </div>
-                        <div class="text-center">
-                            <ul class="list-group sidebar-list">
-                                <li class="list-group-item sidebar-item" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'">
-                                    <div style="font-weight: bold">#{{currentResult.player.rank}} {{currentResult.player.name}}
-                                    </div>
-                                    <div style="font-style: italic">
-                                        {{currentResult.player.points}} points
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
                     <div ng-view>
                     </div ng-view>
                 </div>
