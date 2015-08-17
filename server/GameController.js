@@ -537,11 +537,9 @@ module.exports = function(data) {
 		var newHand;
 		var currentPlayer = getPlayerFromId(userId);
 
-		//replace all request cards with a new cards
-		cardsToReplace.forEach(function(cardToReplace) {
-			currentPlayer.updateHand(cardToReplace);
-			currentPlayer.removePoints(CARD_REPLACE_COST);
-		});
+		//replace all requested cards with new ones
+		currentPlayer.replaceCards(cardsToReplace,CARD_REPLACE_COST);
+
 		//need also the send new point values back, doing this through playerRoundResults
 		var currentResults = rounds[rounds.length - 1].results;
 		callback(currentPlayer.hand, currentResults);

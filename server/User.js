@@ -46,6 +46,7 @@ function User(socket) {
 		return userDetails;
 	};
 
+
 	self.toString = function() {
 		var string = self.getUserDetails();
 		return string;

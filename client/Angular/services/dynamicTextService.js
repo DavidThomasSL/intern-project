@@ -38,17 +38,23 @@ ClonageApp.service('dynamicTextService', function() {
 
 		//formatting selected answers so they can be put into the question
 		currentSelections.forEach(function(selection) {
-			var selectionToPush = selection.replace(/.\s*$/, "");
+			var selectionToPush = selection.slice();
+			//removing full stop at end of text
+			if (selectionToPush.charAt(selectionToPush.length - 1) == ".") {
+				selectionToPush = selectionToPush.slice(0, -1)
+			}
 			selectionToPush = "[" + selectionToPush + "]";
 			removedFullStops.push(selectionToPush);
 		});
 
+		//if the question has no blanks then just put the inserted answers at the end of the string
+		//with commas for question requiring multiple e.g. "Create a Haiku"
 		if (questionText.indexOf('_') === -1) {
 			outputText += "\n";
 			removedFullStops.forEach(function(selection) {
 				outputText += (selection + ", ");
 			});
-			outputText = outputText.replace(/.\s*$/, ".");
+			outputText = outputText.replace(/,\s*$/, ".");
 			return outputText;
 		} else {
 			for (var i = 0; i < currentSelections.length; i++) {
@@ -59,6 +65,7 @@ ClonageApp.service('dynamicTextService', function() {
 	}
 
 	return {
-		getSubmissionState: getSubmissionState
+		getSubmissionState: getSubmissionState,
+		fillInSelections: fillInSelections
 	};
 });
