@@ -74,6 +74,5 @@ ClonageApp.controller("gameController", function($scope, $window, userService, r
         } else {
             $scope.userPanelTemplate = "includes/templates/user/userPanelLarge.html";
         }
-        console.log(value);
     });
 });

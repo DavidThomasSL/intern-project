@@ -120,7 +120,7 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var showReplaceableCards = function () {
+	var showReplaceableCards = function() {
 		var showReplaceCardsButton = element(by.id('replace-cards-show-button'));
 		showReplaceCardsButton.click();
 		browserInstance.waitForAngular();
@@ -146,8 +146,14 @@ module.exports = function(browserInstance) {
 	};
 
 	var activateSidebar = function() {
-		var sidebarButton = element(by.id('sidebar-button'));
+		var sidebarButton = element(by.id('navbar-expand-button'));
 		sidebarButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var openGameRankings = function() {
+		var rankingButton = element(by.id('game-ranking-dropdown-button'));
+		rankingButton.click();
 		browserInstance.waitForAngular();
 	};
 
@@ -175,6 +181,7 @@ module.exports = function(browserInstance) {
 		ready: ready,
 		setBotsOn: setBotsOn,
 		setRoundNumber: setRoundNumber,
-		submitMessage: submitMessage
+		submitMessage: submitMessage,
+		openGameRankings: openGameRankings
 	};
 };
