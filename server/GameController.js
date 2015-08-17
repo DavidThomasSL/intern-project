@@ -303,7 +303,7 @@ module.exports = function(data) {
 			var voteNumber = countVotes(currentRound);
 
 			//check if everyone voted
-			if (voteNumber === getNumOfConnectedPlayers()) {
+			if (voteNumber >= getNumOfConnectedPlayers()) {
 
 				// Change the gamestate to the next stage
 				// Add the points for the game
