@@ -77,6 +77,23 @@ describe("Testing Room Service", function() {
 
 	});
 
+	it("can set messages from _setMessages and retrieve messages from getMessages() ", function() {
+		var messages = [{
+			playerName: "Bob",
+            playerUid: 1,
+            messageText: "Hi!"
+		}, {
+			playerName: "Kevin",
+            playerUid: 2,
+            messageText: "How are you?"
+		}];
+
+		roomService._setMessages(messages);
+
+		expect(roomService.getMessages()).toEqual(messages);
+
+	});
+
 	it("canvasControl is added to usersInRoom when setting details and retrives the user's image", function() {
 		var testImage = {
 			image: "testImage"
