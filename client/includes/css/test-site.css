@@ -34,6 +34,16 @@ body, html {
   line-height: 40px;
 }
 
+.header h2 {
+  font-size: 25px;
+
+}
+
+.header h4 {
+  font-size: 20px;
+
+}
+
 .float-right {
   right: 0px;
   background-color: rgb(51, 122, 183);
