@@ -39,6 +39,7 @@ ClonageApp.service('dynamicTextService', function() {
 		//formatting selected answers so they can be put into the question
 		currentSelections.forEach(function(selection) {
 			var selectionToPush = selection.slice();
+			//removing full stop at end of text
 			if (selectionToPush.charAt(selectionToPush.length - 1) == ".") {
 				selectionToPush = selectionToPush.slice(0, -1)
 			}
@@ -46,6 +47,8 @@ ClonageApp.service('dynamicTextService', function() {
 			removedFullStops.push(selectionToPush);
 		});
 
+		//if the question has no blanks then just put the inserted answers at the end of the string
+		//with commas for question requiring multiple e.g. "Create a Haiku"
 		if (questionText.indexOf('_') === -1) {
 			outputText += "\n";
 			removedFullStops.forEach(function(selection) {

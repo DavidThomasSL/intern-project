@@ -3,7 +3,7 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
     $scope.currentQuestion = gameService.getCurrentQuestion;
-    $scope.dynamicFilledInQuestion = gameService.getCurrentFilledInQuestion;
+
     $scope.userHand = userService.getUserHand;
     $scope.getUserId = userService.getUserId;
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
@@ -15,7 +15,12 @@ ClonageApp.controller("gameController", function($scope, userService, roomServic
     //get all answers submitted in order to visualise them on the voting page
     $scope.answers = gameService.getAnswers;
 
-    //getting the filled in question for the waiting page
+    //dynamicFilledInQuestion is the string displayed on the question page that updates as the player clicks answers
+    $scope.dynamicFilledInQuestion = gameService.getCurrentFilledInQuestion;
+
+
+    //filledInQuestion is the submission displayed on the question waiting page.
+    //It is fetched from from the answers array so it can be seen after refreshing.
     $scope.filledInQuestion = function() {
         var text = "";
         $scope.answers().forEach(function(answer) {

@@ -209,7 +209,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		/*
 		generating the filled in question based on the question text and submitted answers
 		done in both the _recieveQuestion and _setChosenAnswers functions as we can't be sure what info
-		we will get first when refreshing
+		we will get first when refreshing. The filledInText is another property attached to each answer just on the
+		client side used to display each answer in its context.
 		*/
 		if (answers !== undefined) {
 			answers.forEach(function(answer) {
@@ -221,7 +222,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	function _setChosenAnswers(data) {
 		answers = data.answers;
 
-		//generating the filled in question based on the question text and submitted answers
+		//generating the filled in question based on the question text and submitted answers as above
 		if (currentQuestion !== undefined) {
 			answers.forEach(function(answer) {
 				answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, answer.answersText);
