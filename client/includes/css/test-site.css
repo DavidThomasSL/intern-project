@@ -112,7 +112,7 @@ body, html {
   height: 200px;
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0%,rgba(0,0,0,1)), color-stop(20%,rgba(0,0,0,0.65)),color-stop(40%,rgba(0,0,0,0.2)), color-stop(100%,rgba(0,0,0,0))), url('/../../includes/images/background.jpg'); /* Chrome,Safari4+ */
+  background-image: url('/../../includes/images/background.jpg'); /* Chrome,Safari4+ */
   /*background: url('/../../includes/images/background.jpg');*/
   background-color: #1976D2; /* blue background color incase background image cannot be loaded*/
   background-attachment: fixed;
