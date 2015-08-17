@@ -10,7 +10,6 @@ ClonageApp.controller("gameController", function($scope, $window, userService, r
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.cardReplaceCost = gameService.getCurrentReplaceCost;
     $scope.replaceCostPerCard = gameService.getReplaceCostPerCard;
-    $scope.getUserVote = userService.getUserVote;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
 
@@ -31,20 +30,6 @@ ClonageApp.controller("gameController", function($scope, $window, userService, r
                 text = answer.filledInText;
             }
         });
-        return text;
-    };
-
-    $scope.filledInVote = function() {
-        var text = "";
-        $scope.getPlayerRoundResults().forEach(function(vote) {
-            vote.playersWhoVotedForThis.forEach(function(player) {
-                if (player === userService.getUserName()) {
-                    text = vote.answersText;
-                    console.log("found!" + text);
-                }
-            });
-        });
-        console.log(text);
         return text;
     };
 
