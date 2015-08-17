@@ -38,7 +38,10 @@ ClonageApp.service('dynamicTextService', function() {
 
 		//formatting selected answers so they can be put into the question
 		currentSelections.forEach(function(selection) {
-			var selectionToPush = selection.replace(/.\s*$/, "");
+			var selectionToPush = selection.slice();
+			if (selectionToPush.charAt(selectionToPush.length - 1) == ",") {
+				selectionToPush = selectionToPush.slice(0, -1)
+			}
 			selectionToPush = "[" + selectionToPush + "]";
 			removedFullStops.push(selectionToPush);
 		});
@@ -48,7 +51,7 @@ ClonageApp.service('dynamicTextService', function() {
 			removedFullStops.forEach(function(selection) {
 				outputText += (selection + ", ");
 			});
-			outputText = outputText.replace(/.\s*$/, ".");
+			outputText = outputText.replace(/,\s*$/, ".");
 			return outputText;
 		} else {
 			for (var i = 0; i < currentSelections.length; i++) {
