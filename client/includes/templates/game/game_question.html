@@ -1,4 +1,5 @@
 <div class="container">
+    <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
     <div class="header clearfix">
         <div id="roundQuestion">
             <h2 animate-on-change="filledInQuestion()">{{filledInQuestion()}}</h2>
@@ -17,7 +18,6 @@
             </div>
         </div>
     </div>
-    <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
     <div class="col-md-3 text-center" ng-repeat="user in getUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallQuestion.html'"></ng-include>
     </div>
