@@ -92,6 +92,7 @@ describe('After each round', function() {
 	it('can replace unwanted cards in hand and points are reduced as a result', function () {
 		firstClonageUser.showReplaceableCards();
 		browser.driver.sleep(1000);
+		//waiting for the screen to scroll down here
 		firstClonageUser.getFirstReplaceCardText().then(function(originalText){
 			firstClonageUser.replaceFirstCard();
 			expect(element.all(by.exactRepeater("answer in userHand()")).first().element(by.id("answer")).getText()).not.toMatch(originalText);
