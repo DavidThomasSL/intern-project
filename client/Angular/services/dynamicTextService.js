@@ -59,6 +59,7 @@ ClonageApp.service('dynamicTextService', function() {
 	}
 
 	return {
-		getSubmissionState: getSubmissionState
+		getSubmissionState: getSubmissionState,
+		fillInSelections: fillInSelections
 	};
 });

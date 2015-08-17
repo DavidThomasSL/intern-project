@@ -1,21 +1,24 @@
 <div class="container">
     <div class="header clearfix">
         <div id="round-question">
-            <h2 ng-init="startCountdown()">{{currentQuestion().text}}</h2>
-            <h4>Vote for your favourite answer.</h4>
+<!--             <h2 ng-init="startCountdown()">{{currentQuestion().text}}</h2> -->
+            <h2 ng-init="startCountdown()">Vote for your favourite answer.</2>
         </div>
     </div>
     <div id="question-responses-container">
         <div class="row">
             <div class="col-md-12 text-center" ng-repeat="answer in answers() | orderBy:'answersText[0]'">
                 <div class="card-text-container">
+
                     <button ng-if="getUserId() === answer.player.uId" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
-                    <span ng-repeat="text in answer.answersText track by $index">{{text}}<br></span><i>(Your answer)</i>
+                    {{answer.filledInText}}
+                    <i>(Your answer)</i>
                     </button>
+
                     <button ng-if="getUserId() !== answer.player.uId" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitVote(answer)">
-                    <span ng-repeat="text in answer.answersText track by $index">{{text}}<br></span>
+                    {{answer.filledInText}}
                     </button>
-                    </button>
+
                 </div>
             </div>
         </div>

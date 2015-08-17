@@ -209,6 +209,11 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
+
+		//generating the filled in question based on the question text and submitted answers
+		answers.forEach(function(answer){
+			answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text,answer.answersText);
+		});
 		countdown = data.countdown;
 		votes = [];
 	}
