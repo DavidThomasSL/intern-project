@@ -4,8 +4,6 @@
         <h4 ng-init="startCountdown()">{{ currentVotes() }} / {{getUsersInRoom().length}} votes cast</h4>
     </div>
     <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
-
-
     <div class="col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
     </div>

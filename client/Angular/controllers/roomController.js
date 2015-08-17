@@ -59,6 +59,5 @@ ClonageApp.controller("roomController", function($scope, $window, userService, r
         } else {
             $scope.userPanelTemplate = "includes/templates/user/userPanelLarge.html";
         }
-        console.log(value);
     });
 });

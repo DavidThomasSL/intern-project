@@ -34,7 +34,7 @@ module.exports = function(data) {
 	// true if there is a timer running -> checked in updateGameState
 	// in the case if everyone submitted and game state has changed -> timer needs to stop
 	var timerIsActive = false;
-	var count = 60;
+	var count;
 
 	/*
 		holding the function called on a 1sec interval

@@ -13,12 +13,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         var gameHand = {};
         var rank = "";
 
-
-        //call function that emits to server the vote that was just submitted
-        function submitVote(answer) {
-            _emitVote(answer);
-        }
-
         function getUserName() {
             return user.name;
         }

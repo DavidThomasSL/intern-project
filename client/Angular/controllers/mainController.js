@@ -63,7 +63,9 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         function is called to save the value of the countdown
     */
     $scope.retainCountdownValue = function() {
-        gameService.setCountdown($scope.counter);
+        if ($scope.counter!== 60) {
+            gameService.setCountdown($scope.counter);
+        }
     };
 
     // start countdown
@@ -78,7 +80,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
             (=> page is loaded for the first time not refreshed)
         */
         if (gameService.getCountdown() === undefined) {
-            console.log("restarting counter");
             $scope.counter = 60;
         }
 
