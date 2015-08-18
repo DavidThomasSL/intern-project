@@ -158,7 +158,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 					submitted = true;
 			});
 		}
-		console.log(user + " - " + submitted);
 		return submitted;
 	};
 
@@ -180,8 +179,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 				}
 			});
 		}
-
-		console.log(user + " - " + voted);
 		return voted;
 	};
 
