@@ -419,6 +419,7 @@ module.exports = function(port, enableLogging) {
                 // Send room the vote data after each vote
                 room.broadcastRoom("GAME playerRoundResults", {
                     results: data.res,
+                    currentVotes: data.currentVotes,
                     voteNumber: data.voteNumber
                 });
 
