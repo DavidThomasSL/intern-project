@@ -36,7 +36,7 @@
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="clonage-navbar" style="padding-top: 10px;padding-bottom: -10px">
-                        <span class="navbar-text navbar-right flex flex-row" style="margin-right: 5px">
+                        <span class="navbar-text navbar-right flex flex-row" style="margin-right: 5px" ng-hide="getUserName() === undefined">
                             <p  style="font-size: 14px;line-height: 20px"><b>{{getUserName()}}</b></p>
                             <user-profile scale="0.15" user="getUserImage()" style="margin-top: -8px;margin-left: 15px;"></user-profile>
                         </span>
@@ -65,7 +65,7 @@
                     // on mobile, dropdown default opened:
                     // use timeout to wait until navbar fully opened before opening dropdown
                     setTimeout(function() {
-                    $(".dropdown-toggle").click();
+                    $("#game-ranking-dropdown-button").click();
                     }, 50);
                     }
                     });
