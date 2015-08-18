@@ -22,10 +22,10 @@
         <!--COntent goes here -->
         <div class="wrapper">
             <!-- NAVBAR -->
-            <nav class="navbar navbar-default navbar-static-top" style="margin: 10px">
+            <nav class="navbar navbar-default navbar-static-top" style="margin: 10px;">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header">
+                    <div class="navbar-header" style="padding-top: 10px">
                         <a class="navbar-brand" >Clonage</a>
                         <button id="navbar-expand-button" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#clonage-navbar" aria-expanded="false">
                         <span class="sr-only">Toggle</span>
@@ -35,26 +35,41 @@
                         </button>
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="clonage-navbar">
-                        <p class="navbar-text navbar-right" style="font-size: 14px;line-height: 20px;margin-right: 5px"><b>{{getUserName()}}</b></p>
-                        <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''">#{{rank()}}</p>
+                    <div class="collapse navbar-collapse" id="clonage-navbar" style="padding-top: 10px;padding-bottom: -10px">
+                        <span class="navbar-text navbar-right flex flex-row" style="margin-right: 5px" ng-hide="getUserName() === undefined">
+                            <p  style="font-size: 14px;line-height: 20px"><b>{{getUserName()}}</b></p>
+                            <user-profile scale="0.15" user="getUserImage()" style="margin-top: -8px;margin-left: 15px;"></user-profile>
+                        </span>
+                        <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''">Rank #{{rank()}}</p>
                         <p id="current-round" class="navbar-text navbar-right" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
                         <!-- Game ranking dropdown -->
                         <ul class="nav navbar-nav navbar-left" ng-hide="rank() === ''">
                             <li class="dropdown">
-                                <a id="game-ranking-dropdown-button" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                                <a id="game-ranking-dropdown-button" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" aria-haspopup="true">
                                     Game Rankings
                                     <span class="caret"></span>
                                 </a>
                                 <ul id="game-ranking-dropdown" class="dropdown-menu" >
                                     <li class="navbar-text" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'" style="margin-left: 30px">
-                                       <b> #{{currentResult.player.rank}} - {{currentResult.player.name}} </b> <br/>
+                                        <b> #{{currentResult.player.rank}} - {{currentResult.player.name}} </b> <br/>
                                         <p>{{currentResult.player.points}} points</p>
                                     </li>
                                 </ul>
                             </li>
                         </ul>
                     </div>
+                    <!-- Script to open the dropdown menu whenever the navbar toggle is clicked -->
+                    <script type="text/javascript">
+                    $(".navbar-toggle").click(function() {
+                    if (window.matchMedia("(max-width: 768px)").matches) {
+                    // on mobile, dropdown default opened:
+                    // use timeout to wait until navbar fully opened before opening dropdown
+                    setTimeout(function() {
+                    $("#game-ranking-dropdown-button").click();
+                    }, 50);
+                    }
+                    });
+                    </script>
                 </nav>
                 <!-- END NAVBAR -->
                 <div ng-view autoscroll="true">
@@ -74,8 +89,6 @@
         <link type="text/css"  rel="stylesheet" href="https://rawgit.com/Foxandxss/angular-toastr/master/dist/angular-toastr.min.css"/>
         <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js"></script>
         <script type="text/javascript" src="https://cdn.rawgit.com/d-oliveros/ngSmoothScroll/master/dist/angular-smooth-scroll.min.js"></script>
-
-
         <!-- start client/js tags -->
         <script src="Angular/ClonageApp.js"></script>
         <script src="Angular/config/routeConfig.js"></script>
@@ -99,5 +112,3 @@
         <!-- end client/js tags -->
     </body>
 </html>
-
-

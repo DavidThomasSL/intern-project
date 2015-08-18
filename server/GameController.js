@@ -318,6 +318,7 @@ module.exports = function(data) {
 
 			callback({
 				res: currentRound.results,
+				currentVotes: currentRound.results,
 				allVotesSubmitted: allVotesSubmitted,
 				voteNumber: voteNumber
 			});
@@ -408,6 +409,7 @@ module.exports = function(data) {
 			eventName: "GAME playerRoundResults",
 			data: {
 				results: results,
+				currentVotes: currentRound.results,
 				voteNumber: countVotes(currentRound)
 			}
 		};

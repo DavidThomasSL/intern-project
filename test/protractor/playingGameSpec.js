@@ -37,6 +37,30 @@ describe('When playing a game', function() {
 
 	});
 
+	it('can see who submitted an answer', function() {
+		expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
+	});
+
+	it('can see who did not submit an answer yet', function() {
+		expect(firstClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
+	});
+
+	it('can refresh and still see who submitted an answer', function() {
+		firstClonageUser.refresh();
+		secondClonageUser.refresh();
+		expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
+	});
+
+	it('can refresh and still see who did not submit an answer yet', function() {
+		firstClonageUser.refresh();
+		secondClonageUser.refresh();
+		expect(firstClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
+	});
+
 	it('can refresh and stay on waiting page', function() {
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
@@ -77,6 +101,30 @@ describe('When playing a game', function() {
 	it('can vote for an answer', function() {
 		firstClonageUser.submitFirstVote();
 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
+	});
+
+	it('can see who voted for an answer', function() {
+		expect(firstClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-submitted');
+	});
+
+	it('can see who did not vote for an answer yet', function() {
+		expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-not-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-not-submitted');
+	});
+
+	it('can refresh and still see who voted for an answer', function() {
+		firstClonageUser.refresh();
+		secondClonageUser.refresh();
+		expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
+	});
+
+	it('can refresh and still see who did not vote for an answer yet', function() {
+		firstClonageUser.refresh();
+		secondClonageUser.refresh();
+		expect(firstClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
 	});
 
 	it('can refresh and stay on vote-wait page', function() {

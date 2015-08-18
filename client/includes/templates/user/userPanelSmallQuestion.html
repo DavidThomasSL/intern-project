@@ -1,6 +1,6 @@
-<div id="user-panel" class="panel panel-default" ng-class="{'player-not-submitted': !hasSubmitted(user.uId)}" ng-if="!user.isObserver">
+<div id="user-panel" class="panel panel-default" ng-class="{'player-not-submitted': !hasSubmitted(user.uId), 'player-submitted': hasSubmitted(user.uId)}">
 	<div class="panel-body flex-column flex-align-center">
-		<user-profile class="flex1" control="user.canvasControl" scale="0.3" ></user-profile>
+		<user-profile class="flex1" scale="0.3" user=user.image></user-profile>
 		<div class="flex1" style="margin-top: 10px">
 			{{user.name}}
 			<span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user" aria-hidden="true"></span>

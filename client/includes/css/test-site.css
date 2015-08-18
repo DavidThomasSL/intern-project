@@ -114,71 +114,6 @@ body, html {
   margin-bottom: 60px;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-  color: black;
-  position: relative;
-  margin-bottom: 0px;
-  height: 100px;
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-  background-image: url('/../../includes/images/background.jpg'); /* Chrome,Safari4+ */
-  /*background: url('/../../includes/images/background.jpg');*/
-  background-color: #1976D2; /* blue background color incase background image cannot be loaded*/
-  background-attachment: fixed;
-  background-position: 50% -500px;
-  background-size: cover;
-  padding-left: 3%;
-  padding-top: 10px
-}
-
-.jumbotron .lead {
-  float: left;
-  text-align: left;
-}
-
-.jumbotron .username {
-  margin-right: 3%;
-  font-size: 25px;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  margin-bottom: 10px;
-}
-
-.jumbotron .current-round {
-  margin-right: 3%;
-  font-size: 25px;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  margin-bottom: 40px;
-}
-
-.jumbotron .menu-button {
-  margin-left: 3%;
-  bottom: 0px;
-  border: none;
-  background: transparent;
-  position: absolute;
-  font-size: 30px;
-  outline: none;
-  left: 0px;
-}
-
-.jumbotron .rank {
-  margin-left: 7%;
-  font-size: 25px;
-  position: absolute;
-  bottom: 0px;
-  margin-bottom: 10px;
-}
-
-.jumbotron h1 {
-  float: left;
-  font-size: 90px;
-}
-
 .name-submit-container {
   margin-top: 30px;
   margin-bottom: 100px;
@@ -262,6 +197,20 @@ body, html {
   opacity: 0.2;
 }
 
+.player-submitted {
+}
+
+.player-submitted:after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  bottom: 0; left: 0;
+  background-image: url("/includes/images/voted.png");
+  background-repeat: no-repeat;
+  background-size: 90%;
+  opacity: 0.8;
+}
+
 .ready-button:focus {
   outline: none;
   border : none;
@@ -272,25 +221,6 @@ body, html {
   border: none;
 }
 
-
-@media only screen and (max-device-width: 480px) {
-  /* Main marketing message and sign up button */
-    .jumbotron {
-      height: 150px;
-      background-attachment: scroll;
-      background-position: center;
-      background-size: cover;
-      text-align: center;
-      padding: 0px 0px 0px 10px;
-    }
-    .jumbotron h1 {
-      font-size: 50px;
-    }
-
-    .jumbotron .rank {
-      margin-left: 16%
-    }
-}
 
 /* ANIMATIONS
 ============================================================================= */
