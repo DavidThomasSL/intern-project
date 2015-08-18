@@ -4,6 +4,7 @@
         <h4> {{currentQuestion().text}}</h4>
     </div>
     <div class="text-center">
+        <!--Results table -->
         <table class="table table-striped">
             <tr>
                 <th>Answer</th>
@@ -26,11 +27,12 @@
         </table>
         <br>
         <div class ="row">
-            <div class="col-md-12 text-center">
+            <div class="col-md-6 col-sm-6 col-xs-12 text-center">
                 <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
-                <h4>Waiting for everyone to be ready</h4>
             </div>
-            <div class="col-md-12 text-center">
+            <div class="col-md-6 col-sm-6 col-xs-12 text-center">
+                <!-- Spaceing for extra small screens between buttons when stacked -->
+                <div class="hidden-lg hidden-md hidden-sm">&nbsp;</div>
                 <button id="replace-cards-show-button" type="button" class="btn btn-lg btn-success" ng-click="replaceToggle=true" scroll-to="replace-cards-container">Replace some cards</button>
             </div>
         </div>
@@ -39,6 +41,7 @@
                 <ng-include src="userPanelTemplate"></ng-include>
             </div>
         </div>
+        <!-- Replace Cards section -->
         <div id="replace-cards-container" style="margin-top:30px;">
             <div id="user-hand-container" ng-show="replaceToggle === true">
                 <div class="row">
