@@ -1,8 +1,9 @@
 <div class="container">
     <div class="header clearfix">
         <h1>ROOM CODE: {{roomId()}}</h1>
-        <h4>Click ready when your want to start!</h4>
-        <div style="margin-top: 30px;" class="flex flex-row">
+        <p>Click ready when your want to start!</p>
+        <!-- Round options dropdowns -->
+        <div style="margin-top: 10px;" class="flex flex-row">
             <div class="flex1">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-bot-dropdown">
@@ -37,6 +38,7 @@
                 </div>
             </div>
         </div>
+        <!-- END  Round options dropdowns -->
     </div>
     <div id="room-lobby-container">
         <div class="row">
@@ -70,19 +72,30 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12 text-center">
+            <div class="col-md-6 text-center">
                 <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getUsersInRoom().length <= 1 && getGameParameters().botNumber < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
             </div>
-        </div>
-        <div class="row text-center">
-            <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() < 1">You need at least 2 players to start!</h4>
-            <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() >= 1">Wow, look at all the friends you have...</h4>
-            <h4 ng-hide="getRoomUserCount() < 2">The game will start when everyone is ready </h4>
-        </div>
-        <div class="row bottom-buttons">
-            <div class="col-md-12 text-center">
+            <div class="hidden-lg hidden-md">&nbsp;</div>
+            <div class="col-md-6 text-center">
                 <button id="leave-lobby-button" type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()" >Go Back</button>
             </div>
         </div>
-        </div> <!-- /container -->
+        <div class="row text-center" style="margin-top: 20px">
+            <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3"  ng-show="getRoomUserCount() < 2 && getGameParameters().botNumber < 1" >
+                <div class="alert alert-danger" role="alert">
+                    <strong>Can't Start!</strong> You need at least 2 players to start!
+                </div>
+            </div>
+            <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3" ng-show="getRoomUserCount() < 2 && getGameParameters().botNumber >= 1">
+                <div class="alert alert-warning"  role="alert">
+                    <strong>Wow!</strong> Look at all the friends you have...
+                </div>
+            </div>
+            <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3" ng-hide="getRoomUserCount() < 2">
+                <div class="alert alert-info"  role="alert">
+                    <strong>Almost There!</strong> The game will start when everyone is ready
+                </div>
+            </div>
+        </div>
     </div>
+</div>
