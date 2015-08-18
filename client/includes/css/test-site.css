@@ -91,6 +91,7 @@ body, html {
 .card-text-button{
   white-space: normal;
   border:none;
+  font-size:16px;
 }
 
 .card-text-button:focus {
