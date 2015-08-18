@@ -158,7 +158,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 					submitted = true;
 			});
 		}
-
+		console.log(user + " - " + submitted);
 		return submitted;
 	};
 
@@ -181,6 +181,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			});
 		}
 
+		console.log(user + " - " + voted);
 		return voted;
 	};
 
@@ -230,12 +231,14 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		}
 
 		countdown = data.countdown;
-		votes = [];
+		if (countdown === undefined) {
+			votes = [];
+		}
 	}
 
 	function _setPlayerRoundResults(data) {
 		playerRoundResults = data.results;
-		votes = playerRoundResults;
+		votes = data.currentVotes;
 		voteCounter = data.voteNumber;
 	}
 
