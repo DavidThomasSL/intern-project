@@ -2,10 +2,10 @@
     <div class="header clearfix">
     	<h1>OBSERVER SCREEN- VOTING</h1>
         <h2>Waiting for other players to vote</h1>
-        <h4 ng-init="startCountdown()">{{ currentVotes() }} / {{getUsersInRoom().length}} votes cast</h4>
+        <h4 ng-init="startCountdown()">{{ currentVotes() }} / {{getActiveUsersInRoom().length}} votes cast</h4>
     </div>
     <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
-    <div class="col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
+    <div class="col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
     </div>
 </div>

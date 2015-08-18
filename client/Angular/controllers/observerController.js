@@ -3,8 +3,10 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
     $scope.getUsersInRoom = roomService.getUsersInRoom; //List all the users in the lobby
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getUserId = userService.getUserId; //Display user icon on card in lobby
-    $scope.getUsersInRoom = roomService.getUsersInRoom;
+    $scope.getActiveUsersInRoom = roomService.getActiveUsersInRoom;
     $scope.getGameParameters = roomService.getGameParameters;
+    $scope.answers = gameService.getAnswers;
+    $scope.currentVotes = gameService.getCurrentVotes;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
 
@@ -43,7 +45,6 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
             $location.path('/observeV');
         }
     });
-
 
 
     $scope.$watch(function() {

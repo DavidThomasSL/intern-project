@@ -32,6 +32,14 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return usersInRoom;
     }
 
+    function getActiveUsersInRoom() {
+        var userList = usersInRoom.filter(function(userInRoom){
+            return (!userInRoom.isObserver)
+        });
+        return userList;
+    }
+
+
     function leaveRoom() {
         sendMessage("ROOM leave", {
             roomId: roomId
@@ -152,6 +160,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         joinRoom: joinRoom,
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
+        getActiveUsersInRoom: getActiveUsersInRoom,
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
         _setMessages: _setMessages,

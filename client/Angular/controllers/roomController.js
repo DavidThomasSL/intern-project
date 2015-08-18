@@ -4,7 +4,7 @@ ClonageApp.controller("roomController", function($scope, $window, userService, r
     $scope.getUsersInRoom = roomService.getUsersInRoom; //List all the users in the lobby
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getUserId = userService.getUserId; //Display user icon on card in lobby
-    $scope.getUsersInRoom = roomService.getUsersInRoom;
+    $scope.getActiveUsersInRoom = roomService.getActiveUsersInRoom;
     $scope.getGameParameters = roomService.getGameParameters;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
