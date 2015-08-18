@@ -37,6 +37,21 @@ describe('When playing a game', function() {
 
 	});
 
+	it('can see who submitted an answer', function() {
+
+		expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
+
+	});
+
+	it('can see who did not submit an answer yet', function() {
+
+		expect(firstClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
+		expect(secondClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
+
+	});
+
+
 	it('can refresh and stay on waiting page', function() {
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/wait/);
