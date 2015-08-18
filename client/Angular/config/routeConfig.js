@@ -64,6 +64,11 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
                 controller: 'observerController'
 
             })
+            .when('/observeEG/', {
+                templateUrl: '/includes/templates/observer/observer_endGame.html',
+                controller: 'observerController'
+
+            })
             .otherwise({
                 templateUrl: '/includes/templates/game/setname.html',
 

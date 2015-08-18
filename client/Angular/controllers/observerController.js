@@ -35,12 +35,15 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
 
     $rootScope.$on('$locationChangeStart', function(event, next, current) {
         //when the observer is routed then reroute to the observer version of that page
+        //indexOf used to test whether the target path contains the string
         if (next.indexOf('question') !== -1) {
             $location.path('/observeQ');
         } else if (next.indexOf('vote') !== -1) {
             $location.path('/observeV');
         } else if (next.indexOf('results') !== -1) {
             $location.path('/observeR');
+        } else if (next.indexOf('endGame') !== -1) {
+            $location.path('/observeEG')
         }
     });
 
