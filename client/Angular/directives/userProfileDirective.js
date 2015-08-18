@@ -73,8 +73,6 @@ ClonageApp.directive('userProfile', function() {
 					var newXSize = canvas.width * xScale;
 					var newYSize = canvas.height * yScale;
 
-					// console.log(newXSize, newYSize);
-
 					canvas.setWidth(newXSize);
 					canvas.setHeight(newYSize);
 
