@@ -11,10 +11,10 @@ ClonageApp.controller("signupController", function($scope, userService, roomServ
 		userService.setNameAndImage(form.enteredName, userDrawing);
 	};
 
-	$scope.registerAsObserver = function (form) {
+	$scope.registerAsObserver = function () {
 		// Get the user drawing from the canvas
 		var userDrawing = $scope.joinCanvasControl.getCanvasData();
-		userService.registerNewObserver(form.enteredName, userDrawing);
+		userService.registerNewObserver('Observer', userDrawing);
 	};
 
 });
