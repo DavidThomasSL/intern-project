@@ -1,4 +1,4 @@
-<div id="user-panel" class="panel panel-default" ng-class="{'player-not-submitted': !hasSubmitted(user.uId)}">
+<div id="user-panel" class="panel panel-default" ng-class="{'player-not-submitted': !hasSubmitted(user.uId), 'player-submitted': hasSubmitted(user.uId)}">
 	<div class="panel-body flex-column flex-align-center">
 		<user-profile class="flex1" control="user.canvasControl" scale="0.3" ></user-profile>
 		<div class="flex1" style="margin-top: 10px">
