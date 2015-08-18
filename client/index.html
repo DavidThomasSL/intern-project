@@ -22,10 +22,10 @@
         <!--COntent goes here -->
         <div class="wrapper">
             <!-- NAVBAR -->
-            <nav class="navbar navbar-default navbar-static-top" style="margin: 10px">
+            <nav class="navbar navbar-default navbar-static-top" style="margin: 10px;">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header">
+                    <div class="navbar-header" style="padding-top: 10px">
                         <a class="navbar-brand" >Clonage</a>
                         <button id="navbar-expand-button" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#clonage-navbar" aria-expanded="false">
                         <span class="sr-only">Toggle</span>
@@ -35,8 +35,11 @@
                         </button>
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="clonage-navbar">
-                        <p class="navbar-text navbar-right" style="font-size: 14px;line-height: 20px;margin-right: 5px"><b>{{getUserName()}}</b></p>
+                    <div class="collapse navbar-collapse" id="clonage-navbar" style="padding-top: 10px;padding-bottom: -10px">
+                        <span class="navbar-text navbar-right flex flex-row" style="margin-right: 5px">
+                            <p  style="font-size: 14px;line-height: 20px"><b>{{getUserName()}}</b></p>
+                            <user-profile scale="0.15" user="getUserImage()" style="margin-top: -8px;margin-left: 15px;"></user-profile>
+                        </span>
                         <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''">Rank #{{rank()}}</p>
                         <p id="current-round" class="navbar-text navbar-right" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
                         <!-- Game ranking dropdown -->
@@ -57,15 +60,15 @@
                     </div>
                     <!-- Script to open the dropdown menu whenever the navbar toggle is clicked -->
                     <script type="text/javascript">
-                        $(".navbar-toggle").click(function() {
-                            if (window.matchMedia("(max-width: 768px)").matches) {
-                                // on mobile, dropdown default opened:
-                                // use timeout to wait until navbar fully opened before opening dropdown
-                                setTimeout(function() {
-                                    $(".dropdown-toggle").click();
-                                }, 50);
-                            }
-                        });
+                    $(".navbar-toggle").click(function() {
+                    if (window.matchMedia("(max-width: 768px)").matches) {
+                    // on mobile, dropdown default opened:
+                    // use timeout to wait until navbar fully opened before opening dropdown
+                    setTimeout(function() {
+                    $(".dropdown-toggle").click();
+                    }, 50);
+                    }
+                    });
                     </script>
                 </nav>
                 <!-- END NAVBAR -->

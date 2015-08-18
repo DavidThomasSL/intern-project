@@ -21,6 +21,7 @@ ClonageApp.directive('userProfile', function() {
 			var thisId = uniqueId;
 			var canvasElement;
 			var imageData;
+			var drawn = false; //only want to draw this canvas once, other updates to the user image from other canvases should not affect this
 			uniqueId++;
 
 			// get a reference to the canvas element
@@ -31,18 +32,36 @@ ClonageApp.directive('userProfile', function() {
 				isDrawingMode: false
 			});
 
-			console.log(scope.user);
+			// Watch the user image to see if it changes
+			// needed if the directive loads before the controller, meaning the user image is not defined yet
+			// this is the case in the navbar in the index
+			scope.$watch("user", function(newValue, OldValue, scope) {
+				if (newValue) {
+					if (!drawn) {
+						drawn = true;
+						loadImage(newValue);
+					}
+				}
+			});
 
-			// Get the user's image (if they drew one)
-			imageData = scope.user.image;
-			if (imageData.objects[0].text === "Draw your icon here!") {
-				imageData.objects[0].text = "I was too lazy to draw\n my own picture so I\n got this instead";
-				imageData.objects[0].left = 0;
+
+			if (scope.user !== undefined && !drawn) {
+				drawn = true;
+				loadImage(scope.user);
 			}
 
-			canvas.loadFromDatalessJSON(imageData, function() {
-				scaleCanvas(scope.scale, scope.scale);
-			});
+			function loadImage(imageData) {
+				// draw the user's image (if they drew one)
+				if (imageData.objects[0].text === "Draw your icon here!") {
+					imageData.objects[0].text = "I was too lazy to draw\n my own picture so I\n got this instead";
+					imageData.objects[0].left = 0;
+				}
+
+				canvas.loadFromDatalessJSON(imageData, function() {
+					scaleCanvas(scope.scale, scope.scale);
+				});
+			}
+
 
 			function scaleCanvas(xScale, yScale) {
 				// Get all the paths on the canvas
@@ -53,6 +72,8 @@ ClonageApp.directive('userProfile', function() {
 					// Resize canvas
 					var newXSize = canvas.width * xScale;
 					var newYSize = canvas.height * yScale;
+
+					// console.log(newXSize, newYSize);
 
 					canvas.setWidth(newXSize);
 					canvas.setHeight(newYSize);
