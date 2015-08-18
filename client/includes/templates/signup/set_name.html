@@ -11,13 +11,14 @@
   </div>
   <div class="row signup-container" id="signup-container">
     <form class="form-horizontal" ng-submit="submitName(nameSubmissionForm)">
+
       <div class="row">
+        <user-drawing control="joinCanvasControl" ></user-drawing>
+      </div>
+      <div class="row"  style="margin-top: 20px;">
         <div class="input-group col-md-offset-3 col-md-6 col-xs-4 col-xs-offset-4" >
           <input type="text" class="form-control" id="name-input-box" placeholder="Your Name" ng-model="nameSubmissionForm.enteredName" autofocus required novalidate>
         </div>
-      </div>
-      <div class="row" style="margin-top: 20px;">
-        <user-drawing control="joinCanvasControl" ></user-drawing>
       </div>
       <div class="row">
         <div class="col-md-12 text-center" style="margin-top: 10px">
