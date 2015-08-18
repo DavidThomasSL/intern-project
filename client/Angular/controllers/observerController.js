@@ -7,6 +7,7 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
     $scope.getGameParameters = roomService.getGameParameters;
     $scope.answers = gameService.getAnswers;
     $scope.currentVotes = gameService.getCurrentVotes;
+    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
 
@@ -30,19 +31,14 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
         return userService.getUserId();
     };
 
-    $scope.getRoomUserCount = function() {
-        var num = roomService.getUsersInRoom();
-        return num.length;
-    };
-
     $rootScope.$on('$locationChangeStart', function(event, next, current) {
         //when the observer is routed then reroute to the observer version of that page
         if (next.indexOf('question') !== -1) {
-            console.log("should be going to question");
             $location.path('/observeQ');
         } else if (next.indexOf('vote') !== -1) {
-            console.log("should be going to voting");
             $location.path('/observeV');
+        } else if (next.indexOf('results') !== -1) {
+            $location.path('/observeR');
         }
     });
 

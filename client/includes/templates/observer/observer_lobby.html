@@ -35,9 +35,9 @@
             </div>
         </div>
         <div class="row text-center">
-            <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() < 1">You need at least 2 players to start!</h4>
-            <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() >= 1">Wow, look at all the friends you have...</h4>
-            <h4 ng-hide="getRoomUserCount() < 2">The game will start when everyone is ready </h4>
+            <h4 ng-show="getActiveUsersInRoom().length < 2 && getBotNumber() < 1">You need at least 2 players to start!</h4>
+            <h4 ng-show="getActiveUsersInRoom().length < 2 && getBotNumber() >= 1">Wow, look at all the friends you have...</h4>
+            <h4 ng-hide="getActiveUsersInRoom().length < 2">The game will start when everyone is ready </h4>
         </div>
         <div class="row bottom-buttons">
             <div class="col-md-12 text-center">
