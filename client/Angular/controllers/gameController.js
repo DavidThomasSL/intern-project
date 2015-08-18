@@ -9,6 +9,7 @@ ClonageApp.controller("gameController", function($scope, $window, userService, r
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getActiveUsersInRoom = roomService.getActiveUsersInRoom;
     $scope.cardReplaceCost = gameService.getCurrentReplaceCost;
+    $scope.getObserversInRoom = roomService.getObserversInRoom;
     $scope.replaceCostPerCard = gameService.getReplaceCostPerCard;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";

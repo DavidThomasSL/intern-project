@@ -8,6 +8,11 @@
                     {{getGameParameters().botNumber}} Bots
                 </div>
             </div>
+            <div class="flex1" ng-show="getObserversInRoom().length>0">
+                <div>
+                    {{getObserversInRoom().length}} observers
+                </div>
+            </div>
             <div class="flex1">
                 <div>
                     {{getGameParameters().numRounds}} Rounds

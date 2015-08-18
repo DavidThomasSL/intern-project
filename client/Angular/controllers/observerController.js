@@ -4,6 +4,7 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getUserId = userService.getUserId; //Display user icon on card in lobby
     $scope.getActiveUsersInRoom = roomService.getActiveUsersInRoom;
+    $scope.getObserversInRoom = roomService.getObserversInRoom;
     $scope.getGameParameters = roomService.getGameParameters;
     $scope.answers = gameService.getAnswers;
     $scope.currentVotes = gameService.getCurrentVotes;

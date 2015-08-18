@@ -20,6 +20,11 @@
                     </ul>
                 </div>
             </div>
+            <div class="flex1" ng-show="getObserversInRoom().length>0">
+                <div>
+                    {{getObserversInRoom().length}} observers
+                </div>
+            </div>
             <div class="flex1">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle flex1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-round-dropdown">
