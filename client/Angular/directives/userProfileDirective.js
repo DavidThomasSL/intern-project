@@ -7,8 +7,8 @@ ClonageApp.directive('userProfile', function() {
 	return {
 
 		scope: {
-			control: '=',
-			scale: '='
+			scale: '=',
+			user: '='
 		},
 		transclude: true,
 		replace: true,
@@ -23,10 +23,6 @@ ClonageApp.directive('userProfile', function() {
 			var imageData;
 			uniqueId++;
 
-			// define an internal scope, bound to the scope given to the directive on creation
-			// acts as a public API for this directive
-			scope.internalControl = scope.control || {};
-
 			// get a reference to the canvas element
 			canvasElement = element;
 			canvasElement.attr('id', 'user-profile-' + thisId);
@@ -35,8 +31,10 @@ ClonageApp.directive('userProfile', function() {
 				isDrawingMode: false
 			});
 
+			console.log(scope.user);
+
 			// Get the user's image (if they drew one)
-			imageData = scope.internalControl.getUserImage();
+			imageData = scope.user.image;
 			if (imageData.objects[0].text === "Draw your icon here!") {
 				imageData.objects[0].text = "I was too lazy to draw\n my own picture so I\n got this instead";
 				imageData.objects[0].left = 0;
