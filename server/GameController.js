@@ -333,7 +333,7 @@ module.exports = function(data) {
 			game information (game question, user hand)
 			round information (current votes, etc for table)
 	*/
-	var getInfoForReconnectingUser = function(userId, callback) {
+	var getInfoForReconnectingUser = function(user, callback) {
 
 		//GET round information
 		var routingInfo = "";
@@ -345,9 +345,11 @@ module.exports = function(data) {
 
 		var currentRound = rounds[roundCount - 1];
 
-		player = getPlayerFromId(userId);
+		player = getPlayerFromId(user.uId);
 
-		player.connectedToServer = true;
+		if (!user.isObserver){
+			player.connectedToServer = true;
+		}
 
 		if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
 

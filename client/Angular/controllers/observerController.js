@@ -9,6 +9,7 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
     $scope.answers = gameService.getAnswers;
     $scope.currentVotes = gameService.getCurrentVotes;
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
+    $scope.currentQuestion = gameService.getCurrentQuestion;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
 

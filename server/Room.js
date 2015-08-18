@@ -26,7 +26,7 @@ function Room(roomCode) {
 
         if (self.gameController === undefined) {
 
-            if (data.messageText !== undefined ) {
+            if (data.messageText !== undefined) {
 
                 if (data.messageText.trim() !== '') {
 
@@ -78,7 +78,11 @@ function Room(roomCode) {
         if (self.gameController === undefined && canJoin) {
 
             gameInProgress = false;
-            routing = "room";
+            if (user.isObserver === true) {
+                routing = 'observeLobby'
+            } else {
+                routing = "room";
+            }
 
         } else {
 
@@ -89,7 +93,7 @@ function Room(roomCode) {
 
                 //User was in the game, tell the game controller they're back, route them to the current stage
                 // Find out where to put this user, i.e where all the other players are
-                self.gameController.getInfoForReconnectingUser(user.uId, function(routingInfo, gameStateData) {
+                self.gameController.getInfoForReconnectingUser(user, function(routingInfo, gameStateData) {
 
                     routing = routingInfo;
 
@@ -113,10 +117,7 @@ function Room(roomCode) {
             user.roomId = self.id;
             self.usersInRoom.push(user);
 
-            if(user.isObserver===true) {
-                routing = 'observeLobby'
-            };
-             // Route them to the room lobby
+            // Route them to the room lobby
             user.emit('ROUTING', {
                 location: routing
             });
@@ -174,10 +175,8 @@ function Room(roomCode) {
                 numRounds: self.numRounds
             };
 
-        }
-
-        else if (eventName === "ROOM messages") {
-            data = self.messages ;
+        } else if (eventName === "ROOM messages") {
+            data = self.messages;
 
         }
 
