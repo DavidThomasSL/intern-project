@@ -113,6 +113,9 @@ function Room(roomCode) {
             user.roomId = self.id;
             self.usersInRoom.push(user);
 
+            if(user.isObserver===true) {
+                routing = 'observeLobby'
+            };
              // Route them to the room lobby
             user.emit('ROUTING', {
                 location: routing

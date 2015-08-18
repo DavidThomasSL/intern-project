@@ -96,24 +96,25 @@ module.exports = function(port, enableLogging) {
             logger.debug("Final registered details of user are: " + user.name + " " + user.uId);
         });
 
-        /*
-            Set the user's name as given by the client
-         */
-        socket.on('USER set name', function(msg) {
-            user.name = msg.name;
-            user.sendUserDetails();
-            putUserInJoining();
-
-            logger.debug("User set name as: " + msg.name);
-        });
-
         socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
+            user.isObserver = false;
             user.sendUserDetails();
             putUserInJoining();
 
             logger.debug("User set name as: " + data.name);
+        });
+
+        socket.on('USER set observer profile', function(data) {
+            user.name = data.name;
+            user.isObserver = true;
+            user.readyToProceed = true;
+            user.image = data.image;
+            user.sendUserDetails();
+            putUserInJoining();
+
+            logger.debug("New observer registered");
         });
 
         /*

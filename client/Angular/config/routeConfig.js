@@ -39,9 +39,24 @@ ClonageApp.config(['$routeProvider', '$locationProvider',
                 controller: 'gameController'
 
             })
-            .when('/waitQuestion', {
+            .when('/waitQuestion/', {
                 templateUrl: '/includes/templates/game/wait_question.html',
                 controller: 'gameController'
+
+            })
+            .when('/observeLobby/', {
+                templateUrl: '/includes/templates/observer/observer_lobby.html',
+                controller: 'observerController'
+
+            })
+            .when('/observeQ/', {
+                templateUrl: '/includes/templates/observer/observer_question.html',
+                controller: 'observerController'
+
+            })
+            .when('/observeV/', {
+                templateUrl: '/includes/templates/observer/observer_voting.html',
+                controller: 'observerController'
 
             })
             .otherwise({

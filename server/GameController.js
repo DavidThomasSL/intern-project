@@ -617,6 +617,9 @@ module.exports = function(data) {
 	*/
 	var setupPlayer = function(user) {
 		var player = new Player(user, cardController);
+		if (user.isObserver===true) {
+			player.connectedToServer = false;
+		}
 
 		// Removes the cards from list of possible cards for other player
 		player.dealHand(HANDSIZE);
