@@ -94,41 +94,6 @@ describe("Testing Room Service", function() {
 
 	});
 
-	it("canvasControl is added to usersInRoom when setting details and retrives the user's image", function() {
-		var testImage = {
-			image: "testImage"
-		};
-
-		var usersInRoom = [{
-			name: "Tim",
-			id: 1,
-			image: testImage
-
-		}, {
-			name: "Bob",
-			id: 3,
-			image: testImage
-		}];
-
-		roomService._setRoomDetails({
-			roomId: "ABCDE",
-			usersInRoom: usersInRoom,
-			botsEnabled: false,
-			gameInProgress: false
-		});
-
-		var receivedUsers = roomService.getUsersInRoom();
-		var user = receivedUsers[0];
-
-		var testObj = {
-			getUserImage: jasmine.any(Function)
-		};
-
-		expect(user.canvasControl).toEqual(testObj);
-		expect(user.canvasControl.getUserImage()).toEqual(testImage);
-
-	});
-
 	it("can set room details from _setRoomDetails and retrieve roomId ", function() {
 		roomService._setRoomDetails({
 			roomId: "ABCDE",

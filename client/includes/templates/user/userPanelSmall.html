@@ -1,6 +1,6 @@
 <div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
 	<div class="panel-body flex-column flex-align-center">
-		<user-profile class="flex1" control="user.canvasControl" scale="0.4" ></user-profile>
+		<user-profile class="flex1" scale="0.4" user=user.image></user-profile>
 		<div class="flex1" style="margin-top: 10px">
 			{{user.name}}
 			<span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user " aria-hidden="true" >
