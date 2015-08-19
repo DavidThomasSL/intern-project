@@ -544,6 +544,9 @@ module.exports = function(data) {
 		//replace all requested cards with new ones
 		currentPlayer.replaceCards(cardsToReplace,CARD_REPLACE_COST);
 
+		//updating the player ranks with the new point values
+		setRank();
+
 		//need also the send new point values back, doing this through playerRoundResults
 		var currentResults = rounds[rounds.length - 1].results;
 		callback(currentPlayer.hand, currentResults);

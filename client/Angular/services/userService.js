@@ -18,7 +18,15 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         function getIfObserver() {
-            return user.isObserver;
+
+            var isObserver;
+            if (user.isObserver===undefined){
+                isObserver = false;
+            } else {
+                isObserver = user.isObserver;
+            }
+            console.log("returning " + isObserver);
+            return isObserver;
         }
 
         function getUserId() {
