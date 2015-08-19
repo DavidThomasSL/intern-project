@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-mocha-test");
     grunt.loadNpmTasks('grunt-protractor-runner');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-selenium-webdriver');
@@ -9,6 +8,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-auto-install');
     grunt.loadNpmTasks('grunt-script-link-tags');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-mocha-test');
 
     var testOutputLocation = process.env.CIRCLE_TEST_REPORTS || "test_output";
     var artifactsLocation = "build_artifacts";
@@ -98,6 +98,14 @@ module.exports = function(grunt) {
                 singleRun: true,
                 browsers: ['Chrome']
             },
+        },
+        mochaTest: {
+            test: {
+                options: {
+                    reporter: 'spec',
+                },
+                src: ['test/unit/server/**/*.js']
+            }
         }
     });
 
@@ -111,4 +119,5 @@ module.exports = function(grunt) {
     grunt.registerTask("ci-test", ["check", "ci-e2e-test", "karma:continuous"]);
     grunt.registerTask("scripts", "tags");
     grunt.registerTask("default", ['tags', 'test']);
+    grunt.registerTask('mocha', 'mochaTest');
 };

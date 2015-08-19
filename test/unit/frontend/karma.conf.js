@@ -4,8 +4,6 @@
 module.exports = function(config) {
     config.set({
 
-
-
         // you can define custom flags
         customLaunchers: {
             'PhantomJS_custom': {
@@ -45,6 +43,7 @@ module.exports = function(config) {
             "https://cdn.rawgit.com/d-oliveros/ngSmoothScroll/master/dist/angular-smooth-scroll.min.js",
             "node_modules/angular-mocks/angular-mocks.js",
 
+            //frontend tests
             "client/Angular/**/*.js",
             "test/unit/frontend/*.js",
         ],
