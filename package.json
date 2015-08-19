@@ -35,6 +35,7 @@
     "phantomjs": "^1.9.17",
     "protractor": "^2.1.0",
     "selenium-webdriver": "^2.45.1",
+    "sinon": "^1.15.4",
     "socket.io": "~0.9.14",
     "socket.io-client": "^1.3.6"
   },
