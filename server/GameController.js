@@ -47,6 +47,9 @@ module.exports = function(data) {
 	var startTimer = function(callback) {
 
 		count = 60;
+		if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+			count += 5 * ( rounds[roundCount - 1].answers.length );
+		}
 
 		timerIsActive = true;
 		setAllPlayersAbleToSubmit();
