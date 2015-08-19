@@ -20,6 +20,15 @@
                     {{answer.filledInText}}
                     </button>
 
+                    <button ng-if="(getUserId() === answer.player.uId)&&(index !== answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
+                    {{answer.filledInText}}
+                    <br><i>(Your answer)</i>
+                    </button>
+
+                    <button ng-if="getUserId() !== answer.player.uId&&(index !== answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" ng-disabled="true">
+                    {{answer.filledInText}}
+                    </button>
+
                 </div>
             </div>
         </div>
