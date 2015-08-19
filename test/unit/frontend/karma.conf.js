@@ -27,7 +27,7 @@ module.exports = function(config) {
         },
 
         // base path that will be used to resolve all patterns (eg. files, exclude)
-        basePath: '../../',
+        basePath: '../../../',
 
 
         // frameworks to use
@@ -46,7 +46,7 @@ module.exports = function(config) {
             "node_modules/angular-mocks/angular-mocks.js",
 
             "client/Angular/**/*.js",
-            "test/karma/*.js",
+            "test/unit/frontend/*.js",
         ],
 
 

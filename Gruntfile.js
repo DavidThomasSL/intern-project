@@ -21,7 +21,7 @@ module.exports = function(grunt) {
         },
         protractor: {
             options: {
-                configFile: 'test/protractor/ptor.conf.js',
+                configFile: 'test/e2e/ptor.conf.js',
                 args: {
                     "verbose": "true"
                 }
@@ -90,11 +90,11 @@ module.exports = function(grunt) {
         },
         karma: {
             unit: {
-                configFile: 'test/karma/karma.conf.js',
+                configFile: 'test/unit/frontend/karma.conf.js',
                 autoWatch: true
             },
             continuous: {
-                configFile: 'test/karma/karma.conf.js',
+                configFile: 'test/unit/frontend/karma.conf.js',
                 singleRun: true,
                 browsers: ['Chrome']
             },
