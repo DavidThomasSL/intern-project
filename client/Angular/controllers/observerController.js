@@ -10,6 +10,9 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
     $scope.currentVotes = gameService.getCurrentVotes;
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
     $scope.currentQuestion = gameService.getCurrentQuestion;
+    $scope.currentRound = gameService.getCurrentRound;
+    $scope.maxRounds = gameService.getMaxRounds;
+    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
 
@@ -27,6 +30,7 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
 
     $scope.leaveRoom = function() {
         roomService.leaveRoom();
+        gameService.clearGameData();
     };
 
     $scope.getUserId = function() {

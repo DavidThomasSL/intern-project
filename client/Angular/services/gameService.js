@@ -108,7 +108,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	// Clears local game data when the user leaves the game
 	function clearGameData() {
-		playerRoundResults = null;
+		playerRoundResults = [];
 		round = -1;
 	}
 

@@ -17,6 +17,10 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             return user.name;
         }
 
+        function getIfObserver() {
+            return user.isObserver;
+        }
+
         function getUserId() {
             return user.uId;
         }
@@ -138,6 +142,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             getUserHand: getUserHand,
             getRank: getRank,
             setRank: setRank,
+            getIfObserver: getIfObserver,
             setNameAndImage: setNameAndImage,
             registerNewObserver: registerNewObserver,
             getUserImage: getUserImage,

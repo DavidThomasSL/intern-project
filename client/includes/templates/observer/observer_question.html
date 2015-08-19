@@ -1,11 +1,32 @@
-<div class="container">
+<div class="container-fluid">
 	<div class="header clearfix">
+		<h1 ng-init="startCountdown()">Round {{currentRound()}} / {{maxRounds()}}</h1>
 		<h1> {{currentQuestion().text}}</h1>
-		<h2>Waiting for everyone to submit</h1>
-		<h4 ng-init="startCountdown()">{{ answers().length }} / {{getActiveUsersInRoom().length}} answers submitted</h4>
 	</div>
-	<ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
-	<div class="col-md-3 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
-		<ng-include src="'includes/templates/user/userPanelSmallQuestion.html'"></ng-include>
+	<ng-include src="'includes/templates/user/progressBarObserver.html'"></ng-include>
+	<div class="row">
+		<div class="col-md-6 text-center" ng-if="getPlayerRoundResults().length > 0">
+			<h2>Current rankings</h2>
+			<table class="table table-striped">
+				<tr>
+					<th>Rank</th>
+					<th>Player</th>
+					<th>Score</th>
+				</tr>
+				<tr ng-repeat="result in getPlayerRoundResults() | orderBy:'-player.points'">
+					<td>#{{result.player.rank}}</td>
+					<td>{{result.player.name}}</td>
+					<td>{{result.player.points}}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-6 text-center">
+			<h2>Players</h2>
+			<div class="row">
+				<div class="col-md-4" ng-repeat="user in getActiveUsersInRoom()">
+					<ng-include src="'includes/templates/user/userPanelSmallQuestion.html'"></ng-include>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>

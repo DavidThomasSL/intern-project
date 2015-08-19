@@ -67,6 +67,21 @@ body, html {
   margin: 30px 0;
 }
 
+.container-fluid {
+  max-height: 100%;
+}
+
+.progress-observer {
+  height: 50px;
+}
+
+.observer-voting-panel {
+  font-size :20px;
+  color:#FFFFFF;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
 .wrapper {
   min-height: 100%;
   width:100%;
