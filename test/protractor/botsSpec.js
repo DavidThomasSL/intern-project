@@ -96,8 +96,9 @@ describe('When starting a game with BOTS', function() {
 	it('can see players final scores', function() {
 		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
 		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
+
+		firstClonageUser.clearUser();
+		browser2.close();
 	});
-
-
 
 });

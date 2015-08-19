@@ -69,7 +69,7 @@ describe('When creating a room', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
 		expect(element(by.id('room-join-container')).isPresent()).toBe(false);
 		expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
-		expect(element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Tom');
+		expect(element.all(by.repeater('user in getActiveUsersInRoom()')).get(0).getText()).toBe('Tom');
 
 	});
 

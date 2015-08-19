@@ -11,8 +11,8 @@
         <button type="button" id="choose-player-button" class="btn btn-lg btn-primary" ng-click="isNotObserver = true" ng-hide="(isNotObserver === true)">Join as player</button>
         <button type="submit" id="choose-observer-button" class="btn btn-lg btn-primary" ng-hide="(isNotObserver===true)" ng-click="registerAsObserver()">Join as observer</button>
     </div>
-    <div class="row signup-container" id="signup-container" ng-show="(isNotObserver === true)">
-        <form class="form-horizontal" ng-submit="submitName(nameSubmissionForm)">
+    <div class="row signup-container" id="signup-container">
+        <form class="form-horizontal" ng-submit="submitName(nameSubmissionForm)" ng-show="(isNotObserver === true)">
             <div class="row">
                 <user-drawing control="joinCanvasControl" ></user-drawing>
             </div>

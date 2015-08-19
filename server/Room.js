@@ -79,7 +79,7 @@ function Room(roomCode) {
 
             gameInProgress = false;
             if (user.isObserver === true) {
-                routing = 'observeLobby'
+                routing = 'observeLobby';
             } else {
                 routing = "room";
             }
