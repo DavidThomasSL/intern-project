@@ -1,4 +1,4 @@
-ClonageApp.service('gameService', ['communicationService', 'dynamicTextService', function(communicationService, dynamicTextService, $timeout) {
+ClonageApp.service('gameService', ['communicationService', 'dynamicTextService', function(communicationService, dynamicTextService) {
 
 	/*--------------------
 	//PUBLIC API

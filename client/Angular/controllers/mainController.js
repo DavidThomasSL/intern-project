@@ -72,6 +72,8 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     // start countdown
     $scope.startCountdown = function() {
 
+        console.log("starting countdown...");
+
         //don't start a new countdown if one is already running ->>> it cancells the current one and start a new one
         if (angular.isDefined(countdown)) $scope.stopCountdown();
 

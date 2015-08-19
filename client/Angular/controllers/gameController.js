@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, $window, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
+ClonageApp.controller("gameController", function($scope, $timeout, $window, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -12,10 +12,40 @@ ClonageApp.controller("gameController", function($scope, $window, userService, r
     $scope.replaceCostPerCard = gameService.getReplaceCostPerCard;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
+    $scope.answers = gameService.getAnswers;
 
+    $scope.index = 0;
+
+    var timer;
 
     //get all answers submitted in order to visualise them on the voting page
-    $scope.answers = gameService.getAnswers;
+    $scope.visualiseAnswers = function() {
+        var ans = gameService.getAnswers();
+        var filtered=[];
+
+        if ( $scope.index < ans.length ) {
+            filtered.push(ans[$scope.index]);
+        } else {
+            $scope.index = ans.length;
+            filtered = ans;
+            stopTimer();
+        }
+
+        return filtered;
+    }
+
+
+    $scope.startTimer = function() {
+        if (angular.isDefined(timer)) $timeout.cancel(timer);
+
+        timer = $timeout ( function() {
+            $scope.index++;
+        }, 5000);
+    }
+
+    function stopTimer() {
+        if (angular.isDefined(timer)) $timeout.cancel(timer);
+    }
 
     //dynamicFilledInQuestion is the string displayed on the question page that updates as the player clicks answers
     $scope.dynamicFilledInQuestion = gameService.getCurrentFilledInQuestion;
