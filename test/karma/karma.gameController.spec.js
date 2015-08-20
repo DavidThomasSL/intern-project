@@ -66,6 +66,32 @@ describe("Testing Game Controller", function() {
 
 		});
 
+		it("when index points to the last element, timer should be stopped", function() {
+
+			var spyEvent = spyOn(scope, 'stopTimer').and.callThrough();
+			angular.mock.inject(function (_$timeout_) {
+	            $timeout = _$timeout_;
+	        });
+
+	        gameService._setChosenAnswers({
+				answers: ["test answer", "another test answer"]
+			});
+
+			scope.startTimer();
+		    $timeout.flush();
+
+		    scope.startTimer();
+		    $timeout.flush();
+
+		    scope.startTimer();
+		    $timeout.flush();
+
+		    scope.visualiseAnswers();
+
+			expect(spyEvent).toHaveBeenCalled();
+
+		});
+
 	});
 
 });

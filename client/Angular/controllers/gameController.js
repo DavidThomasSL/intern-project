@@ -29,7 +29,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, user
         } else {
             $scope.index = ans.length;
             filtered = ans;
-            stopTimer();
+            $scope.stopTimer();
         }
 
         return filtered;
@@ -44,7 +44,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, user
         }, $scope.timeToWaitAnimation );
     }
 
-    function stopTimer() {
+    $scope.stopTimer = function() {
         if (angular.isDefined(timer)) $timeout.cancel(timer);
     }
 
