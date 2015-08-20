@@ -41,7 +41,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, user
 
         timer = $timeout ( function() {
             $scope.index++;
-        }, $scope.timeToWaitAnimation);
+        }, $scope.timeToWaitAnimation );
     }
 
     function stopTimer() {

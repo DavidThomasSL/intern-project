@@ -32,8 +32,7 @@ describe("Testing Main Controller", function() {
 		    });
 	    }));
 
-	    it('should create $scope.counter when calling startCountdown',
-		    function() {
+	    it('should create $scope.counter when calling startCountdown', function() {
 		        expect(scope.counter).toBeUndefined();
 		        scope.startCountdown();
 		        expect(scope.counter).toBeDefined();
