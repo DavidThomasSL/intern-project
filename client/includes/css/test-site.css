@@ -277,8 +277,12 @@ ANIMATIONS FOR VISUALISING ANSWERS ONE AT A TIME
   left:0px;
 }
 .repeat-animation.ng-enter-stagger {
-  -webkit-transition-delay:0.15s;
-  transition-delay:0.15s;
+  -webkit-transition-delay:0.05s;
+  transition-delay:0.05s;
   -webkit-transition-duration:0.5;
   transition-duration:0.5;
 }
+.repeat-animation.ng-enter { opacity:0; }
+.repeat-animation.left.ng-enter { left:-400px; }
+.repeat-animation.right.ng-enter { left:400px; }
+.repeat-animation.ng-enter-active { opacity:1; left:-400px; }
