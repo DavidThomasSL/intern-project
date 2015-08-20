@@ -46,7 +46,7 @@ describe('User', function() {
 		});
 	});
 
-	describe('User functions', function() {
+	describe('Functions', function() {
 
 		it('get user details should return all and correct user details', function() {
 			var userDetails = user.getUserDetails();
@@ -69,6 +69,18 @@ describe('User', function() {
 
 			expect(socketSpy.called).to.be(true);
 			expect(socketSpy.calledWith("TEST", data)).to.be(true);
+		});
+
+		it('send User details calls the socket emit function with correct user data', function() {
+
+			var data = {
+				user: user.getUserDetails()
+			};
+
+			user.sendUserDetails();
+
+			expect(socketSpy.called).to.be(true);
+			expect(socketSpy.calledWith("USER details", data)).to.be(true);
 		});
 
 	});
