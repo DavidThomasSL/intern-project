@@ -38,7 +38,7 @@
                     <div class="collapse navbar-collapse" id="clonage-navbar" >
                         <span class="navbar-text navbar-right flex flex-row" style="margin-right: 5px;margin-top: 15px;margin-bottom: 0px" ng-hide="getUserName() === undefined">
                             <p  style="font-size: 14px;"><b>{{getUserName()}}</b></p>
-                            <user-profile scale="0.15" user="getUserImage()" style="margin-top: -8px;margin-left: 15px;"></user-profile>
+                            <user-profile sizex="45" sizey="45" user="getUserImage()" style="margin-top: -8px;margin-left: 15px;"></user-profile>
                         </span>
                         <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''">Rank #{{rank()}}</p>
                         <p id="current-round" class="navbar-text navbar-right" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
