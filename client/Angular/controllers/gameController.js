@@ -15,6 +15,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, user
     $scope.answers = gameService.getAnswers;
 
     $scope.index = 0;
+    $scope.timeToWaitAnimation = 5000;
 
     var timer;
 
@@ -40,7 +41,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, user
 
         timer = $timeout ( function() {
             $scope.index++;
-        }, 5000);
+        }, $scope.timeToWaitAnimation);
     }
 
     function stopTimer() {
