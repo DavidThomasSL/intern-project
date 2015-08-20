@@ -7,7 +7,8 @@ ClonageApp.directive('userProfile', function() {
 	return {
 
 		scope: {
-			scale: '=',
+			sizex: '=',
+			sizey: '=',
 			user: '='
 		},
 		transclude: true,
@@ -18,10 +19,10 @@ ClonageApp.directive('userProfile', function() {
 
 			// Number of possible drawing colors;
 			var canvas;
+			var defaultSize = 300; //the size of the canvas on the signup page, used for scaling
 			var thisId = uniqueId;
 			var canvasElement;
 			var imageData;
-			var drawn = false; //only want to draw this canvas once, other updates to the user image from other canvases should not affect this
 			uniqueId++;
 
 			// get a reference to the canvas element
@@ -35,20 +36,11 @@ ClonageApp.directive('userProfile', function() {
 			// Watch the user image to see if it changes
 			// needed if the directive loads before the controller, meaning the user image is not defined yet
 			// this is the case in the navbar in the index
-			scope.$watch("user", function(newValue, OldValue, scope) {
+			scope.$watch("user", function(newValue, oldValue, scope) {
 				if (newValue) {
-					if (!drawn) {
-						drawn = true;
-						loadImage(newValue);
-					}
+					loadImage(newValue);
 				}
 			});
-
-
-			if (scope.user !== undefined && !drawn) {
-				drawn = true;
-				loadImage(scope.user);
-			}
 
 			function loadImage(imageData) {
 				// draw the user's image (if they drew one)
@@ -57,32 +49,35 @@ ClonageApp.directive('userProfile', function() {
 					imageData.objects[0].left = 0;
 				}
 
+				// Load the canvas, and scale the image to the particular size we want, given in the directive markup
 				canvas.loadFromDatalessJSON(imageData, function() {
-					scaleCanvas(scope.scale, scope.scale);
+					scaleCanvas(scope.sizex, scope.sizey);
 				});
+
 			}
 
-
-			function scaleCanvas(xScale, yScale) {
+			// Given a target size of canvas, scale the images to fit that
+			function scaleCanvas(newWidth, newHeight) {
 				// Get all the paths on the canvas
 				var drawings = canvas.getObjects();
 
 				if (drawings.length >= 1) {
 
-					// Resize canvas
-					var newXSize = canvas.width * xScale;
-					var newYSize = canvas.height * yScale;
+					// get the scaling
+					var scaleX = newWidth / 300;
+					var scaleY = newHeight / 300;
 
-					canvas.setWidth(newXSize);
-					canvas.setHeight(newYSize);
+					// Resize canvas
+					canvas.setWidth(newWidth);
+					canvas.setHeight(newHeight);
 
 					// Resize each object
 					drawings.forEach(function(obj) {
-						var newLeft = obj.left * xScale;
-						var newTop = obj.top * yScale;
+						var newLeft = obj.left * scaleX;
+						var newTop = obj.top * scaleY;
 
-						obj.scaleX = xScale;
-						obj.scaleY = yScale;
+						obj.scaleX = scaleX;
+						obj.scaleY = scaleY;
 						obj.left = newLeft;
 						obj.top = newTop;
 					});
@@ -91,7 +86,6 @@ ClonageApp.directive('userProfile', function() {
 					canvas.renderAll();
 				}
 			}
-
 		}
 	};
 });
