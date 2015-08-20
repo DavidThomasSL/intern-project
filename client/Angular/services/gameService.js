@@ -173,7 +173,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			votes.forEach(function(vote) {
 				if (vote.playersWhoVotedForThis.length > 0) {
 					vote.playersWhoVotedForThis.forEach(function(player) {
-						if (player === user)
+						if (player.name === user)
 							voted = true;
 					});
 				}

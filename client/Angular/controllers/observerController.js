@@ -18,6 +18,15 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
 
     $scope.getMessages = roomService.getMessages;
 
+    $scope.getUserFromId = function (userId) {
+        var userToReturn = {};
+        roomService.getActiveUsersInRoom().forEach(function(activeUser){
+            if(activeUser.uId === userId)
+                userToReturn = activeUser;
+        });
+        return userToReturn;
+    }
+
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());
         $scope.multipleCanvasEnabled = true;

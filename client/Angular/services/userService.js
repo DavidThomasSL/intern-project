@@ -25,7 +25,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             } else {
                 isObserver = user.isObserver;
             }
-            console.log("returning " + isObserver);
             return isObserver;
         }
 

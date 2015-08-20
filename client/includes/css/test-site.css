@@ -82,6 +82,24 @@ body, html {
   border-color: #2e6da4;
 }
 
+.observer-results-table {
+  font-size: 15px;
+}
+
+.observer-results-table th {
+  font-size: 20px;
+}
+
+.observer-results-panel {
+  color:#FFFFFF;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.observer-results-ready {
+    background-color: #66BB6A;
+}
+
 .wrapper {
   min-height: 100%;
   width:100%;

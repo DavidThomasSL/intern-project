@@ -277,7 +277,7 @@ module.exports = function(data) {
 				//Find the anwser matching the one selected
 				if (answer.player.uId === votedForAnswer.player.uId) {
 
-					answer.playersVote.push(submittingPlayer.name);
+					answer.playersVote.push(submittingPlayer);
 				}
 
 				// Build result object for each answer submitted
@@ -569,7 +569,7 @@ module.exports = function(data) {
 		currentAnswers.forEach(function(answer) {
 			answer.playersVote.forEach(function(votingPlayer) {
 				playersWhoHaventVoted = playersWhoHaventVoted.filter(function(iteratedPlayer) {
-					return (iteratedPlayer.name !== votingPlayer);
+					return (iteratedPlayer.name !== votingPlayer.name);
 				});
 			});
 		});
