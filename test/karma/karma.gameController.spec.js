@@ -44,6 +44,27 @@ describe("Testing Game Controller", function() {
 
 		});
 
+	    it("if timer hasn't started, visualiseAnswers should return the first answer", function() {
+
+	    	gameService._setChosenAnswers({
+				answers: ["test answer", "another test answer"]
+			});
+	    	var answer = scope.visualiseAnswers();
+			expect(answer).toEqual(["test answer"]);
+
+		});
+
+		it("timer should increase scope.index", function() {
+
+			angular.mock.inject(function (_$timeout_) {
+	            $timeout = _$timeout_;
+	        });
+			expect(scope.index).toEqual(0);
+	        scope.startTimer();
+		    $timeout.flush();
+			expect(scope.index).toEqual(1);
+
+		});
 
 	});
 
