@@ -61,6 +61,15 @@ function Player(user, cardController) {
 		var card = self.cardController.getWhiteCard();
 		self.hand.push(card);
 	};
+
+	self.toString = function() {
+		return {
+			uId: self.uId,
+			name: self.name,
+			hand: self.hand,
+			hasSubmitted: self.hasSubmitted
+		};
+	};
 }
 
 module.exports = Player;
