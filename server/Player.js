@@ -8,12 +8,11 @@ function Player(user, cardController) {
 	self.points = 0;
 	self.rank = "";
 	self.connectedToServer = true;
-	self.isBot = false;
 	self.cardController = cardController;
 
 	self.dealHand = function(handSize) {
 		for (var i = 0; i < handSize; i++) {
-			addCardToHand();
+			self._addCardToHand();
 		}
 	};
 
@@ -26,7 +25,7 @@ function Player(user, cardController) {
 		if (indexOfUsedCard !== -1) {
 			self.hand[indexOfUsedCard] = newCard;
 		} else {
-			console.log("Cannot replace card, \"" + usedCard + "\" not found in hand");
+			return new Error("Cannot replace card, \"" + usedCard + "\" not found in hand");
 		}
 
 	};
@@ -58,10 +57,10 @@ function Player(user, cardController) {
 		return randomAns;
 	};
 
-	function addCardToHand() {
+	self._addCardToHand = function() {
 		var card = self.cardController.getWhiteCard();
 		self.hand.push(card);
-	}
+	};
 }
 
 module.exports = Player;
