@@ -303,7 +303,7 @@ module.exports = function(data) {
 			var voteNumber = countVotes(currentRound);
 
 			//check if everyone voted
-			if (voteNumber >= getNumOfConnectedPlayers()) {
+			if (isVotingComplete(currentRound)) {
 
 				// Change the gamestate to the next stage
 				// Add the points for the game
@@ -324,6 +324,40 @@ module.exports = function(data) {
 			});
 		}
 	};
+
+	/*
+		Return if voting stage is ready to end
+
+		If the number of votes submitted is equal to or more than
+		the number of answers submitted
+
+		Works if not all players submit an answer, we don't have to wait to time out in that case
+	*/
+	function isVotingComplete(round) {
+
+		var maxPosVotes = getNumOfConnectedPlayers(); // maximum number of votes possible to have
+
+		players.forEach(function(player) {
+
+			// check if a player has NOT submitted
+			if (!player.hasSubmitted) {
+
+				// check if it possible for them to submit (are there answers other than their own to vote on?)
+				availableAns = round.answers.filter(function(ans) {
+					return ans.player.uId !== player.uId;
+				});
+
+				if (availableAns.length === 0) {
+					// this player cannot vote for any choices,
+					// reduce number of max possible votes
+					maxPosVotes--;
+				}
+			}
+		});
+
+		return maxPosVotes === countVotes(round);
+	}
+
 
 	/*
 		Catches a reconnecting user up with the current game status
@@ -539,7 +573,7 @@ module.exports = function(data) {
 		var currentPlayer = getPlayerFromId(userId);
 
 		//replace all requested cards with new ones
-		currentPlayer.replaceCards(cardsToReplace,CARD_REPLACE_COST);
+		currentPlayer.replaceCards(cardsToReplace, CARD_REPLACE_COST);
 
 		//need also the send new point values back, doing this through playerRoundResults
 		var currentResults = rounds[rounds.length - 1].results;
@@ -585,6 +619,7 @@ module.exports = function(data) {
 		}
 		return votes;
 	};
+
 
 	/*
 		Gives a rank to every player in the game based on their points total
