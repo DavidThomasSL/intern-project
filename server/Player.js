@@ -8,7 +8,6 @@ function Player(user, cardController) {
 	self.points = 0;
 	self.rank = "";
 	self.connectedToServer = true;
-	self.isBot = false;
 	self.cardController = cardController;
 
 	self.dealHand = function(handSize) {

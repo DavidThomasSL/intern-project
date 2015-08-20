@@ -451,7 +451,6 @@ module.exports = function(data) {
 				}, cardController);
 
 				fakePlayer.dealHand(HANDSIZE);
-				fakePlayer.isBot = true;
 				bots.push(fakePlayer);
 			} else {
 				fakePlayer = bots[i];
