@@ -88,14 +88,14 @@ describe('When playing a game', function() {
 	});
 
 	it('can see what everyone submitted', function() {
-		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + FAKE_ANSWERS);
-		expect(secondClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + FAKE_ANSWERS);
+		expect(firstClonageUser.element.all(by.repeater("answer in visualiseAnswers()")).count()).toEqual(2 + FAKE_ANSWERS);
+		expect(secondClonageUser.element.all(by.repeater("answer in visualiseAnswers()")).count()).toEqual(2 + FAKE_ANSWERS);
 	});
 
 	it('can refresh and see voting page again', function() {
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
-		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + FAKE_ANSWERS);
+		expect(firstClonageUser.element.all(by.repeater("answer in visualiseAnswers()")).count()).toEqual(2 + FAKE_ANSWERS);
 	});
 
 	it('can vote for an answer', function() {
