@@ -10,6 +10,7 @@ function User(socket) {
 	this.socket = socket;
 	this.readyToProceed = false;
 	this.image = "";
+	this.isBot = false;
 
 	/*
 	Sends the user details to the client via the users socket
