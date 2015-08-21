@@ -1,28 +1,21 @@
 <div class="container-fluid">
 	<div class="header clearfix">
-		<h1 ng-init="startCountdown()">Round {{currentRound()}} / {{maxRounds()}}</h1>
-		<h1>{{currentQuestion().text}}</h1>
+		<h1 ng-init="startCountdown()">Round {{currentRound()}} / {{maxRounds()}} submissions</h1>
 	</div>
 	<ng-include src="'includes/templates/user/progressBarObserver.html'"></ng-include>
 	<div id="question-responses-container">
 		<div class="row">
-			<div class="col-md-6 text-center">
-				<h2> Submissions </h2>
+			<div class="col-md-6 col-md-offset-3 text-center">
 				<div class="panel panel-default" ng-repeat="answer in answers() | orderBy:'answersText[0]'">
-					<div class="panel-body observer-voting-panel">
-						<div class="flex1">
-							{{answer.filledInText}}
-						</div>
+					<div class="panel-body observer-voting-panel text-center flex1">
+						{{answer.filledInText}}
 					</div>
 				</div>
 			</div>
-			<div class="col-md-6 text-center">
-				<h2>Players</h2>
-				<div class="row">
-					<div class="col-md-4" ng-repeat="user in getActiveUsersInRoom()">
-						<ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
-					</div>
-				</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2" ng-repeat="user in getActiveUsersInRoom()">
+				<ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
 			</div>
 		</div>
 	</div>

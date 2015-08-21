@@ -12,8 +12,7 @@
                     <th>Voted by</th>
                     <th>Points</th>
                 </tr>
-                <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'" ng-class="{'observer-results-ready': getUserFromId(result.player.uId).
-                    readyToProceed}">
+                <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
                     <td>
                         <user-profile class="flex1" sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
                         image"></user-profile>
@@ -34,7 +33,9 @@
                         image"></user-profile></span>
                     </td>
                     <td>
-                        <span class="label label-success" style="font-size: 20px">+{{result.playersWhoVotedForThis.length*50}}</span></td>
+                        <div style="margin-top:30px">
+                        <div class="label label-success" style="font-size: 20px;">+{{result.playersWhoVotedForThis.length*50}}</div>
+                    </div></td>
                     </td>
                 </tr>
             </table>
@@ -53,6 +54,12 @@
                     <td>{{result.player.points}}</td>
                 </tr>
             </table>
+            <h2>Players</h2>
+            <div class="row">
+                <div class="col-md-3" ng-repeat="user in getActiveUsersInRoom()">
+                    <ng-include src="userPanelTemplate"></ng-include>
+                </div>
+            </div>
         </div>
     </div>
 </div>

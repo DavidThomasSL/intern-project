@@ -1,7 +1,10 @@
 <div class="container">
     <div class="header clearfix">
         <h1>ROOM CODE: {{roomId()}}</h1>
-        <p>Click ready when your want to start!</p>
+        <p>Click ready when you want to start!</p>
+        <div class="col-md-6 text-center">
+            <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getActiveUsersInRoom().length <= 1 && getGameParameters().botNumber < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+        </div>
         <!-- Round options dropdowns -->
         <div style="margin-top: 10px;" class="flex flex-row">
             <div class="flex1">
@@ -48,7 +51,7 @@
     <div id="room-lobby-container">
         <div class="row">
             <div class="col-md-4 col-sm-4 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
-                    <ng-include src="userPanelTemplate"></ng-include>
+                <ng-include src="userPanelTemplate"></ng-include>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-6 text-center" ng-repeat="user in getBotsInRoom()">
                 <ng-include src="userPanelTemplate"></ng-include>
@@ -79,15 +82,6 @@
                 </form>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 text-center">
-                <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getActiveUsersInRoom().length <= 1 && getGameParameters().botNumber < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
-            </div>
-            <div class="hidden-lg hidden-md">&nbsp;</div>
-            <div class="col-md-6 text-center">
-                <button id="leave-lobby-button" type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()" >Go Back</button>
-            </div>
-        </div>
         <div class="row text-center" style="margin-top: 20px">
             <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3"  ng-show="getActiveUsersInRoom().length < 2 && getGameParameters().botNumber < 1" >
                 <div class="alert alert-danger" role="alert">
@@ -103,6 +97,12 @@
                 <div class="alert alert-info"  role="alert">
                     <strong>Almost There!</strong> The game will start when everyone is ready
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="hidden-lg hidden-md">&nbsp;</div>
+            <div class="col-md-6 text-center">
+                <button id="leave-lobby-button" type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()" >Go Back</button>
             </div>
         </div>
     </div>
