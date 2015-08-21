@@ -281,7 +281,7 @@ module.exports = function(data) {
 				//Find the anwser matching the one selected
 				if (answer.player.uId === votedForAnswer.player.uId) {
 
-					answer.playersVote.push(submittingPlayer.name);
+					answer.playersVote.push(submittingPlayer);
 				}
 
 				// Build result object for each answer submitted
@@ -371,7 +371,7 @@ module.exports = function(data) {
 			game information (game question, user hand)
 			round information (current votes, etc for table)
 	*/
-	var getInfoForReconnectingUser = function(userId, callback) {
+	var getInfoForReconnectingUser = function(user, callback) {
 
 		//GET round information
 		var routingInfo = "";
@@ -383,9 +383,11 @@ module.exports = function(data) {
 
 		var currentRound = rounds[roundCount - 1];
 
-		player = getPlayerFromId(userId);
+		player = getPlayerFromId(user.uId);
 
-		player.connectedToServer = true;
+		if (!user.isObserver){
+			player.connectedToServer = true;
+		}
 
 		if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
 
@@ -564,6 +566,9 @@ module.exports = function(data) {
 		//replace all requested cards with new ones
 		currentPlayer.replaceCards(cardsToReplace, CARD_REPLACE_COST);
 
+		//updating the player ranks with the new point values
+		setRank();
+
 		//need also the send new point values back, doing this through playerRoundResults
 		var currentResults = rounds[rounds.length - 1].results;
 		callback(currentPlayer.hand, currentResults);
@@ -586,7 +591,7 @@ module.exports = function(data) {
 		currentAnswers.forEach(function(answer) {
 			answer.playersVote.forEach(function(votingPlayer) {
 				playersWhoHaventVoted = playersWhoHaventVoted.filter(function(iteratedPlayer) {
-					return (iteratedPlayer.name !== votingPlayer);
+					return (iteratedPlayer.uId !== votingPlayer.uId);
 				});
 			});
 		});
@@ -642,6 +647,9 @@ module.exports = function(data) {
 	*/
 	var setupPlayer = function(user) {
 		var player = new Player(user, cardController);
+		if (user.isObserver===true) {
+			player.connectedToServer = false;
+		}
 
 		// Removes the cards from list of possible cards for other player
 		player.dealHand(HANDSIZE);

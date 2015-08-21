@@ -17,6 +17,17 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             return user.name;
         }
 
+        function getIfObserver() {
+
+            var isObserver;
+            if (user.isObserver===undefined){
+                isObserver = false;
+            } else {
+                isObserver = user.isObserver;
+            }
+            return isObserver;
+        }
+
         function getUserId() {
             return user.uId;
         }
@@ -29,16 +40,18 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             return user.image;
         }
 
-        function setName(name) {
-            sendMessage('USER set name', {
-                name: name
-            });
-        }
-
         function setNameAndImage(name, image) {
             sendMessage('USER set profile', {
                 name: name,
-                image: image
+                image: image,
+                isObserver: false
+            });
+        }
+        function registerNewObserver(name, image) {
+            sendMessage('USER set profile', {
+                name: name,
+                image:image,
+                isObserver: true
             });
         }
 
@@ -133,13 +146,14 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         return {
-            setName: setName,
             getUserName: getUserName,
             getUserId: getUserId,
             getUserHand: getUserHand,
             getRank: getRank,
             setRank: setRank,
+            getIfObserver: getIfObserver,
             setNameAndImage: setNameAndImage,
+            registerNewObserver: registerNewObserver,
             getUserImage: getUserImage,
             _setUserDetails: _setUserDetails,
             _setHand: _setHand,

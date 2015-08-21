@@ -11,7 +11,8 @@ exports.config = {
 		'playingGameSpec.js',
 		'afterRoundSpec.js',
 		'afterGameSpec.js',
-		'botsSpec.js'
+		'botsSpec.js',
+		'observerSpec.js'
 	],
 	baseUrl: 'http://localhost:8080/',
 	params: {

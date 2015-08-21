@@ -6,6 +6,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.maxRounds = gameService.getMaxRounds;
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
     $scope.getUserImage = userService.getUserImage;
+    $scope.getIfObserver = userService.getIfObserver;
 
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function(botsEnabled) {

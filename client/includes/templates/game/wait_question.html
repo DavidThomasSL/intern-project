@@ -6,11 +6,11 @@
 	<div class ="row">
 		<div class="col-md-12 text-center">
 			<h4>Waiting for other players to submit choices</h4>
-			<p ng-init="startCountdown()">{{ answers().length }} / {{getUsersInRoom().length}} answers submitted</p>
+			<p ng-init="startCountdown()">{{ answers().length }} / {{getActiveUsersInRoom().length}} answers submitted</p>
 		</div>
 	</div>
 	<ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
-	<div class="col-md-3 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
+	<div class="col-md-3 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
 		<ng-include src="'includes/templates/user/userPanelSmallQuestion.html'"></ng-include>
 	</div>
 </div>

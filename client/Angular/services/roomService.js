@@ -33,6 +33,23 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return usersInRoom;
     }
 
+
+    //returns the array of all users who aren't observers
+    function getActiveUsersInRoom() {
+        var userList = usersInRoom.filter(function(userInRoom){
+            return (!userInRoom.isObserver)
+        });
+        return userList;
+    }
+
+    //returns the array of all observers in the room
+    function getObserversInRoom() {
+        var observerList = usersInRoom.filter(function(userInRoom) {
+            return (userInRoom.isObserver)
+        });
+        return observerList;
+    }
+
     function getBotsInRoom() {
         return botsInRoom;
     }
@@ -148,6 +165,8 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         joinRoom: joinRoom,
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
+        getActiveUsersInRoom: getActiveUsersInRoom,
+        getObserversInRoom: getObserversInRoom,
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
         _setMessages: _setMessages,

@@ -67,7 +67,7 @@ describe('When starting a game with BOTS', function() {
 	});
 
 	it('can see the players and bots at the bottom of the page', function() {
-		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
 		expect(firstClonageUser.element.all(by.repeater('user in getBotsInRoom()')).count()).toBe(BOT_NUM);
 
 	});
@@ -102,8 +102,9 @@ describe('When starting a game with BOTS', function() {
 	it('can see players final scores', function() {
 		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
 		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
+
+		firstClonageUser.clearUser();
+		browser2.close();
 	});
-
-
 
 });

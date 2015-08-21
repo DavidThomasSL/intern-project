@@ -31,6 +31,9 @@ ClonageApp.service('RoutingService', ['$location', 'communicationService', funct
             case 'waitQuestion':
                 $location.path('/waitQuestion');
                 break;
+            case 'observeLobby':
+                $location.path('/observeLobby');
+                break;
             default:
                 $location.path('/');
         }

@@ -109,7 +109,7 @@ describe('After each round', function() {
 	});
 
 	it('can see the players at the bottom of the page', function() {
-		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
 	});
 
 	it('can ready up for next round and this can be seen by everyone', function() {

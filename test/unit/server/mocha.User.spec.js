@@ -51,7 +51,7 @@ describe('User', function() {
 		it('get user details should return all and correct user details', function() {
 			var userDetails = user.getUserDetails();
 
-			expect(Object.keys(userDetails).length).to.be(5);
+			expect(Object.keys(userDetails).length).to.be(6);
 			expect(userDetails.uId).not.to.be.empty();
 			expect(userDetails.socket).to.be(undefined);
 			expect(user.readyToProceed).to.be(false);

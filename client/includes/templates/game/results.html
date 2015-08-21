@@ -20,7 +20,7 @@
                 <td>{{result.player.name}}</td>
                 <td>{{result.playersWhoVotedForThis.length}}</td>
                 <td>
-                    <div ng-repeat="player in result.playersWhoVotedForThis track by $index">{{player}}</div>
+                    <div ng-repeat="player in result.playersWhoVotedForThis track by $index">{{player.name}}</div>
                 </td>
                 <td>+{{result.playersWhoVotedForThis.length*50}}</td>
             </tr>
@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="row" style="margin-top: 20px">
-            <div class="col-lg-4 col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
+            <div class="col-lg-4 col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
                 <ng-include src="userPanelTemplate"></ng-include>
             </div>
             <div class="col-lg-4 col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getBotsInRoom()">

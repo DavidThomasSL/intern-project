@@ -108,7 +108,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	// Clears local game data when the user leaves the game
 	function clearGameData() {
-		playerRoundResults = null;
+		playerRoundResults = [];
 		round = -1;
 	}
 
@@ -173,7 +173,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			votes.forEach(function(vote) {
 				if (vote.playersWhoVotedForThis.length > 0) {
 					vote.playersWhoVotedForThis.forEach(function(player) {
-						if (player === user)
+						if (player.name === user)
 							voted = true;
 					});
 				}

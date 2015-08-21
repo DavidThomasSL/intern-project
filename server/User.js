@@ -9,6 +9,7 @@ function User(socket) {
 	this.roomId = "";
 	this.socket = socket;
 	this.readyToProceed = false;
+	this.isObserver = false;
 	this.image = "";
 	this.isBot = false;
 
@@ -41,6 +42,7 @@ function User(socket) {
 			name: this.name,
 			roomId: this.roomId,
 			readyToProceed: this.readyToProceed,
+			isObserver: this.isObserver,
 			image: this.image
 		};
 

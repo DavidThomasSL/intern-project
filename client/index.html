@@ -22,7 +22,7 @@
         <!--COntent goes here -->
         <div class="wrapper">
             <!-- NAVBAR -->
-            <nav class="navbar navbar-default navbar-static-top" style="margin: 5px;">
+            <nav class="navbar navbar-default navbar-static-top" style="margin: 5px;" ng-hide="(getIfObserver()===true)">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header" style="margin-top: 0px">
@@ -95,6 +95,7 @@
         <script src="Angular/config/routeConfig.js"></script>
         <script src="Angular/controllers/gameController.js"></script>
         <script src="Angular/controllers/mainController.js"></script>
+        <script src="Angular/controllers/observerController.js"></script>
         <script src="Angular/controllers/roomController.js"></script>
         <script src="Angular/controllers/signupController.js"></script>
         <script src="Angular/directives/animateOnChangeDirective.js"></script>

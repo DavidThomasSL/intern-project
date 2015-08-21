@@ -1,0 +1,65 @@
+<div class="container-fluid">
+    <div class="header clearfix">
+        <h3>Round {{currentRound()}} / {{maxRounds()}} results</h3>
+        <h3>{{currentQuestion().text}}</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <table class="table observer-results-table">
+                <tr>
+                    <th>Player</th>
+                    <th>Submitted</th>
+                    <th>Voted by</th>
+                    <th>Points</th>
+                </tr>
+                <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
+                    <td>
+                        <user-profile class="flex1" sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
+                        image"></user-profile>
+                        <p>{{result.player.name}}</p>
+                    </td>
+                    <td>
+                        <div class="panel panel-default">
+                            <div class="panel-body observer-results-panel">
+                                <div class="flex1">
+                                    <span ng-repeat="text in result.answersText track by $index">{{text}}<br></span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span ng-repeat="votingPlayer in result.playersWhoVotedForThis track by $index">
+                            <user-profile class="flex1" sizex="40" sizey="40" isbot="getUserFromId(votingPlayer.uId).isBot" image="getUserFromId(votingPlayer.uId).
+                        image"></user-profile></span>
+                    </td>
+                    <td>
+                        <div style="margin-top:30px">
+                        <div class="label label-success" style="font-size: 20px;">+{{result.playersWhoVotedForThis.length*50}}</div>
+                    </div></td>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6 text-center" ng-if="getPlayerRoundResults().length > 0">
+            <h2>Current rankings</h2>
+            <table class="table table-striped">
+                <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Score</th>
+                </tr>
+                <tr ng-repeat="result in getPlayerRoundResults() | orderBy:'-player.points'">
+                    <td>#{{result.player.rank}}</td>
+                    <td>{{result.player.name}}</td>
+                    <td>{{result.player.points}}</td>
+                </tr>
+            </table>
+            <h2>Players</h2>
+            <div class="row">
+                <div class="col-md-3" ng-repeat="user in getActiveUsersInRoom()">
+                    <ng-include src="userPanelTemplate"></ng-include>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
