@@ -40,6 +40,9 @@
             <div class="col-lg-4 col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
                 <ng-include src="userPanelTemplate"></ng-include>
             </div>
+            <div class="col-lg-4 col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getBotsInRoom()">
+                <ng-include src="userPanelTemplate"></ng-include>
+            </div>
         </div>
         <!-- Replace Cards section -->
         <div id="replace-cards-container" style="margin-top:30px;">

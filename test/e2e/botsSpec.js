@@ -66,6 +66,12 @@ describe('When starting a game with BOTS', function() {
 		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
 	});
 
+	it('can see the players and bots at the bottom of the page', function() {
+		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+		expect(firstClonageUser.element.all(by.repeater('user in getBotsInRoom()')).count()).toBe(BOT_NUM);
+
+	});
+
 	it('can finish a game with bots', function() {
 
 		firstClonageUser.ready();

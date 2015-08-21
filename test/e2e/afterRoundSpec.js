@@ -61,8 +61,6 @@ describe('After each round', function() {
 		firstClonageUser.openGameRankings();
 		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).count()).toEqual(2);
 
-
-
 		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(0).element(by.binding('currentResult.player.rank')).getText()).toContain('#1');
 		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(0).element(by.binding('currentResult.player.rank')).getText()).toContain('John');
 		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(0).element(by.binding('currentResult.player.points')).getText()).toContain('50 points');
@@ -108,6 +106,10 @@ describe('After each round', function() {
 			firstClonageUser.openGameRankings();
 			expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('40 points');
 		});
+	});
+
+	it('can see the players at the bottom of the page', function() {
+		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
 	});
 
 	it('can ready up for next round and this can be seen by everyone', function() {

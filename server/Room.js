@@ -1,9 +1,11 @@
+var User = require('./User');
+
 function Room(roomCode) {
     var self = this;
     self.id = roomCode;
     self.usersInRoom = [];
     self.gameController = undefined;
-    self.botNumber = 0;
+    self.botsInRoom = [];
     self.messages = [];
     self.numRounds = 8;
 
@@ -44,6 +46,36 @@ function Room(roomCode) {
         }
 
         return false;
+    };
+
+    /*
+        Adds the required number of bots to the room
+    */
+    self.setBotNumber = function(num) {
+
+        var numBotsInRoom = self.botsInRoom.length;
+
+        if(num > numBotsInRoom){
+            // add more bots
+
+            // Create required number of bots
+            // bots are just user objects with no socket
+            for(var i = 0; i < (num - numBotsInRoom); i++){
+                var newBot = new User({});
+                newBot.name = "BOT " + (numBotsInRoom + i + 1);
+                newBot.isBot = true;
+                self.botsInRoom.push(newBot);
+            }
+
+        } else if( num < self.botsInRoom.length) {
+
+            // remove the required number of bots
+            for(var j = 0; j < (numBotsInRoom - num ); j++){
+                self.botsInRoom.pop();
+            }
+        } else {
+            //correct number of bots in room
+        }
     };
 
 
@@ -167,7 +199,7 @@ function Room(roomCode) {
             data = {
                 roomId: self.id,
                 usersInRoom: usersInRoomJSON,
-                botNumber: self.botNumber,
+                botsInRoom: self.botsInRoom,
                 numRounds: self.numRounds
             };
 

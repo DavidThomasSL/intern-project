@@ -45,6 +45,9 @@
             <div class="col-md-4 col-sm-4 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
                 <ng-include src="userPanelTemplate"></ng-include>
             </div>
+            <div class="col-md-4 col-sm-4 col-xs-6 text-center" ng-repeat="user in getBotsInRoom()">
+                <ng-include src="userPanelTemplate"></ng-include>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-12">
