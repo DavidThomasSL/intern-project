@@ -10,7 +10,7 @@ ClonageApp.directive('userProfile', function() {
 			sizex: '=',
 			sizey: '=',
 			image: '=',
-
+			isbot: '='
 		},
 		transclude: true,
 		replace: true,
@@ -43,6 +43,18 @@ ClonageApp.directive('userProfile', function() {
 				}
 			});
 
+			// if the image is a bot
+			// we load the image as a url, not as a js
+			if (scope.isbot) {
+				console.log("drawing bot image");
+				// get the image from the bot image url
+				fabric.Image.fromURL('../../includes/images/bot_icon.png', function(oImg) {
+					canvas.add(oImg);
+					scaleCanvas(scope.sizex, scope.sizey);
+
+				});
+			}
+
 			function loadImage(imageData) {
 				// draw the user's image (if they drew one)
 				if (imageData.objects[0].text === "Draw your icon here!") {
@@ -54,7 +66,6 @@ ClonageApp.directive('userProfile', function() {
 				canvas.loadFromDatalessJSON(imageData, function() {
 					scaleCanvas(scope.sizex, scope.sizey);
 				});
-
 			}
 
 			// Given a target size of canvas, scale the images to fit that

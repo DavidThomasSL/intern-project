@@ -102,6 +102,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
         botsInRoom = data.botsInRoom;
+        botNumber = botsInRoom.length;
         numRounds = data.numRounds;
         console.log(data);
     }

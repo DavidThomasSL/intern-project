@@ -62,7 +62,7 @@ function Room(roomCode) {
             // bots are just user objects with no socket
             for(var i = 0; i < (num - numBotsInRoom); i++){
                 var newBot = new User({});
-                newBot.name = "BOT " + (numBotsInRoom + i);
+                newBot.name = "BOT " + (numBotsInRoom + i + 1);
                 newBot.isBot = true;
                 self.botsInRoom.push(newBot);
             }
@@ -71,14 +71,11 @@ function Room(roomCode) {
 
             // remove the required number of bots
             for(var j = 0; j < (numBotsInRoom - num ); j++){
-                console.log(self.botsInRoom.pop());
+                self.botsInRoom.pop();
             }
         } else {
             //correct number of bots in room
         }
-
-        console.log(self.botsInRoom);
-
     };
 
 
