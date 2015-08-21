@@ -574,7 +574,7 @@ module.exports = function(data) {
 		callback(currentPlayer.hand, currentResults);
 	};
 
-	// TO DO : check game state before every move!`
+	// TO DO : check game state before every move!
 
 	function setAllPlayersAbleToSubmit() {
 		players.forEach(function(player) {
@@ -591,7 +591,7 @@ module.exports = function(data) {
 		currentAnswers.forEach(function(answer) {
 			answer.playersVote.forEach(function(votingPlayer) {
 				playersWhoHaventVoted = playersWhoHaventVoted.filter(function(iteratedPlayer) {
-					return (iteratedPlayer.name !== votingPlayer.name);
+					return (iteratedPlayer.uId !== votingPlayer.uId);
 				});
 			});
 		});

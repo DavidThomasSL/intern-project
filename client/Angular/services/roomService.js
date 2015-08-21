@@ -33,6 +33,8 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return usersInRoom;
     }
 
+
+    //returns the array of all users who aren't observers
     function getActiveUsersInRoom() {
         var userList = usersInRoom.filter(function(userInRoom){
             return (!userInRoom.isObserver)
@@ -40,6 +42,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         return userList;
     }
 
+    //returns the array of all observers in the room
     function getObserversInRoom() {
         var observerList = usersInRoom.filter(function(userInRoom) {
             return (userInRoom.isObserver)

@@ -3,7 +3,6 @@ function Player(user, cardController) {
 	var self = this;
 	self.uId = user.uId;
 	self.name = user.name;
-	self.image = user.image;
 	self.hand = [];
 	self.hasSubmitted = false;
 	self.points = 0;

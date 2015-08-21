@@ -43,13 +43,15 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         function setNameAndImage(name, image) {
             sendMessage('USER set profile', {
                 name: name,
-                image: image
+                image: image,
+                isObserver: false
             });
         }
         function registerNewObserver(name, image) {
-            sendMessage('USER set observer profile', {
+            sendMessage('USER set profile', {
                 name: name,
-                image:image
+                image:image,
+                isObserver: true
             });
         }
 

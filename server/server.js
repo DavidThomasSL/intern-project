@@ -99,24 +99,13 @@ module.exports = function(port, enableLogging) {
         socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
-            user.isObserver = false;
+            user.isObserver = data.isObserver;
+            user.readyToProceed = data.isObserver;
             user.sendUserDetails();
             putUserInJoining();
 
             logger.debug("User set name as: " + data.name);
         });
-
-        socket.on('USER set observer profile', function(data) {
-            user.name = data.name;
-            user.isObserver = true;
-            user.readyToProceed = true;
-            user.image = data.image;
-            user.sendUserDetails();
-            putUserInJoining();
-
-            logger.debug("New observer registered");
-        });
-
         /*
             create room, assign id, add current player and return room id to player
         */
