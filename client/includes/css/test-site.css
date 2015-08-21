@@ -94,19 +94,6 @@ body, html {
     background-color: #66BB6A;
 }
 
-.results-well {
-  background-color: #EEEEEE;
-  height:150px;
-  display: -webkit-flex;
-  display:         flex;
-  -webkit-align-items: center;
-          align-items: center;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
-}
-
-
-
 .wrapper {
   min-height: 100%;
   width:100%;
