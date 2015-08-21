@@ -46,12 +46,10 @@ ClonageApp.directive('userProfile', function() {
 			// if the image is a bot
 			// we load the image as a url, not as a js
 			if (scope.isbot) {
-				console.log("drawing bot image");
 				// get the image from the bot image url
 				fabric.Image.fromURL('../../includes/images/bot_icon.png', function(oImg) {
 					canvas.add(oImg);
 					scaleCanvas(scope.sizex, scope.sizey);
-
 				});
 			}
 
@@ -93,7 +91,6 @@ ClonageApp.directive('userProfile', function() {
 						obj.left = newLeft;
 						obj.top = newTop;
 					});
-
 					//Update the Canvas
 					canvas.renderAll();
 				}
