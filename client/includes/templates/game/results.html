@@ -9,8 +9,8 @@
             <tr>
                 <th>Answer</th>
                 <th>Submitted by</th>
-                <th>Votes</th>
-                <th>Voted by</th>
+<!--                 <th>Votes</th>
+ -->                <th>Voted by</th>
                 <th>Points</th>
             </tr>
             <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
@@ -18,7 +18,7 @@
                     <span ng-repeat="text in result.answersText track by $index">{{text}}<br></span>
                 </td>
                 <td>{{result.player.name}}</td>
-                <td>{{result.playersWhoVotedForThis.length}}</td>
+                <!-- <td>{{result.playersWhoVotedForThis.length}}</td> -->
                 <td>
                     <div ng-repeat="player in result.playersWhoVotedForThis track by $index">{{player.name}}</div>
                 </td>
