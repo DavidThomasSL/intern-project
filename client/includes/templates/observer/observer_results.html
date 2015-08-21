@@ -9,14 +9,13 @@
                 <tr>
                     <th>Player</th>
                     <th>Submitted</th>
-                    <!--                     <th>Votes</th> -->
                     <th>Voted by</th>
                     <th>Points</th>
                 </tr>
                 <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'" ng-class="{'observer-results-ready': getUserFromId(result.player.uId).
                     readyToProceed}">
                     <td>
-                        <user-profile class="flex1" scale="0.3" user="getUserFromId(result.player.uId).
+                        <user-profile class="flex1" sizex="60" sizey="60" user="getUserFromId(result.player.uId).
                         image" ng-hide="result.player.isBot"></user-profile>
                         <p>{{result.player.name}}</p>
                     </td>
@@ -31,12 +30,27 @@
                     </td>
                     <td>
                         <span ng-repeat="votingPlayer in result.playersWhoVotedForThis track by $index">
-                            <user-profile class="flex1" scale="0.2" user="getUserFromId(votingPlayer.uId).
+                            <user-profile class="flex1" sizex="40" sizey="40" user="getUserFromId(votingPlayer.uId).
                         image"></user-profile></span>
                     </td>
                     <td>
                         <span class="label label-success" style="font-size: 20px">+{{result.playersWhoVotedForThis.length*50}}</span></td>
                     </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6 text-center" ng-if="getPlayerRoundResults().length > 0">
+            <h2>Current rankings</h2>
+            <table class="table table-striped">
+                <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Score</th>
+                </tr>
+                <tr ng-repeat="result in getPlayerRoundResults() | orderBy:'-player.points'">
+                    <td>#{{result.player.rank}}</td>
+                    <td>{{result.player.name}}</td>
+                    <td>{{result.player.points}}</td>
                 </tr>
             </table>
         </div>
