@@ -14,6 +14,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var botNumber = 0;
     var messages = [];
     var numRounds = 8;
+    var botsInRoom = [];
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -30,6 +31,10 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
 
     function getUsersInRoom() {
         return usersInRoom;
+    }
+
+    function getBotsInRoom() {
+        return botsInRoom;
     }
 
     function leaveRoom() {
@@ -96,8 +101,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     function _setRoomDetails(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
-        botNumber = data.botNumber;
+        botsInRoom = data.botsInRoom;
         numRounds = data.numRounds;
+        console.log(data);
     }
 
     function _setMessages(data) {
@@ -148,6 +154,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         getMessages: getMessages,
         getGameParameters: getGameParameters,
         setBotNumber: setBotNumber,
+        getBotsInRoom: getBotsInRoom,
         setRoundNumber: setRoundNumber,
         _setRoomDetails: _setRoomDetails
     };
