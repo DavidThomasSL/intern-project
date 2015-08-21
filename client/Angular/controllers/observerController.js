@@ -5,6 +5,7 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
     $scope.getUserId = userService.getUserId; //Display user icon on card in lobby
     $scope.getActiveUsersInRoom = roomService.getActiveUsersInRoom;
     $scope.getObserversInRoom = roomService.getObserversInRoom;
+    $scope.getBotsInRoom = roomService.getBotsInRoom;
     $scope.getGameParameters = roomService.getGameParameters;
     $scope.answers = gameService.getAnswers;
     $scope.currentVotes = gameService.getCurrentVotes;
@@ -18,11 +19,17 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
 
     $scope.getMessages = roomService.getMessages;
 
-    $scope.getUserFromId = function (userId) {
+    $scope.getUserFromId = function(userId) {
         var userToReturn = {};
-        roomService.getActiveUsersInRoom().forEach(function(activeUser){
-            if(activeUser.uId === userId)
+        roomService.getActiveUsersInRoom().forEach(function(activeUser) {
+            if (activeUser.uId === userId) {
                 userToReturn = activeUser;
+            }
+        });
+        roomService.getBotsInRoom().forEach(function(currentBot) {
+            if (currentBot.uId === userId) {
+                userToReturn = currentBot
+            }
         });
         return userToReturn;
     }

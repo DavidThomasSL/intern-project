@@ -184,8 +184,14 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('ROOM setGameParameters', function(data) {
             var room = getRoomFromId(data.roomId);
-            room.botNumber = data.botNumber;
+
+            // add the required number of bots to the room
+            room.setBotNumber(data.botNumber);
+            // set them  number of rounds
+            // room.botNumber = data.botNumber;
             room.numRounds = data.numRounds;
+
+            // send details back to all clients in the room
             room.broadcastRoom("ROOM details");
             return;
         });

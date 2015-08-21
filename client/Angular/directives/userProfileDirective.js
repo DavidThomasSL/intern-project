@@ -9,7 +9,8 @@ ClonageApp.directive('userProfile', function() {
 		scope: {
 			sizex: '=',
 			sizey: '=',
-			user: '='
+			image: '=',
+			isbot: '='
 		},
 		transclude: true,
 		replace: true,
@@ -36,11 +37,27 @@ ClonageApp.directive('userProfile', function() {
 			// Watch the user image to see if it changes
 			// needed if the directive loads before the controller, meaning the user image is not defined yet
 			// this is the case in the navbar in the index
-			scope.$watch("user", function(newValue, oldValue, scope) {
+			scope.$watch("image", function(newValue, oldValue, scope) {
 				if (newValue) {
 					loadImage(newValue);
 				}
 			});
+
+			scope.$watch("isbot", function(newValue, oldValue, watchScope) {
+				// if the image is a bot
+				// we load the image as a url, not as a js
+				if (scope.isbot) {
+					console.log("drawing bot image");
+					// get the image from the bot image url
+					fabric.Image.fromURL('../../includes/images/bot_icon.png', function(oImg) {
+						canvas.add(oImg);
+						scaleCanvas(scope.sizex, scope.sizey);
+
+					});
+				}
+			});
+
+
 
 			function loadImage(imageData) {
 				// draw the user's image (if they drew one)
@@ -53,7 +70,6 @@ ClonageApp.directive('userProfile', function() {
 				canvas.loadFromDatalessJSON(imageData, function() {
 					scaleCanvas(scope.sizex, scope.sizey);
 				});
-
 			}
 
 			// Given a target size of canvas, scale the images to fit that

@@ -7,6 +7,7 @@ ClonageApp.controller("roomController", function($scope, $window, userService, r
     $scope.getActiveUsersInRoom = roomService.getActiveUsersInRoom;
     $scope.getObserversInRoom = roomService.getObserversInRoom;
     $scope.getGameParameters = roomService.getGameParameters;
+    $scope.getBotsInRoom = roomService.getBotsInRoom;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
 

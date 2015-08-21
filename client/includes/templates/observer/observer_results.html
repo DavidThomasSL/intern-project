@@ -15,8 +15,8 @@
                 <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'" ng-class="{'observer-results-ready': getUserFromId(result.player.uId).
                     readyToProceed}">
                     <td>
-                        <user-profile class="flex1" sizex="60" sizey="60" user="getUserFromId(result.player.uId).
-                        image" ng-hide="result.player.isBot"></user-profile>
+                        <user-profile class="flex1" sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
+                        image"></user-profile>
                         <p>{{result.player.name}}</p>
                     </td>
                     <td>
@@ -30,7 +30,7 @@
                     </td>
                     <td>
                         <span ng-repeat="votingPlayer in result.playersWhoVotedForThis track by $index">
-                            <user-profile class="flex1" sizex="40" sizey="40" user="getUserFromId(votingPlayer.uId).
+                            <user-profile class="flex1" sizex="40" sizey="40" isbot="getUserFromId(votingPlayer.uId).isBot" image="getUserFromId(votingPlayer.uId).
                         image"></user-profile></span>
                     </td>
                     <td>

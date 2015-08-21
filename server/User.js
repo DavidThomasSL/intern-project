@@ -11,6 +11,7 @@ function User(socket) {
 	this.readyToProceed = false;
 	this.isObserver = false;
 	this.image = "";
+	this.isBot = false;
 
 	/*
 	Sends the user details to the client via the users socket

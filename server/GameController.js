@@ -120,7 +120,11 @@ module.exports = function(data) {
 				setupPlayer(user);
 			});
 
-			BOT_NUMBER = room.botNumber;
+			room.botsInRoom.forEach(function(bot) {
+				setupBot(bot);
+			});
+
+			BOT_NUMBER = room.botsInRoom.length;
 			MAX_ROUNDS = room.numRounds;
 
 			//Call back to server after finish setting up
@@ -474,43 +478,28 @@ module.exports = function(data) {
 
 		var answersToPick = round.question.pick;
 		var ans;
-		var fakePlayer;
 
-		for (var i = 0; i < BOT_NUMBER; i++) {
-
-			// Ethier create new bots or use the exisiting ones
-			if (bots.length === i) {
-
-				fakePlayer = new Player({
-					uId: i,
-					name: "BOT " + i
-				}, cardController);
-
-				fakePlayer.dealHand(HANDSIZE);
-				bots.push(fakePlayer);
-			} else {
-				fakePlayer = bots[i];
-			}
-
+		// Get answer from each bot
+		bots.forEach(function(bot) {
 			var randomAnswers = [];
 			var randomAns;
 
 			for (var j = 0; j < answersToPick; j++) {
-				randomAns = fakePlayer.pickRandomCard();
-				fakePlayer.updateHand(randomAns);
+				randomAns = bot.pickRandomCard();
+				bot.updateHand(randomAns);
 				randomAnswers.push(randomAns);
 			}
 
 			// Build the submitted answer
 			ans = {
-				player: fakePlayer,
+				player: bot,
 				answersText: randomAnswers,
 				playersVote: [],
 				rank: ""
 			};
 
 			round.answers.push(ans);
-		}
+		});
 	};
 
 	/*
@@ -585,7 +574,7 @@ module.exports = function(data) {
 		callback(currentPlayer.hand, currentResults);
 	};
 
-	// TO DO : check game state before every move!
+	// TO DO : check game state before every move!`
 
 	function setAllPlayersAbleToSubmit() {
 		players.forEach(function(player) {
@@ -665,6 +654,12 @@ module.exports = function(data) {
 		// Removes the cards from list of possible cards for other player
 		player.dealHand(HANDSIZE);
 		players.push(player);
+	};
+
+	var setupBot = function(bot) {
+		var botPlayer = new Player(bot, cardController);
+		botPlayer.dealHand(HANDSIZE);
+		bots.push(botPlayer);
 	};
 
 	var disconnectPlayer = function(playerId) {

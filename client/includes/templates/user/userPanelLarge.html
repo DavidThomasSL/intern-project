@@ -1,6 +1,6 @@
 <div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}" ng-if="!user.isObserver">
     <div class="panel-body flex-row">
-        <user-profile class="flex1" sizex="100" sizey="100" user=user.image ></user-profile>
+        <user-profile class="flex1" sizex="100" sizey="100" isbot=user.isBot image=user.image ></user-profile>
         <div class="flex1" style="margin-top: 50px">
             {{user.name}}
                 <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user " aria-hidden="true" >
