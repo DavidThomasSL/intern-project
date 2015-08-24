@@ -1,5 +1,6 @@
 ClonageApp.service('dynamicTextService', function() {
 
+
 	function getSubmissionState(currentQuestion, enteredAnswer, currentlySubmittedAnswers) {
 		var readyToSend = false;
 
@@ -27,8 +28,8 @@ ClonageApp.service('dynamicTextService', function() {
 			currentlySubmittedAnswers: currentlySubmittedAnswers,
 			currentFilledInQuestion: currentFilledInQuestion,
 			readyToSend: readyToSend
-		}
-	};
+		};
+	}
 
 	//Used to dynamically fill in the blanks of the question as the player selects them
 	function fillInSelections(questionText, currentSelections) {
@@ -41,9 +42,11 @@ ClonageApp.service('dynamicTextService', function() {
 			var selectionToPush = selection.slice();
 			//removing full stop at end of text
 			if (selectionToPush.charAt(selectionToPush.length - 1) == ".") {
-				selectionToPush = selectionToPush.slice(0, -1)
+				selectionToPush = selectionToPush.slice(0, -1);
 			}
-			selectionToPush = "[" + selectionToPush + "]";
+
+			//add the HTML tags around the user's answer
+			selectionToPush = "<b class='submitted-answer-text'>" + selectionToPush + "</b>";
 			removedFullStops.push(selectionToPush);
 		});
 

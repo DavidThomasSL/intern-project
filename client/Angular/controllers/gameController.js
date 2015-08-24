@@ -40,13 +40,7 @@ ClonageApp.controller("gameController", function($scope, $window, $sce, userServ
     };
 
     $scope.bindHtml = function(text, htmlWrap) {
-        if (htmlWrap === 'i') {
-            return $sce.trustAsHtml('<i>' + text + '</i>');
-        } else if (htmlWrap === 'b') {
-            return $sce.trustAsHtml('<b>' + text + '</b>');
-        } else {
-            return  $sce.trustAsHtml(text);
-        }
+        return $sce.trustAsHtml(text);
     };
 
     //get results after each round which involves: what each player submitted, who voted for their answer, and their score after the round
