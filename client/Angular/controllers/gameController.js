@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
+ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, toastr, $location, $sessionStorage, $anchorScroll) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -111,7 +111,15 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     $scope.playAgain = function() {
         $scope.playAgainWasPressed = true;
-        gameService.playAgain();
+        toastr.success('One of your friends wants to play again.<br> Click here to join', {
+            allowHtml: true,
+            showCloseButton: true,
+            timeout:   null,
+            onHidden: function(clicked) {
+                if (clicked) { alert("yes!"); }
+            }
+        });
+       // gameService.playAgain();
     };
 
     $scope.$watch(function() {

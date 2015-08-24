@@ -122,6 +122,14 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         }
     };
 
+      $scope.yes = function() {
+        alert("yes");
+    }
+
+    $scope.no = function() {
+        alert("no");
+    }
+
     /*
     ---------------------------------------------------------
     */

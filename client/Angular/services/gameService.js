@@ -187,6 +187,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return voted;
 	};
 
+	function playAgain() {
+
+	}
+
 
 	/*
 	---------------
@@ -329,7 +333,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		setCountdown: setCountdown,
 		hasVoted: hasVoted,
 		hasSubmitted: hasSubmitted,
-		getTimeout: getTimeout
+		getTimeout: getTimeout,
+		playAgain: playAgain
 	};
 
 }]);
