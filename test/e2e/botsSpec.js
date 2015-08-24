@@ -2,9 +2,8 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When starting a game with BOTS', function() {
 
-	var HAND_SIZE = 10;
-	var BOT_NUM = 3;
-	var MAX_ROUNDS = 3;
+	var BOT_NUM;
+	var MAX_ROUNDS;
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -13,6 +12,9 @@ describe('When starting a game with BOTS', function() {
 	var secondClonageUser = new clonageUser(browser2);
 
 	it('Can start a game with bots', function() {
+		MAX_ROUNDS = 3;
+		BOT_NUM = 3;
+
 		firstClonageUser.getIndex();
 		firstClonageUser.submitName('John');
 		firstClonageUser.createRoom();
@@ -66,6 +68,12 @@ describe('When starting a game with BOTS', function() {
 		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
 	});
 
+	it('can see the players and bots at the bottom of the page', function() {
+		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
+		expect(firstClonageUser.element.all(by.repeater('user in getBotsInRoom()')).count()).toBe(BOT_NUM);
+
+	});
+
 	it('can finish a game with bots', function() {
 
 		firstClonageUser.ready();
@@ -96,8 +104,9 @@ describe('When starting a game with BOTS', function() {
 	it('can see players final scores', function() {
 		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
 		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
+
+		firstClonageUser.clearUser();
+		browser2.close();
 	});
-
-
 
 });

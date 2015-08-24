@@ -95,26 +95,16 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Final registered details of user are: " + user.name + " " + user.uId);
         });
 
-        /*
-            Set the user's name as given by the client
-         */
-        socket.on('USER set name', function(msg) {
-            user.name = msg.name;
-            user.sendUserDetails();
-            putUserInJoining();
-
-            logger.debug("User set name as: " + msg.name);
-        });
-
         socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
+            user.isObserver = data.isObserver;
+            user.readyToProceed = data.isObserver;
             user.sendUserDetails();
             putUserInJoining();
 
             logger.debug("User set name as: " + data.name);
         });
-
         /*
             create room, assign id, add current player and return room id to player
         */
@@ -144,7 +134,7 @@ module.exports = function(port, enableLogging, testing) {
 
             var room = getRoomFromId(msg.roomId);
 
-            if ( room.submitMessage(msg) === true)
+            if (room.submitMessage(msg) === true)
                 room.broadcastRoom('ROOM messages');
         });
 
@@ -162,7 +152,10 @@ module.exports = function(port, enableLogging, testing) {
                 room.broadcastRoom('ROOM details');
             }
 
-            user.readyToProceed = false;
+            if (!user.isObserver){
+                user.readyToProceed = false;
+            }
+
             user.roomId = "";
             user.sendUserDetails();
 
@@ -179,8 +172,14 @@ module.exports = function(port, enableLogging, testing) {
         */
         socket.on('ROOM setGameParameters', function(data) {
             var room = getRoomFromId(data.roomId);
-            room.botNumber = data.botNumber;
+
+            // add the required number of bots to the room
+            room.setBotNumber(data.botNumber);
+            // set them  number of rounds
+            // room.botNumber = data.botNumber;
             room.numRounds = data.numRounds;
+
+            // send details back to all clients in the room
             room.broadcastRoom("ROOM details");
             return;
         });
@@ -224,7 +223,9 @@ module.exports = function(port, enableLogging, testing) {
 
                 //after moving players on, set all their ready statuses back to 'not ready'
                 room.usersInRoom.forEach(function(iteratedUser) {
-                    iteratedUser.readyToProceed = false;
+                    if (!iteratedUser.isObserver) {
+                        iteratedUser.readyToProceed = false;
+                    }
                 });
 
                 // if the game hasn't started yet, start the game
@@ -248,7 +249,7 @@ module.exports = function(port, enableLogging, testing) {
                 });
                 room.broadcastRoom('GAME playerRoundResults', {
                     results: newResults,
-                    voteNumber:0
+                    voteNumber: 0
                 });
                 user.emit("NOTIFICATION message", {
                     text: "Replaced " + data.cardsToReplace.length + " card(s).",
@@ -452,7 +453,9 @@ module.exports = function(port, enableLogging, testing) {
                 // Take the user out of the game (set as disconnected)
                 room.removeUser(user);
 
-                user.readyToProceed = false;
+                if (!user.isObserver){
+                    user.readyToProceed = false;
+                }
 
                 logger.debug("Removing player from room" + room.id);
             } else {

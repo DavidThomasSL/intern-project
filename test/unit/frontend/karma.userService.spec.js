@@ -109,11 +109,18 @@ describe("Testing User Service", function() {
 		expect(mockStorageService.roomId).toBe("B00B5");
 	});
 
-	it("setName calls communicationService", function() {
+	it("setNameAndImage calls communicationService", function() {
 		spyOn(mockCommunicationService, 'sendMessage');
-		userService.setName({});
+		userService.setNameAndImage({});
 		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
 	});
+
+	it("registerNewObserver calls communicationService", function() {
+		spyOn(mockCommunicationService, 'sendMessage');
+		userService.registerNewObserver({});
+		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
+	});
+
 
 	it("getUserName returns user's name", function() {
 		userService._setUserDetails({

@@ -22,10 +22,10 @@
         <!--COntent goes here -->
         <div class="wrapper">
             <!-- NAVBAR -->
-            <nav class="navbar navbar-default navbar-static-top" style="margin: 10px;">
+            <nav class="navbar navbar-default navbar-static-top" style="margin: 5px;" ng-hide="(getIfObserver()===true)">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header" style="padding-top: 10px">
+                    <div class="navbar-header" style="margin-top: 0px">
                         <a class="navbar-brand" >Clonage</a>
                         <button id="navbar-expand-button" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#clonage-navbar" aria-expanded="false">
                         <span class="sr-only">Toggle</span>
@@ -35,10 +35,10 @@
                         </button>
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="clonage-navbar" style="padding-top: 10px;padding-bottom: -10px">
-                        <span class="navbar-text navbar-right flex flex-row" style="margin-right: 5px" ng-hide="getUserName() === undefined">
-                            <p  style="font-size: 14px;line-height: 20px"><b>{{getUserName()}}</b></p>
-                            <user-profile scale="0.15" user="getUserImage()" style="margin-top: -8px;margin-left: 15px;"></user-profile>
+                    <div class="collapse navbar-collapse" id="clonage-navbar" >
+                        <span class="navbar-text navbar-right flex flex-row" style="margin-right: 5px;margin-top: 15px;margin-bottom: 0px" ng-hide="getUserName() === undefined">
+                            <p  style="font-size: 14px;"><b>{{getUserName()}}</b></p>
+                            <user-profile sizeX="45" sizey="45" image="getUserImage()" isbot=false style="margin-top: -12px;margin-left: 15px;"></user-profile>
                         </span>
                         <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''">Rank #{{rank()}}</p>
                         <p id="current-round" class="navbar-text navbar-right" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
@@ -89,11 +89,13 @@
         <link type="text/css"  rel="stylesheet" href="https://rawgit.com/Foxandxss/angular-toastr/master/dist/angular-toastr.min.css"/>
         <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js"></script>
         <script type="text/javascript" src="https://cdn.rawgit.com/d-oliveros/ngSmoothScroll/master/dist/angular-smooth-scroll.min.js"></script>
+
         <!-- start client/js tags -->
         <script src="Angular/ClonageApp.js"></script>
         <script src="Angular/config/routeConfig.js"></script>
         <script src="Angular/controllers/gameController.js"></script>
         <script src="Angular/controllers/mainController.js"></script>
+        <script src="Angular/controllers/observerController.js"></script>
         <script src="Angular/controllers/roomController.js"></script>
         <script src="Angular/controllers/signupController.js"></script>
         <script src="Angular/directives/animateOnChangeDirective.js"></script>

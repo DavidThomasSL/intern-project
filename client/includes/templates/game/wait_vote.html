@@ -1,10 +1,10 @@
 <div class="container" ng-init="retainCountdownValue()">
     <div class="header clearfix">
-        <h2>Waiting for other players to vote</h1>
-        <h4 ng-init="startCountdown()">{{ currentVotes() }} / {{getUsersInRoom().length}} votes cast</h4>
+        <h4>Waiting for other players to vote</h4>
+        <p ng-init="startCountdown()">{{ currentVotes() }} / {{getActiveUsersInRoom().length}} votes cast</p>
     </div>
     <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
-    <div class="col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
+    <div class="col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
     </div>
 </div>

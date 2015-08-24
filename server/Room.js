@@ -1,9 +1,11 @@
+var User = require('./User');
+
 function Room(roomCode) {
     var self = this;
     self.id = roomCode;
     self.usersInRoom = [];
     self.gameController = undefined;
-    self.botNumber = 0;
+    self.botsInRoom = [];
     self.messages = [];
     self.numRounds = 8;
 
@@ -26,7 +28,7 @@ function Room(roomCode) {
 
         if (self.gameController === undefined) {
 
-            if (data.messageText !== undefined ) {
+            if (data.messageText !== undefined) {
 
                 if (data.messageText.trim() !== '') {
 
@@ -44,6 +46,36 @@ function Room(roomCode) {
         }
 
         return false;
+    };
+
+    /*
+        Adds the required number of bots to the room
+    */
+    self.setBotNumber = function(num) {
+
+        var numBotsInRoom = self.botsInRoom.length;
+
+        if(num > numBotsInRoom){
+            // add more bots
+
+            // Create required number of bots
+            // bots are just user objects with no socket
+            for(var i = 0; i < (num - numBotsInRoom); i++){
+                var newBot = new User({});
+                newBot.name = "BOT " + (numBotsInRoom + i + 1);
+                newBot.isBot = true;
+                self.botsInRoom.push(newBot);
+            }
+
+        } else if( num < self.botsInRoom.length) {
+
+            // remove the required number of bots
+            for(var j = 0; j < (numBotsInRoom - num ); j++){
+                self.botsInRoom.pop();
+            }
+        } else {
+            //correct number of bots in room
+        }
     };
 
 
@@ -78,7 +110,11 @@ function Room(roomCode) {
         if (self.gameController === undefined && canJoin) {
 
             gameInProgress = false;
-            routing = "room";
+            if (user.isObserver === true) {
+                routing = 'observeLobby';
+            } else {
+                routing = "room";
+            }
 
         } else {
 
@@ -92,6 +128,7 @@ function Room(roomCode) {
                 //User was in the game, tell the game controller they're back, route them to the current stage
                 // Find out where to put this user, i.e where all the other players are
                 self.gameController.getInfoForReconnectingUser(user.uId, testing, function(routingInfo, gameStateData) {
+
                     routing = routingInfo;
 
                     // Send to the user all the information about the game
@@ -116,7 +153,7 @@ function Room(roomCode) {
             user.roomId = self.id;
             self.usersInRoom.push(user);
 
-             // Route them to the room lobby
+            // Route them to the room lobby
             user.emit('ROUTING', {
                 location: routing
             });
@@ -170,14 +207,12 @@ function Room(roomCode) {
             data = {
                 roomId: self.id,
                 usersInRoom: usersInRoomJSON,
-                botNumber: self.botNumber,
+                botsInRoom: self.botsInRoom,
                 numRounds: self.numRounds
             };
 
-        }
-
-        else if (eventName === "ROOM messages") {
-            data = self.messages ;
+        } else if (eventName === "ROOM messages") {
+            data = self.messages;
 
         }
 

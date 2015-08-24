@@ -14,10 +14,19 @@ module.exports = function(browserInstance) {
 	};
 
 	var submitName = function(name) {
+		var choosePlayerButton = element(by.id('choose-player-button'));
+		choosePlayerButton.click();
+		browserInstance.waitForAngular();
 		var nameInputBox = element(by.id('name-input-box'));
 		var nameSubmitButton = element(by.id('name-submit-button'));
 		nameInputBox.sendKeys(name);
 		nameSubmitButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var joinAsObserver = function(name) {
+		var chooseObserverButton = element(by.id('choose-observer-button'));
+		chooseObserverButton.click();
 		browserInstance.waitForAngular();
 	};
 
@@ -67,6 +76,8 @@ module.exports = function(browserInstance) {
 		} // This is the text in the link for number 8
 
 		element(by.id('set-round-dropdown')).click();
+		browserInstance.waitForAngular();
+
 		element.all(by.id("round-select-dropdown")).get(0).element(by.linkText(text)).click();
 		browserInstance.waitForAngular();
 
@@ -162,6 +173,7 @@ module.exports = function(browserInstance) {
 		clearUser: clearUser,
 		getIndex: getIndex,
 		submitName: submitName,
+		joinAsObserver: joinAsObserver,
 		refresh: refresh,
 		clearLocalStorage: clearLocalStorage,
 		createRoom: createRoom,

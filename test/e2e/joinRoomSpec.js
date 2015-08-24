@@ -27,19 +27,19 @@ describe('When joining an existing room', function() {
 		expect(secondClonageUser.element(by.id('room-join-container')).isPresent()).toBe(false);
 		expect(secondClonageUser.element(by.id('room-lobby-container')).isPresent()).toBe(true);
 
-		expect(secondClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('John');
-		expect(secondClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('Alice');
+		expect(secondClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).get(0).getText()).toBe('John');
+		expect(secondClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).get(1).getText()).toBe('Alice');
 
 	});
 
 	it('if a user leaves the lobby the other user can see that without updating', function() {
 		secondClonageUser.leaveLobby();
-		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(1);
+		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(1);
 	});
 
 	it('if other user joins room, user in room can see that without updating', function() {
 		secondClonageUser.joinRoom(roomId);
-		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).count()).toBe(2);
+		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
 	});
 
 	it('If other user sets the bot number, user can see that change without updating', function() {
@@ -81,8 +81,8 @@ describe('When joining an existing room', function() {
 		firstClonageUser.refresh();
 
 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
-		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Alice');
-		expect(firstClonageUser.element.all(by.repeater('user in getUsersInRoom()')).get(1).getText()).toBe('John');
+		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).get(0).getText()).toBe('Alice');
+		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).get(1).getText()).toBe('John');
 		expect(firstClonageUser.element(by.binding("getGameParameters().botNumber")).getText()).toMatch("3 Bots");
 		expect(firstClonageUser.element(by.binding("getGameParameters().numRounds")).getText()).toMatch("3 Rounds");
 

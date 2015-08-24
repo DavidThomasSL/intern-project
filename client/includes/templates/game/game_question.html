@@ -3,7 +3,7 @@
     <div class="header clearfix">
         <div id="round-question">
             <h2 animate-on-change="dynamicFilledInQuestion()">{{dynamicFilledInQuestion()}}</h2>
-            <h4 id="amount-to-submit">Pick {{currentQuestion().pick}}.</h4>
+            <p id="amount-to-submit">Pick {{currentQuestion().pick}}.</p>
         </div>
     </div>
     <div id="user-hand-container">
@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 col-xs-6 text-center" ng-repeat="user in getUsersInRoom()">
+    <div class="col-md-3 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallQuestion.html'"></ng-include>
     </div>
 </div>

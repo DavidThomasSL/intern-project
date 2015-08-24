@@ -2,7 +2,7 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When starting a game', function() {
 
-	var HAND_SIZE = 10;
+	var HAND_SIZE;
 
 	var roomId;
 
@@ -39,6 +39,8 @@ describe('When starting a game', function() {
 	});
 
 	it('can see possible answer cards', function() {
+		HAND_SIZE = 10;
+
 		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(HAND_SIZE);
 	});
 

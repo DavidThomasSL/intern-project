@@ -41,6 +41,8 @@ describe('When creating a room', function() {
 	it('users can change the number of bots in the room and that update on the page', function() {
 		firstClonageUser.setBotsOn(3);
 		expect(element(by.binding("getGameParameters().botNumber")).getText()).toMatch("3 Bots");
+		expect(firstClonageUser.element.all(by.repeater('user in getBotsInRoom()')).count()).toBe(3);
+
 	});
 
 
@@ -57,6 +59,8 @@ describe('When creating a room', function() {
 
 		expect(element(by.binding("getGameParameters().numRounds")).getText()).toMatch("2 Rounds");
 		expect(element(by.binding("getGameParameters().botNumber")).getText()).toMatch("6 Bots");
+		expect(firstClonageUser.element.all(by.repeater('user in getBotsInRoom()')).count()).toBe(6);
+
 	});
 
 	it("users can start a game by themselves if there are bots in the game", function() {
@@ -69,7 +73,7 @@ describe('When creating a room', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
 		expect(element(by.id('room-join-container')).isPresent()).toBe(false);
 		expect(element(by.id('room-lobby-container')).isPresent()).toBe(true);
-		expect(element.all(by.repeater('user in getUsersInRoom()')).get(0).getText()).toBe('Tom');
+		expect(element.all(by.repeater('user in getActiveUsersInRoom()')).get(0).getText()).toBe('Tom');
 
 	});
 

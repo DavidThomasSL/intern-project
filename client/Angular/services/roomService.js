@@ -14,6 +14,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var botNumber = 0;
     var messages = [];
     var numRounds = 8;
+    var botsInRoom = [];
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -30,6 +31,27 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
 
     function getUsersInRoom() {
         return usersInRoom;
+    }
+
+
+    //returns the array of all users who aren't observers
+    function getActiveUsersInRoom() {
+        var userList = usersInRoom.filter(function(userInRoom){
+            return (!userInRoom.isObserver)
+        });
+        return userList;
+    }
+
+    //returns the array of all observers in the room
+    function getObserversInRoom() {
+        var observerList = usersInRoom.filter(function(userInRoom) {
+            return (userInRoom.isObserver)
+        });
+        return observerList;
+    }
+
+    function getBotsInRoom() {
+        return botsInRoom;
     }
 
     function leaveRoom() {
@@ -96,7 +118,8 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     function _setRoomDetails(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
-        botNumber = data.botNumber;
+        botsInRoom = data.botsInRoom;
+        botNumber = botsInRoom.length;
         numRounds = data.numRounds;
     }
 
@@ -142,12 +165,15 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         joinRoom: joinRoom,
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
+        getActiveUsersInRoom: getActiveUsersInRoom,
+        getObserversInRoom: getObserversInRoom,
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
         _setMessages: _setMessages,
         getMessages: getMessages,
         getGameParameters: getGameParameters,
         setBotNumber: setBotNumber,
+        getBotsInRoom: getBotsInRoom,
         setRoundNumber: setRoundNumber,
         _setRoomDetails: _setRoomDetails
     };
