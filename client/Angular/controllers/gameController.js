@@ -22,6 +22,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     $scope.index = 0;
     $scope.timeToWaitAnimation = gameService.getTimeout();
+    $scope.playAgainWasPressed = false;
 
     var timer;
 
@@ -106,6 +107,11 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.leaveRoom = function() {
         roomService.leaveRoom();
         gameService.clearGameData();
+    };
+
+    $scope.playAgain = function() {
+        $scope.playAgainWasPressed = true;
+        gameService.playAgain();
     };
 
     $scope.$watch(function() {
