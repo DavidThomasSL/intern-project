@@ -112,6 +112,16 @@ body, html {
   padding: 10px;
 }
 
+/* style the user's submission inside an answer */
+.submitted-answer-text {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
 .navbar {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
@@ -134,6 +144,7 @@ body, html {
   border-top-color: rgb(231,231,231);
   border-top-style: solid;
   border-top-width: 1px;
+}
 
 .name-submit-container {
   margin-top: 30px;
