@@ -12,7 +12,7 @@ var GameController = require('./GameController');
 var User = require('./User');
 var Room = require('./Room');
 
-module.exports = function(port, enableLogging) {
+module.exports = function(port, enableLogging, testing) {
     var router = express();
     var server = http.createServer(router);
     var io = socketio.listen(server, {
@@ -26,7 +26,6 @@ module.exports = function(port, enableLogging) {
     } else {
         logger.setLevel('INFO');
     }
-
 
     router.use(express.static(path.resolve(__dirname, '../client')));
 
@@ -370,6 +369,12 @@ module.exports = function(port, enableLogging) {
                     answers: data.answers
                 });
 
+                if (testing !== undefined) {
+                    room.broadcastRoom("GAME timeout", {
+                        timeout: 0
+                    });
+                }
+
                 //immediately updates the hand of the player who submitted the answer
                 user.emit('USER hand', {
                     hand: data.submittingPlayersNewHand
@@ -476,7 +481,7 @@ module.exports = function(port, enableLogging) {
             if (room !== undefined) {
 
                 // Try and join the room
-                result = room.addUser(user);
+                result = room.addUser(user, testing);
 
                 if (result.gameInProgress) {
                     errorText = "the game is already in progress";

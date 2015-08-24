@@ -41,7 +41,7 @@ module.exports = function(grunt) {
             test: {
                 options: {
                     script: './server.js',
-                    args: ['debug=true']
+                    args: ['debug=true', 'testing=true']
                 }
             },
             prod: {

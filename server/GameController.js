@@ -336,7 +336,7 @@ module.exports = function(data) {
 			game information (game question, user hand)
 			round information (current votes, etc for table)
 	*/
-	var getInfoForReconnectingUser = function(userId, callback) {
+	var getInfoForReconnectingUser = function(userId, testing, callback) {
 
 		//GET round information
 		var routingInfo = "";
@@ -427,6 +427,18 @@ module.exports = function(data) {
 
 		data.push(roundData);
 		data.push(answerData);
+
+		if (testing !== undefined) {
+
+            console.log("broadcasting testing.. ");
+            var timeoutData = {
+            	eventName: "GAME timeout",
+            	data: { timeout: 0 }
+            };
+            data.push(timeoutData);
+        }
+
+
 		data.push(questionData);
 		data.push(userHand);
 
