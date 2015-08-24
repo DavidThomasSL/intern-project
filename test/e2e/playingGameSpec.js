@@ -2,8 +2,7 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When playing a game', function() {
 
-	var MAX_ROUNDS = 8;
-	var FAKE_ANSWERS = 0;
+	var MAX_ROUNDS;
 	var roomId;
 	var cardsToSubmit;
 
@@ -83,19 +82,22 @@ describe('When playing a game', function() {
 	});
 
 	it('can see what round we are on and how many are left', function() {
+
+		MAX_ROUNDS = 8;
+
 		expect(firstClonageUser.element(by.id('current-round')).getText()).toEqual('Round 1 / ' + MAX_ROUNDS);
 		expect(secondClonageUser.element(by.id('current-round')).getText()).toEqual('Round 1 / ' + MAX_ROUNDS);
 	});
 
 	it('can see what everyone submitted', function() {
-		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + FAKE_ANSWERS);
-		expect(secondClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + FAKE_ANSWERS);
+		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2);
+		expect(secondClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2);
 	});
 
 	it('can refresh and see voting page again', function() {
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
-		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + FAKE_ANSWERS);
+		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2);
 	});
 
 	it('can vote for an answer', function() {
