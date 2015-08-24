@@ -19,20 +19,7 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
 
     $scope.getMessages = roomService.getMessages;
 
-    $scope.getUserFromId = function(userId) {
-        var userToReturn = {};
-        roomService.getActiveUsersInRoom().forEach(function(activeUser) {
-            if (activeUser.uId === userId) {
-                userToReturn = activeUser;
-            }
-        });
-        roomService.getBotsInRoom().forEach(function(currentBot) {
-            if (currentBot.uId === userId) {
-                userToReturn = currentBot
-            }
-        });
-        return userToReturn;
-    }
+    $scope.getUserFromId = roomService.getUserFromId;
 
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());
