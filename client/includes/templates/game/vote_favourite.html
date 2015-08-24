@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 col-xs-6  text-center" ng-repeat="user in getUsersInRoom()">
+    <div class="col-md-3 col-xs-6  text-center" ng-repeat="user in getActiveUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
     </div>
 </div>

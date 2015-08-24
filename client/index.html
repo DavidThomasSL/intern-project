@@ -41,7 +41,7 @@
                             <user-profile sizeX="45" sizey="45" image="getUserImage()" isbot=false style="margin-top: -12px;margin-left: 15px;"></user-profile>
                         </span>
                         <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''"><b>Rank #{{rank()}}</b></p>
-                        <p id="current-round" class="navbar-text navbar-right">Round {{currentRound()}} / {{maxRounds()}}</p>
+                        <p id="current-round" class="navbar-text navbar-right" ng-show="currentRound()>0">Round {{currentRound()}} / {{maxRounds()}}</p>
                         <!-- Game ranking dropdown -->
                         <ul class="nav navbar-nav navbar-left" ng-hide="rank() === ''">
                             <li class="dropdown">
