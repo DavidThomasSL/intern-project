@@ -128,9 +128,10 @@ module.exports = function(port, enableLogging, testing) {
 
         socket.on('GAME play again', function(msg) {
 
-            var room = getRoomFromId(msg.roomId);
+            var oldRoom = getRoomFromId(msg.oldRoomId);
+            var newRoom = getRoomFromId(msg.newRoomId);
 
-            room.broadcastRoom('GAME play again');
+            oldRoom.broadcastRoom('GAME play again');
 
         });
 

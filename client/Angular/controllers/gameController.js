@@ -110,13 +110,13 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     };
 
     $scope.playAgain = function() {
-        var oldRoom = userService.getRoomId();
+        var oldRoomId = userService.getRoomId();
         roomService.createRoom(userService.getUserId());
         $scope.multipleCanvasEnabled = true;
 
-        var newRoom = userService.getRoomId();
+        var newRoomId = userService.getRoomId();
 
-        gameService.playAgain(userService.getUserId(), oldRoom, newRoom);
+        gameService.playAgain(userService.getUserId(), oldRoomId, newRoomId);
     };
 
     $scope.$watch(function() {
