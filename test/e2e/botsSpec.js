@@ -47,8 +47,8 @@ describe('When starting a game with BOTS', function() {
 	});
 
 	it('Can see your answers plus the bot answers', function() {
-		expect(firstClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + BOT_NUM);
-		expect(secondClonageUser.element.all(by.repeater("answer in answers()")).count()).toEqual(2 + BOT_NUM);
+		expect(firstClonageUser.element.all(by.repeater("answer in visualiseAnswers()")).count()).toEqual(2 + BOT_NUM);
+		expect(secondClonageUser.element.all(by.repeater("answer in visualiseAnswers()")).count()).toEqual(2 + BOT_NUM);
 	});
 
 	it('can vote for any answer', function() {

@@ -124,5 +124,4 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     ---------------------------------------------------------
     */
 
-
 });

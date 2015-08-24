@@ -1,4 +1,4 @@
-ClonageApp.service('gameService', ['communicationService', 'dynamicTextService', function(communicationService, dynamicTextService, $timeout) {
+ClonageApp.service('gameService', ['communicationService', 'dynamicTextService', function(communicationService, dynamicTextService) {
 
 	/*--------------------
 	//PUBLIC API
@@ -18,6 +18,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var cardsToReplace = [];
 	var cardReplaceCost = 0; //variable holing the current cost of replacing a card
 	var votes = [];
+	var timeout = 5000;
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
@@ -30,6 +31,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			_emitChoice(currentlySubmittedAnswers);
 			currentlySubmittedAnswers = [];
 		}
+	}
+
+	function getTimeout() {
+		return timeout;
 	}
 
 	//call function that emits to server the vote that was just submitted
@@ -243,6 +248,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		maxRounds = num;
 	}
 
+	function _setTimeout(data) {
+		timeout = data.timeout;
+	}
+
 	/*
     ---------------
         REGISTERING COMMUNCATION API WITH LAYER
@@ -257,6 +266,9 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	}, {
 		eventName: "answers",
 		eventAction: _setChosenAnswers
+	}, {
+		eventName: "timeout",
+		eventAction: _setTimeout
 	}, {
 		eventName: "playerRoundResults",
 		eventAction: _setPlayerRoundResults
@@ -316,7 +328,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getCountdown: getCountdown,
 		setCountdown: setCountdown,
 		hasVoted: hasVoted,
-		hasSubmitted: hasSubmitted
+		hasSubmitted: hasSubmitted,
+		getTimeout: getTimeout
 	};
 
 }]);
