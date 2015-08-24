@@ -16,6 +16,8 @@
                     </button>
 
                     <button ng-if="getUserId() !== answer.player.uId" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitVote(answer)">
+
+                    <p ng-bind-html="bindHtml(answer.filledInText, 'b')"></p>
                     {{answer.filledInText}}
                     </button>
 

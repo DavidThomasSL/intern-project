@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, $window, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
+ClonageApp.controller("gameController", function($scope, $window, $sce, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -16,6 +16,8 @@ ClonageApp.controller("gameController", function($scope, $window, userService, r
     $scope.replaceCostPerCard = gameService.getReplaceCostPerCard;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
+    $scope.htmlBindedText = $sce.trustAsHtml('<b>hello bold</b>');
+
 
 
     //get all answers submitted in order to visualise them on the voting page
@@ -35,6 +37,16 @@ ClonageApp.controller("gameController", function($scope, $window, userService, r
             }
         });
         return text;
+    };
+
+    $scope.bindHtml = function(text, htmlWrap) {
+        if (htmlWrap === 'i') {
+            return $sce.trustAsHtml('<i>' + text + '</i>');
+        } else if (htmlWrap === 'b') {
+            return $sce.trustAsHtml('<b>' + text + '</b>');
+        } else {
+            return  $sce.trustAsHtml(text);
+        }
     };
 
     //get results after each round which involves: what each player submitted, who voted for their answer, and their score after the round
