@@ -40,13 +40,12 @@
                             <p  style="font-size: 14px;"><b>{{getUserName()}}</b></p>
                             <user-profile sizeX="45" sizey="45" image="getUserImage()" isbot=false style="margin-top: -12px;margin-left: 15px;"></user-profile>
                         </span>
-                        <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''">Rank #{{rank()}}</p>
-                        <p id="current-round" class="navbar-text navbar-right" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
+                        <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''"><b>Rank #{{rank()}}</b> - Round {{currentRound()}} / {{maxRounds()}} </p>
                         <!-- Game ranking dropdown -->
                         <ul class="nav navbar-nav navbar-left" ng-hide="rank() === ''">
                             <li class="dropdown">
                                 <a id="game-ranking-dropdown-button" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" aria-haspopup="true">
-                                    Game Rankings
+                                    Current Rankings
                                     <span class="caret"></span>
                                 </a>
                                 <ul id="game-ranking-dropdown" class="dropdown-menu" >
