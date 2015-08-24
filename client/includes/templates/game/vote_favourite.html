@@ -14,19 +14,15 @@
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
                     <br><i>(Your answer)</i>
                     </button>
-
                     <button ng-if="getUserId() !== answer.player.uId&&(index === answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitVote(answer)">
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
                     </button>
-
                     <button ng-if="(getUserId() === answer.player.uId)&&(index !== answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
-                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
+                    <p ng-bind-html="bindHtml(answer.filledInText)"></p>
                     <br><i>(Your answer)</i>
                     </button>
-
                     <button ng-if="getUserId() !== answer.player.uId&&(index !== answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" ng-disabled="true">
-                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
-                    </button>
+                    <p ng-bind-html="bindHtml(answer.filledInText)"></p>
                 </div>
             </div>
         </div>

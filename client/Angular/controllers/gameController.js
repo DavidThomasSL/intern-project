@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-ClonageApp.controller("gameController", function($scope, $window, $sce, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
-=======
-ClonageApp.controller("gameController", function($scope, $timeout, $window, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
->>>>>>> dev
+ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
