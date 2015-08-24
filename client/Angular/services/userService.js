@@ -1,5 +1,5 @@
-ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 'toastr'
-    function($sessionStorage, communicationService, toastr) {
+ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 'toastr', 'roomService',
+    function($sessionStorage, communicationService, toastr, roomService) {
 
         /*
         --------------------
@@ -119,7 +119,9 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
                 showCloseButton: true,
                 timeout:   null,
                 onHidden: function(clicked) {
-                    if (clicked) { alert("yes!"); }
+                    if (clicked) {
+                        roomService.joinRoom(newRoomId);
+                    }
                 }
             });
 
