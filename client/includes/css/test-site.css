@@ -64,16 +64,6 @@ body, html {
   }
 }
 
-/* style the user's submission inside an answer */
-.submitted-answer-text {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.container-narrow > hr {
-  margin: 30px 0;
-}
-
 .container-fluid {
   max-height: 100%;
 }
@@ -103,6 +93,16 @@ body, html {
 
 .observer-results-ready {
     background-color: #66BB6A;
+}
+
+/* style the user's submission inside an answer */
+.submitted-answer-text {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.container-narrow > hr {
+  margin: 30px 0;
 }
 
 .dropdown-game-rankings {
@@ -167,6 +167,11 @@ body, html {
 .name-submit-container {
   margin-top: 30px;
   margin-bottom: 100px;
+}
+
+.bottom-buttons {
+  text-align: center;
+  margin-top: 60px;
 }
 
 .card-text-container {
@@ -253,7 +258,8 @@ body, html {
   bottom: 0; left: 0;
   background-image: url("/includes/images/voted.png");
   background-repeat: no-repeat;
-  background-size: 90%;
+  background-size: 80px;
+  background-position: center;
   opacity: 0.8;
 }
 

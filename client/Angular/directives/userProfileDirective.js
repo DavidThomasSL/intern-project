@@ -47,12 +47,15 @@ ClonageApp.directive('userProfile', function() {
 				// if the image is a bot
 				// we load the image as a url, not as a js
 				if (scope.isbot) {
-					console.log("drawing bot image");
+
+					// size canvas down before image is loaded, prevents the "popping" seen on slow connections (hopefully)
+					canvas.setWidth(scope.sizex);
+					canvas.setHeight(scope.sizey);
+
 					// get the image from the bot image url
 					fabric.Image.fromURL('../../includes/images/bot_icon.png', function(oImg) {
 						canvas.add(oImg);
 						scaleCanvas(scope.sizex, scope.sizey);
-
 					});
 				}
 			});
@@ -78,8 +81,8 @@ ClonageApp.directive('userProfile', function() {
 				if (drawings.length >= 1) {
 
 					// get the scaling
-					var scaleX = newWidth / 300;
-					var scaleY = newHeight / 300;
+					var scaleX = newWidth / defaultSize;
+					var scaleY = newHeight / defaultSize;
 
 					// Resize canvas
 					canvas.setWidth(newWidth);
