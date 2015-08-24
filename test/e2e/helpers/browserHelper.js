@@ -76,6 +76,9 @@ module.exports = function(browserInstance) {
 		} // This is the text in the link for number 8
 
 		element(by.id('set-round-dropdown')).click();
+		browserInstance.waitForAngular();
+		console.log(text);
+
 		element.all(by.id("round-select-dropdown")).get(0).element(by.linkText(text)).click();
 		browserInstance.waitForAngular();
 
