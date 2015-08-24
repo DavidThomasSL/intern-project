@@ -39,6 +39,7 @@ describe("Testing Communcation Service ", function() {
 			"USER hand",
 			"GAME question",
 			"GAME answers",
+			"GAME timeout",
 			"GAME playerRoundResults",
 			"GAME finish",
 			"ROOM details",

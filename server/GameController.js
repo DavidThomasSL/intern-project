@@ -20,6 +20,7 @@ module.exports = function(data) {
 	var POINTS_PER_VOTE = 50;
 	var CARD_REPLACE_COST = 10;
 	var HANDSIZE = 10; //Number of white cards a user should always have
+	var animationTime = 5;	//time each animation runs for on the client
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -47,6 +48,15 @@ module.exports = function(data) {
 	var startTimer = function(callback) {
 
 		count = 60;
+		if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+			/*
+				if we are on the voting page
+				the answers appear one at a time and we have to also wait
+				until all answers finished their animation
+				in order to start the timer
+			*/
+			count += animationTime * ( rounds[roundCount - 1].answers.length );
+		}
 
 		timerIsActive = true;
 		setAllPlayersAbleToSubmit();
@@ -371,7 +381,8 @@ module.exports = function(data) {
 			game information (game question, user hand)
 			round information (current votes, etc for table)
 	*/
-	var getInfoForReconnectingUser = function(user, callback) {
+
+	var getInfoForReconnectingUser = function(user, testing, callback) {
 
 		//GET round information
 		var routingInfo = "";
@@ -464,6 +475,17 @@ module.exports = function(data) {
 
 		data.push(roundData);
 		data.push(answerData);
+
+		if (testing !== undefined) {
+
+            var timeoutData = {
+            	eventName: "GAME timeout",
+            	data: { timeout: 0 }
+            };
+            data.push(timeoutData);
+        }
+
+
 		data.push(questionData);
 		data.push(userHand);
 

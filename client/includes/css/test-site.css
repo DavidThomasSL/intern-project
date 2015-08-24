@@ -233,8 +233,11 @@ body, html {
 }
 
 
-/* ANIMATIONS
-============================================================================= */
+/*
+=============================================================================
+ANIMATIONS
+=============================================================================
+*/
 
 /* slide in from the bottom */
 @keyframes slideOutLeft {
@@ -273,6 +276,24 @@ body, html {
 }
 
 
-/*.ng-enter           { animation: fadeIn 0.2s both ease-in;}
-.ng-leave           { animation: fadeOut 0.2s both ease-in}*/
-
+/*
+=====================================================================================
+ANIMATIONS FOR VISUALISING ANSWERS ONE AT A TIME
+=====================================================================================
+*/
+.repeat-animation {
+  -webkit-transition:0.2s linear all;
+  transition:0.2s linear all;
+  position:relative;
+  left:0px;
+}
+.repeat-animation.ng-enter-stagger {
+  -webkit-transition-delay:5s;
+  transition-delay:5s;
+  -webkit-transition-duration:0.5;
+  transition-duration:0.5;
+}
+.repeat-animation.ng-enter { opacity:0; }
+.repeat-animation.left.ng-enter { left:-400px; }
+.repeat-animation.right.ng-enter { left:400px; }
+.repeat-animation.ng-enter-active { opacity:1; left:200px; }

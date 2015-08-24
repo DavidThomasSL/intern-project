@@ -41,13 +41,13 @@ module.exports = function(grunt) {
             test: {
                 options: {
                     script: './server.js',
-                    args: ['debug=true']
+                    args: ['debug=true', 'testing=true']
                 }
             },
             prod: {
                 options: {
                     script: './server.js',
-                    args: ['debug=false']
+                    args: ['debug=false', 'testing=true']
                 }
             }
         },
@@ -55,7 +55,6 @@ module.exports = function(grunt) {
             options: {
                 port: 4444,
                 args: {
-
                 }
             }
         },

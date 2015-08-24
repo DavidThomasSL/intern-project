@@ -71,6 +71,11 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
+	socket.on("GAME timeout", function(data) {
+		_setListenerEventAction("GAME timeout");
+		onMessageFunction(data);
+	});
+
 	socket.on("GAME playerRoundResults", function(data) {
 		_setListenerEventAction("GAME playerRoundResults");
 		onMessageFunction(data);

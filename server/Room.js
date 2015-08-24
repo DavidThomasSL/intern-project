@@ -86,7 +86,7 @@ function Room(roomCode) {
         They are already in it
         A game has started and they were not previosuly in that game
 */
-    self.addUser = function(user) {
+    self.addUser = function(user, testing) {
 
         var canJoin = true;
         var userAlreadyInRoom = false;
@@ -123,9 +123,11 @@ function Room(roomCode) {
 
             if (userInGame) {
 
+
+
                 //User was in the game, tell the game controller they're back, route them to the current stage
                 // Find out where to put this user, i.e where all the other players are
-                self.gameController.getInfoForReconnectingUser(user, function(routingInfo, gameStateData) {
+                self.gameController.getInfoForReconnectingUser(user, testing, function(routingInfo, gameStateData) {
 
                     routing = routingInfo;
 
@@ -134,6 +136,8 @@ function Room(roomCode) {
                     gameStateData.forEach(function(data) {
                         user.emit(data.eventName, data.data);
                     });
+
+
                 });
 
             } else {
