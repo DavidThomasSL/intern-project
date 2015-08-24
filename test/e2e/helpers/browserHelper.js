@@ -77,7 +77,6 @@ module.exports = function(browserInstance) {
 
 		element(by.id('set-round-dropdown')).click();
 		browserInstance.waitForAngular();
-		console.log(text);
 
 		element.all(by.id("round-select-dropdown")).get(0).element(by.linkText(text)).click();
 		browserInstance.waitForAngular();
