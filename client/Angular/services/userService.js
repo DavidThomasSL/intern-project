@@ -76,6 +76,10 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             });
         }
 
+        function getRoomId() {
+            return user.roomId;
+        }
+
         /*
         ---------------
             COMMUNCATION LAYER API
@@ -148,6 +152,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         return {
             getUserName: getUserName,
             getUserId: getUserId,
+            getRoomId: getRoomId,
             getUserHand: getUserHand,
             getRank: getRank,
             setRank: setRank,

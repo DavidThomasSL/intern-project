@@ -187,8 +187,12 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return voted;
 	};
 
-	function playAgain() {
-
+	function playAgain(userId, oldRoomId, newRoomId) {
+		sendMessage('GAME play again', {
+			userId: userId,
+			oldRoomId: oldRoomId,
+			newRoomId: newRoomId
+		});
 	}
 
 

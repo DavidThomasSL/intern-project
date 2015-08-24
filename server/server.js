@@ -126,6 +126,14 @@ module.exports = function(port, enableLogging, testing) {
             putUserInRoom(msg.roomId);
         });
 
+        socket.on('GAME play again', function(msg) {
+
+            var room = getRoomFromId(msg.roomId);
+
+            room.broadcastRoom('GAME play again');
+
+        });
+
         /*
             send message in room loby
             and broadcast that message to everyone in the room

@@ -110,16 +110,13 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     };
 
     $scope.playAgain = function() {
-        $scope.playAgainWasPressed = true;
-        toastr.success('One of your friends wants to play again.<br> Click here to join', {
-            allowHtml: true,
-            showCloseButton: true,
-            timeout:   null,
-            onHidden: function(clicked) {
-                if (clicked) { alert("yes!"); }
-            }
-        });
-       // gameService.playAgain();
+        var oldRoom = userService.getRoomId();
+        roomService.createRoom(userService.getUserId());
+        $scope.multipleCanvasEnabled = true;
+
+        var newRoom = userService.getRoomId();
+
+        gameService.playAgain(userService.getUserId(), oldRoom, newRoom);
     };
 
     $scope.$watch(function() {
