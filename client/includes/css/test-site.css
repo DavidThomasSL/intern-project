@@ -105,6 +105,22 @@ body, html {
   margin: 30px 0;
 }
 
+.dropdown-game-rankings {
+  display: flex;
+  align-items: center;
+/*  justify-content: center;*/
+}
+
+.dropdown-rankings-image{
+  width:50px;
+  height:50px;
+  margin-right:20px;
+}
+
+.dropdown {
+  min-width:250px;
+}
+
 .wrapper {
   min-height: 100%;
   width:100%;
