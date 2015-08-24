@@ -129,10 +129,10 @@ module.exports = function(port, enableLogging, testing) {
         socket.on('GAME play again', function(msg) {
 
             var oldRoom = getRoomFromId(msg.oldRoomId);
-            var newRoom = getRoomFromId(msg.newRoomId);
-
+            oldRoom.removeUser({uId: msg.userId});
             oldRoom.broadcastRoom('GAME play again');
 
+            var newRoom = getRoomFromId(msg.newRoomId);
         });
 
         /*
