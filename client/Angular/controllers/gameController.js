@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, $timeout, $window, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
+ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -16,6 +16,8 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, user
     $scope.replaceCostPerCard = gameService.getReplaceCostPerCard;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
+    $scope.htmlBindedText = $sce.trustAsHtml('<b>hello bold</b>');
+
     $scope.answers = gameService.getAnswers;
 
     $scope.index = 0;
@@ -37,7 +39,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, user
         }
 
         return filtered;
-    }
+    };
 
 
     $scope.startTimer = function() {
@@ -46,11 +48,11 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, user
         timer = $timeout ( function() {
             $scope.index++;
         }, $scope.timeToWaitAnimation );
-    }
+    };
 
     $scope.stopTimer = function() {
         if (angular.isDefined(timer)) $timeout.cancel(timer);
-    }
+    };
 
     //dynamicFilledInQuestion is the string displayed on the question page that updates as the player clicks answers
     $scope.dynamicFilledInQuestion = gameService.getCurrentFilledInQuestion;
@@ -66,6 +68,11 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, user
             }
         });
         return text;
+    };
+
+    // Use the sce service to allow us to inject html in a string straight to a page and render it
+    $scope.bindHtml = function(text, htmlWrap) {
+        return $sce.trustAsHtml(text);
     };
 
     //get results after each round which involves: what each player submitted, who voted for their answer, and their score after the round

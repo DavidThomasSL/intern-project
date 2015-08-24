@@ -104,6 +104,13 @@ body, html {
 
   }
 }
+
+/* style the user's submission inside an answer */
+.submitted-answer-text {
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .container-narrow > hr {
   margin: 30px 0;
 }
