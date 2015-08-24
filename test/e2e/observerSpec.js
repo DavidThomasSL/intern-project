@@ -2,9 +2,8 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When playing as a observer', function() {
 
-	var HAND_SIZE = 10;
-	var BOT_NUM = 3;
-	var MAX_ROUNDS = 3;
+	var BOT_NUM;
+	var MAX_ROUNDS;
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -42,6 +41,10 @@ describe('When playing as a observer', function() {
 	});
 
 	it('After starting the game, observer and user are put to relevant pages', function() {
+		MAX_ROUNDS = 3;
+		BOT_NUM = 3;
+
+
 		secondClonageUser.setRoundNumber(MAX_ROUNDS);
 		secondClonageUser.setBotsOn(BOT_NUM); // ENABLE BOTS
 		//Playing with bots here to avoid needed three browser instances

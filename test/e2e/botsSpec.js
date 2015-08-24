@@ -2,9 +2,8 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When starting a game with BOTS', function() {
 
-	var HAND_SIZE = 10;
-	var BOT_NUM = 3;
-	var MAX_ROUNDS = 3;
+	var BOT_NUM;
+	var MAX_ROUNDS;
 	var roomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -13,6 +12,9 @@ describe('When starting a game with BOTS', function() {
 	var secondClonageUser = new clonageUser(browser2);
 
 	it('Can start a game with bots', function() {
+		MAX_ROUNDS = 3;
+		BOT_NUM = 3;
+
 		firstClonageUser.getIndex();
 		firstClonageUser.submitName('John');
 		firstClonageUser.createRoom();
