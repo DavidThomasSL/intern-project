@@ -127,7 +127,7 @@ function Room(roomCode) {
 
                 //User was in the game, tell the game controller they're back, route them to the current stage
                 // Find out where to put this user, i.e where all the other players are
-                self.gameController.getInfoForReconnectingUser(user.uId, testing, function(routingInfo, gameStateData) {
+                self.gameController.getInfoForReconnectingUser(user, testing, function(routingInfo, gameStateData) {
 
                     routing = routingInfo;
 
