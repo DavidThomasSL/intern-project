@@ -92,8 +92,11 @@ describe('When playing as a observer', function() {
 			secondClonageUser.submitFirstAnswers(cardsToSubmit);
 		};
 
+		console.log(MAX_ROUNDS + "should be 3");
+
 		//change value here if we change the number of rounds
 		for (var i = 0; i < MAX_ROUNDS - 1; i++) {
+			console.log(MAX_ROUNDS);
 			secondClonageUser.getBlankSpaces().then(userSubmitAnswer);
 			secondClonageUser.submitFirstVote();
 			secondClonageUser.ready();
