@@ -39,6 +39,7 @@ ClonageApp.controller("gameController", function($scope, $window, $sce, userServ
         return text;
     };
 
+    // Use the sce service to allow us to inject html in a string straight to a page and render it
     $scope.bindHtml = function(text, htmlWrap) {
         return $sce.trustAsHtml(text);
     };
