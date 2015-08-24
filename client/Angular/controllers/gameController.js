@@ -119,6 +119,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
         gameService.playAgain(userService.getUserId(), oldRoomId, newRoomId);
     };
 
+
     $scope.$watch(function() {
         return $window.innerWidth;
     }, function(value) {

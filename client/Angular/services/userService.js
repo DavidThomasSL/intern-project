@@ -1,5 +1,5 @@
-ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
-    function($sessionStorage, communicationService) {
+ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 'toastr'
+    function($sessionStorage, communicationService, toastr) {
 
         /*
         --------------------
@@ -112,6 +112,19 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             gameHand = data.hand;
         }
 
+        function _playAgain(newRoomId) {
+
+            toastr.success('One of your friends wants to play again.<br> Click here to join', {
+                allowHtml: true,
+                showCloseButton: true,
+                timeout:   null,
+                onHidden: function(clicked) {
+                    if (clicked) { alert("yes!"); }
+                }
+            });
+
+        }
+
         /*
         ---------------
             REGISTERING COMMUNCATION API WITH LAYER
@@ -129,6 +142,12 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }, {
             eventName: "room join",
             eventAction: _joinRoom
+        }, {
+            eventName: "room join",
+            eventAction: _joinRoom
+        }, {
+            eventName: "play again",
+            eventAction: _playAgain
         }, {
             eventName: "hand",
             eventAction: _setHand
