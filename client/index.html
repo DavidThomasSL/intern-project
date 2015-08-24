@@ -40,7 +40,8 @@
                             <p  style="font-size: 14px;"><b>{{getUserName()}}</b></p>
                             <user-profile sizeX="45" sizey="45" image="getUserImage()" isbot=false style="margin-top: -12px;margin-left: 15px;"></user-profile>
                         </span>
-                        <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''"><b>Rank #{{rank()}}</b> - Round {{currentRound()}} / {{maxRounds()}} </p>
+                        <p style="display:inline" id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''"><b>Rank #{{rank()}}</b></p>
+                        <p style="display:inline"  id="current-round" class="navbar-text navbar-right">Round {{currentRound()}} / {{maxRounds()}}</p>
                         <!-- Game ranking dropdown -->
                         <ul class="nav navbar-nav navbar-left" ng-hide="rank() === ''">
                             <li class="dropdown">
@@ -56,8 +57,12 @@
                                                 image"></user-profile>
                                             </div>
                                             <div class="flex-1">
-                                                <section> <b>#{{currentResult.player.rank}} - {{currentResult.player.name}}</b> </section>
-                                                <section>{{currentResult.player.points}} points</section>
+                                                <section>
+                                                    <b>#{{currentResult.player.rank}} - {{currentResult.player.name}}</b>
+                                                </section>
+                                                <section>
+                                                    {{currentResult.player.points}} points
+                                                </section>
                                             </div>
                                         </div>
                                     </li>
@@ -65,23 +70,23 @@
                             </li>
                         </ul>
                     </div>
-                    <!-- Script to open the dropdown menu whenever the navbar toggle is clicked -->
-                    <script type="text/javascript">
-                    $(".navbar-toggle").click(function() {
-                    if (window.matchMedia("(max-width: 768px)").matches) {
-                    // on mobile, dropdown default opened:
-                    // use timeout to wait until navbar fully opened before opening dropdown
-                    setTimeout(function() {
-                    $("#game-ranking-dropdown-button").click();
-                    }, 50);
-                    }
-                    });
-                    </script>
-                </nav>
-                <!-- END NAVBAR -->
-                <div ng-view autoscroll="true">
-                </div ng-view>
-            </div>
+                </div>
+                <!-- Script to open the dropdown menu whenever the navbar toggle is clicked -->
+                <script type="text/javascript">
+                $(".navbar-toggle").click(function() {
+                if (window.matchMedia("(max-width: 768px)").matches) {
+                // on mobile, dropdown default opened:
+                // use timeout to wait until navbar fully opened before opening dropdown
+                setTimeout(function() {
+                $("#game-ranking-dropdown-button").click();
+                }, 50);
+                }
+                });
+                </script>
+            </nav>
+            <!-- END NAVBAR -->
+            <div ng-view autoscroll="true">
+            </div ng-view>
         </div>
         <footer class="footer text-center">
             <p>&copy; <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a></p>
