@@ -109,6 +109,9 @@ describe('When wanting to play again', function() {
 		secondClonageUser.ready();
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 
+		firstClonageUser.clearUser();
+		browser2.close();
+
 	});
 
 });
