@@ -71,16 +71,13 @@ describe('When wanting to play again', function() {
 
 	it('can press play again and be redirected to a new room and automatically be put in it', function() {
 
-		// firstClonageUser.playAgain();
-		// browser2.waitForAngular();
-		// expect(secondClonageUser.element(by.id('play-again-button')).isPresent()).toBe(false);
-// expect(firstClonageUser.element(by.id('room-join-container')).isPresent()).toBe(false);
-// 		expect(firstClonageUser.element(by.id('room-lobby-container')).isPresent()).toBe(true);
-// 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
-// 		firstClonageUser.getRoomId().then(function(text) {
-// 			newRoomId = text.split(" ")[2];
-// 			expect(newRoomId).not.toEqual(roomId);
-// 		});
+		expect(firstClonageUser.element(by.id('room-join-container')).isPresent()).toBe(false);
+		expect(firstClonageUser.element(by.id('room-lobby-container')).isPresent()).toBe(true);
+		expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		firstClonageUser.getRoomId().then(function(text) {
+			newRoomId = text.split(" ")[2];
+			expect(newRoomId).not.toEqual(roomId);
+		});
 
 	});
 

@@ -117,10 +117,11 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
 
             playAgainWasPressed = true;
 
-            toastr.success(data.user + ' wants to play again.<br> Click here to join', {
+            toastr.success('<div id="toaster">' + data.user + ' wants to play again.<br> Click here to join</div>', {
                 allowHtml: true,
                 showCloseButton: true,
                 timeout:   null,
+                toastId : 'toaster',
                 onHidden: function(clicked) {
                     if (clicked) {
                         roomService.leaveRoom();
