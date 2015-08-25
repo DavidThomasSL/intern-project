@@ -120,8 +120,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
                 timeout:   null,
                 onHidden: function(clicked) {
                     if (clicked) {
-                        console.log(newRoomId);
                         roomService.leaveRoom();
+                        rank = "";
                         roomService.joinRoom(newRoomId);
                     }
                 }
