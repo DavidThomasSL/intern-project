@@ -3,18 +3,30 @@
         <h2> Game Over </h2>
         <h4> Final Scores </h4>
     </div>
-    <table class="table table-striped">
-        <tr>
-            <th>Rank</th>
-            <th>Player</th>
-            <th>Score</th>
-        </tr>
-        <tr ng-repeat="result in getPlayerRoundResults() | orderBy:'-player.points'">
-            <td>#{{result.player.rank}}</td>
-            <td>{{result.player.name}}</td>
-            <td>{{result.player.points}}</td>
-        </tr>
-    </table>
+    <div class="row">
+        <div class="end-game-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-player.points'">
+            <div class="row end-game-data-row">
+                <div class="col-xs-2 col-xs-offset-2 col-sm-1 col-sm-offset-0 end-game-rank text-right">
+                    #{{result.player.rank}}
+
+                </div>
+                <div class="col-xs-2 col-sm-1 text-left">
+                    <user-profile sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
+                    image"></user-profile>
+                </div>
+                <div class="col-xs-6 col-sm-2 end-game-name text-left">
+                    <div class="flex-1">
+                        <section>
+                            <b>{{result.player.name}}</b>
+                        </section>
+                        <section>
+                            {{result.player.points}} points
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="bottom-buttons text-center">
         <button id="back-to-start-button" type="button" class="btn btn-lg btn-primary" ng-click="leaveRoom()">Finish</button>
     </div>
