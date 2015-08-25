@@ -12,14 +12,14 @@
                 <div class="card-text-container">
                     <button ng-if="(getUserId() === answer.player.uId)&&(index === answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
-                    <br><i>(Your answer)</i>
+                    <i>(Your answer)</i>
                     </button>
                     <button ng-if="getUserId() !== answer.player.uId&&(index === answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitVote(answer)">
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
                     </button>
                     <button ng-if="(getUserId() === answer.player.uId)&&(index !== answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
-                    <br><i>(Your answer)</i>
+                    <i>(Your answer)</i>
                     </button>
                     <button ng-if="getUserId() !== answer.player.uId&&(index !== answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" ng-disabled="true">
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 col-xs-6  text-center" ng-repeat="user in getUsersInRoom()">
+    <div class="col-md-3 col-xs-4  text-center" ng-repeat="user in getActiveUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
     </div>
 </div>

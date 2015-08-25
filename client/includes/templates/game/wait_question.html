@@ -1,7 +1,7 @@
 <div class="container" ng-init="retainCountdownValue()">
 	<div class="header clearfix">
 		<h1>Your submission</h1>
-		<h4>{{filledInQuestion()}}<h4>
+		<h4 ng-bind-html="bindHtml(filledInQuestion())"><h4>
 	</div>
 	<div class ="row">
 		<div class="col-md-12 text-center">
@@ -10,7 +10,7 @@
 		</div>
 	</div>
 	<ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
-	<div class="col-md-3 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
+	<div class="col-md-3 col-xs-4 text-center" ng-repeat="user in getActiveUsersInRoom()">
 		<ng-include src="'includes/templates/user/userPanelSmallQuestion.html'"></ng-include>
 	</div>
 </div>
