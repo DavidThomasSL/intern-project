@@ -113,12 +113,11 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
             gameHand = data.hand;
         }
 
-        function _playAgain(newRoomId) {
+        function _playAgain(data) {
 
             playAgainWasPressed = true;
-        console.log(playAgainWasPressed);
 
-            toastr.success('One of your friends wants to play again.<br> Click here to join', {
+            toastr.success(data.user + ' wants to play again.<br> Click here to join', {
                 allowHtml: true,
                 showCloseButton: true,
                 timeout:   null,
@@ -126,7 +125,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
                     if (clicked) {
                         roomService.leaveRoom();
                         rank = "";
-                        roomService.joinRoom(newRoomId);
+                        roomService.joinRoom(data.newRoomId);
                     }
                 }
             });
@@ -196,7 +195,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
             _joinRoom: _joinRoom,
             _registerUser: _registerUser,
             sendMessage: submitMessage,
-        playAgainWasPressed: hidePlayAgainButton
+            playAgainWasPressed: hidePlayAgainButton
         };
 
     }

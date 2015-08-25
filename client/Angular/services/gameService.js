@@ -19,7 +19,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var cardReplaceCost = 0; //variable holing the current cost of replacing a card
 	var votes = [];
 	var timeout = 5000;
-	var playAgainWasPressed;
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
