@@ -6,6 +6,7 @@ describe('When wanting to play again', function() {
 	var POINTS_PER_VOTE;
 
 	var roomId;
+	var newRoomId;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
@@ -55,53 +56,10 @@ describe('When wanting to play again', function() {
 
 		expect(browser.getCurrentUrl()).toMatch(/\/endGame/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
-
-	});
-	it('can see players scores', function() {
-		POINTS_PER_VOTE = 50;
-
-
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(firstClonageUser.element(by.id('play-again-button')).isPresent()).toBe(true);
+		expect(secondClonageUser.element(by.id('play-again-button')).isPresent()).toBe(true);
 
 	});
 
-	it('can see players names', function() {
 
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
-
-	});
-
-	it('can see players ranks', function() {
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.rank')).getText()).toContain('#1');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.rank')).getText()).toContain('#1');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.rank')).getText()).toContain('#1');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.rank')).getText()).toContain('#1');
-	});
-
-	it('on refresh can see scores, names and ranks', function() {
-		firstClonageUser.refresh();
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * 50).toString());
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * 50).toString());
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.rank')).getText()).toContain('#1');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.rank')).getText()).toContain('#1');
-	});
-
-	it('can go back to start page after clicking finish', function() {
-
-		firstClonageUser.backToStart();
-		secondClonageUser.backToStart();
-		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
-		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
-
-		firstClonageUser.clearUser();
-		browser2.close();
-	});
 });
