@@ -32,7 +32,6 @@ module.exports = function(port, enableLogging, testing) {
     var rooms = [];
     var messages = [];
     var users = [];
-    // var uId = 0;
     var roomId = 0;
 
     io.on('connection', function(socket) {
@@ -124,6 +123,15 @@ module.exports = function(port, enableLogging, testing) {
         */
         socket.on('ROOM join', function(msg) {
             putUserInRoom(msg.roomId);
+        });
+
+        socket.on('GAME play again', function(msg) {
+
+            var oldRoom = getRoomFromId(msg.oldRoomId);
+            oldRoom.removeUser({uId: msg.userId});
+            var user = getUserFromId(msg.userId);
+            var newRoomId = user.roomId;
+            oldRoom.broadcastRoom('USER play again', { newRoomId: newRoomId, user: user.name });
         });
 
         /*

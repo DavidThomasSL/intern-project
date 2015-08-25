@@ -168,6 +168,12 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var playAgain = function() {
+		var playAgainButton = element(by.id('play-again-button'));
+		playAgainButton.click();
+		browserInstance.waitForAngular();
+	};
+
 	return {
 		element: element,
 		clearUser: clearUser,
@@ -194,6 +200,7 @@ module.exports = function(browserInstance) {
 		setBotsOn: setBotsOn,
 		setRoundNumber: setRoundNumber,
 		submitMessage: submitMessage,
-		openGameRankings: openGameRankings
+		openGameRankings: openGameRankings,
+		playAgain: playAgain
 	};
 };

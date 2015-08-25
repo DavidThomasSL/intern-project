@@ -1,5 +1,5 @@
-ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
-    function($sessionStorage, communicationService) {
+ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 'toastr', 'roomService',
+    function($sessionStorage, communicationService, toastr, roomService) {
 
         /*
         --------------------
@@ -12,6 +12,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         var user = {};
         var gameHand = {};
         var rank = "";
+        var playAgainWasPressed;
 
         function getUserName() {
             return user.name;
@@ -76,6 +77,10 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             });
         }
 
+        function getRoomId() {
+            return user.roomId;
+        }
+
         /*
         ---------------
             COMMUNCATION LAYER API
@@ -108,6 +113,29 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             gameHand = data.hand;
         }
 
+        function _playAgain(data) {
+
+            playAgainWasPressed = true;
+
+            toastr.success('<div id="toaster">' + data.user + ' wants to play again.<br> Click here to join</div>', {
+                allowHtml: true,
+                showCloseButton: true,
+                timeout:   null,
+                onHidden: function(clicked) {
+                    if (clicked) {
+                        roomService.leaveRoom();
+                        rank = "";
+                        roomService.joinRoom(data.newRoomId);
+                    }
+                }
+            });
+
+        }
+
+        function hidePlayAgainButton() {
+            return playAgainWasPressed;
+        }
+
         /*
         ---------------
             REGISTERING COMMUNCATION API WITH LAYER
@@ -125,6 +153,12 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }, {
             eventName: "room join",
             eventAction: _joinRoom
+        }, {
+            eventName: "room join",
+            eventAction: _joinRoom
+        }, {
+            eventName: "play again",
+            eventAction: _playAgain
         }, {
             eventName: "hand",
             eventAction: _setHand
@@ -148,6 +182,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         return {
             getUserName: getUserName,
             getUserId: getUserId,
+            getRoomId: getRoomId,
             getUserHand: getUserHand,
             getRank: getRank,
             setRank: setRank,
@@ -159,7 +194,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             _setHand: _setHand,
             _joinRoom: _joinRoom,
             _registerUser: _registerUser,
-            sendMessage: submitMessage
+            sendMessage: submitMessage,
+            playAgainWasPressed: hidePlayAgainButton
         };
 
     }

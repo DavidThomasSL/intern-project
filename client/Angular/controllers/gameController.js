@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, $location, $sessionStorage, $anchorScroll) {
+ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, toastr, $location, $sessionStorage, $anchorScroll) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -107,6 +107,15 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
         roomService.leaveRoom();
         gameService.clearGameData();
     };
+
+    $scope.playAgain = function() {
+        var oldRoomId = userService.getRoomId();
+
+        roomService.createRoom(userService.getUserId());
+
+        gameService.playAgain(userService.getUserId(), oldRoomId);
+    };
+
 
     $scope.$watch(function() {
         return $window.innerWidth;

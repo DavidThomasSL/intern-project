@@ -7,7 +7,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
     $scope.getUserImage = userService.getUserImage;
     $scope.getIfObserver = userService.getIfObserver;
-
+    $scope.playAgainWasPressed = userService.playAgainWasPressed;
     $scope.getUserFromId = roomService.getUserFromId;
 
     //when player says they are ready to move on it sends this to the server

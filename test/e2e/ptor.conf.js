@@ -11,6 +11,7 @@ exports.config = {
 		'playingGameSpec.js',
 		'afterRoundSpec.js',
 		'afterGameSpec.js',
+		'playAgainSpec.js',
 		'botsSpec.js',
 		'observerSpec.js'
 	],
