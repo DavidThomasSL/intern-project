@@ -11,7 +11,7 @@
             <div class="col-md-12 text-center" ng-repeat="answer in userHand()" data-ng-init="startCountdown()">
                 <div class="card-text-container">
                     <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitAnswer(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
-                    <span class="pull-right" ng-show="selected">{{answerPosition(answer)}}</span>
+                    <span class="pull-right" ng-show="selected && answerPosition(answer)>0">{{answerPosition(answer)}}</span>
                     </button>
                 </div>
             </div>
