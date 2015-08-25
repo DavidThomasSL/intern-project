@@ -130,7 +130,9 @@ module.exports = function(port, enableLogging, testing) {
 
             var oldRoom = getRoomFromId(msg.oldRoomId);
             oldRoom.removeUser({uId: msg.userId});
-            oldRoom.broadcastRoom('USER play again', msg.newRoomId);
+            var user = getUserFromId(msg.userId);
+            var newRoomId = user.roomId;
+            oldRoom.broadcastRoom('USER play again', newRoomId);
         });
 
         /*
