@@ -61,5 +61,52 @@ describe('When wanting to play again', function() {
 
 	});
 
+	it('can press play again and no other player in the room can', function() {
+
+		firstClonageUser.playAgain();
+		expect(secondClonageUser.element(by.id('play-again-button')).isPresent()).toBe(false);
+
+	});
+
+
+	it('can press play again and be redirected to a new room and automatically be put in it', function() {
+
+		// firstClonageUser.playAgain();
+		// browser2.waitForAngular();
+		// expect(secondClonageUser.element(by.id('play-again-button')).isPresent()).toBe(false);
+// expect(firstClonageUser.element(by.id('room-join-container')).isPresent()).toBe(false);
+// 		expect(firstClonageUser.element(by.id('room-lobby-container')).isPresent()).toBe(true);
+// 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
+// 		firstClonageUser.getRoomId().then(function(text) {
+// 			newRoomId = text.split(" ")[2];
+// 			expect(newRoomId).not.toEqual(roomId);
+// 		});
+
+	});
+
+	it('all other player will get a toast inviting them to join the new game', function() {
+
+
+	});
+
+	it('if click outside toast player stays on eng game page', function() {
+
+
+	});
+
+	it('if click on the toast player joins the new game', function() {
+
+
+	});
+
+	it('all players are able to see who else joins the new game without refreshing', function() {
+
+
+	});
+
+	it('can start the new game once everyone is ready', function() {
+
+
+	});
 
 });
