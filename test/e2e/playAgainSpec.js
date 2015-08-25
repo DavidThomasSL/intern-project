@@ -89,11 +89,18 @@ describe('When wanting to play again', function() {
 
 	it('if click on the toast player joins the new game', function() {
 
+		secondClonageUser.element(by.id('toaster')).click();
+		browser2.waitForAngular();
+
+		expect(secondClonageUser.element(by.id('room-join-container')).isPresent()).toBe(false);
+		expect(secondClonageUser.element(by.id('room-lobby-container')).isPresent()).toBe(true);
+		expect(browser2.getCurrentUrl()).toMatch(/\/room/);
 
 	});
 
 	it('all players are able to see who else joins the new game without refreshing', function() {
-
+		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
+		expect(secondClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
 
 	});
 
