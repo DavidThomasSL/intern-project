@@ -22,7 +22,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     $scope.index = 0;
     $scope.timeToWaitAnimation = gameService.getTimeout();
-    $scope.playAgainWasPressed = false;
+    $scope.playAgainWasPressed = userService.playAgainWasPressed;
 
     var timer;
 
@@ -111,7 +111,6 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     $scope.playAgain = function() {
         var oldRoomId = userService.getRoomId();
-
         $scope.multipleCanvasEnabled = true;
 
         roomService.createRoom(userService.getUserId());

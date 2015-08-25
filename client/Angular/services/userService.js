@@ -12,6 +12,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
         var user = {};
         var gameHand = {};
         var rank = "";
+        var playAgainWasPressed = false;
 
         function getUserName() {
             return user.name;
@@ -113,6 +114,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
         }
 
         function _playAgain(newRoomId) {
+            playAgainWasPressed = true;
 
             toastr.success('One of your friends wants to play again.<br> Click here to join', {
                 allowHtml: true,
@@ -187,7 +189,8 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
             _setHand: _setHand,
             _joinRoom: _joinRoom,
             _registerUser: _registerUser,
-            sendMessage: submitMessage
+            sendMessage: submitMessage,
+            playAgainWasPressed: playAgainWasPressed
         };
 
     }
