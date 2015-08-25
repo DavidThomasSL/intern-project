@@ -105,7 +105,9 @@ describe('When wanting to play again', function() {
 	});
 
 	it('can start the new game once everyone is ready', function() {
-
+		firstClonageUser.ready();
+		secondClonageUser.ready();
+		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 
 	});
 
