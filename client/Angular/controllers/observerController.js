@@ -1,4 +1,4 @@
-ClonageApp.controller("observerController", function($scope, $rootScope, $window, userService, roomService, RoutingService, gameService, $location) {
+ClonageApp.controller("observerController", function($scope, $sce, $rootScope, $window, userService, roomService, RoutingService, gameService, $location) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom; //List all the users in the lobby
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
@@ -39,6 +39,12 @@ ClonageApp.controller("observerController", function($scope, $rootScope, $window
     $scope.getUserId = function() {
         return userService.getUserId();
     };
+
+    // Use the sce service to allow us to inject html in a string straight to a page and render it
+    $scope.bindHtml = function(text) {
+        return $sce.trustAsHtml(text);
+    };
+
 
     $rootScope.$on('$locationChangeStart', function(event, next, current) {
         //when the observer is routed then reroute to the observer version of that page

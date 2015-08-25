@@ -2,7 +2,7 @@
     <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
     <div class="header clearfix">
         <div id="round-question">
-            <h2 animate-on-change="dynamicFilledInQuestion()">{{dynamicFilledInQuestion()}}</h2>
+            <h2 animate-on-change="dynamicFilledInQuestion()" ng-bind-html="bindHtml(dynamicFilledInQuestion())"></h2>
             <p id="amount-to-submit">Pick {{currentQuestion().pick}}.</p>
         </div>
     </div>
