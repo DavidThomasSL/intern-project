@@ -22,7 +22,6 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     $scope.index = 0;
     $scope.timeToWaitAnimation = gameService.getTimeout();
-    $scope.playAgainWasPressed = userService.playAgainWasPressed;
 
     var timer;
 
