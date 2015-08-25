@@ -83,11 +83,7 @@ describe('When wanting to play again', function() {
 
 	it('all other player will get a toast inviting them to join the new game', function() {
 
-
-	});
-
-	it('if click outside toast player stays on eng game page', function() {
-
+		expect(secondClonageUser.element(by.id('toaster')).isPresent()).toBe(true);
 
 	});
 

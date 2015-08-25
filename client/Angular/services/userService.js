@@ -121,7 +121,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
                 allowHtml: true,
                 showCloseButton: true,
                 timeout:   null,
-                toastId : 'toaster',
                 onHidden: function(clicked) {
                     if (clicked) {
                         roomService.leaveRoom();
