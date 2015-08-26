@@ -43,6 +43,7 @@ describe("Testing Communcation Service ", function() {
 			"USER play again",
 			"GAME playerRoundResults",
 			"GAME finish",
+			"GAME rooms available",
 			"ROOM details",
 			"ROOM messages",
 			"ROUTING",

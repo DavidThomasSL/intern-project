@@ -91,6 +91,11 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
+	socket.on("GAME rooms available", function(data) {
+		_setListenerEventAction("GAME rooms available");
+		onMessageFunction(data);
+	});
+
 	socket.on("ROOM details", function(data) {
 		_setListenerEventAction("ROOM details");
 		onMessageFunction(data);
