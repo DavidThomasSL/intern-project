@@ -20,6 +20,7 @@ describe('When playing as a observer', function() {
 	});
 
 	it('Can see all the rooms that are available without refresh', function() {
+
 		secondClonageUser.createRoom();
 		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBe(1);
 	});
@@ -33,21 +34,6 @@ describe('When playing as a observer', function() {
 	it('Can join a room by only pressing on the room button in the joining page', function() {
 		firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).first().click();
 		expect(browser.getCurrentUrl()).toMatch(/\/observeLobby/);
-	});
-
-	it('Another player can join and see the usual lobby screen with only themselves in it', function() {
-		secondClonageUser.getIndex();
-		secondClonageUser.submitName('Alice');
-
-		firstClonageUser.getRoomId().then(function(text) {
-			roomId = text.split(" ")[2];
-			secondClonageUser.joinRoom(roomId);
-			// set round number low to prevent jasmine timeouts on circleCI
-		});
-
-		expect(browser2.getCurrentUrl()).toMatch(/\/room/);
-		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(1);
-
 	});
 
 	it('After starting the game, observer and user are put to relevant pages', function() {
