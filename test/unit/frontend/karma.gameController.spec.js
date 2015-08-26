@@ -23,12 +23,17 @@ describe("Testing Game Controller", function() {
 		gameService = _gameService_;
 	}));
 
+	beforeEach(inject(function(_roomService_) {
+		roomService = _roomService_;
+	}));
+
     describe('GameController', function() {
 	    beforeEach(inject(function($rootScope, $controller) {
 	      	scope = $rootScope.$new();
 	      	controller = $controller('gameController', {
 		        '$scope': scope,
-		        'gameService': gameService
+		        'gameService': gameService,
+		        'roomService': roomService
 		    });
 	    }));
 
@@ -51,6 +56,14 @@ describe("Testing Game Controller", function() {
 			});
 	    	var answer = scope.visualiseAnswers();
 			expect(answer).toEqual(["test answer"]);
+
+		});
+
+		it("when play again is trigered roomService.createRoom is triggered", function() {
+
+			var spyEvent = spyOn(roomService, 'createRoom').and.callThrough();
+			scope.playAgain();
+			expect(spyEvent).toHaveBeenCalled();
 
 		});
 
