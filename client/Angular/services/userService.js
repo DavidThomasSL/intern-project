@@ -104,6 +104,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
         }
 
         function _joinRoom(data) {
+             playAgainWasPressed = false;
             $sessionStorage.roomId = data.roomId;
             user.roomId = data.roomId;
             userInRoom = true;
