@@ -114,6 +114,10 @@ module.exports = function(port, enableLogging, testing) {
             var room = new Room(roomId);
             rooms.push(room);
 
+            users.forEach(function (user) {
+                user.emit("GAME rooms available", rooms);
+            });
+
             putUserInRoom(roomId);
         });
 
@@ -122,6 +126,7 @@ module.exports = function(port, enableLogging, testing) {
             check if that room exists, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
+            console.log(msg);
             putUserInRoom(msg.roomId);
         });
 

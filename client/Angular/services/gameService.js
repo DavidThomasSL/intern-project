@@ -19,6 +19,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var cardReplaceCost = 0; //variable holing the current cost of replacing a card
 	var votes = [];
 	var timeout = 5000;
+	var allRooms = [];
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
@@ -195,6 +196,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		});
 	}
 
+	function allRoomsAvailable () {
+		return allRooms;
+	}
+
 
 	/*
 	---------------
@@ -260,6 +265,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		timeout = data.timeout;
 	}
 
+	function _setRoomsAvailable(data) {
+		allRooms = data;
+	}
+
 	/*
     ---------------
         REGISTERING COMMUNCATION API WITH LAYER
@@ -277,6 +286,9 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	}, {
 		eventName: "timeout",
 		eventAction: _setTimeout
+	}, {
+		eventName: "rooms available",
+		eventAction: _setRoomsAvailable
 	}, {
 		eventName: "playerRoundResults",
 		eventAction: _setPlayerRoundResults
@@ -338,7 +350,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		hasVoted: hasVoted,
 		hasSubmitted: hasSubmitted,
 		getTimeout: getTimeout,
-		playAgain: playAgain
+		playAgain: playAgain,
+		allRoomsAvailable: allRoomsAvailable
 	};
 
 }]);

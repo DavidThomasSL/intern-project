@@ -24,6 +24,7 @@ ClonageApp.controller("roomController", function($scope, $window, userService, r
     };
 
     $scope.joinRoom = function(roomId) {
+        console.log(roomId);
         roomService.joinRoom(roomId);
         $scope.multipleCanvasEnabled = true;
     };
