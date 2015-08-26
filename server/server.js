@@ -297,7 +297,7 @@ module.exports = function(port, enableLogging, testing) {
         function getRoomsInformation () {
 
             var roomsAvailable = [];
-            rooms.forEach( function (room) {
+            rooms.forEach( function(room) {
 
                 var roomDet = {
                     id: room.id
