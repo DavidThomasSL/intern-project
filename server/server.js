@@ -59,6 +59,7 @@ module.exports = function(port, enableLogging, testing) {
 
                 logger.debug("user has joined previously ");
 
+
                 //check if the user was found
                 if (user !== undefined) {
                     //give the user the socket they've connected with
@@ -72,11 +73,13 @@ module.exports = function(port, enableLogging, testing) {
             } else {
                 //first time this user has joined
                 user = createNewUser();
+
                 logger.debug("New user, creating new user " + user.uId);
             }
 
             //Send the client the user details
             user.sendUserDetails();
+            user.emit("GAME rooms available", getRoomsInformation());
 
             // Check if the user was in a room
             // If the room has a game in progress, they will re-join that game
@@ -100,6 +103,7 @@ module.exports = function(port, enableLogging, testing) {
             user.isObserver = data.isObserver;
             user.readyToProceed = data.isObserver;
             user.sendUserDetails();
+
             putUserInJoining();
 
             logger.debug("User set name as: " + data.name);
@@ -115,7 +119,7 @@ module.exports = function(port, enableLogging, testing) {
             rooms.push(room);
 
             users.forEach(function (user) {
-                user.emit("GAME rooms available", rooms);
+                user.emit("GAME rooms available", getRoomsInformation());
             });
 
             putUserInRoom(roomId);
@@ -288,6 +292,19 @@ module.exports = function(port, enableLogging, testing) {
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
             });
+        }
+
+        function getRoomsInformation () {
+
+            var roomsAvailable = [];
+            rooms.forEach( function (room) {
+
+                var roomDet = {
+                    id: room.id
+                };
+                roomsAvailable.push(roomDet);
+            });
+            return roomsAvailable;
         }
 
         /*
