@@ -126,7 +126,6 @@ module.exports = function(port, enableLogging, testing) {
             check if that room exists, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            console.log(msg);
             putUserInRoom(msg.roomId);
         });
 
