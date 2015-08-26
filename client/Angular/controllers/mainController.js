@@ -34,7 +34,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     };
 
     function displayNotificationMessage(notificationMessage, notificationType) {
-        console.log(notificationType);
         switch (notificationType) {
             case "error":
                 toastr.error(notificationMessage);

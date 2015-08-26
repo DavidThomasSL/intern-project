@@ -11,9 +11,8 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.getBotsInRoom = roomService.getBotsInRoom;
 
-    $scope.cardReplaceCost = gameService.getCurrentReplaceCost;
     $scope.getObserversInRoom = roomService.getObserversInRoom;
-    $scope.replaceCostPerCard = gameService.getReplaceCostPerCard;
+    $scope.handReplaceCost = gameService.getHandReplaceCost;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
     $scope.htmlBindedText = $sce.trustAsHtml('<b>hello bold</b>');
@@ -95,12 +94,8 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
         gameService.submitVote(enteredAnswer);
     };
 
-    $scope.replaceCardsSelect = function(selectedCardText) {
-        gameService.replaceCardsSelect(selectedCardText);
-    };
-
-    $scope.replaceCardsSubmit = function() {
-        gameService.replaceCardsSubmit();
+    $scope.replaceHand = function(userHand) {
+        gameService.replaceHand(userHand);
     };
 
     $scope.leaveRoom = function() {

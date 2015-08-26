@@ -167,7 +167,7 @@ describe('Player', function() {
 			expect(player.hand.indexOf(card)).to.be(-1); // got rid of random card
 		});
 
-		it('can replace  >1 cards; points are deducted and new cards added', function() {
+		it('can replace >1 cards when required', function() {
 
 			var handSize = 10;
 			var numToReplace = 3;
@@ -189,10 +189,6 @@ describe('Player', function() {
 
 			// check we still have (handsize) cards
 			expect(player.hand.length).to.be(handSize);
-
-			//check the points were removed
-			expect(player.points).to.be( -1 * (numToReplace * pointsToReplace) );
-
 		});
 	});
 });

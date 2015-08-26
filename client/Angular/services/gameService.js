@@ -15,8 +15,9 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var maxRounds = 0; //variable holding the number of rounds wanted
 	var currentFilledInQuestion = "";
 	var countdown = undefined;
-	var cardsToReplace = [];
-	var cardReplaceCost = 0; //variable holing the current cost of replacing a card
+
+	var handReplaceCost = 0; //variable holing the current cost of replacing a card
+
 	var votes = [];
 	var timeout = 5000;
 
@@ -42,34 +43,15 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		_emitVote(enteredAnswer);
 	}
 
-	//adds selected cards to the array of cards we want to submit
-	//if the card is already in the array then remove it
-	function replaceCardsSelect(selectedCardText) {
-
-		var i = cardsToReplace.indexOf(selectedCardText);
-		if (i === -1) {
-			cardsToReplace.push(selectedCardText);
-		} else {
-			cardsToReplace.splice(i, 1);
-		}
+	//replace the hand of the user
+	function replaceHand(userHand) {
+		sendMessage("GAME replace cards", {
+			cardsToReplace: userHand
+		});
 	};
 
-	//sends off all the cards that the user wants to replace and resets array
-	function replaceCardsSubmit() {
-		if (cardsToReplace.length > 0) {
-			sendMessage("GAME replace cards", {
-				cardsToReplace: cardsToReplace
-			});
-		}
-		cardsToReplace = [];
-	};
-
-	function getCurrentReplaceCost() {
-		return (cardReplaceCost * cardsToReplace.length);
-	}
-
-	function getReplaceCostPerCard() {
-		return cardReplaceCost;
+	function getHandReplaceCost() {
+		return handReplaceCost;
 	}
 
 	//get the current question being asked, object contains text and amount of answers to pick
@@ -209,7 +191,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		currentFilledInQuestion = data.question.text;
 		round = data.round;
 		maxRounds = data.maxRounds;
-		cardReplaceCost = data.cardReplaceCost;
+		handReplaceCost = data.handReplaceCost;
 		countdown = data.countdown;
 		if (countdown === undefined) {
 			answers = [];
@@ -321,13 +303,11 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getCurrentVotes: getCurrentVotes,
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
-		getCurrentReplaceCost: getCurrentReplaceCost,
-		getReplaceCostPerCard: getReplaceCostPerCard,
+		getHandReplaceCost: getHandReplaceCost,
 		sendReadyStatus: sendReadyStatus,
 		submitChoice: submitChoice,
 		submitVote: submitVote,
-		replaceCardsSelect: replaceCardsSelect,
-		replaceCardsSubmit: replaceCardsSubmit,
+		replaceHand: replaceHand,
 		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
