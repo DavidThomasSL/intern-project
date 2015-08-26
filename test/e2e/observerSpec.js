@@ -20,14 +20,15 @@ describe('When playing as a observer', function() {
 	});
 
 	it('Can see all the rooms that are available without refresh', function() {
-
+		secondClonageUser.getIndex();
+		secondClonageUser.submitName('Alice');
 		secondClonageUser.createRoom();
-		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBe(1);
+		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBe(10);
 	});
 
 	it('Can refresh and still see all the rooms available', function() {
 		firstClonageUser.refresh();
-		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBe(1);
+		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBe(10);
 
 	});
 
