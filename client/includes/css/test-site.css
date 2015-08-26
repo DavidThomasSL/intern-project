@@ -363,4 +363,19 @@ ANIMATIONS FOR VISUALISING ANSWERS ONE AT A TIME
 .repeat-animation.ng-enter { opacity:0; }
 .repeat-animation.left.ng-enter { left:-400px; }
 .repeat-animation.right.ng-enter { left:400px; }
-.repeat-animation.ng-enter-active { opacity:1; left:200px; }
+.repeat-animation.ng-enter-active { opacity:1; left:100px; }
+
+.repeat-animation.ng-leave {
+  opacity:0;
+  bottom: 0px;
+}
+
+.repeat-animation.ng-leave-active {
+  opacity: 1;
+  bottom: -100px;
+  -webkit-transition: bottom 0.2s ease-in-out;
+  -moz-transition: bottom 0.2s ease-in-out;
+  -o-transition: bottom 0.2s ease-in-out;
+  transition: bottom 0.2s ease-in-out;
+
+}

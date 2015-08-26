@@ -91,6 +91,11 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
+	socket.on("GAME rooms available", function(data) {
+		_setListenerEventAction("GAME rooms available");
+		onMessageFunction(data);
+	});
+
 	socket.on("ROOM details", function(data) {
 		_setListenerEventAction("ROOM details");
 		onMessageFunction(data);
@@ -108,6 +113,11 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 
 	socket.on("NOTIFICATION message", function(data) {
 		_setListenerEventAction("NOTIFICATION message");
+		onMessageFunction(data);
+	});
+
+	socket.on("NOTIFICATION actionable", function(data) {
+		_setListenerEventAction("NOTIFICATION actionable");
 		onMessageFunction(data);
 	});
 

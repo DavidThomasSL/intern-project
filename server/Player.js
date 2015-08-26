@@ -30,11 +30,9 @@ function Player(user, cardController) {
 
 	};
 
-	self.replaceCards = function (cardsToReplace, cardReplaceCost) {
-
+	self.replaceCards = function (cardsToReplace) {
 		cardsToReplace.forEach(function(cardToReplace) {
 			self.updateHand(cardToReplace);
-			self.removePoints(cardReplaceCost);
 		});
 	};
 

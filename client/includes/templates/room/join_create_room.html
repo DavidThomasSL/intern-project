@@ -3,7 +3,7 @@
         <h1>Enter a Room</h1>
         <p>Create a room or join an existing one using a room code</p>
     </div>
-    <div class="row" id="room-join-container">
+    <div class="row" id="room-join-container" ng-if="!getIfObserver()">
         <div class="col-md-6  text-center" style="margin-bottom: 30px;">
             <button type="button" class="btn btn-lg btn-primary" id="create-room-button" ng-click="createRoom()">Create New Room</button>
         </div>
@@ -15,6 +15,11 @@
                     <input type="text" class="form-control" id="room-input-box" name="enteredRoomId" placeholder="Room Code" ng-model="enteredRoomId" ng-minlength="4" required>
                 </div>
             </form>
+        </div>
+    </div>
+    <div class="row" id="room-join-container" ng-if="getIfObserver()">
+        <div class="col-md-6 text-center">
+            <button type="submit"  class="btn btn-lg  btn-success" ng-repeat="room in allRoomsAvailable()" ng-click="joinRoom(room.id)">{{room.id}}</button>
         </div>
     </div>
     <div class="row">

@@ -131,22 +131,15 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var showReplaceableCards = function() {
-		var showReplaceCardsButton = element(by.id('replace-cards-show-button'));
-		showReplaceCardsButton.click();
-		browserInstance.waitForAngular();
+	var getCardText = function(index) {
+		var rows = element.all(by.exactRepeater("answer in userHand()"));
+		return rows.get(index).element(by.id("answer")).getText();
 	};
 
-	var getFirstReplaceCardText = function() {
-		var rows = element.all(by.exactRepeater("answer in userHand()"));
-		return rows.first().element(by.id("answer")).getText();
-	};
 
-	var replaceFirstCard = function() {
-		var rows = element.all(by.exactRepeater("answer in userHand()"));
-		rows.first().element(by.id("answer")).click();
-		var submitReplaceCardsButton = element(by.id('replace-cards-submit-button'));
-		submitReplaceCardsButton.click();
+	var replaceHand = function() {
+		var replaceHandButton = element(by.id('replace-hand-button'));
+		replaceHandButton.click();
 		browserInstance.waitForAngular();
 	};
 
@@ -191,9 +184,8 @@ module.exports = function(browserInstance) {
 		submitFirstAnswer: submitFirstAnswer,
 		submitFirstAnswers: submitFirstAnswers,
 		submitFirstVote: submitFirstVote,
-		showReplaceableCards: showReplaceableCards,
-		getFirstReplaceCardText: getFirstReplaceCardText,
-		replaceFirstCard: replaceFirstCard,
+		replaceHand: replaceHand,
+		getCardText: getCardText,
 		backToStart: backToStart,
 		activateSidebar: activateSidebar,
 		ready: ready,

@@ -59,6 +59,7 @@ module.exports = function(port, enableLogging, testing) {
 
                 logger.debug("user has joined previously ");
 
+
                 //check if the user was found
                 if (user !== undefined) {
                     //give the user the socket they've connected with
@@ -72,11 +73,13 @@ module.exports = function(port, enableLogging, testing) {
             } else {
                 //first time this user has joined
                 user = createNewUser();
+
                 logger.debug("New user, creating new user " + user.uId);
             }
 
             //Send the client the user details
             user.sendUserDetails();
+            user.emit("GAME rooms available", getRoomsInformation());
 
             // Check if the user was in a room
             // If the room has a game in progress, they will re-join that game
@@ -100,6 +103,7 @@ module.exports = function(port, enableLogging, testing) {
             user.isObserver = data.isObserver;
             user.readyToProceed = data.isObserver;
             user.sendUserDetails();
+
             putUserInJoining();
 
             logger.debug("User set name as: " + data.name);
@@ -113,6 +117,10 @@ module.exports = function(port, enableLogging, testing) {
 
             var room = new Room(roomId);
             rooms.push(room);
+
+            users.forEach(function (user) {
+                user.emit("GAME rooms available", getRoomsInformation());
+            });
 
             putUserInRoom(roomId);
         });
@@ -133,10 +141,10 @@ module.exports = function(port, enableLogging, testing) {
             });
             var user = getUserFromId(msg.userId);
             var newRoomId = user.roomId;
-            oldRoom.broadcastRoom('USER play again', {
-                newRoomId: newRoomId,
-                user: user.name
-            });
+
+            oldRoom.broadcastRoom("NOTIFICATION actionable",{action:'play again', newRoomId: newRoomId, user: user.name });
+            oldRoom.broadcastRoom('USER play again', { newRoomId: newRoomId, user: user.name });
+
         });
 
         /*
@@ -256,7 +264,7 @@ module.exports = function(port, enableLogging, testing) {
         socket.on('GAME replace cards', function(data) {
             var room = getRoomFromId(user.roomId);
 
-            room.gameController.replaceCards(user.uId, data.cardsToReplace, function(newHand, newResults) {
+            room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newResults) {
                 user.emit('USER hand', {
                     hand: newHand
                 });
@@ -265,7 +273,7 @@ module.exports = function(port, enableLogging, testing) {
                     voteNumber: 0
                 });
                 user.emit("NOTIFICATION message", {
-                    text: "Replaced " + data.cardsToReplace.length + " card(s).",
+                    text: "Replaced hand",
                     type: "success"
                 });
             });
@@ -296,6 +304,19 @@ module.exports = function(port, enableLogging, testing) {
             });
         }
 
+        function getRoomsInformation () {
+
+            var roomsAvailable = [];
+            rooms.forEach( function(room) {
+
+                var roomDet = {
+                    id: room.id
+                };
+                roomsAvailable.push(roomDet);
+            });
+            return roomsAvailable;
+        }
+
         /*
             Starts a new round for players in room
             IF there are more rounds, send the new question out
@@ -323,7 +344,7 @@ module.exports = function(port, enableLogging, testing) {
                         question: data.roundQuestion,
                         round: data.round,
                         maxRounds: data.maxRounds,
-                        cardReplaceCost: data.cardReplaceCost
+                        handReplaceCost: data.handReplaceCost
                     });
                     room.broadcastRoom('ROOM details');
 

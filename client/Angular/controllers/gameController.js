@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, toastr, $location, $sessionStorage, $anchorScroll) {
+ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, toastr, $location, $sessionStorage, $anchorScroll, notificationService) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -11,9 +11,8 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.getBotsInRoom = roomService.getBotsInRoom;
 
-    $scope.cardReplaceCost = gameService.getCurrentReplaceCost;
     $scope.getObserversInRoom = roomService.getObserversInRoom;
-    $scope.replaceCostPerCard = gameService.getReplaceCostPerCard;
+    $scope.handReplaceCost = gameService.getHandReplaceCost;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
     $scope.htmlBindedText = $sce.trustAsHtml('<b>hello bold</b>');
@@ -28,9 +27,9 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     //get all answers submitted in order to visualise them on the voting page
     $scope.visualiseAnswers = function() {
         var ans = gameService.getAnswers();
-        var filtered=[];
+        var filtered = [];
 
-        if ( $scope.index < ans.length ) {
+        if ($scope.index < ans.length) {
             filtered.push(ans[$scope.index]);
         } else {
             $scope.index = ans.length;
@@ -45,9 +44,9 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.startTimer = function() {
         if (angular.isDefined(timer)) $timeout.cancel(timer);
 
-        timer = $timeout ( function() {
+        timer = $timeout(function() {
             $scope.index++;
-        }, $scope.timeToWaitAnimation );
+        }, $scope.timeToWaitAnimation);
     };
 
     $scope.stopTimer = function() {
@@ -95,12 +94,8 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
         gameService.submitVote(enteredAnswer);
     };
 
-    $scope.replaceCardsSelect = function(selectedCardText) {
-        gameService.replaceCardsSelect(selectedCardText);
-    };
-
-    $scope.replaceCardsSubmit = function() {
-        gameService.replaceCardsSubmit();
+    $scope.replaceHand = function(userHand) {
+        gameService.replaceHand(userHand);
     };
 
     $scope.leaveRoom = function() {

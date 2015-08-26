@@ -18,7 +18,7 @@ module.exports = function(data) {
 	var MAX_ROUNDS = 8;
 	var BOT_NUMBER = 0;
 	var POINTS_PER_VOTE = 50;
-	var CARD_REPLACE_COST = 10;
+	var HAND_REPLACE_COST = 50;
 	var HANDSIZE = 10; //Number of white cards a user should always have
 	var animationTime = 5; //time each animation runs for on the client
 
@@ -204,7 +204,7 @@ module.exports = function(data) {
 				players: players,
 				roundQuestion: round.question,
 				round: roundCount,
-				cardReplaceCost: CARD_REPLACE_COST,
+				handReplaceCost: HAND_REPLACE_COST,
 				maxRounds: MAX_ROUNDS,
 				gameIsOver: false
 			};
@@ -469,7 +469,7 @@ module.exports = function(data) {
 			data: {
 				question: currentRound.question,
 				round: currentRound.count,
-				cardReplaceCost: CARD_REPLACE_COST,
+				handReplaceCost: HAND_REPLACE_COST,
 				maxRounds: MAX_ROUNDS,
 				countdown: count
 			}
@@ -606,12 +606,13 @@ module.exports = function(data) {
 		}
 	};
 
-	var replaceCards = function(userId, cardsToReplace, callback) {
+	var replaceHand = function(userId, cardsToReplace, callback) {
 		var newHand;
 		var currentPlayer = getPlayerFromId(userId);
 
-		//replace all requested cards with new ones
-		currentPlayer.replaceCards(cardsToReplace, CARD_REPLACE_COST);
+		//replace all requested cards with new ones and remove points
+		currentPlayer.replaceCards(cardsToReplace);
+		currentPlayer.removePoints(HAND_REPLACE_COST);
 
 		//updating the player ranks with the new point values
 		setRank();
@@ -740,7 +741,7 @@ module.exports = function(data) {
 		initialize: initialize,
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
-		replaceCards: replaceCards,
+		replaceHand: replaceHand,
 		newRound: newRound,
 		updateGameState: updateGameState,
 		startTimer: startTimer,

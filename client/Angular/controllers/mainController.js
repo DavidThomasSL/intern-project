@@ -9,6 +9,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.getIfObserver = userService.getIfObserver;
     $scope.playAgainWasPressed = userService.playAgainWasPressed;
     $scope.getUserFromId = roomService.getUserFromId;
+    $scope.allRoomsAvailable = gameService.allRoomsAvailable;
 
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function(botsEnabled) {
@@ -34,7 +35,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     };
 
     function displayNotificationMessage(notificationMessage, notificationType) {
-        console.log(notificationType);
         switch (notificationType) {
             case "error":
                 toastr.error(notificationMessage);
@@ -53,7 +53,30 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         }
     }
 
-    notificationService.registerNotificationListener(displayNotificationMessage);
+    // TODO make toaster server for this
+    var notificationCalled = function(data) {
+        if (data.action === "play again") {
+
+            console.log("notificationCalled");
+
+            toastr.success('<div id="toaster">' + data.user + ' wants to play again.<br> Click here to join</div>', {
+                allowHtml: true,
+                showCloseButton: true,
+                timeOut: 10000,
+                extendedTimeOut: 10000,
+                onHidden: function(clicked) {
+                    if (clicked) {
+                        roomService.leaveRoom();
+                        rank = "";
+                        roomService.joinRoom(data.newRoomId);
+                    }
+                }
+            });
+        }
+    };
+
+    notificationService.registerMessageListener(displayNotificationMessage);
+    notificationService.registerActionListener(notificationCalled);
 
     /*
     -------------------------------------------------------
@@ -67,7 +90,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         function is called to save the value of the countdown
     */
     $scope.retainCountdownValue = function() {
-        if ($scope.counter!== 60) {
+        if ($scope.counter !== 60) {
             gameService.setCountdown($scope.counter);
         }
     };

@@ -15,10 +15,12 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var maxRounds = 0; //variable holding the number of rounds wanted
 	var currentFilledInQuestion = "";
 	var countdown = undefined;
-	var cardsToReplace = [];
-	var cardReplaceCost = 0; //variable holing the current cost of replacing a card
+
+	var handReplaceCost = 0; //variable holing the current cost of replacing a card
+
 	var votes = [];
 	var timeout = 5000;
+	var allRooms = [];
 
 	//call function that emits to server the answer that was just submitted
 	function submitChoice(enteredAnswer) {
@@ -42,34 +44,37 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		_emitVote(enteredAnswer);
 	}
 
-	//adds selected cards to the array of cards we want to submit
-	//if the card is already in the array then remove it
-	function replaceCardsSelect(selectedCardText) {
-
-		var i = cardsToReplace.indexOf(selectedCardText);
-		if (i === -1) {
-			cardsToReplace.push(selectedCardText);
-		} else {
-			cardsToReplace.splice(i, 1);
-		}
-	};
-
-	//sends off all the cards that the user wants to replace and resets array
-	function replaceCardsSubmit() {
-		if (cardsToReplace.length > 0) {
-			sendMessage("GAME replace cards", {
-				cardsToReplace: cardsToReplace
-			});
-		}
-		cardsToReplace = [];
-	};
-
-	function getCurrentReplaceCost() {
-		return (cardReplaceCost * cardsToReplace.length);
+	//replace the hand of the user
+	function replaceHand(userHand) {
+		sendMessage("GAME replace cards", {
+			cardsToReplace: userHand
+		});
 	}
 
-	function getReplaceCostPerCard() {
-		return cardReplaceCost;
+	// //adds selected cards to the array of cards we want to submit
+	// //if the card is already in the array then remove it
+	// function replaceCardsSelect(selectedCardText) {
+
+	// 	var i = cardsToReplace.indexOf(selectedCardText);
+	// 	if (i === -1) {
+	// 		cardsToReplace.push(selectedCardText);
+	// 	} else {
+	// 		cardsToReplace.splice(i, 1);
+	// 	}
+	// }
+
+	// //sends off all the cards that the user wants to replace and resets array
+	// function replaceCardsSubmit() {
+	// 	if (cardsToReplace.length > 0) {
+	// 		sendMessage("GAME replace cards", {
+	// 			cardsToReplace: cardsToReplace
+	// 		});
+	// 	}
+	// 	cardsToReplace = [];
+	// }
+
+	function getHandReplaceCost() {
+		return handReplaceCost;
 	}
 
 	//get the current question being asked, object contains text and amount of answers to pick
@@ -164,7 +169,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			});
 		}
 		return submitted;
-	};
+	}
 
 	/*
         check if a certain user had voted for an answer yet
@@ -185,7 +190,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			});
 		}
 		return voted;
-	};
+	}
 
 	function playAgain(userId, oldRoomId) {
 
@@ -193,6 +198,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			userId: userId,
 			oldRoomId: oldRoomId
 		});
+	}
+
+	function allRoomsAvailable () {
+		return allRooms;
 	}
 
 
@@ -209,7 +218,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		currentFilledInQuestion = data.question.text;
 		round = data.round;
 		maxRounds = data.maxRounds;
-		cardReplaceCost = data.cardReplaceCost;
+		handReplaceCost = data.handReplaceCost;
 		countdown = data.countdown;
 		if (countdown === undefined) {
 			answers = [];
@@ -227,7 +236,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			answers.forEach(function(answer) {
 				answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, answer.answersText);
 			});
-		};
+		}
 	}
 
 	function _setChosenAnswers(data) {
@@ -260,6 +269,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		timeout = data.timeout;
 	}
 
+	function _setRoomsAvailable(data) {
+		allRooms = data;
+	}
+
 	/*
     ---------------
         REGISTERING COMMUNCATION API WITH LAYER
@@ -277,6 +290,9 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	}, {
 		eventName: "timeout",
 		eventAction: _setTimeout
+	}, {
+		eventName: "rooms available",
+		eventAction: _setRoomsAvailable
 	}, {
 		eventName: "playerRoundResults",
 		eventAction: _setPlayerRoundResults
@@ -321,13 +337,11 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getCurrentVotes: getCurrentVotes,
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
-		getCurrentReplaceCost: getCurrentReplaceCost,
-		getReplaceCostPerCard: getReplaceCostPerCard,
+		getHandReplaceCost: getHandReplaceCost,
 		sendReadyStatus: sendReadyStatus,
 		submitChoice: submitChoice,
 		submitVote: submitVote,
-		replaceCardsSelect: replaceCardsSelect,
-		replaceCardsSubmit: replaceCardsSubmit,
+		replaceHand: replaceHand,
 		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
@@ -338,7 +352,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		hasVoted: hasVoted,
 		hasSubmitted: hasSubmitted,
 		getTimeout: getTimeout,
-		playAgain: playAgain
+		playAgain: playAgain,
+		allRoomsAvailable: allRoomsAvailable
 	};
 
 }]);
