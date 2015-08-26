@@ -20,7 +20,7 @@ module.exports = function(data) {
 	var POINTS_PER_VOTE = 50;
 	var HAND_REPLACE_COST = 50;
 	var HANDSIZE = 10; //Number of white cards a user should always have
-	var animationTime = 5;	//time each animation runs for on the client
+	var animationTime = 5; //time each animation runs for on the client
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -55,7 +55,7 @@ module.exports = function(data) {
 				until all answers finished their animation
 				in order to start the timer
 			*/
-			count += animationTime * ( rounds[roundCount - 1].answers.length );
+			count += animationTime * (rounds[roundCount - 1].answers.length);
 		}
 
 		timerIsActive = true;
@@ -396,7 +396,7 @@ module.exports = function(data) {
 
 		player = getPlayerFromId(user.uId);
 
-		if (!user.isObserver){
+		if (!user.isObserver) {
 			player.connectedToServer = true;
 		}
 
@@ -452,6 +452,13 @@ module.exports = function(data) {
 			}
 		};
 
+		var playerQuestionData = {
+			eventName: "PLAYER question",
+			data: {
+				question: currentRound.question
+			}
+		};
+
 		if (lastFullRound !== undefined) {
 			results = lastFullRound.results;
 		} else results = [];
@@ -478,15 +485,18 @@ module.exports = function(data) {
 
 		if (testing !== undefined) {
 
-            var timeoutData = {
-            	eventName: "GAME timeout",
-            	data: { timeout: 0 }
-            };
-            data.push(timeoutData);
-        }
+			var timeoutData = {
+				eventName: "GAME timeout",
+				data: {
+					timeout: 0
+				}
+			};
+			data.push(timeoutData);
+		}
 
 
 		data.push(questionData);
+		data.push(playerQuestionData);
 		data.push(userHand);
 
 		callback(routingInfo, data);
@@ -670,7 +680,7 @@ module.exports = function(data) {
 	*/
 	var setupPlayer = function(user) {
 		var player = new Player(user, cardController);
-		if (user.isObserver===true) {
+		if (user.isObserver === true) {
 			player.connectedToServer = false;
 		}
 

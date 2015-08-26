@@ -1,4 +1,4 @@
-ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, notificationService, toastr) {
+ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, notificationService, toastr, playerService) {
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
@@ -13,7 +13,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
 
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function(botsEnabled) {
-        gameService.sendReadyStatus($scope.roomId(), botsEnabled);
+        playerService.sendReadyStatus($scope.roomId());
     };
 
     /*
@@ -56,8 +56,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     // TODO make toaster server for this
     var notificationCalled = function(data) {
         if (data.action === "play again") {
-
-            console.log("notificationCalled");
 
             toastr.success('<div id="toaster">' + data.user + ' wants to play again.<br> Click here to join</div>', {
                 allowHtml: true,

@@ -6,7 +6,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	    and others who who use this service
 	//-------------------	*/
 
-	var currentQuestion = undefined; // the current question containing the text and how many answers to submit
+	var currentQuestion; // the current question containing the text and how many answers to submit
 	var currentlySubmittedAnswers = []; //if multiple blanks then hold the currently selected answers
 	var round = -1;
 	var answers = [];
@@ -14,64 +14,18 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var voteCounter = 0;
 	var maxRounds = 0; //variable holding the number of rounds wanted
 	var currentFilledInQuestion = "";
-	var countdown = undefined;
 
-	var handReplaceCost = 0; //variable holing the current cost of replacing a card
+	var countdown;
+	var cardsToReplace = [];
+	var cardReplaceCost = 0; //variable holing the current cost of replacing a card
 
 	var votes = [];
 	var timeout = 5000;
 	var allRooms = [];
 
-	//call function that emits to server the answer that was just submitted
-	function submitChoice(enteredAnswer) {
-		var submissionState = dynamicTextService.getSubmissionState(currentQuestion, enteredAnswer, currentlySubmittedAnswers);
-		currentlySubmittedAnswers = submissionState.currentlySubmittedAnswers;
-		currentFilledInQuestion = submissionState.currentFilledInQuestion;
-
-		//if enough answers have been selected to fill in the blanks then send off the array
-		if (submissionState.readyToSend) {
-			_emitChoice(currentlySubmittedAnswers);
-			currentlySubmittedAnswers = [];
-		}
-	}
-
 	function getTimeout() {
 		return timeout;
 	}
-
-	//call function that emits to server the vote that was just submitted
-	function submitVote(enteredAnswer) {
-		_emitVote(enteredAnswer);
-	}
-
-	//replace the hand of the user
-	function replaceHand(userHand) {
-		sendMessage("GAME replace cards", {
-			cardsToReplace: userHand
-		});
-	}
-
-	// //adds selected cards to the array of cards we want to submit
-	// //if the card is already in the array then remove it
-	// function replaceCardsSelect(selectedCardText) {
-
-	// 	var i = cardsToReplace.indexOf(selectedCardText);
-	// 	if (i === -1) {
-	// 		cardsToReplace.push(selectedCardText);
-	// 	} else {
-	// 		cardsToReplace.splice(i, 1);
-	// 	}
-	// }
-
-	// //sends off all the cards that the user wants to replace and resets array
-	// function replaceCardsSubmit() {
-	// 	if (cardsToReplace.length > 0) {
-	// 		sendMessage("GAME replace cards", {
-	// 			cardsToReplace: cardsToReplace
-	// 		});
-	// 	}
-	// 	cardsToReplace = [];
-	// }
 
 	function getHandReplaceCost() {
 		return handReplaceCost;
@@ -80,11 +34,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	//get the current question being asked, object contains text and amount of answers to pick
 	function getCurrentQuestion() {
 		return currentQuestion;
-	}
-
-	//the question with the currently selected answers filled in
-	function getCurrentFilledInQuestion() {
-		return currentFilledInQuestion;
 	}
 
 	//the position in the order of answers for multiple answer selections
@@ -99,12 +48,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	function getMaxRounds() {
 		return maxRounds;
-	}
-
-	function sendReadyStatus(roomId) {
-		sendMessage("GAME ready status", {
-			roomId: roomId
-		});
 	}
 
 	//get all answers submitted
@@ -192,20 +135,24 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return voted;
 	}
 
+	/*
+		Tell the server one of the players in the room wants to play again
+		The server will response, and display a toast on the other clients windows
+	*/
 	function playAgain(userId, oldRoomId) {
-
 		sendMessage('GAME play again', {
 			userId: userId,
 			oldRoomId: oldRoomId
 		});
 	}
 
-	function allRoomsAvailable () {
+	function allRoomsAvailable() {
 		return allRooms;
 	}
 
 
 	/*
+
 	---------------
 	    COMMUNCATION LAYER API
 	    These are functions called by the communcation
@@ -325,11 +272,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		communicationService.sendMessage(eventName, data, callback);
 	}
 
-
-
 	return {
 		getCurrentQuestion: getCurrentQuestion,
-		getCurrentFilledInQuestion: getCurrentFilledInQuestion,
 		getAnswerPosition: getAnswerPosition,
 		getAnswers: getAnswers,
 		getCurrentRound: getCurrentRound,
@@ -338,10 +282,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
 		getHandReplaceCost: getHandReplaceCost,
-		sendReadyStatus: sendReadyStatus,
-		submitChoice: submitChoice,
-		submitVote: submitVote,
-		replaceHand: replaceHand,
 		_receiveQuestion: _receiveQuestion,
 		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
@@ -353,7 +293,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		hasSubmitted: hasSubmitted,
 		getTimeout: getTimeout,
 		playAgain: playAgain,
-		allRoomsAvailable: allRoomsAvailable
+		allRoomsAvailable: allRoomsAvailable,
 	};
 
 }]);

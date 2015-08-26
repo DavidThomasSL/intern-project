@@ -118,7 +118,7 @@ module.exports = function(port, enableLogging, testing) {
             var room = new Room(roomId);
             rooms.push(room);
 
-            users.forEach(function (user) {
+            users.forEach(function(user) {
                 user.emit("GAME rooms available", getRoomsInformation());
             });
 
@@ -133,15 +133,28 @@ module.exports = function(port, enableLogging, testing) {
             putUserInRoom(msg.roomId);
         });
 
-        socket.on('GAME play again', function(msg) {
-
+        /*
+            Create a new room and put the calling user into it
+            Send a message to all other users in the old room to ask if they want to join
+        */
+        socket.on('PLAYER play again', function(msg) {
             var oldRoom = getRoomFromId(msg.oldRoomId);
-            oldRoom.removeUser({uId: msg.userId});
             var user = getUserFromId(msg.userId);
             var newRoomId = user.roomId;
 
-            oldRoom.broadcastRoom("NOTIFICATION actionable",{action:'play again', newRoomId: newRoomId, user: user.name });
-            oldRoom.broadcastRoom('USER play again', { newRoomId: newRoomId, user: user.name });
+            oldRoom.removeUser(user);
+
+            oldRoom.broadcastRoom('USER play again', {
+                newRoomId: newRoomId,
+                user: user.name
+            });
+
+            oldRoom.broadcastRoom("NOTIFICATION actionable", {
+                action: 'play again',
+                newRoomId: newRoomId,
+                user: user.name
+            });
+
         });
 
         /*
@@ -170,7 +183,7 @@ module.exports = function(port, enableLogging, testing) {
                 room.broadcastRoom('ROOM details');
             }
 
-            if (!user.isObserver){
+            if (!user.isObserver) {
                 user.readyToProceed = false;
             }
 
@@ -211,7 +224,7 @@ module.exports = function(port, enableLogging, testing) {
             If everyone in the room has said they are ready, moves to the next gamestage
             toggles the user calls this event either ready or not ready, with a readyToProceedFlag
         */
-        socket.on('GAME ready status', function(data) {
+        socket.on('PLAYER ready status', function(data) {
 
             var readyCounter = 0;
 
@@ -258,17 +271,20 @@ module.exports = function(port, enableLogging, testing) {
             }
         });
 
-        socket.on('GAME replace cards', function(data) {
+        socket.on('PLAYER replace cards', function(data) {
             var room = getRoomFromId(user.roomId);
 
             room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newResults) {
+
                 user.emit('USER hand', {
                     hand: newHand
                 });
+
                 room.broadcastRoom('GAME playerRoundResults', {
                     results: newResults,
                     voteNumber: 0
                 });
+
                 user.emit("NOTIFICATION message", {
                     text: "Replaced hand",
                     type: "success"
@@ -296,10 +312,10 @@ module.exports = function(port, enableLogging, testing) {
             });
         }
 
-        function getRoomsInformation () {
+        function getRoomsInformation() {
 
             var roomsAvailable = [];
-            rooms.forEach( function(room) {
+            rooms.forEach(function(room) {
 
                 var roomDet = {
                     id: room.id
@@ -338,6 +354,12 @@ module.exports = function(port, enableLogging, testing) {
                         maxRounds: data.maxRounds,
                         handReplaceCost: data.handReplaceCost
                     });
+
+                    room.broadcastRoom("PLAYER question", {
+                        question: data.roundQuestion,
+                    });
+
+
                     room.broadcastRoom('ROOM details');
 
                     //Send each user in the room their individual hand (delt by the GameController)
@@ -384,7 +406,7 @@ module.exports = function(port, enableLogging, testing) {
         }
 
         // submit answer
-        socket.on('USER submitChoice', function(msg) {
+        socket.on('PLAYER submitChoice', function(msg) {
 
             var room = getRoomFromId(user.roomId);
 
@@ -440,7 +462,7 @@ module.exports = function(port, enableLogging, testing) {
             callback will return the results after everyone has voted:
             who submitted what answer, who voted for them, their score after the round
         */
-        socket.on('USER vote', function(msg) {
+        socket.on('PLAYER vote', function(msg) {
 
             var room = getRoomFromId(user.roomId);
 
@@ -484,7 +506,7 @@ module.exports = function(port, enableLogging, testing) {
                 // Take the user out of the game (set as disconnected)
                 room.removeUser(user);
 
-                if (!user.isObserver){
+                if (!user.isObserver) {
                     user.readyToProceed = false;
                 }
 
