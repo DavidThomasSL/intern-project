@@ -20,7 +20,7 @@ module.exports = function(data) {
 	var POINTS_PER_VOTE = 50;
 	var CARD_REPLACE_COST = 10;
 	var HANDSIZE = 10; //Number of white cards a user should always have
-	var animationTime = 5;	//time each animation runs for on the client
+	var animationTime = 5; //time each animation runs for on the client
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -55,7 +55,7 @@ module.exports = function(data) {
 				until all answers finished their animation
 				in order to start the timer
 			*/
-			count += animationTime * ( rounds[roundCount - 1].answers.length );
+			count += animationTime * (rounds[roundCount - 1].answers.length);
 		}
 
 		timerIsActive = true;
@@ -125,6 +125,7 @@ module.exports = function(data) {
 	*/
 	var initialize = function(room, callback) {
 
+		var initialResults = [];
 		cardController = new CardController(function() {
 			room.usersInRoom.forEach(function(user) {
 				setupPlayer(user);
@@ -134,11 +135,33 @@ module.exports = function(data) {
 				setupBot(bot);
 			});
 
+			players.forEach(function(player) {
+				if (player.connectedToServer) {
+					var result = {
+						player: player,
+						answersText: [],
+						playersWhoVotedForThis: []
+					}
+					initialResults.push(result);
+				}
+
+			});
+
+			bots.forEach(function(bot) {
+
+				var result = {
+					player: bot,
+					answersText: [],
+					playersWhoVotedForThis: []
+				}
+				initialResults.push(result);
+			});
+
 			BOT_NUMBER = room.botsInRoom.length;
 			MAX_ROUNDS = room.numRounds;
 
 			//Call back to server after finish setting up
-			callback();
+			callback(initialResults);
 		});
 	};
 
@@ -396,7 +419,7 @@ module.exports = function(data) {
 
 		player = getPlayerFromId(user.uId);
 
-		if (!user.isObserver){
+		if (!user.isObserver) {
 			player.connectedToServer = true;
 		}
 
@@ -478,12 +501,14 @@ module.exports = function(data) {
 
 		if (testing !== undefined) {
 
-            var timeoutData = {
-            	eventName: "GAME timeout",
-            	data: { timeout: 0 }
-            };
-            data.push(timeoutData);
-        }
+			var timeoutData = {
+				eventName: "GAME timeout",
+				data: {
+					timeout: 0
+				}
+			};
+			data.push(timeoutData);
+		}
 
 
 		data.push(questionData);
@@ -669,7 +694,7 @@ module.exports = function(data) {
 	*/
 	var setupPlayer = function(user) {
 		var player = new Player(user, cardController);
-		if (user.isObserver===true) {
+		if (user.isObserver === true) {
 			player.connectedToServer = false;
 		}
 

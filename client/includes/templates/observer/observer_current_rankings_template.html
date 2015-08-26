@@ -1,22 +1,30 @@
-<h2>Current Rankings</h2>
-<div class="row">
-    <div class="end-game-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-player.points'">
-        <div class="row end-game-data-row">
-            <div class="col-xs-4 end-game-rank text-right">
-                #{{result.player.rank}}
-            </div>
-            <div class="col-xs-4 text-left">
-                <user-profile sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
-                image"></user-profile>
-            </div>
-            <div class="col-xs-6 end-game-name text-left">
-                <div class="flex-1">
-                    <section>
-                        <b>{{result.player.name}}</b>
-                    </section>
-                    <section>
-                        {{result.player.points}} points
-                    </section>
+<div class="observer-sidebar-container">
+    <div class="row">
+        <div class="col-xs-12 text-center" style="margin-bottom:20px">
+            <h2> Current Rankings</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="end-game-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-player.points'">
+            <div class="row end-game-data-row">
+                <div class="col-xs-4 end-game-rank text-right">
+                    <span ng-hide="result.player.rank===''">
+                        #{{result.player.rank}}
+                    </span>
+                </div>
+                <div class="col-xs-4 text-left">
+                    <user-profile sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
+                    image"></user-profile>
+                </div>
+                <div class="col-xs-6 end-game-name text-left">
+                    <div class="flex-1">
+                        <section>
+                            <b>{{result.player.name}}</b>
+                        </section>
+                        <section>
+                            {{result.player.points}} points
+                        </section>
+                    </div>
                 </div>
             </div>
         </div>

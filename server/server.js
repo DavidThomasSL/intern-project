@@ -128,10 +128,15 @@ module.exports = function(port, enableLogging, testing) {
         socket.on('GAME play again', function(msg) {
 
             var oldRoom = getRoomFromId(msg.oldRoomId);
-            oldRoom.removeUser({uId: msg.userId});
+            oldRoom.removeUser({
+                uId: msg.userId
+            });
             var user = getUserFromId(msg.userId);
             var newRoomId = user.roomId;
-            oldRoom.broadcastRoom('USER play again', { newRoomId: newRoomId, user: user.name });
+            oldRoom.broadcastRoom('USER play again', {
+                newRoomId: newRoomId,
+                user: user.name
+            });
         });
 
         /*
@@ -160,7 +165,7 @@ module.exports = function(port, enableLogging, testing) {
                 room.broadcastRoom('ROOM details');
             }
 
-            if (!user.isObserver){
+            if (!user.isObserver) {
                 user.readyToProceed = false;
             }
 
@@ -280,7 +285,12 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room, function() {
+            room.gameController.initialize(room, function(initialResults) {
+
+                room.broadcastRoom("GAME playerRoundResults", {
+                    results: initialResults,
+                    voteCounter: 0
+                });
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
             });
@@ -461,7 +471,7 @@ module.exports = function(port, enableLogging, testing) {
                 // Take the user out of the game (set as disconnected)
                 room.removeUser(user);
 
-                if (!user.isObserver){
+                if (!user.isObserver) {
                     user.readyToProceed = false;
                 }
 
