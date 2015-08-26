@@ -24,6 +24,11 @@ describe('When playing as a observer', function() {
 		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBe(1);
 	});
 
+	it('Can refresh and still see all the rooms available', function() {
+		firstClonageUser.refresh();
+		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBe(1);
+		expect(browser.getCurrentUrl()).toMatch(/\/observeLobby/);
+	});
 
 
 	it('Another player can join and see the usual lobby screen with only themselves in it', function() {
