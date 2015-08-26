@@ -2,7 +2,9 @@ ClonageApp.service('notificationService', ['communicationService', function(comm
 
 	var currentNotificationMessage = "";
 	var currentNotificatonType = undefined;
-	var notificationListenerList = [];
+	var messageListenerList = [];
+	var actionListenerList = [];
+
 
 	function getCurrentNotificationMessage() {
 		return currentNotificationMessage;
@@ -12,9 +14,20 @@ ClonageApp.service('notificationService', ['communicationService', function(comm
 		Registers a controllers scope as an error listener
 		They will be notified when an error is recieved
 	*/
-	function registerNotificationListener(notificationCallback) {
-		var notificationListener = {notificationCallback: notificationCallback};
-		notificationListenerList.push(notificationListener);
+	function registerMessageListener(notificationCallback) {
+		var notificationListener = {
+			notificationCallback: notificationCallback
+		};
+		messageListenerList.push(notificationListener);
+	}
+
+	function registerActionListener(notificationCallback) {
+
+		var notificationListener = {
+			notificationCallback: notificationCallback
+		};
+
+		actionListenerList.push(notificationListener);
 	}
 
 	/*
@@ -28,7 +41,12 @@ ClonageApp.service('notificationService', ['communicationService', function(comm
 	function _recieveNotificationMessage(data) {
 		currentNotificationMessage = data.text;
 		currentNotificatonType = data.type;
-		notifyListeners();
+		notifyMessageListeners();
+	}
+
+	// Received a notification that the user can interact with
+	function _recieveNotificationActionable(data) {
+		notifyActionListeners(data);
 	}
 
 	/*
@@ -42,21 +60,31 @@ ClonageApp.service('notificationService', ['communicationService', function(comm
 	communicationService.registerListener("NOTIFICATION", [{
 		eventName: "message",
 		eventAction: _recieveNotificationMessage
+	}, {
+		eventName: "actionable",
+		eventAction: _recieveNotificationActionable
 	}]);
 
 	/*
 		Notifies all listeners of the error message coming through from the communication channel
 	*/
-	function notifyListeners(){
-		notificationListenerList.forEach(function(notificationListener) {
+	function notifyMessageListeners() {
+		messageListenerList.forEach(function(notificationListener) {
 			notificationListener.notificationCallback(currentNotificationMessage, currentNotificatonType);
+		});
+	}
+
+	function notifyActionListeners(data) {
+		actionListenerList.forEach(function(notificationListener) {
+			notificationListener.notificationCallback(data);
 		});
 	}
 
 
 	return {
 		getCurrentNotifcationMessage: getCurrentNotificationMessage,
-		registerNotificationListener: registerNotificationListener
+		registerMessageListener: registerMessageListener,
+		registerActionListener: registerActionListener
 	};
 
 

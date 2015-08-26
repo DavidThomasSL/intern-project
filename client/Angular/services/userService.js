@@ -21,7 +21,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
         function getIfObserver() {
 
             var isObserver;
-            if (user.isObserver===undefined){
+            if (user.isObserver === undefined) {
                 isObserver = false;
             } else {
                 isObserver = user.isObserver;
@@ -48,10 +48,11 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
                 isObserver: false
             });
         }
+
         function registerNewObserver(name, image) {
             sendMessage('USER set profile', {
                 name: name,
-                image:image,
+                image: image,
                 isObserver: true
             });
         }
@@ -104,7 +105,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
         }
 
         function _joinRoom(data) {
-             playAgainWasPressed = false;
+            playAgainWasPressed = false;
             $sessionStorage.roomId = data.roomId;
             user.roomId = data.roomId;
             userInRoom = true;
@@ -115,22 +116,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
         }
 
         function _playAgain(data) {
-
             playAgainWasPressed = true;
-
-            toastr.success('<div id="toaster">' + data.user + ' wants to play again.<br> Click here to join</div>', {
-                allowHtml: true,
-                showCloseButton: true,
-                timeout:   null,
-                onHidden: function(clicked) {
-                    if (clicked) {
-                        roomService.leaveRoom();
-                        rank = "";
-                        roomService.joinRoom(data.newRoomId);
-                    }
-                }
-            });
-
         }
 
         function hidePlayAgainButton() {

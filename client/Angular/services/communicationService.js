@@ -116,6 +116,11 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
+	socket.on("NOTIFICATION actionable", function(data) {
+		_setListenerEventAction("NOTIFICATION actionable");
+		onMessageFunction(data);
+	});
+
 
 	/*
 		Takes an event name, sent by the server

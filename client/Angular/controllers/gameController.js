@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, toastr, $location, $sessionStorage, $anchorScroll) {
+ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, toastr, $location, $sessionStorage, $anchorScroll, notificationService) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -27,9 +27,9 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     //get all answers submitted in order to visualise them on the voting page
     $scope.visualiseAnswers = function() {
         var ans = gameService.getAnswers();
-        var filtered=[];
+        var filtered = [];
 
-        if ( $scope.index < ans.length ) {
+        if ($scope.index < ans.length) {
             filtered.push(ans[$scope.index]);
         } else {
             $scope.index = ans.length;
@@ -44,9 +44,9 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.startTimer = function() {
         if (angular.isDefined(timer)) $timeout.cancel(timer);
 
-        timer = $timeout ( function() {
+        timer = $timeout(function() {
             $scope.index++;
-        }, $scope.timeToWaitAnimation );
+        }, $scope.timeToWaitAnimation);
     };
 
     $scope.stopTimer = function() {
