@@ -48,7 +48,8 @@ describe("Testing Communcation Service ", function() {
 			"ROOM messages",
 			"ROUTING",
 			"NOTIFICATION message",
-			"NOTIFICATION actionable"
+			"NOTIFICATION actionable",
+			"PLAYER question"
 		]);
 	});
 
