@@ -1,4 +1,4 @@
-ClonageApp.controller("observerController", function($scope, $sce, $rootScope, $window, userService, roomService, RoutingService, gameService, $location) {
+ClonageApp.controller("observerController", function($scope, $sce, $rootScope, $window, userService, roomService, RoutingService, gameService, $location, $timeout) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom; //List all the users in the lobby
     $scope.roomId = roomService.getRoomId; //Display room code in lobby
@@ -20,6 +20,39 @@ ClonageApp.controller("observerController", function($scope, $sce, $rootScope, $
     $scope.getMessages = roomService.getMessages;
 
     $scope.getUserFromId = roomService.getUserFromId;
+
+
+    $scope.index = 0;
+    $scope.timeToWaitAnimation = gameService.getTimeout();
+    var timer;
+    //get all answers submitted in order to visualise them on the voting page
+    $scope.visualiseAnswers = function() {
+        var ans = gameService.getAnswers();
+        var filtered = [];
+
+        if ($scope.index < ans.length) {
+            filtered.push(ans[$scope.index]);
+        } else {
+            $scope.index = ans.length;
+            filtered = ans;
+            $scope.stopTimer();
+        }
+
+        return filtered;
+    };
+
+    $scope.startTimer = function() {
+        if (angular.isDefined(timer)) $timeout.cancel(timer);
+
+        timer = $timeout(function() {
+            $scope.index++;
+        }, $scope.timeToWaitAnimation);
+    };
+
+    $scope.stopTimer = function() {
+        if (angular.isDefined(timer)) $timeout.cancel(timer);
+    };
+
 
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());
