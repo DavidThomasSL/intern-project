@@ -49,7 +49,29 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		sendMessage("GAME replace cards", {
 			cardsToReplace: userHand
 		});
-	};
+	}
+
+	// //adds selected cards to the array of cards we want to submit
+	// //if the card is already in the array then remove it
+	// function replaceCardsSelect(selectedCardText) {
+
+	// 	var i = cardsToReplace.indexOf(selectedCardText);
+	// 	if (i === -1) {
+	// 		cardsToReplace.push(selectedCardText);
+	// 	} else {
+	// 		cardsToReplace.splice(i, 1);
+	// 	}
+	// }
+
+	// //sends off all the cards that the user wants to replace and resets array
+	// function replaceCardsSubmit() {
+	// 	if (cardsToReplace.length > 0) {
+	// 		sendMessage("GAME replace cards", {
+	// 			cardsToReplace: cardsToReplace
+	// 		});
+	// 	}
+	// 	cardsToReplace = [];
+	// }
 
 	function getHandReplaceCost() {
 		return handReplaceCost;
@@ -147,7 +169,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			});
 		}
 		return submitted;
-	};
+	}
 
 	/*
         check if a certain user had voted for an answer yet
@@ -168,7 +190,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			});
 		}
 		return voted;
-	};
+	}
 
 	function playAgain(userId, oldRoomId) {
 
@@ -214,7 +236,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			answers.forEach(function(answer) {
 				answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, answer.answersText);
 			});
-		};
+		}
 	}
 
 	function _setChosenAnswers(data) {

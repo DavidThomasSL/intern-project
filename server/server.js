@@ -139,6 +139,8 @@ module.exports = function(port, enableLogging, testing) {
             oldRoom.removeUser({uId: msg.userId});
             var user = getUserFromId(msg.userId);
             var newRoomId = user.roomId;
+
+            oldRoom.broadcastRoom("NOTIFICATION actionable",{action:'play again', newRoomId: newRoomId, user: user.name });
             oldRoom.broadcastRoom('USER play again', { newRoomId: newRoomId, user: user.name });
         });
 
