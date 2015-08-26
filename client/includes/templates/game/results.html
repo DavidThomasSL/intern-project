@@ -40,7 +40,11 @@
         <div class="col-md-6 col-sm-6 col-xs-12 text-center">
             <!-- Spaceing for extra small screens between buttons when stacked -->
             <div class="hidden-lg hidden-md hidden-sm">&nbsp;</div>
-            <button id="replace-cards-show-button" type="button" class="btn btn-lg btn-success" ng-click="replaceToggle=true" scroll-to="replace-cards-container">Replace some cards</button>
+
+
+            <button id="replace-hand-button" type="button" class="btn btn-lg btn-success" ng-click="replaceHand(userHand())">Replace hand <span class="badge">-{{handReplaceCost()}} points</span></button>
+
+
         </div>
     </div>
     <div class="row" style="margin-top: 20px">
@@ -51,22 +55,6 @@
             <ng-include src="userPanelTemplate"></ng-include>
         </div>
     </div>
-    <!-- Replace Cards section -->
-    <div id="replace-cards-container" style="margin-top:30px;">
-        <div id="user-hand-container" ng-show="replaceToggle === true">
-            <div class="row">
-                <h4>Select the cards you want to replace <br>(-{{replaceCostPerCard()}} points per card)</h4>
-                <div class="col-md-12 text-center" ng-repeat="answer in userHand()">
-                    <div class="card-text-container">
-                        <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="replaceCardsSelect(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12 text-center" ng-show="replaceToggle === true">
-            <button id="replace-cards-submit-button" type="button" class="btn btn-lg btn-success replace-card-submit-button" ng-click="replaceCardsSubmit()" ng-disabled="cardReplaceCost()<=0" >Replace Cards <span ng-show="cardReplaceCost()>0" class="badge">(-{{cardReplaceCost()}} points)</span></button>
-        </div>
-    </div>
+
 </div>
 </div>

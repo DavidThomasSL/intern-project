@@ -251,7 +251,7 @@ module.exports = function(port, enableLogging, testing) {
         socket.on('GAME replace cards', function(data) {
             var room = getRoomFromId(user.roomId);
 
-            room.gameController.replaceCards(user.uId, data.cardsToReplace, function(newHand, newResults) {
+            room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newResults) {
                 user.emit('USER hand', {
                     hand: newHand
                 });
@@ -260,7 +260,7 @@ module.exports = function(port, enableLogging, testing) {
                     voteNumber: 0
                 });
                 user.emit("NOTIFICATION message", {
-                    text: "Replaced " + data.cardsToReplace.length + " card(s).",
+                    text: "Replaced hand",
                     type: "success"
                 });
             });
@@ -313,7 +313,7 @@ module.exports = function(port, enableLogging, testing) {
                         question: data.roundQuestion,
                         round: data.round,
                         maxRounds: data.maxRounds,
-                        cardReplaceCost: data.cardReplaceCost
+                        handReplaceCost: data.handReplaceCost
                     });
                     room.broadcastRoom('ROOM details');
 

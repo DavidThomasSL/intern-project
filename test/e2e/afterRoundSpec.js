@@ -96,16 +96,9 @@ describe('After each round', function() {
 	});
 
 	it('can replace unwanted cards in hand and points are reduced as a result', function() {
-		firstClonageUser.showReplaceableCards();
-		browser.driver.sleep(1000);
-		//waiting for the screen to scroll down here
-		firstClonageUser.getFirstReplaceCardText().then(function(originalText) {
-			firstClonageUser.replaceFirstCard();
-			expect(element.all(by.exactRepeater("answer in userHand()")).first().element(by.id("answer")).getText()).not.toMatch(originalText);
-
-			firstClonageUser.openGameRankings();
-			expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('40 points');
-		});
+		firstClonageUser.replaceHand();
+		firstClonageUser.openGameRankings();
+		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('0 points');
 	});
 
 	it('can see the players at the bottom of the page', function() {
