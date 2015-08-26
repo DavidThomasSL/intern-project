@@ -15,8 +15,6 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.handReplaceCost = gameService.getHandReplaceCost;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
-    $scope.htmlBindedText = $sce.trustAsHtml('<b>hello bold</b>');
-
     $scope.answers = gameService.getAnswers;
 
     $scope.index = 0;
@@ -103,15 +101,18 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
         gameService.clearGameData();
     };
 
+    // Called when a user presses play again on endGame.html
     $scope.playAgain = function() {
         var oldRoomId = userService.getRoomId();
 
+        // create a new room a put the user in it
         roomService.createRoom(userService.getUserId());
 
+        // send a message to all other players in the room asking if they want to join the new room
         gameService.playAgain(userService.getUserId(), oldRoomId);
     };
 
-
+    // Used to change the use rpanel template based on screen width
     $scope.$watch(function() {
         return $window.innerWidth;
     }, function(value) {

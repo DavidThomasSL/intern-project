@@ -118,7 +118,7 @@ module.exports = function(port, enableLogging, testing) {
             var room = new Room(roomId);
             rooms.push(room);
 
-            users.forEach(function (user) {
+            users.forEach(function(user) {
                 user.emit("GAME rooms available", getRoomsInformation());
             });
 
@@ -133,15 +133,29 @@ module.exports = function(port, enableLogging, testing) {
             putUserInRoom(msg.roomId);
         });
 
+        /*
+            Create a new room and put the calling user into it
+            Send a message to all other users in the old room to ask if they want to join
+        */
         socket.on('GAME play again', function(msg) {
-
             var oldRoom = getRoomFromId(msg.oldRoomId);
-            oldRoom.removeUser({uId: msg.userId});
             var user = getUserFromId(msg.userId);
             var newRoomId = user.roomId;
 
-            oldRoom.broadcastRoom("NOTIFICATION actionable",{action:'play again', newRoomId: newRoomId, user: user.name });
-            oldRoom.broadcastRoom('USER play again', { newRoomId: newRoomId, user: user.name });
+
+            oldRoom.removeUser(user);
+
+            oldRoom.broadcastRoom('USER play again', {
+                newRoomId: newRoomId,
+                user: user.name
+            });
+
+            oldRoom.broadcastRoom("NOTIFICATION actionable", {
+                action: 'play again',
+                newRoomId: newRoomId,
+                user: user.name
+            });
+
         });
 
         /*
@@ -170,7 +184,7 @@ module.exports = function(port, enableLogging, testing) {
                 room.broadcastRoom('ROOM details');
             }
 
-            if (!user.isObserver){
+            if (!user.isObserver) {
                 user.readyToProceed = false;
             }
 
@@ -296,10 +310,10 @@ module.exports = function(port, enableLogging, testing) {
             });
         }
 
-        function getRoomsInformation () {
+        function getRoomsInformation() {
 
             var roomsAvailable = [];
-            rooms.forEach( function(room) {
+            rooms.forEach(function(room) {
 
                 var roomDet = {
                     id: room.id
@@ -484,7 +498,7 @@ module.exports = function(port, enableLogging, testing) {
                 // Take the user out of the game (set as disconnected)
                 room.removeUser(user);
 
-                if (!user.isObserver){
+                if (!user.isObserver) {
                     user.readyToProceed = false;
                 }
 

@@ -192,8 +192,11 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return voted;
 	}
 
+	/*
+		Tell the server one of the players in the room wants to play again
+		The server will response, and display a toast on the other clients windows
+	*/
 	function playAgain(userId, oldRoomId) {
-
 		sendMessage('GAME play again', {
 			userId: userId,
 			oldRoomId: oldRoomId
