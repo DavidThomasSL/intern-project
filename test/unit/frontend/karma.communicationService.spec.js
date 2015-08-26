@@ -30,7 +30,7 @@ describe("Testing Communcation Service ", function() {
 		communicationService = _communicationService_;
 	}));
 
-	it("regsiters socket event listeners on creation", function() {
+	it("registers socket event listeners on creation", function() {
 
 		expect(mockSocketService.on).toHaveBeenCalled();
 		expect(mockSocketService.eventNames).toEqual(["connect",
@@ -48,7 +48,8 @@ describe("Testing Communcation Service ", function() {
 			"ROOM messages",
 			"ROUTING",
 			"NOTIFICATION message",
-			"NOTIFICATION actionable"
+			"NOTIFICATION actionable",
+			"PLAYER question"
 		]);
 	});
 

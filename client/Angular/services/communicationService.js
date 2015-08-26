@@ -121,6 +121,11 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
+	socket.on("PLAYER question", function(data) {
+		_setListenerEventAction("PLAYER question");
+		onMessageFunction(data);
+	});
+
 
 	/*
 		Takes an event name, sent by the server

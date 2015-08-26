@@ -475,6 +475,13 @@ module.exports = function(data) {
 			}
 		};
 
+		var playerQuestionData = {
+			eventName: "PLAYER question",
+			data: {
+				question: currentRound.question
+			}
+		};
+
 		if (lastFullRound !== undefined) {
 			results = lastFullRound.results;
 		} else results = [];
@@ -512,6 +519,7 @@ module.exports = function(data) {
 
 
 		data.push(questionData);
+		data.push(playerQuestionData);
 		data.push(userHand);
 
 		callback(routingInfo, data);
