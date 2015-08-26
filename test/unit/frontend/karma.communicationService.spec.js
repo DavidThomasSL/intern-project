@@ -44,7 +44,6 @@ describe("Testing Communcation Service ", function() {
 			"GAME playerRoundResults",
 			"GAME finish",
 			"GAME rooms available",
-			"PLAYER question",
 			"ROOM details",
 			"ROOM messages",
 			"ROUTING",
