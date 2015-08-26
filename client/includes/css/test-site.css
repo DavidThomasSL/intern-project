@@ -215,6 +215,12 @@ body, html {
   outline: none;
 }
 
+.observer-card-text-button {
+  font-size: 20px;
+  white-space: normal;
+  border:none;
+}
+
 .table th {
   text-align: center;
 }
