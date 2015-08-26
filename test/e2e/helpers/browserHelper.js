@@ -131,6 +131,12 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var getCardText = function(index) {
+		var rows = element.all(by.exactRepeater("answer in userHand()"));
+		return rows.get(index).element(by.id("answer")).getText();
+	};
+
+
 	var replaceHand = function() {
 		var replaceHandButton = element(by.id('replace-hand-button'));
 		replaceHandButton.click();
@@ -179,6 +185,7 @@ module.exports = function(browserInstance) {
 		submitFirstAnswers: submitFirstAnswers,
 		submitFirstVote: submitFirstVote,
 		replaceHand: replaceHand,
+		getCardText: getCardText,
 		backToStart: backToStart,
 		activateSidebar: activateSidebar,
 		ready: ready,
