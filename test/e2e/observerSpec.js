@@ -33,7 +33,7 @@ describe('When playing as a observer', function() {
 	});
 
 	it('Can join a room by only pressing on the room button in the joining page', function() {
-		firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).first().click();
+		firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).last().click();
 		expect(browser.getCurrentUrl()).toMatch(/\/observeLobby/);
 	});
 
@@ -47,7 +47,7 @@ describe('When playing as a observer', function() {
 		//Playing with bots here to avoid needed three browser instances
 
 		secondClonageUser.ready();
-
+		browser.waitForAngular();
 		expect(browser.getCurrentUrl()).toMatch(/\/observeQ/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
 
