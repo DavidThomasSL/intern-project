@@ -118,6 +118,10 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 
 	socket.on("NOTIFICATION actionable", function(data) {
 		_setListenerEventAction("NOTIFICATION actionable");
+	});
+
+	socket.on("PLAYER question", function(data) {
+		_setListenerEventAction("PLAYER question");
 		onMessageFunction(data);
 	});
 

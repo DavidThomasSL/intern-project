@@ -1,4 +1,4 @@
-ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, notificationService, toastr) {
+ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, notificationService, toastr, playerService) {
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
@@ -13,7 +13,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
 
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function(botsEnabled) {
-        gameService.sendReadyStatus($scope.roomId(), botsEnabled);
+        playerService.sendReadyStatus($scope.roomId());
     };
 
     /*

@@ -1,4 +1,4 @@
-ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, toastr, $location, $sessionStorage, $anchorScroll, notificationService) {
+ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, toastr, $location, $sessionStorage, $anchorScroll, playerService) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.answerPosition = gameService.getAnswerPosition;
@@ -11,6 +11,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.getBotsInRoom = roomService.getBotsInRoom;
 
+    $scope.cardReplaceCost = playerService.getCurrentReplaceCost;
     $scope.getObserversInRoom = roomService.getObserversInRoom;
     $scope.handReplaceCost = gameService.getHandReplaceCost;
 
@@ -52,7 +53,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     };
 
     //dynamicFilledInQuestion is the string displayed on the question page that updates as the player clicks answers
-    $scope.dynamicFilledInQuestion = gameService.getCurrentFilledInQuestion;
+    $scope.dynamicFilledInQuestion = playerService.getCurrentFilledInQuestion;
 
 
     //filledInQuestion is the submission displayed on the question waiting page.
@@ -84,16 +85,16 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     //function call to submit an answer to the question
     $scope.submitAnswer = function(enteredAnswer) {
-        gameService.submitChoice(enteredAnswer);
+        playerService.submitChoice(enteredAnswer);
     };
 
     //function call to submit a vote for the funniest answer
     $scope.submitVote = function(enteredAnswer) {
-        gameService.submitVote(enteredAnswer);
+        playerService.submitVote(enteredAnswer);
     };
 
     $scope.replaceHand = function(userHand) {
-        gameService.replaceHand(userHand);
+        playerService.replaceHand(userHand);
     };
 
     $scope.leaveRoom = function() {
@@ -109,7 +110,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
         roomService.createRoom(userService.getUserId());
 
         // send a message to all other players in the room asking if they want to join the new room
-        gameService.playAgain(userService.getUserId(), oldRoomId);
+        playerService.playAgain(userService.getUserId(), oldRoomId);
     };
 
     // Used to change the use rpanel template based on screen width

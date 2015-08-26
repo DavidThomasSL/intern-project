@@ -137,7 +137,7 @@ module.exports = function(port, enableLogging, testing) {
             Create a new room and put the calling user into it
             Send a message to all other users in the old room to ask if they want to join
         */
-        socket.on('GAME play again', function(msg) {
+        socket.on('PLAYER play again', function(msg) {
             var oldRoom = getRoomFromId(msg.oldRoomId);
             var user = getUserFromId(msg.userId);
             var newRoomId = user.roomId;
@@ -225,7 +225,7 @@ module.exports = function(port, enableLogging, testing) {
             If everyone in the room has said they are ready, moves to the next gamestage
             toggles the user calls this event either ready or not ready, with a readyToProceedFlag
         */
-        socket.on('GAME ready status', function(data) {
+        socket.on('PLAYER ready status', function(data) {
 
             var readyCounter = 0;
 
@@ -272,17 +272,20 @@ module.exports = function(port, enableLogging, testing) {
             }
         });
 
-        socket.on('GAME replace cards', function(data) {
+        socket.on('PLAYER replace cards', function(data) {
             var room = getRoomFromId(user.roomId);
 
             room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newResults) {
+
                 user.emit('USER hand', {
                     hand: newHand
                 });
+
                 room.broadcastRoom('GAME playerRoundResults', {
                     results: newResults,
                     voteNumber: 0
                 });
+
                 user.emit("NOTIFICATION message", {
                     text: "Replaced hand",
                     type: "success"
@@ -352,6 +355,12 @@ module.exports = function(port, enableLogging, testing) {
                         maxRounds: data.maxRounds,
                         handReplaceCost: data.handReplaceCost
                     });
+
+                    room.broadcastRoom("PLAYER question", {
+                        question: data.roundQuestion,
+                    });
+
+
                     room.broadcastRoom('ROOM details');
 
                     //Send each user in the room their individual hand (delt by the GameController)
@@ -398,7 +407,7 @@ module.exports = function(port, enableLogging, testing) {
         }
 
         // submit answer
-        socket.on('USER submitChoice', function(msg) {
+        socket.on('PLAYER submitChoice', function(msg) {
 
             var room = getRoomFromId(user.roomId);
 
@@ -454,7 +463,7 @@ module.exports = function(port, enableLogging, testing) {
             callback will return the results after everyone has voted:
             who submitted what answer, who voted for them, their score after the round
         */
-        socket.on('USER vote', function(msg) {
+        socket.on('PLAYER vote', function(msg) {
 
             var room = getRoomFromId(user.roomId);
 
