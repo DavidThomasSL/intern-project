@@ -57,8 +57,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     var notificationCalled = function(data) {
         if (data.action === "play again") {
 
-            console.log("notificationCalled");
-
             toastr.success('<div id="toaster">' + data.user + ' wants to play again.<br> Click here to join</div>', {
                 allowHtml: true,
                 showCloseButton: true,
