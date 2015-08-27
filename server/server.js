@@ -180,7 +180,7 @@ module.exports = function(port, enableLogging, testing) {
             var room = getRoomFromId(msg.roomId);
 
             if (room !== undefined) {
-                room.removeUser(user);
+                removeUserFromRoom(room);
                 room.broadcastRoom('ROOM details');
             }
 
@@ -196,6 +196,20 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Removed user " + user.name + " from room " + room.id);
         });
 
+        function removeUserFromRoom(room) {
+            logger.debug("Removing player from room" + room.id);
+
+            room.removeUser(user);
+
+            // Check if anyone is still in the room
+            // if not, start expiriy timer
+            if (room.usersInRoom.length === 0) {
+                room.setTimeToLiveTimer(function() {
+                    deleteRoom(room);
+                    logger.debug("No-one in room" + room.id + ", deleting it");
+                });
+            }
+        }
         /*
             Set by the players in the room lobby if they want to
                 enable bots during the game or not (and how many)
@@ -513,29 +527,41 @@ module.exports = function(port, enableLogging, testing) {
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
-                room.removeUser(user);
+                // room.removeUser(user);
+                removeUserFromRoom(room);
 
                 if (!user.isObserver) {
                     user.readyToProceed = false;
                 }
 
-                // Check if anyone is still in the room
-                // if not, start expiriy timer
-                if(room.usersInRoom.length === 0) {
-                    room.setTimeToLiveTimer(function() {
-                        console.log("ROOM DELETED " + room.id);
-                    });
-                }
+                // console.log("people in room" + room.usersInRoom.length);
 
+                // // Check if anyone is still in the room
+                // // if not, start expiriy timer
+                // if (room.usersInRoom.length === 0) {
+                //     room.setTimeToLiveTimer(function() {
+                //         deleteRoom(room);
+                //         console.log(rooms);
+                //         logger.debug("No-one in room" + room.id + ", deleting it");
+                //     });
+                // }
 
-
-                logger.debug("Removing player from room" + room.id);
+                // logger.debug("Removing player from room" + room.id);
             } else {
                 logger.debug("User was not in a room");
             }
 
             logger.debug("User disconnected " + user.name);
         });
+
+        /*
+            Removes the room from the rooms array
+        */
+        function deleteRoom(rm) {
+            rooms = rooms.filter(function(room) {
+                return room.id !== rm.id;
+            });
+        }
 
         /*
             Puts a user into a room

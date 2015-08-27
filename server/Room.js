@@ -192,6 +192,9 @@ function Room(roomCode, testing) {
             //Update the room service of every user
             self.broadcastRoom("ROOM details");
             self.broadcastRoom('ROOM messages');
+
+            // if there is any time to live timer set, cancel it now
+            self.clearTimeToLiveTimer();
         }
 
         // Return wether the join was successful or not
@@ -211,18 +214,15 @@ function Room(roomCode, testing) {
         If a user joins the room before the timeout expires, clears this timer
     */
     self.setTimeToLiveTimer = function(callback) {
-        console.log("setting time to live");
-        self.timeToLiveTimer = setTimeout(callback, 1000);
+        var timeToLive = 10000;
+        console.log("setting time to live" + timeToLive);
+        self.timeToLiveTimer = setTimeout(callback, timeToLive);
     };
 
     self.clearTimeToLiveTimer = function() {
+        console.log("clearing time to live");
         clearTimeout(self.timeToLiveTimer);
     };
-
-    self.deleteRoom = function() {
-        console.log("ROOM DELETED " + self.id);
-    };
-
 
     self.removeUser = function(user) {
 
