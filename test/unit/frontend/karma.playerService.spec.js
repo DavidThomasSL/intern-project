@@ -55,6 +55,16 @@ describe("Testing Player Service", function() {
 		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
 	});
 
+	it("playAgain calls communicationService with correct data", function() {
+		spyOn(mockCommunicationService, 'sendMessage');
+		playerService.playAgain("user", "oldRoom");
+
+		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("PLAYER play again", {
+			userId: "user",
+			oldRoomId: "oldRoom"
+		}, jasmine.any(Function));
+	});
+
 	it("submitChoice calls communicationService with correct data", function() {
 		spyOn(mockCommunicationService, 'sendMessage');
 
