@@ -1,11 +1,11 @@
 <div class="container">
-    <div class="header clearfix">
+    <div class="header clearfix" ng-init="startCountdown(0)">
         <h2> Round results: </h2>
         <h4> {{currentQuestion().text}}</h4>
     </div>
     <div class="text-center">
         <ng-include src="'includes/templates/user/progressBarR.html'"></ng-include>
-        <div class="result-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'" data-ng-init="startCountdown('R')">
+        <div class="result-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
             <div class="row results-data-row">
                 <div class="col-xs-4">
                     <user-profile sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
