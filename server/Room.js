@@ -7,6 +7,9 @@ function Room(roomCode, testing) {
     self.gameController = undefined;
     self.botsInRoom = [];
     self.messages = [];
+    self.timeToLiveTimer = undefined;
+    self.timeToLive = 15000; // amount of time the room will persist with no-one it it
+
 
     if (testing === undefined) {
         self.numRounds = 8;
@@ -85,15 +88,15 @@ function Room(roomCode, testing) {
 
 
     /*
-    Attempts to put a user in the room
+        Attempts to put a user in the room
 
-    Does not put the user in if
-        They are already in it
-        A game has started and they were not previosuly in that game
+        Does not put the user in if
+            They are already in it
+            A game has started and they were not previosuly in that game
 
-    If force is true, it will let the user join
-        this lets observers join games in progress
-*/
+        If force is true, it will let the user join
+            this lets observers join games in progress
+    */
     self.addUser = function(user, testing, forceUserInRoom) {
 
         var canJoin = true;
@@ -191,6 +194,9 @@ function Room(roomCode, testing) {
             //Update the room service of every user
             self.broadcastRoom("ROOM details");
             self.broadcastRoom('ROOM messages');
+
+            // if there is any time to live timer set, cancel it now
+            self.clearTimeToLiveTimer();
         }
 
         // Return wether the join was successful or not
@@ -201,6 +207,21 @@ function Room(roomCode, testing) {
         };
     };
 
+    /*
+        Delete the room after a set amount of time
+
+        When a room is empty, and the last user has left, sets a timer that
+        will delete the room after N seconds.
+
+        If a user joins the room before the timeout expires, clears this timer
+    */
+    self.setTimeToLiveTimer = function(callback) {
+        self.timeToLiveTimer = setTimeout(callback, self.timeToLive);
+    };
+
+    self.clearTimeToLiveTimer = function() {
+        clearTimeout(self.timeToLiveTimer);
+    };
 
     self.removeUser = function(user) {
 

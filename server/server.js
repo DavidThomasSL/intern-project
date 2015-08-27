@@ -180,8 +180,7 @@ module.exports = function(port, enableLogging, testing) {
             var room = getRoomFromId(msg.roomId);
 
             if (room !== undefined) {
-                room.removeUser(user);
-                room.broadcastRoom('ROOM details');
+                removeUserFromRoom(room);
             }
 
             if (!user.isObserver) {
@@ -196,6 +195,20 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Removed user " + user.name + " from room " + room.id);
         });
 
+        function removeUserFromRoom(room) {
+            logger.debug("Removing player from room" + room.id);
+
+            room.removeUser(user);
+
+            // Check if anyone is still in the room
+            // if not, start expiriy timer
+            if (room.usersInRoom.length === 0) {
+                room.setTimeToLiveTimer(function() {
+                    deleteRoom(room);
+                    logger.debug("No-one in room" + room.id + ", deleting it");
+                });
+            }
+        }
         /*
             Set by the players in the room lobby if they want to
                 enable bots during the game or not (and how many)
@@ -503,6 +516,9 @@ module.exports = function(port, enableLogging, testing) {
             so that he can join again
 
             Takes the user out of the game if they were in one
+
+            If there is no-one left in the room, will set a time to live for the room
+            so we can delete it if no-one rejoins
         */
         socket.on('disconnect', function() {
 
@@ -510,19 +526,27 @@ module.exports = function(port, enableLogging, testing) {
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
-                room.removeUser(user);
+                removeUserFromRoom(room);
 
                 if (!user.isObserver) {
                     user.readyToProceed = false;
                 }
 
-                logger.debug("Removing player from room" + room.id);
             } else {
                 logger.debug("User was not in a room");
             }
 
             logger.debug("User disconnected " + user.name);
         });
+
+        /*
+            Removes the room from the rooms array
+        */
+        function deleteRoom(rm) {
+            rooms = rooms.filter(function(room) {
+                return room.id !== rm.id;
+            });
+        }
 
         /*
             Puts a user into a room
