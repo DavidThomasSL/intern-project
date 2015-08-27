@@ -118,11 +118,11 @@ module.exports = function(port, enableLogging, testing) {
             var room = new Room(roomId, testing);
             rooms.push(room);
 
-            users.forEach(function(user) {
+            putUserInRoom(roomId);
+
+             users.forEach(function(user) {
                 user.emit("GAME rooms available", getRoomsInformation());
             });
-
-            putUserInRoom(roomId);
         });
 
         /*
@@ -343,8 +343,10 @@ module.exports = function(port, enableLogging, testing) {
             rooms.forEach(function(room) {
 
                 var roomDet = {
-                    id: room.id
+                    id: room.id,
+                    usersInRoom: room.getUsersInRoomDetails()
                 };
+
                 roomsAvailable.push(roomDet);
             });
             return roomsAvailable;

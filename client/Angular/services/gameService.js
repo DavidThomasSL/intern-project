@@ -217,6 +217,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	}
 
 	function _setRoomsAvailable(data) {
+		console.log(data);
 		allRooms = data;
 	}
 
