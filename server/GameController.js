@@ -74,16 +74,11 @@ module.exports = function(data) {
 				// trigger callback so the server sees the time has ran out
 				stopTimer();
 
-				// if no votes have been submitted then need to build a new results array for the results screen
-				// this results object will just contain the players and what answers they submitted with a blank
-				// playersWhoVotedForThis array.
-				var currentResults = rounds[roundCount - 1].results;
-				if (currentResults.length === 0) {
-					currentResults = buildBlankResults();
-				}
+				var round = rounds[roundCount-1];
+
 				var roundData = {
-					results: currentResults,
-					voteCounter: 0
+					results: round.getRoundSubmissionData(),
+					voteCounter: round.getNumberOfCurrentVotes()
 				};
 				callback(roundData);
 			}
@@ -92,21 +87,21 @@ module.exports = function(data) {
 
 	};
 
-	var buildBlankResults = function() {
+	// var buildBlankResults = function() {
 
-		var currentRound = rounds[roundCount - 1];
-		var results = [];
+	// 	var currentRound = rounds[roundCount - 1];
+	// 	var results = [];
 
-		currentRound.answers.forEach(function(currentAnswer) {
-			var result = {
-				player: currentAnswer.player,
-				answersText: currentAnswer.answersText,
-				playersWhoVotedForThis: []
-			};
-			results.push(result);
-		});
-		return results;
-	};
+	// 	currentRound.answers.forEach(function(currentAnswer) {
+	// 		var result = {
+	// 			player: currentAnswer.player,
+	// 			answersText: currentAnswer.answersText,
+	// 			playersWhoVotedForThis: []
+	// 		};
+	// 		results.push(result);
+	// 	});
+	// 	return results;
+	// };
 
 	/*
 		function to stop the counter
@@ -178,6 +173,8 @@ module.exports = function(data) {
 		var gameOver = (roundCount >= MAX_ROUNDS);
 		var data;
 
+		setRank();
+
 		// Check if game over
 		if (gameOver) {
 
@@ -207,8 +204,9 @@ module.exports = function(data) {
 
 			data = {
 				players: players,
+				roundSubmissionData: round.getRoundSubmissionData(),
 				roundQuestion: round.getRoundQuestion(),
-				round: round.getRoundCount(),
+				roundNumber: round.getRoundCount(),
 				handReplaceCost: HAND_REPLACE_COST,
 				maxRounds: MAX_ROUNDS,
 				gameIsOver: false
@@ -379,30 +377,30 @@ module.exports = function(data) {
 
 		Works if not all players submit an answer, we don't have to wait to time out in that case
 	*/
-	function isVotingComplete(round) {
+	// function isVotingComplete(round) {
 
-		var maxPosVotes = getNumOfConnectedPlayers(); // maximum number of votes possible to have
+	// 	var maxPosVotes = getNumOfConnectedPlayers(); // maximum number of votes possible to have
 
-		players.forEach(function(player) {
+	// 	players.forEach(function(player) {
 
-			// check if a player has NOT submitted
-			if (!player.hasSubmitted) {
+	// 		// check if a player has NOT submitted
+	// 		if (!player.hasSubmitted) {
 
-				// check if it possible for them to submit (are there answers other than their own to vote on?)
-				availableAns = round.answers.filter(function(ans) {
-					return ans.player.uId !== player.uId;
-				});
+	// 			// check if it possible for them to submit (are there answers other than their own to vote on?)
+	// 			availableAns = round.answers.filter(function(ans) {
+	// 				return ans.player.uId !== player.uId;
+	// 			});
 
-				if (availableAns.length === 0) {
-					// this player cannot vote for any choices,
-					// reduce number of max possible votes
-					maxPosVotes--;
-				}
-			}
-		});
+	// 			if (availableAns.length === 0) {
+	// 				// this player cannot vote for any choices,
+	// 				// reduce number of max possible votes
+	// 				maxPosVotes--;
+	// 			}
+	// 		}
+	// 	});
 
-		return maxPosVotes === countVotes(round);
-	}
+	// 	return maxPosVotes === countVotes(round);
+	// }
 
 
 	/*
@@ -601,13 +599,13 @@ module.exports = function(data) {
 			var currentRound = rounds[rounds.length - 1];
 
 			//add the points to the players for each vote they received
-			currentRound.answers.forEach(function(answer) {
-				for (var i = 0; i < answer.playersVote.length; i++) {
-					answer.player.addPoints(POINTS_PER_VOTE);
+			currentRound.getRoundSubmissionData().forEach(function(submission) {
+				for (var i = 0; i < submission.playersWhoVotedForThis.length; i++) {
+					submission.player.addPoints(POINTS_PER_VOTE);
 				}
 			});
 
-			penaliseNonVotingPlayers(currentRound.answers);
+			penaliseNonVotingPlayers(currentRound.getRoundSubmissionData());
 
 			voteNumber = 0;
 
@@ -654,7 +652,7 @@ module.exports = function(data) {
 		var playersWhoHaventVoted = players.slice();
 		var currentAnswers = answers.slice();
 		currentAnswers.forEach(function(answer) {
-			answer.playersVote.forEach(function(votingPlayer) {
+			answer.playersWhoVotedForThis.forEach(function(votingPlayer) {
 				playersWhoHaventVoted = playersWhoHaventVoted.filter(function(iteratedPlayer) {
 					return (iteratedPlayer.uId !== votingPlayer.uId);
 				});

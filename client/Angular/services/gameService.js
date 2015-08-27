@@ -214,6 +214,11 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		voteCounter = data.voteNumber;
 	}
 
+	function _setRoundSubmissionData(data) {
+		console.log("getting round submissions data");
+		playerRoundResults = data.roundSubmissionData;
+	}
+
 	function _setMaxRounds(num) {
 		maxRounds = num;
 	}
@@ -249,6 +254,9 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	}, {
 		eventName: "playerRoundResults",
 		eventAction: _setPlayerRoundResults
+	}, {
+		eventName: "roundSubmissionData",
+		eventAction: _setRoundSubmissionData
 	}]);
 
 	/*

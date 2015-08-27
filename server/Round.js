@@ -59,7 +59,8 @@ function Round(roundCount, cardController) {
 				}
 			}
 		});
-		return maxPossibleVotes === getNumberOfCurrentVotes();
+		console.log("is VOTING COMPLETE = " + (maxPossibleVotes === self.getNumberOfCurrentVotes()))
+		return maxPossibleVotes === self.getNumberOfCurrentVotes();
 	};
 
 	/*

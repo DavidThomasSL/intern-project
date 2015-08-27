@@ -351,9 +351,13 @@ module.exports = function(port, enableLogging, testing) {
 
                     room.broadcastRoom("GAME question", {
                         question: data.roundQuestion,
-                        round: data.round,
+                        round: data.roundNumber,
                         maxRounds: data.maxRounds,
                         handReplaceCost: data.handReplaceCost
+                    });
+
+                    room.broadcastRoom("GAME roundSubmissionData", {
+                        roundSubmissionData: data.roundSubmissionData
                     });
 
                     room.broadcastRoom("PLAYER question", {
