@@ -120,7 +120,7 @@ module.exports = function(port, enableLogging, testing) {
 
             putUserInRoom(roomId);
 
-             users.forEach(function(user) {
+            users.forEach(function(user) {
                 user.emit("GAME rooms available", getRoomsInformation());
             });
         });
@@ -199,6 +199,11 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Removing player from room" + room.id);
 
             room.removeUser(user);
+
+            //update the observers list of available rooms
+            users.forEach(function(user) {
+                user.emit("GAME rooms available", getRoomsInformation());
+            });
 
             // Check if anyone is still in the room
             // if not, start expiriy timer
@@ -579,7 +584,13 @@ module.exports = function(port, enableLogging, testing) {
 
                 // Handle result of room join attempt
                 if (result.joined) {
+                    // update the game rooms available for everyone
+                    users.forEach(function(u) {
+                        u.emit("GAME rooms available", getRoomsInformation());
+                    });
+
                     logger.debug("User " + user.name + " joined room " + roomId);
+
                 } else if (result.gameInProgress) {
                     // give user abilty to join room in progress
                     emitNotificationActionable(user, {
