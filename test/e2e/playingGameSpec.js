@@ -4,7 +4,7 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When playing a game', function() {
 
-	var MAX_ROUNDS;
+	var HAND_SIZE = 10;
 	var roomId;
 	var cardsToSubmit;
 
@@ -51,8 +51,9 @@ describe('When playing a game', function() {
 	it('can replace unwanted cards in hand and points are reduced as a result', function() {
 
 		secondClonageUser.replaceHand();
-		secondClonageUser.openGameRankings();
-		expect(secondClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('-100 points');
+		for(i=0; i<HAND_SIZE; i++){
+			expect(secondClonageUser.element.all(by.exactRepeater("answer in userHand()")).get(i).element(by.id("answer")).getText()).not.toMatch(currentHand[i]);
+		}
 	});
 
 	it('can refresh and still see who submitted an answer', function() {
