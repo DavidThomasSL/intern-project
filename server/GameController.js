@@ -141,7 +141,7 @@ module.exports = function(data) {
 						player: player,
 						answersText: [],
 						playersWhoVotedForThis: []
-					}
+					};
 					initialResults.push(result);
 				}
 
@@ -153,7 +153,7 @@ module.exports = function(data) {
 					player: bot,
 					answersText: [],
 					playersWhoVotedForThis: []
-				}
+				};
 				initialResults.push(result);
 			});
 
