@@ -7,6 +7,7 @@ function Room(roomCode, testing) {
     self.gameController = undefined;
     self.botsInRoom = [];
     self.messages = [];
+    self.timeToLiveTimer = undefined;
 
     if (testing === undefined) {
         self.numRounds = 8;
@@ -199,6 +200,27 @@ function Room(roomCode, testing) {
             userAlreadyInRoom: userAlreadyInRoom,
             joined: canJoin
         };
+    };
+
+    /*
+        Delete the room after a set amount of time
+
+        When a room is empty, and the last user has left, sets a timer that
+        will delete the room after N seconds.
+
+        If a user joins the room before the timeout expires, clears this timer
+    */
+    self.setTimeToLiveTimer = function(callback) {
+        console.log("setting time to live");
+        self.timeToLiveTimer = setTimeout(callback, 1000);
+    };
+
+    self.clearTimeToLiveTimer = function() {
+        clearTimeout(self.timeToLiveTimer);
+    };
+
+    self.deleteRoom = function() {
+        console.log("ROOM DELETED " + self.id);
     };
 
 

@@ -503,6 +503,9 @@ module.exports = function(port, enableLogging, testing) {
             so that he can join again
 
             Takes the user out of the game if they were in one
+
+            If there is no-one left in the room, will set a time to live for the room
+            so we can delete it if no-one rejoins
         */
         socket.on('disconnect', function() {
 
@@ -515,6 +518,16 @@ module.exports = function(port, enableLogging, testing) {
                 if (!user.isObserver) {
                     user.readyToProceed = false;
                 }
+
+                // Check if anyone is still in the room
+                // if not, start expiriy timer
+                if(room.usersInRoom.length === 0) {
+                    room.setTimeToLiveTimer(function() {
+                        console.log("ROOM DELETED " + room.id);
+                    });
+                }
+
+
 
                 logger.debug("Removing player from room" + room.id);
             } else {
