@@ -57,6 +57,9 @@ module.exports = function(data) {
 			*/
 			count += animationTime * (rounds[roundCount - 1].answers.length);
 		}
+		else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+			count = 20;
+		}
 
 		timerIsActive = true;
 		setAllPlayersAbleToSubmit();
