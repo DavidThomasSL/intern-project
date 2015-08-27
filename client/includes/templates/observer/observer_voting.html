@@ -6,7 +6,6 @@
 		<div class="col-md-10">
 			<div class="row">
 				<div class="header clearfix">
-					<h1>Round {{currentRound()}} / {{maxRounds()}}</h1>
 					<h1> {{currentQuestion().text}}</h1>
 				</div>
 			</div>
@@ -15,16 +14,16 @@
 				<div class="row">
 					<div class="col-md-8 col-md-offset-2 text-center repeat-animation" ng-repeat="answer in visualiseAnswers() | orderBy:'answersText[0]'" ng-init="startTimer()" ng-class-even="'left'" ng-class-odd="'right'">
 						<div class="card-text-container">
-							<button ng-if="getUserId() !== answer.player.uId&&(index === answers().length)" class="btn btn-warning btn-lg btn-block observer-card-text-button" type="button" id="answer" ng-click="submitVote(answer)">
+							<button ng-if="(index === answers().length)" class="btn btn-warning btn-lg btn-block observer-card-text-button disabled" type="button" id="answer">
 							<p ng-bind-html="bindHtml(answer.filledInText)"></p>
 							</button>
 							</button>
-							<button ng-if="getUserId() !== answer.player.uId&&(index !== answers().length)" class="btn btn-warning btn-lg btn-block observer-card-text-button" type="button" ng-disabled="true">
+							<button ng-if="(index !== answers().length)" class="btn btn-warning btn-lg btn-block observer-large-card disabled" type="button">
 							<p ng-bind-html="bindHtml(answer.filledInText)"></p>
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row" ng-if="index === answers().length">
 				<div class="col-md-6 col-md-offset-3">
 					<div class="row">
 						<div class="col-md-3" ng-repeat="user in getActiveUsersInRoom()">

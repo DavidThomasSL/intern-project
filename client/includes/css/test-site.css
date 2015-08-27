@@ -103,7 +103,7 @@ body, html {
 
 /* style the user's submission inside an answer */
 .submitted-answer-text {
-  font-size: 20px;
+  font-size: 120%;
   font-weight: bold;
 }
 
@@ -201,7 +201,7 @@ body, html {
 }
 
 .card-text-container {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 /* whitespace:normal; lets the button text wrap*/
@@ -217,6 +217,21 @@ body, html {
 
 .observer-card-text-button {
   font-size: 20px;
+  white-space: normal;
+  border:none;
+}
+
+.observer-card-text-button.disabled,
+.observer-large-card.disabled{
+  background-color: #f0ad4e;
+  opacity: 1;
+  outline:none;
+  cursor:default;
+}
+
+.observer-large-card{
+  font-size: 40px;
+  margin-top: 20%;
   white-space: normal;
   border:none;
 }
@@ -300,10 +315,6 @@ body, html {
   border : none;
 }
 
-.replace-card-submit-button:focus {
-  outline: none;
-  border: none;
-}
 
 
 /*
