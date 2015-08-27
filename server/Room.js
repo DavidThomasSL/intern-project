@@ -185,7 +185,7 @@ function Room(roomCode) {
 
             //Update the room service of every user
             self.broadcastRoom("ROOM details");
-            room.broadcastRoom('ROOM messages');
+            self.broadcastRoom('ROOM messages');
         }
 
         // Return wether the join was successful or not

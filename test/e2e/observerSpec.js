@@ -99,6 +99,9 @@ describe('When playing as a observer', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/observeEG/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
 
+		firstClonageUser.clearUser();
+		browser2.close();
+
 	});
 
 });

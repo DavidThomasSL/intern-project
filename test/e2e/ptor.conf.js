@@ -13,7 +13,8 @@ exports.config = {
 		'afterGameSpec.js',
 		'playAgainSpec.js',
 		'botsSpec.js',
-		'observerSpec.js'
+		'observerSpec.js',
+		"joinInProgressSpec.js"
 	],
 	baseUrl: 'http://localhost:8080/',
 	params: {
