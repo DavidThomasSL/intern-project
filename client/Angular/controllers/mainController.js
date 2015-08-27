@@ -62,7 +62,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
             toastr.success('<div id="toaster">' + data.user + ' wants to play again.<br> Click here to join</div>', {
                 allowHtml: true,
                 showCloseButton: true,
-                timeOut: 10000,
+                timeOut: null,
                 extendedTimeOut: 10000,
                 onHidden: function(clicked) {
                     if (clicked) {
