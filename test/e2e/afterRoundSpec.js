@@ -23,6 +23,7 @@ describe('After each round', function() {
 
 		firstClonageUser.getRoomId().then(function(text) {
 			roomId = text.split(" ")[2];
+			firstClonageUser.setRoundNumber(8);
 			secondClonageUser.joinRoom(roomId);
 			firstClonageUser.ready();
 			secondClonageUser.ready();

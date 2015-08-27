@@ -28,7 +28,7 @@ describe('When creating a room', function() {
 	});
 
 	it('number of rounds should be visable and default to 8', function() {
-		expect(element(by.binding("getGameParameters().numRounds")).getText()).toMatch("8 Rounds");
+		expect(element(by.binding("getGameParameters().numRounds")).getText()).toMatch("1 Rounds");
 
 	});
 

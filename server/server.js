@@ -115,7 +115,7 @@ module.exports = function(port, enableLogging, testing) {
 
             roomId = makeid();
 
-            var room = new Room(roomId);
+            var room = new Room(roomId, testing);
             rooms.push(room);
 
             users.forEach(function(user) {

@@ -1,13 +1,18 @@
 var User = require('./User');
 
-function Room(roomCode) {
+function Room(roomCode, testing) {
     var self = this;
     self.id = roomCode;
     self.usersInRoom = [];
     self.gameController = undefined;
     self.botsInRoom = [];
     self.messages = [];
-    self.numRounds = 8;
+
+    if (testing === undefined) {
+        self.numRounds = 8;
+    } else {
+        self.numRounds = 1;
+    }
 
     /*
         Returns a user from the room
