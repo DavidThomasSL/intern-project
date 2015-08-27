@@ -52,7 +52,7 @@ describe('When playing a game', function() {
 
 		secondClonageUser.replaceHand();
 		secondClonageUser.openGameRankings();
-		expect(secondClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('0 points');
+		expect(secondClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('-100 points');
 	});
 
 	it('can refresh and still see who submitted an answer', function() {
