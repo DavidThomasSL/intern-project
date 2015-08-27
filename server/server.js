@@ -130,7 +130,7 @@ module.exports = function(port, enableLogging, testing) {
             check if that room exists, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            putUserInRoom(msg.roomId);
+            putUserInRoom(msg.roomId, msg.force);
         });
 
         /*
@@ -531,7 +531,7 @@ module.exports = function(port, enableLogging, testing) {
             Tell all other users in the room that a player has joined
             Does not put the user in if they are already put in it
         */
-        function putUserInRoom(roomId) {
+        function putUserInRoom(roomId, force) {
 
             var result = {};
             var errorText = "";
@@ -543,30 +543,41 @@ module.exports = function(port, enableLogging, testing) {
             if (room !== undefined) {
 
                 // Try and join the room
-                result = room.addUser(user, testing);
+                result = room.addUser(user, testing, force); //don't force user into room
 
-                if (result.gameInProgress) {
-                    errorText = "the game is already in progress";
+                // Handle result of room join attempt
+                if (result.joined) {
+                    logger.debug("User " + user.name + " joined room " + roomId);
+                } else if (result.gameInProgress) {
+                    // give user abilty to join room in progress
+                    emitNotificationActionable(user, {
+                        action: 'join room observer',
+                        roomId: roomId
+                    });
                 } else if (result.userAlreadyInRoom) {
-                    errorText = "you are already in that room!";
+                    emitNotificationMessage(user, {
+                        text: "you are already in that room!",
+                        type: "error"
+                    });
+                } else {
+                    console.log("something terrible happened...");
                 }
 
             } else {
                 // No room was found
-                errorText = "code \"" + roomId + "\" does not match any existing room";
-                result.joined = false;
-            }
-
-            if (result.joined) {
-                room.broadcastRoom('ROOM messages');
-                logger.debug("User " + user.name + " joined room " + roomId);
-            } else {
-                socket.emit("NOTIFICATION message", {
-                    text: "Cannot join the room, " + errorText,
+                emitNotificationMessage(user, {
+                    text: "code \"" + roomId + "\" does not match any existing room",
                     type: "error"
                 });
-                logger.warn("User " + user.name + " could not join room " + roomId);
             }
+        }
+
+        function emitNotificationActionable(target, data) {
+            target.emit("NOTIFICATION actionable", data);
+        }
+
+        function emitNotificationMessage(target, data) {
+            target.emit("NOTIFICATION message", data);
         }
 
         function putUserInJoining() {

@@ -55,22 +55,22 @@ function Room(roomCode) {
 
         var numBotsInRoom = self.botsInRoom.length;
 
-        if(num > numBotsInRoom){
+        if (num > numBotsInRoom) {
             // add more bots
 
             // Create required number of bots
             // bots are just user objects with no socket
-            for(var i = 0; i < (num - numBotsInRoom); i++){
+            for (var i = 0; i < (num - numBotsInRoom); i++) {
                 var newBot = new User({});
                 newBot.name = "BOT " + (numBotsInRoom + i + 1);
                 newBot.isBot = true;
                 self.botsInRoom.push(newBot);
             }
 
-        } else if( num < self.botsInRoom.length) {
+        } else if (num < self.botsInRoom.length) {
 
             // remove the required number of bots
-            for(var j = 0; j < (numBotsInRoom - num ); j++){
+            for (var j = 0; j < (numBotsInRoom - num); j++) {
                 self.botsInRoom.pop();
             }
         } else {
@@ -85,8 +85,11 @@ function Room(roomCode) {
     Does not put the user in if
         They are already in it
         A game has started and they were not previosuly in that game
+
+    If force is true, it will let the user join
+        this lets observers join games in progress
 */
-    self.addUser = function(user, testing) {
+    self.addUser = function(user, testing, forceUserInRoom) {
 
         var canJoin = true;
         var userAlreadyInRoom = false;
@@ -100,7 +103,6 @@ function Room(roomCode) {
                 //USER IS ALREADY IN self ROOM, THEY CANNOT JOIN
                 userAlreadyInRoom = true;
                 canJoin = false;
-                errorText = "already in room";
             }
         });
 
@@ -121,9 +123,22 @@ function Room(roomCode) {
             // Check if user was in the game
             var userInGame = self.gameController.checkIfUserInGame(user.uId);
 
+            // lol hakz
+            // in this case, we want to put the user into a room where the game is already in progress
+            // to do that, we turn the user into an observer and add them to the gameController
+            // now when we get info for the "reconnecting" user, they will be handled as an observer
+            // and routed to the correct pages (done by the observer controllera)
+            if (!userInGame && forceUserInRoom) {
+                // forceable put the user into the room
+                user.isObserver = true; // make them an observer so they can't partificpate
+                user.readyToProceed = true;
+                self.gameController.setupPlayer(user);
+                userInGame = self.gameController.checkIfUserInGame(user.uId);
+            }
+
             if (userInGame) {
-
-
+                //players can only join a game they were in previosuly, for refresh purposes
+                // observers can join a new game at any point
 
                 //User was in the game, tell the game controller they're back, route them to the current stage
                 // Find out where to put this user, i.e where all the other players are
@@ -131,12 +146,16 @@ function Room(roomCode) {
 
                     routing = routingInfo;
 
+                    // Observers go to different places than a player
+                    if (user.isObserver) {
+                        routing = resolveObserverRoute(routingInfo);
+                    }
+
                     // Send to the user all the information about the game
                     // Needed so they can start playing straight away
                     gameStateData.forEach(function(data) {
                         user.emit(data.eventName, data.data);
                     });
-
 
                 });
 
@@ -166,6 +185,7 @@ function Room(roomCode) {
 
             //Update the room service of every user
             self.broadcastRoom("ROOM details");
+            room.broadcastRoom('ROOM messages');
         }
 
         // Return wether the join was successful or not
@@ -220,6 +240,18 @@ function Room(roomCode) {
             user.emit(eventName, data);
         });
     };
+
+    function resolveObserverRoute(route) {
+        if (route === "question" || route === "waitQuestion") {
+            return "observeQuestion";
+        } else if (route === "vote" || route === "waitVote") {
+            return "observeVote";
+        } else if (route === "results") {
+            return "observeResults";
+        } else if (route === "endGame") {
+            return "observeEnd";
+        }
+    }
 }
 
 module.exports = Room;

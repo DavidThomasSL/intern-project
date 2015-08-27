@@ -503,9 +503,6 @@ module.exports = function(data) {
 			}
 		};
 
-		data.push(roundData);
-		data.push(answerData);
-
 		if (testing !== undefined) {
 
 			var timeoutData = {
@@ -517,7 +514,8 @@ module.exports = function(data) {
 			data.push(timeoutData);
 		}
 
-
+		data.push(roundData);
+		data.push(answerData);
 		data.push(questionData);
 		data.push(playerQuestionData);
 		data.push(userHand);
@@ -751,6 +749,7 @@ module.exports = function(data) {
 		submitVote: submitVote,
 		replaceHand: replaceHand,
 		newRound: newRound,
+		setupPlayer: setupPlayer,
 		updateGameState: updateGameState,
 		startTimer: startTimer,
 		checkIfUserInGame: checkIfUserInGame,
