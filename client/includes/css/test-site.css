@@ -92,12 +92,18 @@ body, html {
 }
 
 .observer-results-ready {
-    background-color: #66BB6A;
+  background-color: #66BB6A;
+}
+
+.observer-sidebar-container {
+  border-right: 1px solid #e5e5e5;
+  padding-right:30px;
+  min-height: 100%;
 }
 
 /* style the user's submission inside an answer */
 .submitted-answer-text {
-  font-size: 20px;
+  font-size: 120%;
   font-weight: bold;
 }
 
@@ -195,7 +201,7 @@ body, html {
 }
 
 .card-text-container {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 /* whitespace:normal; lets the button text wrap*/
@@ -207,6 +213,27 @@ body, html {
 
 .card-text-button:focus {
   outline: none;
+}
+
+.observer-card-text-button {
+  font-size: 20px;
+  white-space: normal;
+  border:none;
+}
+
+.observer-card-text-button.disabled,
+.observer-large-card.disabled{
+  background-color: #f0ad4e;
+  opacity: 1;
+  outline:none;
+  cursor:default;
+}
+
+.observer-large-card{
+  font-size: 40px;
+  margin-top: 20%;
+  white-space: normal;
+  border:none;
 }
 
 .table th {
@@ -288,10 +315,6 @@ body, html {
   border : none;
 }
 
-.replace-card-submit-button:focus {
-  outline: none;
-  border: none;
-}
 
 
 /*

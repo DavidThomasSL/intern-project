@@ -1,10 +1,14 @@
 <div class="container-fluid">
-    <div class="header clearfix">
-        <h3>Round {{currentRound()}} / {{maxRounds()}} results</h3>
-        <h3>{{currentQuestion().text}}</h3>
-    </div>
     <div class="row">
-        <div class="col-md-6 text-center">
+        <div class="col-md-2 text-center" ng-if="getPlayerRoundResults().length > 0">
+            <ng-include src="'includes/templates/observer/observer_current_rankings_template.html'"></ng-include>
+        </div>
+        <div class="col-md-10 text-center">
+            <div class="row">
+                <div class="header clearfix">
+                    <h3>{{currentQuestion().text}}</h3>
+                </div>
+            </div>
             <table class="table observer-results-table">
                 <tr>
                     <th>Player</th>
@@ -34,32 +38,11 @@
                     </td>
                     <td>
                         <div style="margin-top:30px">
-                        <div class="label label-success" style="font-size: 20px;">+{{result.playersWhoVotedForThis.length*50}}</div>
-                    </div></td>
+                            <div class="label label-success" style="font-size: 20px;">+{{result.playersWhoVotedForThis.length*50}}</div>
+                        </div></td>
                     </td>
                 </tr>
             </table>
-        </div>
-        <div class="col-md-6 text-center" ng-if="getPlayerRoundResults().length > 0">
-            <h2>Current rankings</h2>
-            <table class="table table-striped">
-                <tr>
-                    <th>Rank</th>
-                    <th>Player</th>
-                    <th>Score</th>
-                </tr>
-                <tr ng-repeat="result in getPlayerRoundResults() | orderBy:'-player.points'">
-                    <td>#{{result.player.rank}}</td>
-                    <td>{{result.player.name}}</td>
-                    <td>{{result.player.points}}</td>
-                </tr>
-            </table>
-            <h2>Players</h2>
-            <div class="row">
-                <div class="col-md-3" ng-repeat="user in getActiveUsersInRoom()">
-                    <ng-include src="userPanelTemplate"></ng-include>
-                </div>
-            </div>
         </div>
     </div>
 </div>

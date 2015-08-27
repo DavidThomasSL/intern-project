@@ -139,6 +139,7 @@ module.exports = function(port, enableLogging, testing) {
         */
         socket.on('PLAYER play again', function(msg) {
             var oldRoom = getRoomFromId(msg.oldRoomId);
+
             var user = getUserFromId(msg.userId);
             var newRoomId = user.roomId;
 
@@ -306,7 +307,12 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room, function() {
+            room.gameController.initialize(room, function(initialResults) {
+
+                room.broadcastRoom("GAME playerRoundResults", {
+                    results: initialResults,
+                    voteCounter: 0
+                });
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
             });
