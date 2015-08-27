@@ -205,6 +205,12 @@ module.exports = function(port, enableLogging, testing) {
             if (room.usersInRoom.length === 0) {
                 room.setTimeToLiveTimer(function() {
                     deleteRoom(room);
+
+                    //update the observers list of available rooms
+                    users.forEach(function(user) {
+                        user.emit("GAME rooms available", getRoomsInformation());
+                    });
+
                     logger.debug("No-one in room" + room.id + ", deleting it");
                 });
             }

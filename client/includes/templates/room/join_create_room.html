@@ -17,6 +17,7 @@
             </form>
         </div>
     </div>
+    <!-- show a list of all rooms if the observer -->
     <div class="row" id="room-join-container" ng-if="getIfObserver()">
         <div class="col-md-6 text-center">
             <button type="submit"  class="btn btn-lg  btn-success" ng-repeat="room in allRoomsAvailable()" ng-click="joinRoom(room.id)">{{room.id}}</button>
