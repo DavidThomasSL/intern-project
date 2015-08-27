@@ -18,7 +18,7 @@ module.exports = function(data) {
 	var MAX_ROUNDS = 8;
 	var BOT_NUMBER = 0;
 	var POINTS_PER_VOTE = 50;
-	var HAND_REPLACE_COST = 25;
+	var HAND_REPLACE_COST = 50;
 	var HANDSIZE = 10; //Number of white cards a user should always have
 	var animationTime = 5; //time each animation runs for on the client
 
