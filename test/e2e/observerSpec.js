@@ -24,6 +24,11 @@ describe('When playing as a observer', function() {
 		secondClonageUser.submitName('Alice');
 		secondClonageUser.createRoom();
 		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBeGreaterThan(0); // don't know how many rooms will have timed out by this point
+
+	});
+
+	it('can see the number of users in the room', function(){
+		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).get(0).element(by.binding('room.usersInRoom.length')).getText()).toEqual("1");
 	});
 
 	it('Can refresh and still see all the rooms available', function() {
@@ -33,7 +38,8 @@ describe('When playing as a observer', function() {
 	});
 
 	it('Can join a room by only pressing on the room button in the joining page', function() {
-		firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).last().click();
+
+		firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).get(0).element(by.id('observer-join-game-button')).click();
 		expect(browser.getCurrentUrl()).toMatch(/\/observeLobby/);
 	});
 

@@ -8,7 +8,7 @@ function Room(roomCode, testing) {
     self.botsInRoom = [];
     self.messages = [];
     self.timeToLiveTimer = undefined;
-    self.timeToLive = 15000; // amount of time the room will persist with no-one it it
+    self.timeToLive = 5000; // amount of time the room will persist with no-one it it
 
 
     if (testing === undefined) {
@@ -244,15 +244,9 @@ function Room(roomCode, testing) {
 
 
         if (eventName === "ROOM details") {
-            var usersInRoomJSON = [];
-
-            self.usersInRoom.forEach(function(user) {
-                usersInRoomJSON.push(user.getUserDetails());
-            });
-
             data = {
                 roomId: self.id,
-                usersInRoom: usersInRoomJSON,
+                usersInRoom:  self.getUsersInRoomDetails(),
                 botsInRoom: self.botsInRoom,
                 numRounds: self.numRounds
             };
@@ -265,6 +259,16 @@ function Room(roomCode, testing) {
         self.usersInRoom.forEach(function(user) {
             user.emit(eventName, data);
         });
+    };
+
+    self.getUsersInRoomDetails = function() {
+        var usersInRoomJSON = [];
+
+        self.usersInRoom.forEach(function(user) {
+            usersInRoomJSON.push(user.getUserDetails());
+        });
+
+        return usersInRoomJSON;
     };
 
     function resolveObserverRoute(route) {
