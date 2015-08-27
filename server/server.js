@@ -261,12 +261,8 @@ module.exports = function(port, enableLogging, testing) {
                 });
 
                 // if the game hasn't started yet, start the game
-                if (room.gameController === undefined) {
-                    startGameInRoom(room.id);
-                } else {
-                    // if the game has already started, move onto the next round
-                    startNextRoundInRoom(room.id);
-                }
+                startGameInRoom(room.id);
+
             } else {
                 // Not everyone is ready, do nothing
             }
