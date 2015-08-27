@@ -10,6 +10,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var currentlySubmittedAnswers = []; //if multiple blanks then hold the currently selected answers
 	var round = -1;
 	var answers = [];
+	var currentNumberOfSubmissions = 0;
 	var playerRoundResults = [];
 	var voteCounter = 0;
 	var maxRounds = 0; //variable holding the number of rounds wanted
@@ -53,6 +54,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	//get all answers submitted
 	function getAnswers() {
 		return answers;
+	}
+
+	function getCurrentNumberOfSubmissions() {
+		return currentNumberOfSubmissions;
 	}
 
 	function getCurrentVotes() {
@@ -107,7 +112,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 		if (answers.length > 0) {
 			answers.forEach(function(answer) {
-				if (answer.player.uId === user)
+				if (answer.player.uId === user && answer.submissionsText.length>0)
 					submitted = true;
 			});
 		}
@@ -188,11 +193,12 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	function _setChosenAnswers(data) {
 		answers = data.answers;
+		currentNumberOfSubmissions = data.currentNumberOfSubmissions;
 
 		//generating the filled in question based on the question text and submitted answers as above
 		if (currentQuestion !== undefined) {
 			answers.forEach(function(answer) {
-				answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, answer.answersText);
+				answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, answer.submissionsText);
 			});
 		}
 
@@ -276,6 +282,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getCurrentQuestion: getCurrentQuestion,
 		getAnswerPosition: getAnswerPosition,
 		getAnswers: getAnswers,
+		getCurrentNumberOfSubmissions: getCurrentNumberOfSubmissions,
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
 		getCurrentVotes: getCurrentVotes,

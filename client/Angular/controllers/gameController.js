@@ -17,6 +17,7 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
     $scope.answers = gameService.getAnswers;
+    $scope.currentNumberOfSubmissions = gameService.getCurrentNumberOfSubmissions;
 
     $scope.index = 0;
     $scope.timeToWaitAnimation = gameService.getTimeout();

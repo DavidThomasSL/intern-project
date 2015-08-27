@@ -307,12 +307,7 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room, function(initialResults) {
-
-                room.broadcastRoom("GAME playerRoundResults", {
-                    results: initialResults,
-                    voteCounter: 0
-                });
+            room.gameController.initialize(room, function() {
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
             });
@@ -426,7 +421,8 @@ module.exports = function(port, enableLogging, testing) {
 
                 //sends the list of answers each time someone submits one
                 room.broadcastRoom("GAME answers", {
-                    answers: data.answers
+                    answers: data.answers,
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions
                 });
 
                 if (testing !== undefined) {
