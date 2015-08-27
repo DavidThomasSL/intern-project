@@ -676,6 +676,9 @@ module.exports = function(data) {
 	*/
 	var setRank = function() {
 
+
+		//putting all players and bots into one array then filtering based on connected to server
+		//this means set rank will ignore all observers and players who have left
 		var allPlayers = players.concat(bots).filter(function(player){
 			return player.connectedToServer;
 		});
