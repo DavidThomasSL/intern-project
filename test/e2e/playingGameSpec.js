@@ -48,6 +48,13 @@ describe('When playing a game', function() {
 		expect(secondClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
 	});
 
+	it('can replace unwanted cards in hand and points are reduced as a result', function() {
+
+		secondClonageUser.replaceHand();
+		secondClonageUser.openGameRankings();
+		expect(secondClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('0 points');
+	});
+
 	it('can refresh and still see who submitted an answer', function() {
 		firstClonageUser.refresh();
 		secondClonageUser.refresh();

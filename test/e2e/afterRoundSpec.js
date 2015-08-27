@@ -106,13 +106,6 @@ describe('After each round', function() {
 
 	});
 
-	it('can replace unwanted cards in hand and points are reduced as a result', function() {
-
-		firstClonageUser.replaceHand();
-		firstClonageUser.openGameRankings();
-		expect(firstClonageUser.element.all(by.repeater('currentResult in getPlayerRoundResults()')).get(1).element(by.binding('currentResult.player.points')).getText()).toEqual('0 points');
-	});
-
 	it('can see the players at the bottom of the page', function() {
 		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
 	});
