@@ -381,25 +381,7 @@ module.exports = function(port, enableLogging, testing) {
                     room.gameController.startTimer(function(data) {
 
                         // time has ran out so everyone is routed to the voting page
-                        room.broadcastRoom("ROUTING", {
-                            location: 'vote'
-                        });
-
-                        // start new timer for the voting page
-                        // and wait until time rans out
-                        room.gameController.startTimer(function(data) {
-
-                            //time has ran out so everyone is routed to the results page
-                            room.broadcastRoom("ROUTING", {
-                                location: 'results'
-                            });
-
-
-                            room.broadcastRoom("GAME playerRoundResults", {
-                                results: data.results,
-                                voteCounter: data.voteCounter
-                            });
-                        });
+                        putUserInVote(room);
                     });
                 }
 
@@ -439,22 +421,7 @@ module.exports = function(port, enableLogging, testing) {
                 // once everyone submitted an answer
                 if (data.allChoicesSubmitted === true) {
 
-                    room.broadcastRoom("ROUTING", {
-                        location: 'vote'
-                    });
-
-                    // start a timer for the voting page
-                    room.gameController.startTimer(function(data) {
-
-                        // once the time has ran out route everyone to the results page
-                        room.broadcastRoom("ROUTING", {
-                            location: 'results'
-                        });
-                        room.broadcastRoom("GAME playerRoundResults", {
-                            results: data.results,
-                            voteCounter: data.voteCounter
-                        });
-                    });
+                    putUserInVote(room);
                 }
             });
         });
@@ -489,6 +456,11 @@ module.exports = function(port, enableLogging, testing) {
                     room.broadcastRoom("ROUTING", {
                         location: 'results'
                     });
+
+                    // room.gameController.startTimer(function(data) {
+
+                    //        // -> route to new round
+                    // });
                 }
             });
         });
@@ -568,6 +540,34 @@ module.exports = function(port, enableLogging, testing) {
             }
         }
 
+        function putUserInVote(room) {
+
+            room.broadcastRoom("ROUTING", {
+                location: 'vote'
+            });
+
+            // start new timer for the voting page
+            // and wait until time rans out
+            room.gameController.startTimer(function(data) {
+
+                //time has ran out so everyone is routed to the results page
+                room.broadcastRoom("ROUTING", {
+                    location: 'results'
+                });
+
+
+                room.broadcastRoom("GAME playerRoundResults", {
+                    results: data.results,
+                    voteCounter: data.voteCounter
+                });
+
+               //  room.gameController.startTimer(function(data) {
+
+               // // -> route to new round
+               //  });
+            });
+        }
+
         function emitNotificationActionable(target, data) {
             target.emit("NOTIFICATION actionable", data);
         }
@@ -587,6 +587,7 @@ module.exports = function(port, enableLogging, testing) {
                 location: '/'
             });
         }
+
 
         /*
             Given a room ID finds the room in the rooms list
