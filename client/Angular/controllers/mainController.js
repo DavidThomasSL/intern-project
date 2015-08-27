@@ -55,12 +55,14 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
 
     // TODO make toaster server for this
     var notificationCalled = function(data) {
+
         if (data.action === "play again") {
 
+            // make toast that lets the player join another room
             toastr.success('<div id="toaster">' + data.user + ' wants to play again.<br> Click here to join</div>', {
                 allowHtml: true,
                 showCloseButton: true,
-                timeOut: 10000,
+                timeOut: null,
                 extendedTimeOut: 10000,
                 onHidden: function(clicked) {
                     if (clicked) {
@@ -70,6 +72,20 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
                     }
                 }
             });
+        } else if (data.action === "join room observer") {
+            //make toast that lets the user join a game as an observer
+            toastr.warning('<div id="toaster">Game already in progress<br> Click here to watch as an Observer</div>', {
+                allowHtml: true,
+                showCloseButton: true,
+                timeOut: 10000,
+                extendedTimeOut: 10000,
+                onHidden: function(clicked) {
+                    if (clicked) {
+                        roomService.joinRoomForce(data.roomId);
+                    }
+                }
+            });
+
         }
     };
 

@@ -22,11 +22,25 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         });
     }
 
-    function joinRoom(roomId) {
+    /*
+        Attempt to put a user into a room
+        Can force themselves in, which lets them join any room, but only as an observer
+    */
+    function joinRoom(roomId, force) {
+
+        if(force === undefined){
+            force = false;
+        }
+
         sendMessage('ROOM join', {
-            roomId: roomId
+            roomId: roomId,
+            force: force
         });
         errorMessage = "";
+    }
+
+    function joinRoomForce(roomId) {
+        joinRoom(roomId, true);
     }
 
     function getUsersInRoom() {
@@ -38,7 +52,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         getActiveUsersInRoom().forEach(function(activeUser) {
             if(activeUser.uId == userId) {
                 userToReturn = activeUser;
-            };
+            }
         });
         getBotsInRoom().forEach(function(currentBot) {
             if(currentBot.uId === userId) {
@@ -52,7 +66,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     //returns the array of all users who aren't observers
     function getActiveUsersInRoom() {
         var userList = usersInRoom.filter(function(userInRoom){
-            return (!userInRoom.isObserver)
+            return (!userInRoom.isObserver);
         });
         return userList;
     }
@@ -60,7 +74,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     //returns the array of all observers in the room
     function getObserversInRoom() {
         var observerList = usersInRoom.filter(function(userInRoom) {
-            return (userInRoom.isObserver)
+            return (userInRoom.isObserver);
         });
         return observerList;
     }
@@ -178,6 +192,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     return {
         createRoom: createRoom,
         joinRoom: joinRoom,
+        joinRoomForce: joinRoomForce,
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
         getUserFromId: getUserFromId,
