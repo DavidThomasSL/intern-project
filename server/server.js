@@ -181,7 +181,6 @@ module.exports = function(port, enableLogging, testing) {
 
             if (room !== undefined) {
                 removeUserFromRoom(room);
-                room.broadcastRoom('ROOM details');
             }
 
             if (!user.isObserver) {
@@ -527,26 +526,12 @@ module.exports = function(port, enableLogging, testing) {
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
-                // room.removeUser(user);
                 removeUserFromRoom(room);
 
                 if (!user.isObserver) {
                     user.readyToProceed = false;
                 }
 
-                // console.log("people in room" + room.usersInRoom.length);
-
-                // // Check if anyone is still in the room
-                // // if not, start expiriy timer
-                // if (room.usersInRoom.length === 0) {
-                //     room.setTimeToLiveTimer(function() {
-                //         deleteRoom(room);
-                //         console.log(rooms);
-                //         logger.debug("No-one in room" + room.id + ", deleting it");
-                //     });
-                // }
-
-                // logger.debug("Removing player from room" + room.id);
             } else {
                 logger.debug("User was not in a room");
             }

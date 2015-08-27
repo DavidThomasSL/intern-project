@@ -8,6 +8,8 @@ function Room(roomCode, testing) {
     self.botsInRoom = [];
     self.messages = [];
     self.timeToLiveTimer = undefined;
+    self.timeToLive = 15000; // amount of time the room will persist with no-one it it
+
 
     if (testing === undefined) {
         self.numRounds = 8;
@@ -86,15 +88,15 @@ function Room(roomCode, testing) {
 
 
     /*
-    Attempts to put a user in the room
+        Attempts to put a user in the room
 
-    Does not put the user in if
-        They are already in it
-        A game has started and they were not previosuly in that game
+        Does not put the user in if
+            They are already in it
+            A game has started and they were not previosuly in that game
 
-    If force is true, it will let the user join
-        this lets observers join games in progress
-*/
+        If force is true, it will let the user join
+            this lets observers join games in progress
+    */
     self.addUser = function(user, testing, forceUserInRoom) {
 
         var canJoin = true;
@@ -214,13 +216,10 @@ function Room(roomCode, testing) {
         If a user joins the room before the timeout expires, clears this timer
     */
     self.setTimeToLiveTimer = function(callback) {
-        var timeToLive = 10000;
-        console.log("setting time to live" + timeToLive);
-        self.timeToLiveTimer = setTimeout(callback, timeToLive);
+        self.timeToLiveTimer = setTimeout(callback, self.timeToLive);
     };
 
     self.clearTimeToLiveTimer = function() {
-        console.log("clearing time to live");
         clearTimeout(self.timeToLiveTimer);
     };
 
