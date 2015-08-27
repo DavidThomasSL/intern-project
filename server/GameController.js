@@ -676,7 +676,9 @@ module.exports = function(data) {
 	*/
 	var setRank = function() {
 
-		var allPlayers = players.concat(bots);
+		var allPlayers = players.concat(bots).filter(function(player){
+			return player.connectedToServer;
+		});
 
 		//sorting the players and getting their ranks
 		allPlayers.sort(function(a, b) {
