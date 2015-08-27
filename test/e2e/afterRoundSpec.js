@@ -26,15 +26,7 @@ describe('After each round', function() {
 			secondClonageUser.joinRoom(roomId);
 			firstClonageUser.ready();
 			secondClonageUser.ready();
-
-			//storing all the current cards in the users hand, used to test the replace hand button later on
-			for (i = 0; i < HAND_SIZE; i++) {
-				firstClonageUser.getCardText(i).then(pushTextToArray);
-			}
 		});
-		function pushTextToArray(cardText) {
-			currentHand.push(cardText);
-		}
 
 		firstClonageUser.getBlankSpaces().then(function(text) {
 			cardsToSubmit = parseInt(text[5]); //PICK X.
@@ -117,16 +109,11 @@ describe('After each round', function() {
 		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
 	});
 
-	it('can start a new round when everyone is ready and all cards have been replaced', function() {
+	it('can start a new round when everyone is ready', function() {
 
 		firstClonageUser.ready();
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
-
-		//testing if all the cards are different once we start the next round
-		for(i=0; i<HAND_SIZE; i++){
-		expect(firstClonageUser.element.all(by.exactRepeater("answer in userHand()")).get(i).element(by.id("answer")).getText()).not.toMatch(currentHand[i]);
-		}
 
 		firstClonageUser.clearUser();
 		browser2.close();

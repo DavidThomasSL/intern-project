@@ -7,6 +7,7 @@ describe('When playing a game', function() {
 	var HAND_SIZE = 10;
 	var roomId;
 	var cardsToSubmit;
+	var currentHand = [];
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
@@ -48,10 +49,16 @@ describe('When playing a game', function() {
 		expect(secondClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
 	});
 
-	it('can replace unwanted cards in hand and points are reduced as a result', function() {
+	it('can replace a unwanted hand and this is replaced by a different one', function() {
+
+		//store current hand
+		for (i = 0; i < HAND_SIZE; i++) {
+			currentHand.push(secondClonageUser.getCardText(i));
+		}
 
 		secondClonageUser.replaceHand();
-		for(i=0; i<HAND_SIZE; i++){
+		// check the new hand is different to the old one
+		for( i = 0; i < HAND_SIZE; i++) {
 			expect(secondClonageUser.element.all(by.exactRepeater("answer in userHand()")).get(i).element(by.id("answer")).getText()).not.toMatch(currentHand[i]);
 		}
 	});
