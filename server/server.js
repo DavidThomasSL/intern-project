@@ -457,7 +457,7 @@ module.exports = function(port, enableLogging, testing) {
                         location: 'results'
                     });
 
-                    room.gameController.startTimer(function(data) {
+                    room.gameController.startTimer(testing, function(data) {
 
                         startNextRoundInRoom(room.id);
                     });
@@ -561,7 +561,7 @@ module.exports = function(port, enableLogging, testing) {
                     voteCounter: data.voteCounter
                 });
 
-                room.gameController.startTimer(function(data) {
+                room.gameController.startTimer(testing, function(data) {
 
                     startNextRoundInRoom(room.id);
 
