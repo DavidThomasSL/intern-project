@@ -110,7 +110,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     };
 
     // start countdown
-    $scope.startCountdown = function() {
+    $scope.startCountdown = function(text) {
 
         //don't start a new countdown if one is already running ->>> it cancells the current one and start a new one
         if (angular.isDefined(countdown)) $scope.stopCountdown();
@@ -121,7 +121,10 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
             (=> page is loaded for the first time not refreshed)
         */
         if (gameService.getCountdown() === undefined) {
-            $scope.counter = 60;
+            if (text === undefined) {
+                $scope.counter = 60;
+            }
+            else $scope.counter = 20;
         }
 
         countdown = $interval(function() {

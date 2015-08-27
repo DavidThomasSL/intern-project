@@ -4,8 +4,8 @@
         <h4> {{currentQuestion().text}}</h4>
     </div>
     <div class="text-center">
-        <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
-        <div class="result-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'" data-ng-init="startCountdown()">
+        <ng-include src="'includes/templates/user/progressBarR.html'"></ng-include>
+        <div class="result-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'" data-ng-init="startCountdown('R')">
             <div class="row results-data-row">
                 <div class="col-xs-4">
                     <user-profile sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
