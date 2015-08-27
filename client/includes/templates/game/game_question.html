@@ -15,6 +15,11 @@
                     </button>
                 </div>
             </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 text-center">
+            <!-- Spaceing for extra small screens between buttons when stacked -->
+                <div class="hidden-lg hidden-md hidden-sm">&nbsp;</div>
+                <button id="replace-hand-button" type="button" class="btn btn-lg btn-danger" ng-click="replaceHand(userHand())">Replace hand <span class="badge">-{{handReplaceCost()}} points</span></button>
+            </div>
         </div>
     </div>
     <div class="col-md-3 col-xs-4 text-center" ng-repeat="user in getActiveUsersInRoom()">

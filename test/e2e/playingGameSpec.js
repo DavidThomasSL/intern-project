@@ -4,9 +4,10 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When playing a game', function() {
 
-	var MAX_ROUNDS;
+	var HAND_SIZE = 10;
 	var roomId;
 	var cardsToSubmit;
+	var currentHand = [];
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
@@ -46,6 +47,20 @@ describe('When playing a game', function() {
 	it('can see who did not submit an answer yet', function() {
 		expect(firstClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
 		expect(secondClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
+	});
+
+	it('can replace a unwanted hand and this is replaced by a different one', function() {
+
+		//store current hand
+		for (i = 0; i < HAND_SIZE; i++) {
+			currentHand.push(secondClonageUser.getCardText(i));
+		}
+
+		secondClonageUser.replaceHand();
+		// check the new hand is different to the old one
+		for( i = 0; i < HAND_SIZE; i++) {
+			expect(secondClonageUser.element.all(by.exactRepeater("answer in userHand()")).get(i).element(by.id("answer")).getText()).not.toMatch(currentHand[i]);
+		}
 	});
 
 	it('can refresh and still see who submitted an answer', function() {
