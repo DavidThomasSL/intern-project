@@ -30,8 +30,8 @@ function Round(roundCount, cardController) {
 
 	self.getNumberOfCurrentSubmissions = function() {
 		var submissionCounter = 0;
-		roundSubmissions.forEach(function(submission){
-			if(submission.submissionsText.length > 0){
+		roundSubmissions.forEach(function(submission) {
+			if (submission.submissionsText.length > 0) {
 				submissionCounter++;
 			};
 		});
@@ -40,7 +40,7 @@ function Round(roundCount, cardController) {
 
 	self.getNumberOfCurrentVotes = function() {
 		var voteCounter = 0;
-		roundSubmissions.forEach(function(submission){
+		roundSubmissions.forEach(function(submission) {
 			voteCounter += submission.playersWhoVotedForThis.length;
 		});
 		return voteCounter;
@@ -49,12 +49,12 @@ function Round(roundCount, cardController) {
 	self.isVotingComplete = function(numberOfConnectedPlayers) {
 		var maxPossibleVotes = numberOfConnectedPlayers;
 
-		roundSubmissions.forEach(function(submission){
-			if(!submission.player.hasSubmitted) {
-				availableAns = roundSubmissions.filter(function(ans){
+		roundSubmissions.forEach(function(submission) {
+			if (!submission.player.hasSubmitted) {
+				availableAns = roundSubmissions.filter(function(ans) {
 					return ans.player.uId !== submission.player.uId;
 				});
-				if(availableAns.length === 0) {
+				if (availableAns.length === 0) {
 					maxPossibleVotes--;
 				}
 			}
@@ -66,32 +66,33 @@ function Round(roundCount, cardController) {
 	/*
 		When the round starts with a set of players we generate a blank set of submissionsData
 	*/
-	self.initialise = function(players){
+	self.initialise = function(players) {
 		console.log(players);
-		players.forEach(function(player){
-			submission = {
-				player : player,
-				submissionsText : [],
-				playersWhoVotedForThis : []
+		players.forEach(function(player) {
+			if (player.connectedToServer) {
+				submission = {
+					player: player,
+					submissionsText: [],
+					playersWhoVotedForThis: []
+				}
+				roundSubmissions.push(submission);
 			};
-			roundSubmissions.push(submission);
 		});
 		roundQuestion = cardController.getQuestion();
 	};
 
-	self.addSubmission = function(submittingPlayer, answersText){
-		roundSubmissions.forEach(function(submission){
-			if(submission.player.uId === submittingPlayer.uId){
+	self.addSubmission = function(submittingPlayer, answersText) {
+		roundSubmissions.forEach(function(submission) {
+			if (submission.player.uId === submittingPlayer.uId) {
 				submission.submissionsText = answersText;
 			}
 		});
 	};
 
 
-	self.addVote = function(votingPlayer, submissionVotedFor){
-		roundSubmissions.forEach(function(submission){
-			if(submissionVotedFor.player.uId === submission.player.uId)
-			{
+	self.addVote = function(votingPlayer, submissionVotedFor) {
+		roundSubmissions.forEach(function(submission) {
+			if (submissionVotedFor.player.uId === submission.player.uId) {
 				submission.playersWhoVotedForThis.push(votingPlayer);
 			}
 		});
