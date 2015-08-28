@@ -77,8 +77,9 @@ module.exports = function(data) {
 				var round = rounds[roundCount-1];
 
 				var roundData = {
-					results: round.getRoundSubmissionData(),
-					voteCounter: round.getNumberOfCurrentVotes()
+					roundSubmissionData: round.getRoundSubmissionData(),
+					currentNumberOfSubmissions: round.getNumberOfCurrentVotes(),
+					currentNumberOfVotes: round.getNumberOfCurrentVotes()
 				};
 				callback(roundData);
 			}
@@ -151,7 +152,7 @@ module.exports = function(data) {
 			roundCount += 1;
 
 			var round = new Round(roundCount, cardController);
-			round.initialise(players);
+			round.initialise(players.concat(bots));
 
 			rounds.push(round);
 
@@ -262,36 +263,7 @@ module.exports = function(data) {
 
 			currentRound.addVote(submittingPlayer,votedForAnswer);
 
-			// // Add the user's vote to the answer
-			// currentRound.answers.forEach(function(answer) {
-
-			// 	//Find the anwser matching the one selected
-			// 	if (answer.player.uId === votedForAnswer.player.uId) {
-
-			// 		answer.playersVote.push(submittingPlayer);
-			// 	}
-
-			// 	// Build result object for each answer submitted
-			// 	// Also works for bots
-			// 	var answerPlayer = getPlayerFromId(answer.player.uId);
-			// 	var result = {};
-
-			// 	// Only add result if player was found with that id
-			// 	if (answerPlayer !== undefined) {
-
-			// 		result = {
-			// 			player: answerPlayer,
-			// 			answersText: answer.answersText,
-			// 			playersWhoVotedForThis: answer.playersVote,
-
-			// 		};
-
-			// 		currentRound.results.push(result);
-			// 	}
-			// });
-
 			var allVotesSubmitted;
-			var voteNumber = currentRound.getNumberOfCurrentVotes();
 
 			//check if everyone voted
 			if (currentRound.isVotingComplete(getNumOfConnectedPlayers())) {
@@ -300,55 +272,18 @@ module.exports = function(data) {
 				// Add the points for the game
 				updateGameState(POSSIBLE_GAMESTATES.ROUND_RESULTS);
 
-				voteNumber = 0;
 				allVotesSubmitted = true;
-
 			} else {
 				allVotesSubmitted = false;
 			}
-
 			callback({
-				res: currentRound.getRoundSubmissionData(),
-				currentVotes: currentRound.getRoundSubmissionData(),
-				allVotesSubmitted: allVotesSubmitted,
-				voteNumber: voteNumber
+				roundSubmissionData: currentRound.getRoundSubmissionData(),
+				currentNumberOfVotes: currentRound.getNumberOfCurrentVotes(),
+				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
+				allVotesSubmitted: allVotesSubmitted
 			});
 		}
 	};
-
-	/*
-		Return if voting stage is ready to end
-
-		If the number of votes submitted is equal to or more than
-		the number of answers submitted
-
-		Works if not all players submit an answer, we don't have to wait to time out in that case
-	*/
-	// function isVotingComplete(round) {
-
-	// 	var maxPosVotes = getNumOfConnectedPlayers(); // maximum number of votes possible to have
-
-	// 	players.forEach(function(player) {
-
-	// 		// check if a player has NOT submitted
-	// 		if (!player.hasSubmitted) {
-
-	// 			// check if it possible for them to submit (are there answers other than their own to vote on?)
-	// 			availableAns = round.answers.filter(function(ans) {
-	// 				return ans.player.uId !== player.uId;
-	// 			});
-
-	// 			if (availableAns.length === 0) {
-	// 				// this player cannot vote for any choices,
-	// 				// reduce number of max possible votes
-	// 				maxPosVotes--;
-	// 			}
-	// 		}
-	// 	});
-
-	// 	return maxPosVotes === countVotes(round);
-	// }
-
 
 	/*
 		Catches a reconnecting user up with the current game status
@@ -367,7 +302,6 @@ module.exports = function(data) {
 		var userData = {};
 		var data = [];
 		var player;
-		var lastFullRound;
 
 		var currentRound = rounds[roundCount - 1];
 
@@ -379,8 +313,6 @@ module.exports = function(data) {
 
 		if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
 
-			lastFullRound = rounds[roundCount - 2];
-
 			if (player.hasSubmitted) {
 				routingInfo = "waitQuestion";
 			} else {
@@ -388,8 +320,6 @@ module.exports = function(data) {
 			}
 
 		} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
-
-			lastFullRound = rounds[roundCount - 2];
 
 			if (player.hasSubmitted) {
 				routingInfo = "waitVote";
@@ -399,13 +329,9 @@ module.exports = function(data) {
 
 		} else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
 
-			lastFullRound = rounds[roundCount - 1];
-
 			routingInfo = "results";
 
 		} else if (GameState === POSSIBLE_GAMESTATES.FINAL_RESULTS) {
-
-			lastFullRound = rounds[roundCount - 1];
 
 			routingInfo = "endGame";
 
@@ -421,8 +347,8 @@ module.exports = function(data) {
 		var questionData = {
 			eventName: "GAME question",
 			data: {
-				question: currentRound.question,
-				round: currentRound.count,
+				question: currentRound.getRoundQuestion(),
+				round: currentRound.getRoundCount(),
 				handReplaceCost: HAND_REPLACE_COST,
 				maxRounds: MAX_ROUNDS,
 				countdown: count
@@ -432,30 +358,26 @@ module.exports = function(data) {
 		var playerQuestionData = {
 			eventName: "PLAYER question",
 			data: {
-				question: currentRound.question
+				question: currentRound.getRoundQuestion()
 			}
 		};
-
-		if (lastFullRound !== undefined) {
-			results = lastFullRound.results;
-		} else results = [];
 
 		var roundData = {
-			eventName: "GAME playerRoundResults",
+			eventName: "GAME roundSubmissionData",
 			data: {
-				results: results,
-				currentVotes: currentRound.results,
-				voteNumber: countVotes(currentRound)
+				roundSubmissionData: currentRound.getRoundSubmissionData(),
+				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
+				currentNumberOfVotes: currentRound.getNumberOfCurrentVotes()
 			}
 		};
 
-		var answerData = {
-			eventName: "GAME answers",
-			data: {
-				answers: currentRound.answers,
-				countdown: count
-			}
-		};
+		// var answerData = {
+		// 	eventName: "GAME answers",
+		// 	data: {
+		// 		answers: currentRound.answers,
+		// 		countdown: count
+		// 	}
+		// };
 
 		if (testing !== undefined) {
 
@@ -469,7 +391,7 @@ module.exports = function(data) {
 		}
 
 		data.push(roundData);
-		data.push(answerData);
+		// data.push(answerData);
 		data.push(questionData);
 		data.push(playerQuestionData);
 		data.push(userHand);
@@ -483,7 +405,7 @@ module.exports = function(data) {
 	*/
 	var addFakeAnswers = function(round) {
 
-		var answersToPick = round.getRoundQuestion.pick;
+		var answersToPick = round.getRoundQuestion().pick;
 		var ans;
 
 		// Get answer from each bot
@@ -496,18 +418,7 @@ module.exports = function(data) {
 				bot.updateHand(randomAns);
 				randomAnswers.push(randomAns);
 			}
-
 			round.addSubmission(bot,randomAnswers);
-
-			// Build the submitted answer
-			// ans = {
-			// 	player: bot,
-			// 	answersText: randomAnswers,
-			// 	playersVote: [],
-			// 	rank: ""
-			// };
-
-			// round.answers.push(ans);
 		});
 	};
 
@@ -579,9 +490,9 @@ module.exports = function(data) {
 		//updating the player ranks with the new point values
 		setRank();
 
-		//need also the send new point values back, doing this through playerRoundResults
-		var currentResults = rounds[rounds.length - 1].results;
-		callback(currentPlayer.hand, currentResults);
+		//passes the new round object back to give everyone updated scores
+		var round = rounds[rounds.length - 1];
+		callback(currentPlayer.hand, round);
 	};
 
 	// TO DO : check game state before every move!

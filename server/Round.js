@@ -67,6 +67,7 @@ function Round(roundCount, cardController) {
 		When the round starts with a set of players we generate a blank set of submissionsData
 	*/
 	self.initialise = function(players){
+		console.log(players);
 		players.forEach(function(player){
 			submission = {
 				player : player,

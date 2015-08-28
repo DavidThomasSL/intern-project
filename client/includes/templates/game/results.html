@@ -4,18 +4,18 @@
         <h4> {{currentQuestion().text}}</h4>
     </div>
     <div class="text-center">
-        <div class="result-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
+        <div class="result-data-container" ng-repeat="submission in roundSubmissionData() | orderBy : '-playersWhoVotedForThis.length'">
             <div class="row results-data-row">
                 <div class="col-xs-4">
-                    <user-profile sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
+                    <user-profile sizex="60" sizey="60" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
                     image"></user-profile>
-                    <p>{{result.player.name}}</p>
+                    <p>{{submission.player.name}}</p>
                 </div>
                 <div class="col-xs-8">
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="flex1">
-                                <span ng-repeat="text in result.answersText track by $index">{{text}}<br></span>
+                                <span ng-repeat="text in submission.submissionsText track by $index">{{text}}<br></span>
                             </div>
                         </div>
                     </div>
@@ -23,12 +23,12 @@
             </div>
             <div class="row results-data-row">
                 <div class="col-xs-8 text-center">
-                    <span ng-repeat="votingPlayer in result.playersWhoVotedForThis track by $index">
+                    <span ng-repeat="votingPlayer in submission.playersWhoVotedForThis track by $index">
                         <user-profile class="flex1" sizex="40" sizey="40" isbot="getUserFromId(votingPlayer.uId).isBot" image="getUserFromId(votingPlayer.uId).
                     image"></user-profile></span>
                 </div>
                 <div class="cos-xs-4 results-point-badge">
-                    <div class="label label-success" style="font-size: 20px; margin-bottom:20px;">+{{result.playersWhoVotedForThis.length*50}}</div>
+                    <div class="label label-success" style="font-size: 20px; margin-bottom:20px;">+{{submission.playersWhoVotedForThis.length*50}}</div>
                 </div>
             </div>
         </div>

@@ -275,15 +275,16 @@ module.exports = function(port, enableLogging, testing) {
         socket.on('PLAYER replace cards', function(data) {
             var room = getRoomFromId(user.roomId);
 
-            room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newResults) {
+            room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newRoundData) {
 
                 user.emit('USER hand', {
                     hand: newHand
                 });
 
-                room.broadcastRoom('GAME playerRoundResults', {
-                    results: newResults,
-                    voteNumber: 0
+                room.broadcastRoom('GAME roundSubmissionData', {
+                    roundSubmissionData: newRoundData.getRoundSubmissionData(),
+                    currentNumberOfSubmissions: newRoundData.getNumberOfCurrentSubmissions(),
+                    currentNumberOfVotes: newRoundData.getNumberOfCurrentVotes()
                 });
 
                 user.emit("NOTIFICATION message", {
@@ -398,9 +399,10 @@ module.exports = function(port, enableLogging, testing) {
                             });
 
 
-                            room.broadcastRoom("GAME playerRoundResults", {
-                                results: data.results,
-                                voteCounter: data.voteCounter
+                            room.broadcastRoom("GAME roundSubmissionData", {
+                                roundSubmissionData: data.roundSubmissionData,
+                                currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                                currentNumberOfVotes: data.currentNumberOfVotes
                             });
                         });
                     });
@@ -454,9 +456,10 @@ module.exports = function(port, enableLogging, testing) {
                         room.broadcastRoom("ROUTING", {
                             location: 'results'
                         });
-                        room.broadcastRoom("GAME playerRoundResults", {
-                            results: data.results,
-                            voteCounter: data.voteCounter
+                        room.broadcastRoom("GAME roundSubmissionData", {
+                            roundSubmissionData: data.roundSubmissionData,
+                            currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                            currentNumberOfVotes: data.currentNumberOfVotes
                         });
                     });
                 }
@@ -481,15 +484,9 @@ module.exports = function(port, enableLogging, testing) {
             // Otherwise they just get the current round results
             room.gameController.submitVote(user.uId, msg.answer, function(data) {
 
-                // Send room the vote data after each vote
-                // room.broadcastRoom("GAME playerRoundResults", {
-                //     results: data.res,
-                //     currentVotes: data.currentVotes,
-                //     voteNumber: data.voteNumber
-                // });
-
                 room.broadcastRoom("GAME roundSubmissionData", {
                     roundSubmissionData: data.roundSubmissionData,
+                    currentNumberOfVotes: data.currentNumberOfVotes,
                     currentNumberOfSubmissions: data.currentNumberOfSubmissions
                 });
 

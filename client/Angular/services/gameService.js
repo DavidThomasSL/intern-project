@@ -9,7 +9,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var currentQuestion; // the current question containing the text and how many answers to submit
 	var currentlySubmittedAnswers = []; //if multiple blanks then hold the currently selected answers
 	var round = -1;
-	var answers = [];
 
 	var playerRoundResults = [];
 	var voteCounter = 0;
@@ -23,7 +22,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	var countdown;
 	var cardsToReplace = [];
-	var cardReplaceCost = 0; //variable holing the current cost of replacing a card
+	var handReplaceCost = 0; //variable holing the current cost of replacing a card
 
 	var votes = [];
 	var timeout = 5000;
@@ -44,10 +43,17 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	//get the current submission information
 	function getRoundSubmissionData() {
-		console.log("GETTTING RSD");
-		console.log(roundSubmissionData);
 		return roundSubmissionData;
 	}
+
+	function getCurrentNumberOfSubmissions() {
+		return currentNumberOfSubmissions;
+	}
+
+	function getCurrentNumberOfVotes() {
+		return currentNumberOfVotes;
+	}
+
 
 	//the position in the order of answers for multiple answer selections
 	function getAnswerPosition(answer) {
@@ -63,18 +69,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return maxRounds;
 	}
 
-	//get all answers submitted
-	function getAnswers() {
-		return answers;
-	}
-
-	function getCurrentNumberOfSubmissions() {
-		return currentNumberOfSubmissions;
-	}
-
-	function getCurrentNumberOfVotes() {
-		return currentNumberOfVotes;
-	}
 
 	function getCurrentVotes() {
 		return voteCounter;
@@ -217,13 +211,12 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	}
 
 	function _setRoundSubmissionData(data) {
-		console.log("getting round submissions data");
 
 		roundSubmissionData = data.roundSubmissionData;
 		currentNumberOfSubmissions = data. currentNumberOfSubmissions;
 		currentNumberOfVotes = data.currentNumberOfVotes;
 
-
+		console.log(roundSubmissionData);
 		//generating the filled in question based on the question text and submitted answers as above
 		if (currentQuestion !== undefined) {
 			roundSubmissionData.forEach(function(submission) {
@@ -301,7 +294,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	return {
 		getCurrentQuestion: getCurrentQuestion,
 		getAnswerPosition: getAnswerPosition,
-		getAnswers: getAnswers,
 		getCurrentNumberOfSubmissions: getCurrentNumberOfSubmissions,
 		getCurrentNumberOfVotes: getCurrentNumberOfVotes,
 		getRoundSubmissionData: getRoundSubmissionData,
@@ -312,7 +304,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getPlayerCurrentRank: getPlayerCurrentRank,
 		getHandReplaceCost: getHandReplaceCost,
 		_receiveQuestion: _receiveQuestion,
-		_setChosenAnswers: _setChosenAnswers,
 		_setPlayerRoundResults: _setPlayerRoundResults,
 		_setMaxRounds: _setMaxRounds,
 		clearGameData: clearGameData,
