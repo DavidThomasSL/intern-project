@@ -59,7 +59,7 @@ module.exports = function(data) {
 		}
 		else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
 			if (testing === undefined)	count = 20;
-			else count = 3;
+			else count = 0;
 		}
 
 		timerIsActive = true;

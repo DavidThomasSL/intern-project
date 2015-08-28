@@ -12,9 +12,9 @@ describe('After ending the game', function() {
 	var firstClonageUser = new clonageUser(browser);
 	var secondClonageUser = new clonageUser(browser2);
 
-	it('can be redirected to a end game page', function() {
+	it('can be redirected to an end game page', function() {
 
-		MAX_ROUNDS = 2;
+		MAX_ROUNDS = 1;
 
 		firstClonageUser.getIndex();
 		firstClonageUser.submitName('John');
@@ -25,36 +25,40 @@ describe('After ending the game', function() {
 
 		firstClonageUser.getRoomId().then(function(text) {
 			roomId = text.split(" ")[2];
-			secondClonageUser.joinRoom(roomId);
-
 			// set round number low to prevent jasmine timeouts on circleCI
 			firstClonageUser.setRoundNumber(MAX_ROUNDS);
 
+			secondClonageUser.joinRoom(roomId);
+			expect(browser.getCurrentUrl()).toMatch(/\/room/);
+			expect(browser2.getCurrentUrl()).toMatch(/\/room/);
+			console.log(roomId);
 			firstClonageUser.ready();
 			secondClonageUser.ready();
+			expect(browser.getCurrentUrl()).toMatch(/\/question/);
+			expect(browser2.getCurrentUrl()).toMatch(/\/question/);
+
+			firstClonageUser.getBlankSpaces().then(function(text) {
+
+				cardsToSubmit = parseInt(text[5]); //PICK X.
+				firstClonageUser.submitFirstAnswers(cardsToSubmit);
+				secondClonageUser.submitFirstAnswers(cardsToSubmit);
+				firstClonageUser.submitFirstVote();
+				secondClonageUser.submitFirstVote();
+
+				expect(browser.getCurrentUrl()).toMatch(/\/results/);
+				expect(browser2.getCurrentUrl()).toMatch(/\/results/);
+
+			});
+
 		});
 
-
-		//taking function out of loop as jshint complains
-		var userSubmitAnswer = function(text) {
-			cardsToSubmit = parseInt(text[5]); //PICK X.
-			firstClonageUser.submitFirstAnswers(cardsToSubmit);
-			secondClonageUser.submitFirstAnswers(cardsToSubmit);
-		};
-
-		//change value here if we change the number of rounds
-		for (var i = 0; i < MAX_ROUNDS; i++) {
-			firstClonageUser.getBlankSpaces().then(userSubmitAnswer);
-
-			firstClonageUser.submitFirstVote();
-			secondClonageUser.submitFirstVote();
-
-			firstClonageUser.ready();
-			secondClonageUser.ready();
-		}
+		browser.wait( function(){
+		  return element(by.id('end-game-container')).isPresent();
+		}, 2000);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/endGame/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
+
 
 	});
 	it('can see players scores', function() {

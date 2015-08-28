@@ -378,7 +378,7 @@ module.exports = function(port, enableLogging, testing) {
                     // once a new round has started (aka we are on question page)
                     // start a timer
                     // and wait until it has ran out (triggers a callback)
-                    room.gameController.startTimer(function(data) {
+                    room.gameController.startTimer(testing, function(data) {
 
                         // time has ran out so everyone is routed to the voting page
                         putUserInVote(room);
@@ -548,7 +548,7 @@ module.exports = function(port, enableLogging, testing) {
 
             // start new timer for the voting page
             // and wait until time rans out
-            room.gameController.startTimer(function(data) {
+            room.gameController.startTimer(testing, function(data) {
 
                 //time has ran out so everyone is routed to the results page
                 room.broadcastRoom("ROUTING", {
