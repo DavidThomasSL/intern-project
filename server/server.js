@@ -102,6 +102,10 @@ module.exports = function(port, enableLogging, testing) {
             user.image = data.image;
             user.isObserver = data.isObserver;
             user.readyToProceed = data.isObserver;
+
+            if(user === undefined || user.sendUserDetails === undefined){
+                console.log("waht the fuck " + data);
+            }
             user.sendUserDetails();
 
             putUserInJoining();
@@ -118,11 +122,11 @@ module.exports = function(port, enableLogging, testing) {
             var room = new Room(roomId, testing);
             rooms.push(room);
 
+            putUserInRoom(roomId);
+
             users.forEach(function(user) {
                 user.emit("GAME rooms available", getRoomsInformation());
             });
-
-            putUserInRoom(roomId);
         });
 
         /*
@@ -200,11 +204,22 @@ module.exports = function(port, enableLogging, testing) {
 
             room.removeUser(user);
 
+            //update the observers list of available rooms
+            users.forEach(function(user) {
+                user.emit("GAME rooms available", getRoomsInformation());
+            });
+
             // Check if anyone is still in the room
             // if not, start expiriy timer
             if (room.usersInRoom.length === 0) {
                 room.setTimeToLiveTimer(function() {
                     deleteRoom(room);
+
+                    //update the observers list of available rooms
+                    users.forEach(function(user) {
+                        user.emit("GAME rooms available", getRoomsInformation());
+                    });
+
                     logger.debug("No-one in room" + room.id + ", deleting it");
                 });
             }
@@ -337,8 +352,10 @@ module.exports = function(port, enableLogging, testing) {
             rooms.forEach(function(room) {
 
                 var roomDet = {
-                    id: room.id
+                    id: room.id,
+                    usersInRoom: room.getUsersInRoomDetails()
                 };
+
                 roomsAvailable.push(roomDet);
             });
             return roomsAvailable;
@@ -571,7 +588,13 @@ module.exports = function(port, enableLogging, testing) {
 
                 // Handle result of room join attempt
                 if (result.joined) {
+                    // update the game rooms available for everyone
+                    users.forEach(function(u) {
+                        u.emit("GAME rooms available", getRoomsInformation());
+                    });
+
                     logger.debug("User " + user.name + " joined room " + roomId);
+
                 } else if (result.gameInProgress) {
                     // give user abilty to join room in progress
                     emitNotificationActionable(user, {

@@ -23,7 +23,19 @@ describe('When playing as a observer', function() {
 		secondClonageUser.getIndex();
 		secondClonageUser.submitName('Alice');
 		secondClonageUser.createRoom();
+
+		expect(browser2.getCurrentUrl()).toMatch(/\/room/);
+
 		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBeGreaterThan(0); // don't know how many rooms will have timed out by this point
+
+	});
+
+	it('can see the number of users in the room', function() {
+		expect(browser2.getCurrentUrl()).toMatch(/\/room/);
+		expect(secondClonageUser.element(by.binding("roomId()")).getText()).toContain("ROOM CODE:");
+
+		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).last().element(by.binding('room.id')).getText()).toMatch("ROOM");
+		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).last().element(by.binding('room.usersInRoom.length')).getText()).toEqual("1");
 	});
 
 	it('Can refresh and still see all the rooms available', function() {
@@ -33,14 +45,14 @@ describe('When playing as a observer', function() {
 	});
 
 	it('Can join a room by only pressing on the room button in the joining page', function() {
-		firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).last().click();
+
+		firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).last().element(by.id('observer-join-game-button')).click();
 		expect(browser.getCurrentUrl()).toMatch(/\/observeLobby/);
 	});
 
 	it('After starting the game, observer and user are put to relevant pages', function() {
 		MAX_ROUNDS = 3;
 		BOT_NUM = 3;
-
 
 		secondClonageUser.setRoundNumber(MAX_ROUNDS);
 		secondClonageUser.setBotsOn(BOT_NUM); // ENABLE BOTS
