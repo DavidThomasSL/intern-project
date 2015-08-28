@@ -18,8 +18,9 @@ module.exports = function(data) {
 	var MAX_ROUNDS = 8;
 	var BOT_NUMBER = 0;
 	var POINTS_PER_VOTE = 50;
-	var CARD_REPLACE_COST = 10;
+	var HAND_REPLACE_COST = 50;
 	var HANDSIZE = 10; //Number of white cards a user should always have
+	var animationTime = 5; //time each animation runs for on the client
 
 	// Indicate what gamestate the gamecontroller is currently in
 	var POSSIBLE_GAMESTATES = {
@@ -34,7 +35,7 @@ module.exports = function(data) {
 	// true if there is a timer running -> checked in updateGameState
 	// in the case if everyone submitted and game state has changed -> timer needs to stop
 	var timerIsActive = false;
-	var count = 60;
+	var count;
 
 	/*
 		holding the function called on a 1sec interval
@@ -47,6 +48,15 @@ module.exports = function(data) {
 	var startTimer = function(callback) {
 
 		count = 60;
+		if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+			/*
+				if we are on the voting page
+				the answers appear one at a time and we have to also wait
+				until all answers finished their animation
+				in order to start the timer
+			*/
+			count += animationTime * (rounds[roundCount - 1].answers.length);
+		}
 
 		timerIsActive = true;
 		setAllPlayersAbleToSubmit();
@@ -115,16 +125,43 @@ module.exports = function(data) {
 	*/
 	var initialize = function(room, callback) {
 
+		var initialResults = [];
 		cardController = new CardController(function() {
 			room.usersInRoom.forEach(function(user) {
 				setupPlayer(user);
 			});
 
-			BOT_NUMBER = room.botNumber;
+			room.botsInRoom.forEach(function(bot) {
+				setupBot(bot);
+			});
+
+			players.forEach(function(player) {
+				if (player.connectedToServer) {
+					var result = {
+						player: player,
+						answersText: [],
+						playersWhoVotedForThis: []
+					};
+					initialResults.push(result);
+				}
+
+			});
+
+			bots.forEach(function(bot) {
+
+				var result = {
+					player: bot,
+					answersText: [],
+					playersWhoVotedForThis: []
+				};
+				initialResults.push(result);
+			});
+
+			BOT_NUMBER = room.botsInRoom.length;
 			MAX_ROUNDS = room.numRounds;
 
 			//Call back to server after finish setting up
-			callback();
+			callback(initialResults);
 		});
 	};
 
@@ -167,7 +204,7 @@ module.exports = function(data) {
 				players: players,
 				roundQuestion: round.question,
 				round: roundCount,
-				cardReplaceCost: CARD_REPLACE_COST,
+				handReplaceCost: HAND_REPLACE_COST,
 				maxRounds: MAX_ROUNDS,
 				gameIsOver: false
 			};
@@ -218,7 +255,7 @@ module.exports = function(data) {
 			var allChoicesSubmitted;
 
 			//check if everyone submitted and sends back all the currently submitted answers
-			if (currentRound.answers.length === getNumOfConnectedPlayers()) {
+			if (currentRound.answers.length >= getNumOfConnectedPlayers()) {
 
 				//add bot answers for people to vote on
 				addFakeAnswers(currentRound);
@@ -277,7 +314,7 @@ module.exports = function(data) {
 				//Find the anwser matching the one selected
 				if (answer.player.uId === votedForAnswer.player.uId) {
 
-					answer.playersVote.push(submittingPlayer.name);
+					answer.playersVote.push(submittingPlayer);
 				}
 
 				// Build result object for each answer submitted
@@ -303,7 +340,7 @@ module.exports = function(data) {
 			var voteNumber = countVotes(currentRound);
 
 			//check if everyone voted
-			if (voteNumber === getNumOfConnectedPlayers()) {
+			if (isVotingComplete(currentRound)) {
 
 				// Change the gamestate to the next stage
 				// Add the points for the game
@@ -318,11 +355,46 @@ module.exports = function(data) {
 
 			callback({
 				res: currentRound.results,
+				currentVotes: currentRound.results,
 				allVotesSubmitted: allVotesSubmitted,
 				voteNumber: voteNumber
 			});
 		}
 	};
+
+	/*
+		Return if voting stage is ready to end
+
+		If the number of votes submitted is equal to or more than
+		the number of answers submitted
+
+		Works if not all players submit an answer, we don't have to wait to time out in that case
+	*/
+	function isVotingComplete(round) {
+
+		var maxPosVotes = getNumOfConnectedPlayers(); // maximum number of votes possible to have
+
+		players.forEach(function(player) {
+
+			// check if a player has NOT submitted
+			if (!player.hasSubmitted) {
+
+				// check if it possible for them to submit (are there answers other than their own to vote on?)
+				availableAns = round.answers.filter(function(ans) {
+					return ans.player.uId !== player.uId;
+				});
+
+				if (availableAns.length === 0) {
+					// this player cannot vote for any choices,
+					// reduce number of max possible votes
+					maxPosVotes--;
+				}
+			}
+		});
+
+		return maxPosVotes === countVotes(round);
+	}
+
 
 	/*
 		Catches a reconnecting user up with the current game status
@@ -332,7 +404,8 @@ module.exports = function(data) {
 			game information (game question, user hand)
 			round information (current votes, etc for table)
 	*/
-	var getInfoForReconnectingUser = function(userId, callback) {
+
+	var getInfoForReconnectingUser = function(user, testing, callback) {
 
 		//GET round information
 		var routingInfo = "";
@@ -344,9 +417,11 @@ module.exports = function(data) {
 
 		var currentRound = rounds[roundCount - 1];
 
-		player = getPlayerFromId(userId);
+		player = getPlayerFromId(user.uId);
 
-		player.connectedToServer = true;
+		if (!user.isObserver) {
+			player.connectedToServer = true;
+		}
 
 		if (GameState === POSSIBLE_GAMESTATES.QUESTION) {
 
@@ -394,9 +469,16 @@ module.exports = function(data) {
 			data: {
 				question: currentRound.question,
 				round: currentRound.count,
-				cardReplaceCost: CARD_REPLACE_COST,
+				handReplaceCost: HAND_REPLACE_COST,
 				maxRounds: MAX_ROUNDS,
 				countdown: count
+			}
+		};
+
+		var playerQuestionData = {
+			eventName: "PLAYER question",
+			data: {
+				question: currentRound.question
 			}
 		};
 
@@ -408,6 +490,7 @@ module.exports = function(data) {
 			eventName: "GAME playerRoundResults",
 			data: {
 				results: results,
+				currentVotes: currentRound.results,
 				voteNumber: countVotes(currentRound)
 			}
 		};
@@ -420,9 +503,21 @@ module.exports = function(data) {
 			}
 		};
 
+		if (testing !== undefined) {
+
+			var timeoutData = {
+				eventName: "GAME timeout",
+				data: {
+					timeout: 0
+				}
+			};
+			data.push(timeoutData);
+		}
+
 		data.push(roundData);
 		data.push(answerData);
 		data.push(questionData);
+		data.push(playerQuestionData);
 		data.push(userHand);
 
 		callback(routingInfo, data);
@@ -436,44 +531,28 @@ module.exports = function(data) {
 
 		var answersToPick = round.question.pick;
 		var ans;
-		var fakePlayer;
 
-		for (var i = 0; i < BOT_NUMBER; i++) {
-
-			// Ethier create new bots or use the exisiting ones
-			if (bots.length === i) {
-
-				fakePlayer = new Player({
-					uId: i,
-					name: "BOT " + i
-				}, cardController);
-
-				fakePlayer.dealHand(HANDSIZE);
-				fakePlayer.isBot = true;
-				bots.push(fakePlayer);
-			} else {
-				fakePlayer = bots[i];
-			}
-
+		// Get answer from each bot
+		bots.forEach(function(bot) {
 			var randomAnswers = [];
 			var randomAns;
 
 			for (var j = 0; j < answersToPick; j++) {
-				randomAns = fakePlayer.pickRandomCard();
-				fakePlayer.updateHand(randomAns);
+				randomAns = bot.pickRandomCard();
+				bot.updateHand(randomAns);
 				randomAnswers.push(randomAns);
 			}
 
 			// Build the submitted answer
 			ans = {
-				player: fakePlayer,
+				player: bot,
 				answersText: randomAnswers,
 				playersVote: [],
 				rank: ""
 			};
 
 			round.answers.push(ans);
-		}
+		});
 	};
 
 	/*
@@ -533,15 +612,17 @@ module.exports = function(data) {
 		}
 	};
 
-	var replaceCards = function(userId, cardsToReplace, callback) {
+	var replaceHand = function(userId, cardsToReplace, callback) {
 		var newHand;
 		var currentPlayer = getPlayerFromId(userId);
 
-		//replace all request cards with a new cards
-		cardsToReplace.forEach(function(cardToReplace) {
-			currentPlayer.updateHand(cardToReplace);
-			currentPlayer.removePoints(CARD_REPLACE_COST);
-		});
+		//replace all requested cards with new ones and remove points
+		currentPlayer.replaceCards(cardsToReplace);
+		currentPlayer.removePoints(HAND_REPLACE_COST);
+
+		//updating the player ranks with the new point values
+		setRank();
+
 		//need also the send new point values back, doing this through playerRoundResults
 		var currentResults = rounds[rounds.length - 1].results;
 		callback(currentPlayer.hand, currentResults);
@@ -564,7 +645,7 @@ module.exports = function(data) {
 		currentAnswers.forEach(function(answer) {
 			answer.playersVote.forEach(function(votingPlayer) {
 				playersWhoHaventVoted = playersWhoHaventVoted.filter(function(iteratedPlayer) {
-					return (iteratedPlayer.name !== votingPlayer);
+					return (iteratedPlayer.uId !== votingPlayer.uId);
 				});
 			});
 		});
@@ -587,12 +668,18 @@ module.exports = function(data) {
 		return votes;
 	};
 
+
 	/*
 		Gives a rank to every player in the game based on their points total
 	*/
 	var setRank = function() {
 
-		var allPlayers = players.concat(bots);
+
+		//putting all players and bots into one array then filtering based on connected to server
+		//this means set rank will ignore all observers and players who have left
+		var allPlayers = players.concat(bots).filter(function(player){
+			return player.connectedToServer;
+		});
 
 		//sorting the players and getting their ranks
 		allPlayers.sort(function(a, b) {
@@ -619,10 +706,19 @@ module.exports = function(data) {
 	*/
 	var setupPlayer = function(user) {
 		var player = new Player(user, cardController);
+		if (user.isObserver === true) {
+			player.connectedToServer = false;
+		}
 
 		// Removes the cards from list of possible cards for other player
 		player.dealHand(HANDSIZE);
 		players.push(player);
+	};
+
+	var setupBot = function(bot) {
+		var botPlayer = new Player(bot, cardController);
+		botPlayer.dealHand(HANDSIZE);
+		bots.push(botPlayer);
 	};
 
 	var disconnectPlayer = function(playerId) {
@@ -656,8 +752,9 @@ module.exports = function(data) {
 		initialize: initialize,
 		submitAnswer: submitAnswer,
 		submitVote: submitVote,
-		replaceCards: replaceCards,
+		replaceHand: replaceHand,
 		newRound: newRound,
+		setupPlayer: setupPlayer,
 		updateGameState: updateGameState,
 		startTimer: startTimer,
 		checkIfUserInGame: checkIfUserInGame,

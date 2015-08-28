@@ -1,9 +1,9 @@
 <div class="container">
+    <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
     <div class="header clearfix">
-        <div id="roundQuestion">
-            <h2 animate-on-change="filledInQuestion()">{{filledInQuestion()}}</h2>
-            <h4>Submit your favourite answer.</h4>
-            <h4 id="amount-to-submit">Pick {{currentQuestion().pick}}.</h4>
+        <div id="round-question">
+            <h2 animate-on-change="dynamicFilledInQuestion()" ng-bind-html="bindHtml(dynamicFilledInQuestion())"></h2>
+            <p id="amount-to-submit">Pick {{currentQuestion().pick}}.</p>
         </div>
     </div>
     <div id="user-hand-container">
@@ -11,18 +11,18 @@
             <div class="col-md-12 text-center" ng-repeat="answer in userHand()" data-ng-init="startCountdown()">
                 <div class="card-text-container">
                     <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitAnswer(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
-                    <span class="pull-right" ng-show="selected">{{answerPosition(answer)}}</span>
+                    <span class="pull-right" ng-show="selected && answerPosition(answer)>0">{{answerPosition(answer)}}</span>
                     </button>
                 </div>
             </div>
+            <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12 text-center" style="margin-bottom: 30px">
+            <!-- Spaceing for extra small screens between buttons when stacked -->
+                <div class="hidden-lg hidden-md hidden-sm">&nbsp;</div>
+               <!--  <button id="replace-hand-button" type="button" class="btn btn-lg btn-danger" ng-click="replaceHand(userHand())">Replace hand <span class="badge">-{{handReplaceCost()}} points</span></button> -->
+            </div>
         </div>
     </div>
-    <div class="progress">
-        <div id="countdown" ng-class="counter>15 ? 'progress-bar progress-bar-striped active' : ( counter>5 ? 'progress-bar progress-bar-warning progress-bar-striped active' : 'progress-bar progress-bar-danger progress-bar-striped active' ) " style="width: {{counter*1.66}}%;">
-            <p ng-bind="counter"></p>
-        </div>
-    </div>
-    <div class="col-md-3 text-center" ng-repeat="user in getUsersInRoom()">
+    <div class="col-md-3 col-xs-4 text-center" ng-repeat="user in getActiveUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallQuestion.html'"></ng-include>
     </div>
 </div>

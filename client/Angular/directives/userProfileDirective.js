@@ -7,8 +7,10 @@ ClonageApp.directive('userProfile', function() {
 	return {
 
 		scope: {
-			control: '=',
-			scale: '='
+			sizex: '=',
+			sizey: '=',
+			image: '=',
+			isbot: '='
 		},
 		transclude: true,
 		replace: true,
@@ -18,14 +20,11 @@ ClonageApp.directive('userProfile', function() {
 
 			// Number of possible drawing colors;
 			var canvas;
+			var defaultSize = 300; //the size of the canvas on the signup page, used for scaling
 			var thisId = uniqueId;
 			var canvasElement;
 			var imageData;
 			uniqueId++;
-
-			// define an internal scope, bound to the scope given to the directive on creation
-			// acts as a public API for this directive
-			scope.internalControl = scope.control || {};
 
 			// get a reference to the canvas element
 			canvasElement = element;
@@ -35,46 +34,74 @@ ClonageApp.directive('userProfile', function() {
 				isDrawingMode: false
 			});
 
-			// Get the user's image (if they drew one)
-			imageData = scope.internalControl.getUserImage();
-			if (imageData.objects[0].text === "Draw your icon here!") {
-				imageData.objects[0].text = "I was too lazy to draw\n my own picture so I\n got this instead";
-				imageData.objects[0].left = 0;
-			}
-
-			canvas.loadFromDatalessJSON(imageData, function() {
-				scaleCanvas(scope.scale, scope.scale);
+			// Watch the user image to see if it changes
+			// needed if the directive loads before the controller, meaning the user image is not defined yet
+			// this is the case in the navbar in the index
+			scope.$watch("image", function(newValue, oldValue, scope) {
+				if (newValue) {
+					loadImage(newValue);
+				}
 			});
 
-			function scaleCanvas(xScale, yScale) {
+			scope.$watch("isbot", function(newValue, oldValue, watchScope) {
+				// if the image is a bot
+				// we load the image as a url, not as a js
+				if (scope.isbot) {
+
+					// size canvas down before image is loaded, prevents the "popping" seen on slow connections (hopefully)
+					canvas.setWidth(scope.sizex);
+					canvas.setHeight(scope.sizey);
+
+					// get the image from the bot image url
+					fabric.Image.fromURL('../../includes/images/bot_icon.png', function(oImg) {
+						canvas.add(oImg);
+						scaleCanvas(scope.sizex, scope.sizey);
+					});
+				}
+			});
+
+			function loadImage(imageData) {
+				// draw the user's image (if they drew one)
+				if (imageData.objects[0].text === "Draw your icon here!") {
+					imageData.objects[0].text = "I was too lazy to draw\n my own picture so I\n got this instead";
+					imageData.objects[0].left = 0;
+				}
+
+				// Load the canvas, and scale the image to the particular size we want, given in the directive markup
+				canvas.loadFromDatalessJSON(imageData, function() {
+					scaleCanvas(scope.sizex, scope.sizey);
+				});
+			}
+
+			// Given a target size of canvas, scale the images to fit that
+			function scaleCanvas(newWidth, newHeight) {
 				// Get all the paths on the canvas
 				var drawings = canvas.getObjects();
 
 				if (drawings.length >= 1) {
 
-					// Resize canvas
-					var newXSize = canvas.width * xScale;
-					var newYSize = canvas.height * yScale;
+					// get the scaling
+					var scaleX = newWidth / defaultSize;
+					var scaleY = newHeight / defaultSize;
 
-					canvas.setWidth(newXSize);
-					canvas.setHeight(newYSize);
+					// Resize canvas
+					canvas.setWidth(newWidth);
+					canvas.setHeight(newHeight);
 
 					// Resize each object
 					drawings.forEach(function(obj) {
-						var newLeft = obj.left * xScale;
-						var newTop = obj.top * yScale;
+						var newLeft = obj.left * scaleX;
+						var newTop = obj.top * scaleY;
 
-						obj.scaleX = xScale;
-						obj.scaleY = yScale;
+						obj.scaleX = scaleX;
+						obj.scaleY = scaleY;
 						obj.left = newLeft;
 						obj.top = newTop;
 					});
-
 					//Update the Canvas
 					canvas.renderAll();
 				}
 			}
-
 		}
 	};
 });

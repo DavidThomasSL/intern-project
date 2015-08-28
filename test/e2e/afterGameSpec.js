@@ -2,8 +2,8 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('After ending the game', function() {
 
-	var MAX_ROUNDS = 2;
-	var POINTS_PER_VOTE = 50;
+	var MAX_ROUNDS;
+	var POINTS_PER_VOTE;
 
 	var roomId;
 
@@ -13,6 +13,8 @@ describe('After ending the game', function() {
 	var secondClonageUser = new clonageUser(browser2);
 
 	it('can be redirected to a end game page', function() {
+
+		MAX_ROUNDS = 2;
 
 		firstClonageUser.getIndex();
 		firstClonageUser.submitName('John');
@@ -56,11 +58,13 @@ describe('After ending the game', function() {
 
 	});
 	it('can see players scores', function() {
+		POINTS_PER_VOTE = 50;
 
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
 
 	});
 
@@ -82,8 +86,8 @@ describe('After ending the game', function() {
 
 	it('on refresh can see scores, names and ranks', function() {
 		firstClonageUser.refresh();
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * 50).toString());
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toEqual((MAX_ROUNDS * 50).toString());
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
 		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
 		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
 		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.rank')).getText()).toContain('#1');

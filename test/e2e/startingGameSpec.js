@@ -2,7 +2,7 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('When starting a game', function() {
 
-	var HAND_SIZE = 10;
+	var HAND_SIZE;
 
 	var roomId;
 
@@ -35,17 +35,19 @@ describe('When starting a game', function() {
 	});
 
 	it('can see a question', function() {
-		expect(firstClonageUser.element(by.id('roundQuestion')).getText().length).not.toEqual(0);
+		expect(firstClonageUser.element(by.id('round-question')).getText().length).not.toEqual(0);
 	});
 
 	it('can see possible answer cards', function() {
+		HAND_SIZE = 10;
+
 		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(HAND_SIZE);
 	});
 
 	it('on refresh can see questions and answers again', function() {
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
-		expect(firstClonageUser.element(by.id('roundQuestion')).getText().length).not.toEqual(0);
+		expect(firstClonageUser.element(by.id('round-question')).getText().length).not.toEqual(0);
 		expect(firstClonageUser.element.all(by.repeater("answer in userHand()")).count()).toEqual(HAND_SIZE);
 
 		firstClonageUser.clearUser();

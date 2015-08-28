@@ -1,0 +1,48 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 text-center" ng-if="getPlayerRoundResults().length > 0">
+            <ng-include src="'includes/templates/observer/observer_current_rankings_template.html'"></ng-include>
+        </div>
+        <div class="col-md-10 text-center">
+            <div class="row">
+                <div class="header clearfix">
+                    <h3>{{currentQuestion().text}}</h3>
+                </div>
+            </div>
+            <table class="table observer-results-table">
+                <tr>
+                    <th>Player</th>
+                    <th>Submitted</th>
+                    <th>Voted by</th>
+                    <th>Points</th>
+                </tr>
+                <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
+                    <td>
+                        <user-profile class="flex1" sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
+                        image"></user-profile>
+                        <p>{{result.player.name}}</p>
+                    </td>
+                    <td>
+                        <div class="panel panel-default">
+                            <div class="panel-body observer-results-panel">
+                                <div class="flex1">
+                                    <span ng-repeat="text in result.answersText track by $index">{{text}}<br></span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span ng-repeat="votingPlayer in result.playersWhoVotedForThis track by $index">
+                            <user-profile class="flex1" sizex="40" sizey="40" isbot="getUserFromId(votingPlayer.uId).isBot" image="getUserFromId(votingPlayer.uId).
+                        image"></user-profile></span>
+                    </td>
+                    <td>
+                        <div style="margin-top:30px">
+                            <div class="label label-success" style="font-size: 20px;">+{{result.playersWhoVotedForThis.length*50}}</div>
+                        </div></td>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

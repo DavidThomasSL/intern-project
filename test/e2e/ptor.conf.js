@@ -7,11 +7,14 @@ exports.config = {
 		'userRegisteredSpec.js',
 		'roomCreateSpec.js',
 		'joinRoomSpec.js',
+		'observerSpec.js',
 		'startingGameSpec.js',
 		'playingGameSpec.js',
 		'afterRoundSpec.js',
 		'afterGameSpec.js',
-		'botsSpec.js'
+		'playAgainSpec.js',
+		'botsSpec.js',
+		"joinInProgressSpec.js"
 	],
 	baseUrl: 'http://localhost:8080/',
 	params: {

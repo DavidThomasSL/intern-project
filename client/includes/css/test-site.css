@@ -17,14 +17,9 @@ body, html {
 /* Custom page header */
 .header {
   text-align: center;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
   border-bottom: 1px solid #e5e5e5;
   margin-bottom: 20px;
-}
-
-/* Custom page header */
-.sidebar-header {
-  padding-bottom: 20px;
 }
 
 /* Make the masthead heading the same height as the navigation */
@@ -32,6 +27,16 @@ body, html {
   margin-top: 0;
   margin-bottom: 0;
   line-height: 40px;
+}
+
+.header h2 {
+  font-size: 25px;
+
+}
+
+.header h4 {
+  font-size: 20px;
+
 }
 
 .float-right {
@@ -42,42 +47,6 @@ body, html {
 
 .float-left {
   left: 0px;
-}
-
-.sidebar {
-  -moz-transition: left .2s;
-  -webkit-transition: left .2s;
-  -o-transition: left .2s;
-  transition: left .2s;
-  position: absolute;
-  background-color: white;
-  color: black;
-  text-align: center;
-/*  border-bottom: 1px solid #e5e5e5;*/
-  border-right: 1px solid #e5e5e5;
-  border-left: 1px solid #e5e5e5;
-  width: 200px;
-  left: -300px;
-  font-size: 120%;
-  z-index: 9999;
-}
-
-.sidebar-item {
-  border-radius: 0px;
-  border-right: none;
-  border-left: none;
-}
-
-.sidebar-list {
-  margin-bottom: 0px;
-}
-
-.slide-out {
-    -moz-transition: left 0.2s;
-    -webkit-transition: left 0.2s;
-    -o-transition: left 0.2s;
-    transition: left 0.2s;
-    left: 0px;
 }
 
 /* Custom page footer */
@@ -94,79 +63,131 @@ body, html {
 
   }
 }
+
+.container-fluid {
+  max-height: 100%;
+}
+
+.progress-observer {
+  height: 50px;
+}
+
+.observer-voting-panel {
+  font-size :15px;
+  color:#FFFFFF;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.observer-results-table {
+  font-size: 15px;
+}
+
+.observer-results-table tr td {
+  vertical-align: middle;
+}
+
+.observer-results-table th {
+  font-size: 20px;
+}
+
+.observer-results-ready {
+  background-color: #66BB6A;
+}
+
+.observer-sidebar-container {
+  border-right: 1px solid #e5e5e5;
+  padding-right:30px;
+  min-height: 100%;
+}
+
+/* style the user's submission inside an answer */
+.submitted-answer-text {
+  font-size: 120%;
+  font-weight: bold;
+}
+
 .container-narrow > hr {
   margin: 30px 0;
+}
+
+.dropdown-game-rankings {
+  display: flex;
+  align-items: center;
+/*  justify-content: center;*/
+}
+
+.results-data-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.end-game-data-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.end-game-data-container {
+  margin-bottom:15px;
+}
+
+.end-game-rank {
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.end-game-name {
+  font-size:20px;
+  margin-left:10px;
+}
+
+.dropdown-rankings-image{
+  width:50px;
+  height:50px;
+  margin-right:20px;
+}
+
+.dropdown {
+  min-width:250px;
+}
+
+.result-data-container {
+  margin-bottom:10px;
+  padding-bottom:15px;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .wrapper {
   min-height: 100%;
   width:100%;
   margin-bottom: 60px;
+  padding: 10px;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-  color:white;
-  position: relative;
-  margin-bottom: 0px;
-  height: 200px;
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0%,rgba(0,0,0,1)), color-stop(20%,rgba(0,0,0,0.65)),color-stop(40%,rgba(0,0,0,0.2)), color-stop(100%,rgba(0,0,0,0))), url('/../../includes/images/background.jpg'); /* Chrome,Safari4+ */
-  /*background: url('/../../includes/images/background.jpg');*/
-  background-color: #1976D2; /* blue background color incase background image cannot be loaded*/
-  background-attachment: fixed;
-  background-position: 50% -500px;
-  background-size: cover;
-  padding-left: 3%;
-  padding-top: 20px
-}
+.navbar {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-top-left-radius: 4px;
+  border-top-left-radius: 4px;
 
-.jumbotron .lead {
-  float: left;
-  text-align: left;
-}
+  border-bottom-color: rgb(231,231,231);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
 
-.jumbotron .username {
-  margin-right: 3%;
-  font-size: 25px;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  margin-bottom: 10px;
-}
+  border-left-color: rgb(231,231,231);
+  border-left-style: solid;
+  border-left-width: 1px;
 
-.jumbotron .current-round {
-  margin-right: 3%;
-  font-size: 25px;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  margin-bottom: 40px;
-}
 
-.jumbotron .menu-button {
-  margin-left: 3%;
-  bottom: 0px;
-  left: 0px;
-  border: none;
-  background: transparent;
-  position: absolute;
-  font-size: 40px;
-  outline: none;
-}
+  border-right-color: rgb(231,231,231);
+  border-right-style: solid;
+  border-right-width: 1px;
 
-.jumbotron .rank {
-  margin-left: 7%;
-  font-size: 35px;
-  position: absolute;
-  bottom: 0px;
-  margin-bottom: 10px;
-}
-
-.jumbotron h1 {
-  float: left;
-  font-size: 90px;
+  border-top-color: rgb(231,231,231);
+  border-top-style: solid;
+  border-top-width: 1px;
 }
 
 .name-submit-container {
@@ -180,17 +201,39 @@ body, html {
 }
 
 .card-text-container {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 /* whitespace:normal; lets the button text wrap*/
 .card-text-button{
   white-space: normal;
   border:none;
+  font-size:16px;
 }
 
 .card-text-button:focus {
   outline: none;
+}
+
+.observer-card-text-button {
+  font-size: 20px;
+  white-space: normal;
+  border:none;
+}
+
+.observer-card-text-button.disabled,
+.observer-large-card.disabled{
+  background-color: #f0ad4e;
+  opacity: 1;
+  outline:none;
+  cursor:default;
+}
+
+.observer-large-card{
+  font-size: 40px;
+  margin-top: 20%;
+  white-space: normal;
+  border:none;
 }
 
 .table th {
@@ -238,6 +281,11 @@ body, html {
   justify-content: center;
 }
 
+.flex-align-left {
+ -webkit-align-items: flex-start;
+   align-items: flex-start;
+}
+
 .flex1 {
   -webkit-flex: 1;
           flex: 1;
@@ -252,38 +300,33 @@ body, html {
   opacity: 0.2;
 }
 
+.player-submitted {
+}
+
+.player-submitted:after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  bottom: 0; left: 0;
+  background-image: url("/includes/images/voted.png");
+  background-repeat: no-repeat;
+  background-size: 80px;
+  background-position: center;
+  opacity: 0.8;
+}
+
 .ready-button:focus {
   outline: none;
   border : none;
 }
 
-.replace-card-submit-button:focus {
-  outline: none;
-  border: none;
-}
 
 
-@media only screen and (max-device-width: 480px) {
-  /* Main marketing message and sign up button */
-    .jumbotron {
-      height: 150px;
-      background-attachment: scroll;
-      background-position: center;
-      background-size: cover;
-      text-align: center;
-      padding: 0px 0px 0px 10px;
-    }
-    .jumbotron h1 {
-      font-size: 50px;
-    }
-
-    .jumbotron .rank {
-      margin-left: 16%
-    }
-}
-
-/* ANIMATIONS
-============================================================================= */
+/*
+=============================================================================
+ANIMATIONS
+=============================================================================
+*/
 
 /* slide in from the bottom */
 @keyframes slideOutLeft {
@@ -322,6 +365,39 @@ body, html {
 }
 
 
-/*.ng-enter           { animation: fadeIn 0.2s both ease-in;}
-.ng-leave           { animation: fadeOut 0.2s both ease-in}*/
+/*
+=====================================================================================
+ANIMATIONS FOR VISUALISING ANSWERS ONE AT A TIME
+=====================================================================================
+*/
+.repeat-animation {
+  -webkit-transition:0.2s linear all;
+  transition:0.2s linear all;
+  position:relative;
+  left:0px;
+}
+.repeat-animation.ng-enter-stagger {
+  -webkit-transition-delay:5s;
+  transition-delay:5s;
+  -webkit-transition-duration:0.5;
+  transition-duration:0.5;
+}
+.repeat-animation.ng-enter { opacity:0; }
+.repeat-animation.left.ng-enter { left:-400px; }
+.repeat-animation.right.ng-enter { left:400px; }
+.repeat-animation.ng-enter-active { opacity:1; left:100px; }
 
+.repeat-animation.ng-leave {
+  opacity:0;
+  bottom: 0px;
+}
+
+.repeat-animation.ng-leave-active {
+  opacity: 1;
+  bottom: -100px;
+  -webkit-transition: bottom 0.2s ease-in-out;
+  -moz-transition: bottom 0.2s ease-in-out;
+  -o-transition: bottom 0.2s ease-in-out;
+  transition: bottom 0.2s ease-in-out;
+
+}

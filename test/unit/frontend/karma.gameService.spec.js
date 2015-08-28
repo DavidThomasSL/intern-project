@@ -29,64 +29,6 @@ describe("Testing Game Service", function() {
 		});
 	});
 
-	it("readying up calls send message", function() {
-		spyOn(mockCommunicationService, 'sendMessage');
-
-		gameService.sendReadyStatus(1);
-		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
-	});
-
-	it("submitChoice calls communicationService with correct data", function() {
-		spyOn(mockCommunicationService, 'sendMessage');
-
-		gameService._receiveQuestion({
-			question: {
-				text: "test question?",
-				pick: 2
-			},
-			round: 1
-		});
-
-		gameService.submitChoice("answer1");
-		gameService.submitChoice("answer2");
-
-		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER submitChoice", {
-			answer: ["answer1", "answer2"],
-		}, jasmine.any(Function));
-	});
-
-	it("submitVote calls communicationService with correct data", function() {
-		spyOn(mockCommunicationService, 'sendMessage');
-
-		gameService.submitVote(["answer1", "answer2"]);
-
-		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER vote", {
-			answer: ["answer1", "answer2"],
-		}, jasmine.any(Function));
-	});
-
-	it("replaceCardsSelect doesn't call communicationService if cards no cards are selected", function() {
-		spyOn(mockCommunicationService, 'sendMessage');
-
-		gameService.replaceCardsSubmit();
-
-		expect(mockCommunicationService.sendMessage.calls.any()).toEqual(false);
-	});
-
-
-	it("replaceCardsSelect calls communicationService with correct data if cards are selected", function() {
-		spyOn(mockCommunicationService, 'sendMessage');
-
-		gameService.replaceCardsSelect("answer1");
-		gameService.replaceCardsSelect("answer2");
-		gameService.replaceCardsSubmit();
-
-		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("GAME replace cards", {
-			cardsToReplace: ["answer1", "answer2"],
-		}, jasmine.any(Function));
-	});
-
-
 	it("getRoundQuestion gets question", function() {
 		//set the round question
 		gameService._receiveQuestion({

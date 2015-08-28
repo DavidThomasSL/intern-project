@@ -4,57 +4,46 @@
         <h4> {{currentQuestion().text}}</h4>
     </div>
     <div class="text-center">
-        <table class="table table-striped">
-            <tr>
-                <th>Answer</th>
-                <th>Submitted by</th>
-                <th>Votes</th>
-                <th>Voted by</th>
-                <th>Points</th>
-            </tr>
-            <tr ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
-                <td>
-                    <span ng-repeat="text in result.answersText track by $index">{{text}}<br></span>
-                </td>
-                <td>{{result.player.name}}</td>
-                <td>{{result.playersWhoVotedForThis.length}}</td>
-                <td>
-                    <div ng-repeat="player in result.playersWhoVotedForThis track by $index">{{player}}</div>
-                </td>
-                <td>+{{result.playersWhoVotedForThis.length*50}}</td>
-            </tr>
-        </table>
-        <br>
-        <div class ="row">
-            <div class="col-md-12 text-center">
-                <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
-                <h4>Waiting for everyone to be ready</h4>
-                <a href="#/results#replace-cards-container">Replace unwanted cards at the bottom of the page</a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-sm-6 text-center" ng-repeat="user in getUsersInRoom()">
-                <ng-include src="'includes/templates/user/userPanelLarge.html'"></ng-include>
-            </div>
-        </div>
-        <div id="replace-cards-container" style="margin-top:30px;">
-            <div class="col-md-12 text-center">
-                <button id="replace-cards-show-button" ng-hide="replaceToggle === true"type="button" class="btn btn-lg btn-success" ng-click="replaceToggle=true">Replace some cards</button>
-            </div>
-            <div id="user-hand-container" ng-show="replaceToggle === true">
-                <div class="row">
-                    <h4>Select the cards you want to replace (-{{replaceCostPerCard()}} points per card)</h4>
-                    <div class="col-md-12 text-center" ng-repeat="answer in userHand()">
-                        <div class="card-text-container">
-                            <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="replaceCardsSelect(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
-                            </button>
+        <div class="result-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-playersWhoVotedForThis.length'">
+            <div class="row results-data-row">
+                <div class="col-xs-4">
+                    <user-profile sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
+                    image"></user-profile>
+                    <p>{{result.player.name}}</p>
+                </div>
+                <div class="col-xs-8">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="flex1">
+                                <span ng-repeat="text in result.answersText track by $index">{{text}}<br></span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 text-center" ng-show="replaceToggle === true">
-                <button id="replace-cards-submit-button" type="button" class="btn btn-lg btn-success replace-card-submit-button" ng-click="replaceCardsSubmit()" ng-disabled="cardReplaceCost()<=0" >Replace Cards <span ng-show="cardReplaceCost()>0">(-{{cardReplaceCost()}} points)</span></button>
+            <div class="row results-data-row">
+                <div class="col-xs-8 text-center">
+                    <span ng-repeat="votingPlayer in result.playersWhoVotedForThis track by $index">
+                        <user-profile class="flex1" sizex="40" sizey="40" isbot="getUserFromId(votingPlayer.uId).isBot" image="getUserFromId(votingPlayer.uId).
+                    image"></user-profile></span>
+                </div>
+                <div class="cos-xs-4 results-point-badge">
+                    <div class="label label-success" style="font-size: 20px; margin-bottom:20px;">+{{result.playersWhoVotedForThis.length*50}}</div>
+                </div>
             </div>
+        </div>
+    </div>
+    <div class ="row">
+        <div class="col-md-6 col-sm-6 col-xs-12 text-center">
+            <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getRoomUserCount() < 2">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px">
+        <div class="col-lg-4 col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
+            <ng-include src="userPanelTemplate"></ng-include>
+        </div>
+        <div class="col-lg-4 col-md-3 col-sm-4 col-xs-6 text-center" ng-repeat="user in getBotsInRoom()">
+            <ng-include src="userPanelTemplate"></ng-include>
         </div>
     </div>
 </div>

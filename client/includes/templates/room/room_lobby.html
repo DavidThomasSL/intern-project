@@ -1,8 +1,9 @@
 <div class="container">
     <div class="header clearfix">
         <h1>ROOM CODE: {{roomId()}}</h1>
-        <h4>Give this code to your friends to join and set the game parameters. <br/> Click ready when your want to start!</h4>
-        <div style="margin-top: 30px;" class="flex flex-row">
+        <p>Click ready when your want to start!</p>
+        <!-- Round options dropdowns -->
+        <div style="margin-top: 10px;" class="flex flex-row">
             <div class="flex1">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-bot-dropdown">
@@ -18,6 +19,11 @@
                         <li><a ng-click="setBotNumber(5)">5</a></li>
                         <li><a ng-click="setBotNumber(6)">6</a></li>
                     </ul>
+                </div>
+            </div>
+            <div class="flex1" ng-show="getObserversInRoom().length>0">
+                <div>
+                    {{getObserversInRoom().length}} observers
                 </div>
             </div>
             <div class="flex1">
@@ -37,49 +43,69 @@
                 </div>
             </div>
         </div>
+        <!-- END  Round options dropdowns -->
     </div>
     <div id="room-lobby-container">
         <div class="row">
-            <div class="col-md-6 col-sm-6 text-center" ng-repeat="user in getUsersInRoom()">
-                <ng-include src="'includes/templates/user/userPanelLarge.html'"></ng-include>
+            <div class="col-md-4 col-sm-4 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
+                    <ng-include src="userPanelTemplate"></ng-include>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-6 text-center" ng-repeat="user in getBotsInRoom()">
+                <ng-include src="userPanelTemplate"></ng-include>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default" style="height: 200px; overflow-y: scroll;" scroll="getMessages()">
                     <table>
                         <tr ng-repeat="message in getMessages()" style="padding-bottom: 20px ">
                             <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; width: 20%"><div ng-hide="message.playerUid === getUserId()" style="right: 0px">{{message.playerName}}</div></td>
+
                             <td style="width: 500px"><div class="form-control" ng-class="{'float-right': message.playerUid === getUserId(), 'float-left': message.playerUid !== getUserId()};" style="white-space: pre-wrap;white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;  margin-bottom: 5px; height: 100%; ">{{message.messageText}}</div></td>
+
                             <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; right: 0; width: 20%"><div ng-show="message.playerUid === getUserId()">{{message.playerName}}</div></td>
                         </tr><br>
                     </table>
                 </div>
             </div>
-            <form name="message-form" ng-submit="sendMessage(messageText)" class="form-inline">
-                <input type="text" class="form-control" id="message-box" placeholder="Type a message" ng-model="messageText" autofocus required style="width: 80%">
-                <button type="submit" id="submit-message" class="btn btn-default" style="width: 18%">Send</button>
-            </form>
         </div>
-
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getUsersInRoom().length <= 1 && getGameParameters().botNumber < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-12">
+                <form name="message-form" ng-submit="sendMessage(messageText)">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="message-box" placeholder="Type a message" ng-model="messageText" autofocus required>
+                        <span class="input-group-btn">
+                            <button type="submit" id="submit-message" class="btn btn-default">Send</button>
+                        </span>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <div class="row text-center">
-            <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() < 1">You need at least 2 players to start!</h4>
-            <h4 ng-show="getRoomUserCount() < 2 && getBotNumber() >= 1">Wow, look at all the friends you have...</h4>
-            <h4 ng-hide="getRoomUserCount() < 2">The game will start when everyone is ready </h4>
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getActiveUsersInRoom().length <= 1 && getGameParameters().botNumber < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
+            </div>
+            <div class="hidden-lg hidden-md">&nbsp;</div>
+            <div class="col-md-6 text-center">
+                <button id="leave-lobby-button" type="button" class="btn btn-lg btn-default" ng-click="leaveRoom()" >Go Back</button>
+            </div>
         </div>
-
-        <div class="row bottom-buttons">
-            <div class="col-md-12 text-center">
-                <button id="leave-lobby-button" type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()" >Go Back</button>
+        <div class="row text-center" style="margin-top: 20px">
+            <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3"  ng-show="getActiveUsersInRoom().length < 2 && getGameParameters().botNumber < 1" >
+                <div class="alert alert-danger" role="alert">
+                    <strong>Can't Start!</strong> You need at least 2 players to start!
+                </div>
+            </div>
+            <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3" ng-show="getActiveUsersInRoom().length < 2 && getGameParameters().botNumber >= 1">
+                <div class="alert alert-warning"  role="alert">
+                    <strong>Wow!</strong> Look at all the friends you have...
+                </div>
+            </div>
+            <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3" ng-hide="getActiveUsersInRoom().length < 2">
+                <div class="alert alert-info"  role="alert">
+                    <strong>Almost There!</strong> The game will start when everyone is ready
+                </div>
             </div>
         </div>
     </div>
-    </div> <!-- /container -->
 </div>

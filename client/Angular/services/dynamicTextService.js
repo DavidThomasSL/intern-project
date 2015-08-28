@@ -1,5 +1,6 @@
 ClonageApp.service('dynamicTextService', function() {
 
+
 	function getSubmissionState(currentQuestion, enteredAnswer, currentlySubmittedAnswers) {
 		var readyToSend = false;
 
@@ -27,8 +28,8 @@ ClonageApp.service('dynamicTextService', function() {
 			currentlySubmittedAnswers: currentlySubmittedAnswers,
 			currentFilledInQuestion: currentFilledInQuestion,
 			readyToSend: readyToSend
-		}
-	};
+		};
+	}
 
 	//Used to dynamically fill in the blanks of the question as the player selects them
 	function fillInSelections(questionText, currentSelections) {
@@ -38,17 +39,25 @@ ClonageApp.service('dynamicTextService', function() {
 
 		//formatting selected answers so they can be put into the question
 		currentSelections.forEach(function(selection) {
-			var selectionToPush = selection.replace(/.\s*$/, "");
-			selectionToPush = "[" + selectionToPush + "]";
+			var selectionToPush = selection.slice();
+			//removing full stop at end of text
+			if (selectionToPush.charAt(selectionToPush.length - 1) == ".") {
+				selectionToPush = selectionToPush.slice(0, -1);
+			}
+
+			//add the HTML tags around the user's answer
+			selectionToPush = "<b class='submitted-answer-text'>" + selectionToPush + "</b>";
 			removedFullStops.push(selectionToPush);
 		});
 
+		//if the question has no blanks then just put the inserted answers at the end of the string
+		//with commas for question requiring multiple e.g. "Create a Haiku"
 		if (questionText.indexOf('_') === -1) {
 			outputText += "\n";
 			removedFullStops.forEach(function(selection) {
 				outputText += (selection + ", ");
 			});
-			outputText = outputText.replace(/.\s*$/, ".");
+			outputText = outputText.replace(/,\s*$/, ".");
 			return outputText;
 		} else {
 			for (var i = 0; i < currentSelections.length; i++) {
@@ -59,6 +68,7 @@ ClonageApp.service('dynamicTextService', function() {
 	}
 
 	return {
-		getSubmissionState: getSubmissionState
+		getSubmissionState: getSubmissionState,
+		fillInSelections: fillInSelections
 	};
 });

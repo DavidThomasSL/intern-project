@@ -30,7 +30,7 @@ describe("Testing Communcation Service ", function() {
 		communicationService = _communicationService_;
 	}));
 
-	it("regsiters socket event listeners on creation", function() {
+	it("registers socket event listeners on creation", function() {
 
 		expect(mockSocketService.on).toHaveBeenCalled();
 		expect(mockSocketService.eventNames).toEqual(["connect",
@@ -39,12 +39,17 @@ describe("Testing Communcation Service ", function() {
 			"USER hand",
 			"GAME question",
 			"GAME answers",
+			"GAME timeout",
+			"USER play again",
 			"GAME playerRoundResults",
 			"GAME finish",
+			"GAME rooms available",
 			"ROOM details",
 			"ROOM messages",
 			"ROUTING",
-			"NOTIFICATION message"
+			"NOTIFICATION message",
+			"NOTIFICATION actionable",
+			"PLAYER question"
 		]);
 	});
 

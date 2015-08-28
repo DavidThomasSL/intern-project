@@ -1,14 +1,19 @@
-ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, notificationService, toastr) {
+ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, notificationService, toastr, playerService) {
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
     $scope.currentRound = gameService.getCurrentRound;
     $scope.maxRounds = gameService.getMaxRounds;
     $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
+    $scope.getUserImage = userService.getUserImage;
+    $scope.getIfObserver = userService.getIfObserver;
+    $scope.playAgainWasPressed = userService.playAgainWasPressed;
+    $scope.getUserFromId = roomService.getUserFromId;
+    $scope.allRoomsAvailable = gameService.allRoomsAvailable;
 
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function(botsEnabled) {
-        gameService.sendReadyStatus($scope.roomId(), botsEnabled);
+        playerService.sendReadyStatus($scope.roomId());
     };
 
     /*
@@ -30,7 +35,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     };
 
     function displayNotificationMessage(notificationMessage, notificationType) {
-        console.log(notificationType);
         switch (notificationType) {
             case "error":
                 toastr.error(notificationMessage);
@@ -49,7 +53,44 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         }
     }
 
-    notificationService.registerNotificationListener(displayNotificationMessage);
+    // TODO make toaster server for this
+    var notificationCalled = function(data) {
+
+        if (data.action === "play again") {
+
+            // make toast that lets the player join another room
+            toastr.success('<div id="toaster">' + data.user + ' wants to play again.<br> Click here to join</div>', {
+                allowHtml: true,
+                showCloseButton: true,
+                timeOut: null,
+                extendedTimeOut: 10000,
+                onHidden: function(clicked) {
+                    if (clicked) {
+                        roomService.leaveRoom();
+                        rank = "";
+                        roomService.joinRoom(data.newRoomId);
+                    }
+                }
+            });
+        } else if (data.action === "join room observer") {
+            //make toast that lets the user join a game as an observer
+            toastr.warning('<div id="toaster">Game already in progress<br> Click here to watch as an Observer</div>', {
+                allowHtml: true,
+                showCloseButton: true,
+                timeOut: 10000,
+                extendedTimeOut: 10000,
+                onHidden: function(clicked) {
+                    if (clicked) {
+                        roomService.joinRoomForce(data.roomId);
+                    }
+                }
+            });
+
+        }
+    };
+
+    notificationService.registerMessageListener(displayNotificationMessage);
+    notificationService.registerActionListener(notificationCalled);
 
     /*
     -------------------------------------------------------
@@ -63,7 +104,9 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         function is called to save the value of the countdown
     */
     $scope.retainCountdownValue = function() {
-        gameService.setCountdown($scope.counter);
+        if ($scope.counter !== 60) {
+            gameService.setCountdown($scope.counter);
+        }
     };
 
     // start countdown
@@ -78,7 +121,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
             (=> page is loaded for the first time not refreshed)
         */
         if (gameService.getCountdown() === undefined) {
-            console.log("restarting counter");
             $scope.counter = 60;
         }
 
@@ -120,6 +162,5 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     /*
     ---------------------------------------------------------
     */
-
 
 });

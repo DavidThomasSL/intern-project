@@ -14,10 +14,19 @@ module.exports = function(browserInstance) {
 	};
 
 	var submitName = function(name) {
+		var choosePlayerButton = element(by.id('choose-player-button'));
+		choosePlayerButton.click();
+		browserInstance.waitForAngular();
 		var nameInputBox = element(by.id('name-input-box'));
 		var nameSubmitButton = element(by.id('name-submit-button'));
 		nameInputBox.sendKeys(name);
 		nameSubmitButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var joinAsObserver = function(name) {
+		var chooseObserverButton = element(by.id('choose-observer-button'));
+		chooseObserverButton.click();
 		browserInstance.waitForAngular();
 	};
 
@@ -67,6 +76,8 @@ module.exports = function(browserInstance) {
 		} // This is the text in the link for number 8
 
 		element(by.id('set-round-dropdown')).click();
+		browserInstance.waitForAngular();
+
 		element.all(by.id("round-select-dropdown")).get(0).element(by.linkText(text)).click();
 		browserInstance.waitForAngular();
 
@@ -120,22 +131,15 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var showReplaceableCards = function () {
-		var showReplaceCardsButton = element(by.id('replace-cards-show-button'));
-		showReplaceCardsButton.click();
-		browserInstance.waitForAngular();
+	var getCardText = function(index) {
+		var rows = element.all(by.exactRepeater("answer in userHand()"));
+		return rows.get(index).element(by.id("answer")).getText();
 	};
 
-	var getFirstReplaceCardText = function() {
-		var rows = element.all(by.exactRepeater("answer in userHand()"));
-		return rows.first().element(by.id("answer")).getText();
-	};
 
-	var replaceFirstCard = function() {
-		var rows = element.all(by.exactRepeater("answer in userHand()"));
-		rows.first().element(by.id("answer")).click();
-		var submitReplaceCardsButton = element(by.id('replace-cards-submit-button'));
-		submitReplaceCardsButton.click();
+	var replaceHand = function() {
+		var replaceHandButton = element(by.id('replace-hand-button'));
+		replaceHandButton.click();
 		browserInstance.waitForAngular();
 	};
 
@@ -146,8 +150,20 @@ module.exports = function(browserInstance) {
 	};
 
 	var activateSidebar = function() {
-		var sidebarButton = element(by.id('sidebar-button'));
+		var sidebarButton = element(by.id('navbar-expand-button'));
 		sidebarButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var openGameRankings = function() {
+		var rankingButton = element(by.id('game-ranking-dropdown-button'));
+		rankingButton.click();
+		browserInstance.waitForAngular();
+	};
+
+	var playAgain = function() {
+		var playAgainButton = element(by.id('play-again-button'));
+		playAgainButton.click();
 		browserInstance.waitForAngular();
 	};
 
@@ -156,6 +172,7 @@ module.exports = function(browserInstance) {
 		clearUser: clearUser,
 		getIndex: getIndex,
 		submitName: submitName,
+		joinAsObserver: joinAsObserver,
 		refresh: refresh,
 		clearLocalStorage: clearLocalStorage,
 		createRoom: createRoom,
@@ -167,14 +184,15 @@ module.exports = function(browserInstance) {
 		submitFirstAnswer: submitFirstAnswer,
 		submitFirstAnswers: submitFirstAnswers,
 		submitFirstVote: submitFirstVote,
-		showReplaceableCards: showReplaceableCards,
-		getFirstReplaceCardText: getFirstReplaceCardText,
-		replaceFirstCard: replaceFirstCard,
+		replaceHand: replaceHand,
+		getCardText: getCardText,
 		backToStart: backToStart,
 		activateSidebar: activateSidebar,
 		ready: ready,
 		setBotsOn: setBotsOn,
 		setRoundNumber: setRoundNumber,
-		submitMessage: submitMessage
+		submitMessage: submitMessage,
+		openGameRankings: openGameRankings,
+		playAgain: playAgain
 	};
 };

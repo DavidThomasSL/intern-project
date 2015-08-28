@@ -9,7 +9,9 @@ function User(socket) {
 	this.roomId = "";
 	this.socket = socket;
 	this.readyToProceed = false;
+	this.isObserver = false;
 	this.image = "";
+	this.isBot = false;
 
 	/*
 	Sends the user details to the client via the users socket
@@ -40,11 +42,13 @@ function User(socket) {
 			name: this.name,
 			roomId: this.roomId,
 			readyToProceed: this.readyToProceed,
+			isObserver: this.isObserver,
 			image: this.image
 		};
 
 		return userDetails;
 	};
+
 
 	self.toString = function() {
 		var string = self.getUserDetails();

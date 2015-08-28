@@ -71,6 +71,16 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
+	socket.on("GAME timeout", function(data) {
+		_setListenerEventAction("GAME timeout");
+		onMessageFunction(data);
+	});
+
+	socket.on("USER play again", function(data) {
+		_setListenerEventAction("USER play again");
+		onMessageFunction(data);
+	});
+
 	socket.on("GAME playerRoundResults", function(data) {
 		_setListenerEventAction("GAME playerRoundResults");
 		onMessageFunction(data);
@@ -78,6 +88,11 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 
 	socket.on("GAME finish", function(data) {
 		_setListenerEventAction("GAME finish");
+		onMessageFunction(data);
+	});
+
+	socket.on("GAME rooms available", function(data) {
+		_setListenerEventAction("GAME rooms available");
 		onMessageFunction(data);
 	});
 
@@ -98,6 +113,16 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 
 	socket.on("NOTIFICATION message", function(data) {
 		_setListenerEventAction("NOTIFICATION message");
+		onMessageFunction(data);
+	});
+
+	socket.on("NOTIFICATION actionable", function(data) {
+		_setListenerEventAction("NOTIFICATION actionable");
+		onMessageFunction(data);
+	});
+
+	socket.on("PLAYER question", function(data) {
+		_setListenerEventAction("PLAYER question");
 		onMessageFunction(data);
 	});
 

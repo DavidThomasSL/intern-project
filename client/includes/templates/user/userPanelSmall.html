@@ -1,0 +1,10 @@
+<div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed||user.isBot}">
+	<div id="user-panel-small" class="panel-body flex-column">
+		<user-profile class="flex1" sizex="80" sizey="80" isbot=user.isBot image=user.image ></user-profile>
+		<div class="flex1" style="margin-top: 0px">
+			{{user.name}}
+			<span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user " aria-hidden="true" >
+			</span>
+		</div>
+	</div>
+</div>

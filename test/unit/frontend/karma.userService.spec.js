@@ -69,6 +69,28 @@ describe("Testing User Service", function() {
 		}, jasmine.any(Function));
 	});
 
+	it("submit message sends a message to the communicationService with userId, userName, messageText and roomId", function() {
+
+		spyOn(mockCommunicationService, 'sendMessage');
+
+		userService._setUserDetails({
+			user: testUser
+		});
+
+		userService._joinRoom({
+			roomId: "B00B5"
+		});
+
+		userService.sendMessage("Hi!");
+
+		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER send message", {
+			playerName: "bob",
+			playerUid: 1,
+			messageText: "Hi!",
+			roomId: "B00B5"
+		}, jasmine.any(Function));
+	});
+
 	it("can set userDetails in session storage with internal function _setUserDetails from communicationService, ", function() {
 
 		userService._setUserDetails({
@@ -87,11 +109,18 @@ describe("Testing User Service", function() {
 		expect(mockStorageService.roomId).toBe("B00B5");
 	});
 
-	it("setName calls communicationService", function() {
+	it("setNameAndImage calls communicationService", function() {
 		spyOn(mockCommunicationService, 'sendMessage');
-		userService.setName({});
+		userService.setNameAndImage({});
 		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
 	});
+
+	it("registerNewObserver calls communicationService", function() {
+		spyOn(mockCommunicationService, 'sendMessage');
+		userService.registerNewObserver({});
+		expect(mockCommunicationService.sendMessage).toHaveBeenCalled();
+	});
+
 
 	it("getUserName returns user's name", function() {
 		userService._setUserDetails({

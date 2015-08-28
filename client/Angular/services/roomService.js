@@ -14,6 +14,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     var botNumber = 0;
     var messages = [];
     var numRounds = 8;
+    var botsInRoom = [];
 
     function createRoom(playerId) {
         sendMessage("ROOM create", {
@@ -21,15 +22,65 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
         });
     }
 
-    function joinRoom(roomId) {
+    /*
+        Attempt to put a user into a room
+        Can force themselves in, which lets them join any room, but only as an observer
+    */
+    function joinRoom(roomId, force) {
+
+        if(force === undefined){
+            force = false;
+        }
+
         sendMessage('ROOM join', {
-            roomId: roomId
+            roomId: roomId,
+            force: force
         });
         errorMessage = "";
     }
 
+    function joinRoomForce(roomId) {
+        joinRoom(roomId, true);
+    }
+
     function getUsersInRoom() {
         return usersInRoom;
+    }
+
+    function getUserFromId(userId) {
+        var userToReturn = {};
+        getActiveUsersInRoom().forEach(function(activeUser) {
+            if(activeUser.uId == userId) {
+                userToReturn = activeUser;
+            }
+        });
+        getBotsInRoom().forEach(function(currentBot) {
+            if(currentBot.uId === userId) {
+                userToReturn = currentBot;
+            };
+        });
+        return userToReturn;
+    }
+
+
+    //returns the array of all users who aren't observers
+    function getActiveUsersInRoom() {
+        var userList = usersInRoom.filter(function(userInRoom){
+            return (!userInRoom.isObserver);
+        });
+        return userList;
+    }
+
+    //returns the array of all observers in the room
+    function getObserversInRoom() {
+        var observerList = usersInRoom.filter(function(userInRoom) {
+            return (userInRoom.isObserver);
+        });
+        return observerList;
+    }
+
+    function getBotsInRoom() {
+        return botsInRoom;
     }
 
     function leaveRoom() {
@@ -96,18 +147,9 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     function _setRoomDetails(data) {
         roomId = data.roomId;
         usersInRoom = data.usersInRoom;
-        botNumber = data.botNumber;
+        botsInRoom = data.botsInRoom;
+        botNumber = botsInRoom.length;
         numRounds = data.numRounds;
-
-        //add on canvas control elements to each user
-        //Allows the canvas to access the user's image
-        usersInRoom.forEach(function(user) {
-            user.canvasControl = {
-                getUserImage: function() {
-                    return user.image;
-                }
-            };
-        });
     }
 
     function _setMessages(data) {
@@ -150,14 +192,19 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     return {
         createRoom: createRoom,
         joinRoom: joinRoom,
+        joinRoomForce: joinRoomForce,
         usersInRoom: usersInRoom,
         getUsersInRoom: getUsersInRoom,
+        getUserFromId: getUserFromId,
+        getActiveUsersInRoom: getActiveUsersInRoom,
+        getObserversInRoom: getObserversInRoom,
         leaveRoom: leaveRoom,
         getRoomId: getRoomId,
         _setMessages: _setMessages,
         getMessages: getMessages,
         getGameParameters: getGameParameters,
         setBotNumber: setBotNumber,
+        getBotsInRoom: getBotsInRoom,
         setRoundNumber: setRoundNumber,
         _setRoomDetails: _setRoomDetails
     };

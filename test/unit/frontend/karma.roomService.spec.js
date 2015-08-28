@@ -68,8 +68,9 @@ describe("Testing Room Service", function() {
 
 		roomService._setRoomDetails({
 			roomId: "ABCDE",
-			botsEnabled: false,
 			usersInRoom: usersInRoom,
+			botsInRoom: usersInRoom,
+			numRounds: 1,
 			gameInProgress: false
 		});
 
@@ -77,38 +78,20 @@ describe("Testing Room Service", function() {
 
 	});
 
-	it("canvasControl is added to usersInRoom when setting details and retrives the user's image", function() {
-		var testImage = {
-			image: "testImage"
-		};
-
-		var usersInRoom = [{
-			name: "Tim",
-			id: 1,
-			image: testImage
-
+	it("can set messages from _setMessages and retrieve messages from getMessages() ", function() {
+		var messages = [{
+			playerName: "Bob",
+            playerUid: 1,
+            messageText: "Hi!"
 		}, {
-			name: "Bob",
-			id: 3,
-			image: testImage
+			playerName: "Kevin",
+            playerUid: 2,
+            messageText: "How are you?"
 		}];
 
-		roomService._setRoomDetails({
-			roomId: "ABCDE",
-			usersInRoom: usersInRoom,
-			botsEnabled: false,
-			gameInProgress: false
-		});
+		roomService._setMessages(messages);
 
-		var receivedUsers = roomService.getUsersInRoom();
-		var user = receivedUsers[0];
-
-		var testObj = {
-			getUserImage: jasmine.any(Function)
-		};
-
-		expect(user.canvasControl).toEqual(testObj);
-		expect(user.canvasControl.getUserImage()).toEqual(testImage);
+		expect(roomService.getMessages()).toEqual(messages);
 
 	});
 
@@ -117,7 +100,7 @@ describe("Testing Room Service", function() {
 			roomId: "ABCDE",
 			usersInRoom: [1],
 			gameInProgress: false,
-			botsEnabled: false
+			botsInRoom: [],
 		});
 
 		expect(roomService.getRoomId()).toEqual("ABCDE");

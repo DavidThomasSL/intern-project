@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-mocha-test");
     grunt.loadNpmTasks('grunt-protractor-runner');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-selenium-webdriver');
@@ -9,6 +8,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-auto-install');
     grunt.loadNpmTasks('grunt-script-link-tags');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-mocha-test');
 
     var testOutputLocation = process.env.CIRCLE_TEST_REPORTS || "test_output";
     var artifactsLocation = "build_artifacts";
@@ -21,7 +21,7 @@ module.exports = function(grunt) {
         },
         protractor: {
             options: {
-                configFile: 'test/protractor/ptor.conf.js',
+                configFile: 'test/e2e/ptor.conf.js',
                 args: {
                     "verbose": "true"
                 }
@@ -41,13 +41,13 @@ module.exports = function(grunt) {
             test: {
                 options: {
                     script: './server.js',
-                    args: ['debug=true']
+                    args: ['debug=true', 'testing=true']
                 }
             },
             prod: {
                 options: {
                     script: './server.js',
-                    args: ['debug=false']
+                    args: ['debug=false', 'testing=true']
                 }
             }
         },
@@ -55,7 +55,6 @@ module.exports = function(grunt) {
             options: {
                 port: 4444,
                 args: {
-
                 }
             }
         },
@@ -90,14 +89,22 @@ module.exports = function(grunt) {
         },
         karma: {
             unit: {
-                configFile: 'test/karma/karma.conf.js',
+                configFile: 'test/unit/frontend/karma.conf.js',
                 autoWatch: true
             },
             continuous: {
-                configFile: 'test/karma/karma.conf.js',
+                configFile: 'test/unit/frontend/karma.conf.js',
                 singleRun: true,
                 browsers: ['Chrome']
             },
+        },
+        mochaTest: {
+            test: {
+                options: {
+                    reporter: 'spec',
+                },
+                src: ['test/unit/server/**/*.js']
+            }
         }
     });
 
@@ -107,8 +114,9 @@ module.exports = function(grunt) {
     grunt.registerTask('ci-e2e-test', ['express:prod', 'selenium_start', 'protractor:e2e']);
     grunt.registerTask("check", ["jshint"]);
     grunt.registerTask("install", "auto_install");
-    grunt.registerTask("test", ["check", "e2e-test", "karma:continuous"]);
-    grunt.registerTask("ci-test", ["check", "ci-e2e-test", "karma:continuous"]);
+    grunt.registerTask('mocha', 'mochaTest');
+    grunt.registerTask("test", ["check", "e2e-test", "karma:continuous", "mochaTest"]);
+    grunt.registerTask("ci-test", ["check", "ci-e2e-test", "karma:continuous", "mochaTest"]);
     grunt.registerTask("scripts", "tags");
     grunt.registerTask("default", ['tags', 'test']);
 };

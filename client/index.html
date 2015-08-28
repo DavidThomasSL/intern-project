@@ -21,44 +21,72 @@
     <body ng-app="ClonageApp" ng-controller="MainController">
         <!--COntent goes here -->
         <div class="wrapper">
-            <div class="jumbotron">
-                <div class="lead">
-                    <h1>Clonage</h1>
-                </div>
-                <div class="text-left">
-                    <div ng-hide="rank() === ''">
-                        <p id="personal-rank" class="rank">#{{rank()}}</p>
-                        <button class="menu-button" id="sidebar-button" ng-click="toggle = !toggle">
-                        <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+            <!-- NAVBAR -->
+            <nav class="navbar navbar-default navbar-static-top" style="margin: 5px;" ng-hide="(getIfObserver()===true)">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header" style="margin-top: 0px">
+                        <a class="navbar-brand" >Clonage</a>
+                        <button id="navbar-expand-button" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#clonage-navbar" aria-expanded="false">
+                        <span class="sr-only">Toggle</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
                         </button>
                     </div>
-                </div>
-                <div class="text-right">
-                    <p id="current-round" class="current-round" ng-show="currentRound()>-1">Round {{currentRound()}} / {{maxRounds()}}</p>
-                    <p class="username">{{getUserName()}}</p>
-                </div>
-            </div>
-            <div class="content">
-                <!-- sidebar -->
-                <div class="sidebar" ng-show="toggle" ng-class="{'slide-out': toggle}">
-                    <div class="sidebar-header clearfix text-center"><br>
-                        <h4> Current Scores :</h4>
-                    </div>
-                    <div class="text-center">
-                        <ul class="list-group sidebar-list">
-                            <li class="list-group-item sidebar-item" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'">
-                                <div style="font-weight: bold">#{{currentResult.player.rank}} {{currentResult.player.name}}
-                                </div>
-                                <div style="font-style: italic">
-                                    {{currentResult.player.points}} points
-                                </div>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="clonage-navbar" >
+                        <span class="navbar-text navbar-right flex flex-row" style="margin-right: 5px;margin-top: 15px;margin-bottom: 0px" ng-hide="getUserName() === undefined">
+                            <p  style="font-size: 14px;"><b>{{getUserName()}}</b></p>
+                            <user-profile sizeX="45" sizey="45" image="getUserImage()" isbot=false style="margin-top: -12px;margin-left: 15px;"></user-profile>
+                        </span>
+                        <p id="personal-rank" class="navbar-text navbar-right" ng-hide="rank() === ''"><b>Rank #{{rank()}}</b></p>
+                        <p id="current-round" class="navbar-text navbar-right" ng-show="currentRound()>0">Round {{currentRound()}} / {{maxRounds()}}</p>
+                        <!-- Game ranking dropdown -->
+                        <ul class="nav navbar-nav navbar-left" ng-hide="rank() === ''">
+                            <li class="dropdown">
+                                <a id="game-ranking-dropdown-button" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" aria-haspopup="true">
+                                    Current Rankings
+                                    <span class="caret"></span>
+                                </a>
+                                <ul id="game-ranking-dropdown" class="dropdown-menu" >
+                                    <li class="navbar-text" ng-repeat="currentResult in getPlayerRoundResults() | orderBy: '-player.points'" style="margin-left: 30px">
+                                        <div class="dropdown-game-rankings">
+                                            <div class="dropdown-rankings-image">
+                                                <user-profile sizex="45" sizey="45" isbot="getUserFromId(currentResult.player.uId).isBot" image="getUserFromId(currentResult.player.uId).
+                                                image"></user-profile>
+                                            </div>
+                                            <div class="flex-1">
+                                                <section>
+                                                    <b>#{{currentResult.player.rank}} - {{currentResult.player.name}}</b>
+                                                </section>
+                                                <section>
+                                                    {{currentResult.player.points}} points
+                                                </section>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <div ng-view>
-                </div ng-view>
-            </div>
+                <!-- Script to open the dropdown menu whenever the navbar toggle is clicked -->
+                <script type="text/javascript">
+                $(".navbar-toggle").click(function() {
+                if (window.matchMedia("(max-width: 768px)").matches) {
+                // on mobile, dropdown default opened:
+                // use timeout to wait until navbar fully opened before opening dropdown
+                setTimeout(function() {
+                $("#game-ranking-dropdown-button").click();
+                }, 50);
+                }
+                });
+                </script>
+            </nav>
+            <!-- END NAVBAR -->
+            <div ng-view autoscroll="true">
+            </div ng-view>
         </div>
         <footer class="footer text-center">
             <p>&copy; <a href="https://matteroffactsblog.files.wordpress.com/2013/08/despicable_me_2_minions-1920x1080.jpg" target="_blank">SITE BY  :  [ { Ben }, { Georgiana }, { James } ]</a></p>
@@ -72,12 +100,13 @@
         <script type="text/javascript" src="https://rawgit.com/Foxandxss/angular-toastr/master/dist/angular-toastr.tpls.js"></script>
         <link type="text/css"  rel="stylesheet" href="https://rawgit.com/Foxandxss/angular-toastr/master/dist/angular-toastr.min.css"/>
         <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js"></script>
-
+        <script type="text/javascript" src="https://cdn.rawgit.com/d-oliveros/ngSmoothScroll/master/dist/angular-smooth-scroll.min.js"></script>
         <!-- start client/js tags -->
         <script src="Angular/ClonageApp.js"></script>
         <script src="Angular/config/routeConfig.js"></script>
         <script src="Angular/controllers/gameController.js"></script>
         <script src="Angular/controllers/mainController.js"></script>
+        <script src="Angular/controllers/observerController.js"></script>
         <script src="Angular/controllers/roomController.js"></script>
         <script src="Angular/controllers/signupController.js"></script>
         <script src="Angular/directives/animateOnChangeDirective.js"></script>
@@ -88,6 +117,7 @@
         <script src="Angular/services/dynamicTextService.js"></script>
         <script src="Angular/services/gameService.js"></script>
         <script src="Angular/services/notificationService.js"></script>
+        <script src="Angular/services/playerService.js"></script>
         <script src="Angular/services/roomService.js"></script>
         <script src="Angular/services/routingService.js"></script>
         <script src="Angular/services/socketService.js"></script>

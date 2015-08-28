@@ -12,7 +12,7 @@ var GameController = require('./GameController');
 var User = require('./User');
 var Room = require('./Room');
 
-module.exports = function(port, enableLogging) {
+module.exports = function(port, enableLogging, testing) {
     var router = express();
     var server = http.createServer(router);
     var io = socketio.listen(server, {
@@ -27,13 +27,11 @@ module.exports = function(port, enableLogging) {
         logger.setLevel('INFO');
     }
 
-
     router.use(express.static(path.resolve(__dirname, '../client')));
 
     var rooms = [];
     var messages = [];
     var users = [];
-    // var uId = 0;
     var roomId = 0;
 
     io.on('connection', function(socket) {
@@ -61,6 +59,7 @@ module.exports = function(port, enableLogging) {
 
                 logger.debug("user has joined previously ");
 
+
                 //check if the user was found
                 if (user !== undefined) {
                     //give the user the socket they've connected with
@@ -74,11 +73,13 @@ module.exports = function(port, enableLogging) {
             } else {
                 //first time this user has joined
                 user = createNewUser();
+
                 logger.debug("New user, creating new user " + user.uId);
             }
 
             //Send the client the user details
             user.sendUserDetails();
+            user.emit("GAME rooms available", getRoomsInformation());
 
             // Check if the user was in a room
             // If the room has a game in progress, they will re-join that game
@@ -96,26 +97,21 @@ module.exports = function(port, enableLogging) {
             logger.debug("Final registered details of user are: " + user.name + " " + user.uId);
         });
 
-        /*
-            Set the user's name as given by the client
-         */
-        socket.on('USER set name', function(msg) {
-            user.name = msg.name;
-            user.sendUserDetails();
-            putUserInJoining();
-
-            logger.debug("User set name as: " + msg.name);
-        });
-
         socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
+            user.isObserver = data.isObserver;
+            user.readyToProceed = data.isObserver;
+
+            if(user === undefined || user.sendUserDetails === undefined){
+                console.log("waht the fuck " + data);
+            }
             user.sendUserDetails();
+
             putUserInJoining();
 
             logger.debug("User set name as: " + data.name);
         });
-
         /*
             create room, assign id, add current player and return room id to player
         */
@@ -123,10 +119,14 @@ module.exports = function(port, enableLogging) {
 
             roomId = makeid();
 
-            var room = new Room(roomId);
+            var room = new Room(roomId, testing);
             rooms.push(room);
 
             putUserInRoom(roomId);
+
+            users.forEach(function(user) {
+                user.emit("GAME rooms available", getRoomsInformation());
+            });
         });
 
         /*
@@ -134,7 +134,32 @@ module.exports = function(port, enableLogging) {
             check if that room exists, and add the player if they are not already in it
         */
         socket.on('ROOM join', function(msg) {
-            putUserInRoom(msg.roomId);
+            putUserInRoom(msg.roomId, msg.force);
+        });
+
+        /*
+            Create a new room and put the calling user into it
+            Send a message to all other users in the old room to ask if they want to join
+        */
+        socket.on('PLAYER play again', function(msg) {
+            var oldRoom = getRoomFromId(msg.oldRoomId);
+
+            var user = getUserFromId(msg.userId);
+            var newRoomId = user.roomId;
+
+            oldRoom.removeUser(user);
+
+            oldRoom.broadcastRoom('USER play again', {
+                newRoomId: newRoomId,
+                user: user.name
+            });
+
+            oldRoom.broadcastRoom("NOTIFICATION actionable", {
+                action: 'play again',
+                newRoomId: newRoomId,
+                user: user.name
+            });
+
         });
 
         /*
@@ -145,7 +170,7 @@ module.exports = function(port, enableLogging) {
 
             var room = getRoomFromId(msg.roomId);
 
-            if ( room.submitMessage(msg) === true)
+            if (room.submitMessage(msg) === true)
                 room.broadcastRoom('ROOM messages');
         });
 
@@ -159,11 +184,13 @@ module.exports = function(port, enableLogging) {
             var room = getRoomFromId(msg.roomId);
 
             if (room !== undefined) {
-                room.removeUser(user);
-                room.broadcastRoom('ROOM details');
+                removeUserFromRoom(room);
             }
 
-            user.readyToProceed = false;
+            if (!user.isObserver) {
+                user.readyToProceed = false;
+            }
+
             user.roomId = "";
             user.sendUserDetails();
 
@@ -172,6 +199,31 @@ module.exports = function(port, enableLogging) {
             logger.debug("Removed user " + user.name + " from room " + room.id);
         });
 
+        function removeUserFromRoom(room) {
+            logger.debug("Removing player from room" + room.id);
+
+            room.removeUser(user);
+
+            //update the observers list of available rooms
+            users.forEach(function(user) {
+                user.emit("GAME rooms available", getRoomsInformation());
+            });
+
+            // Check if anyone is still in the room
+            // if not, start expiriy timer
+            if (room.usersInRoom.length === 0) {
+                room.setTimeToLiveTimer(function() {
+                    deleteRoom(room);
+
+                    //update the observers list of available rooms
+                    users.forEach(function(user) {
+                        user.emit("GAME rooms available", getRoomsInformation());
+                    });
+
+                    logger.debug("No-one in room" + room.id + ", deleting it");
+                });
+            }
+        }
         /*
             Set by the players in the room lobby if they want to
                 enable bots during the game or not (and how many)
@@ -180,8 +232,14 @@ module.exports = function(port, enableLogging) {
         */
         socket.on('ROOM setGameParameters', function(data) {
             var room = getRoomFromId(data.roomId);
-            room.botNumber = data.botNumber;
+
+            // add the required number of bots to the room
+            room.setBotNumber(data.botNumber);
+            // set them  number of rounds
+            // room.botNumber = data.botNumber;
             room.numRounds = data.numRounds;
+
+            // send details back to all clients in the room
             room.broadcastRoom("ROOM details");
             return;
         });
@@ -195,7 +253,7 @@ module.exports = function(port, enableLogging) {
             If everyone in the room has said they are ready, moves to the next gamestage
             toggles the user calls this event either ready or not ready, with a readyToProceedFlag
         */
-        socket.on('GAME ready status', function(data) {
+        socket.on('PLAYER ready status', function(data) {
 
             var readyCounter = 0;
 
@@ -225,7 +283,9 @@ module.exports = function(port, enableLogging) {
 
                 //after moving players on, set all their ready statuses back to 'not ready'
                 room.usersInRoom.forEach(function(iteratedUser) {
-                    iteratedUser.readyToProceed = false;
+                    if (!iteratedUser.isObserver) {
+                        iteratedUser.readyToProceed = false;
+                    }
                 });
 
                 // if the game hasn't started yet, start the game
@@ -240,19 +300,22 @@ module.exports = function(port, enableLogging) {
             }
         });
 
-        socket.on('GAME replace cards', function(data) {
+        socket.on('PLAYER replace cards', function(data) {
             var room = getRoomFromId(user.roomId);
 
-            room.gameController.replaceCards(user.uId, data.cardsToReplace, function(newHand, newResults) {
+            room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newResults) {
+
                 user.emit('USER hand', {
                     hand: newHand
                 });
+
                 room.broadcastRoom('GAME playerRoundResults', {
                     results: newResults,
-                    voteNumber:0
+                    voteNumber: 0
                 });
+
                 user.emit("NOTIFICATION message", {
-                    text: "Replaced " + data.cardsToReplace.length + " card(s).",
+                    text: "Replaced hand",
                     type: "success"
                 });
             });
@@ -272,10 +335,30 @@ module.exports = function(port, enableLogging) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room, function() {
+            room.gameController.initialize(room, function(initialResults) {
+
+                room.broadcastRoom("GAME playerRoundResults", {
+                    results: initialResults,
+                    voteCounter: 0
+                });
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
             });
+        }
+
+        function getRoomsInformation() {
+
+            var roomsAvailable = [];
+            rooms.forEach(function(room) {
+
+                var roomDet = {
+                    id: room.id,
+                    usersInRoom: room.getUsersInRoomDetails()
+                };
+
+                roomsAvailable.push(roomDet);
+            });
+            return roomsAvailable;
         }
 
         /*
@@ -305,8 +388,14 @@ module.exports = function(port, enableLogging) {
                         question: data.roundQuestion,
                         round: data.round,
                         maxRounds: data.maxRounds,
-                        cardReplaceCost: data.cardReplaceCost
+                        handReplaceCost: data.handReplaceCost
                     });
+
+                    room.broadcastRoom("PLAYER question", {
+                        question: data.roundQuestion,
+                    });
+
+
                     room.broadcastRoom('ROOM details');
 
                     //Send each user in the room their individual hand (delt by the GameController)
@@ -353,7 +442,7 @@ module.exports = function(port, enableLogging) {
         }
 
         // submit answer
-        socket.on('USER submitChoice', function(msg) {
+        socket.on('PLAYER submitChoice', function(msg) {
 
             var room = getRoomFromId(user.roomId);
 
@@ -369,6 +458,12 @@ module.exports = function(port, enableLogging) {
                 room.broadcastRoom("GAME answers", {
                     answers: data.answers
                 });
+
+                if (testing !== undefined) {
+                    room.broadcastRoom("GAME timeout", {
+                        timeout: 0
+                    });
+                }
 
                 //immediately updates the hand of the player who submitted the answer
                 user.emit('USER hand', {
@@ -403,7 +498,7 @@ module.exports = function(port, enableLogging) {
             callback will return the results after everyone has voted:
             who submitted what answer, who voted for them, their score after the round
         */
-        socket.on('USER vote', function(msg) {
+        socket.on('PLAYER vote', function(msg) {
 
             var room = getRoomFromId(user.roomId);
 
@@ -419,6 +514,7 @@ module.exports = function(port, enableLogging) {
                 // Send room the vote data after each vote
                 room.broadcastRoom("GAME playerRoundResults", {
                     results: data.res,
+                    currentVotes: data.currentVotes,
                     voteNumber: data.voteNumber
                 });
 
@@ -437,6 +533,9 @@ module.exports = function(port, enableLogging) {
             so that he can join again
 
             Takes the user out of the game if they were in one
+
+            If there is no-one left in the room, will set a time to live for the room
+            so we can delete it if no-one rejoins
         */
         socket.on('disconnect', function() {
 
@@ -444,11 +543,12 @@ module.exports = function(port, enableLogging) {
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
-                room.removeUser(user);
+                removeUserFromRoom(room);
 
-                user.readyToProceed = false;
+                if (!user.isObserver) {
+                    user.readyToProceed = false;
+                }
 
-                logger.debug("Removing player from room" + room.id);
             } else {
                 logger.debug("User was not in a room");
             }
@@ -457,13 +557,22 @@ module.exports = function(port, enableLogging) {
         });
 
         /*
+            Removes the room from the rooms array
+        */
+        function deleteRoom(rm) {
+            rooms = rooms.filter(function(room) {
+                return room.id !== rm.id;
+            });
+        }
+
+        /*
             Puts a user into a room
             Tells the user and the room that a change has occured
             Tells the routing service to move to the room page
             Tell all other users in the room that a player has joined
             Does not put the user in if they are already put in it
         */
-        function putUserInRoom(roomId) {
+        function putUserInRoom(roomId, force) {
 
             var result = {};
             var errorText = "";
@@ -475,30 +584,47 @@ module.exports = function(port, enableLogging) {
             if (room !== undefined) {
 
                 // Try and join the room
-                result = room.addUser(user);
+                result = room.addUser(user, testing, force); //don't force user into room
 
-                if (result.gameInProgress) {
-                    errorText = "the game is already in progress";
+                // Handle result of room join attempt
+                if (result.joined) {
+                    // update the game rooms available for everyone
+                    users.forEach(function(u) {
+                        u.emit("GAME rooms available", getRoomsInformation());
+                    });
+
+                    logger.debug("User " + user.name + " joined room " + roomId);
+
+                } else if (result.gameInProgress) {
+                    // give user abilty to join room in progress
+                    emitNotificationActionable(user, {
+                        action: 'join room observer',
+                        roomId: roomId
+                    });
                 } else if (result.userAlreadyInRoom) {
-                    errorText = "you are already in that room!";
+                    emitNotificationMessage(user, {
+                        text: "you are already in that room!",
+                        type: "error"
+                    });
+                } else {
+                    console.log("something terrible happened...");
                 }
 
             } else {
                 // No room was found
-                errorText = "code \"" + roomId + "\" does not match any existing room";
-                result.joined = false;
-            }
-
-            if (result.joined) {
-                room.broadcastRoom('ROOM messages');
-                logger.debug("User " + user.name + " joined room " + roomId);
-            } else {
-                socket.emit("NOTIFICATION message", {
-                    text: "Cannot join the room, " + errorText,
+                emitNotificationMessage(user, {
+                    text: "code \"" + roomId + "\" does not match any existing room",
                     type: "error"
                 });
-                logger.warn("User " + user.name + " could not join room " + roomId);
             }
+        }
+
+        function emitNotificationActionable(target, data) {
+            target.emit("NOTIFICATION actionable", data);
+        }
+
+        function emitNotificationMessage(target, data) {
+            target.emit("NOTIFICATION message", data);
         }
 
         function putUserInJoining() {

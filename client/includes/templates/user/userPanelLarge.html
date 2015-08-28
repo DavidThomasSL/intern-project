@@ -1,10 +1,10 @@
-<div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed}">
-    <div class="panel-body flex-row">
-        <user-profile class="flex1" control="user.canvasControl" scale="0.4" ></user-profile>
-        <div class="flex1" style="margin-top: 50px">
-            {{user.name}}
-                <span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user " aria-hidden="true" >
-                </span>
-        </div>
-    </div>
+<div id="user-panel" class="panel panel-default" ng-class="{'player-ready':user.readyToProceed || user.isBot }">
+	<div id="user-panel-large" class="panel-body flex-row">
+		<user-profile class="flex1" sizex="100" sizey="100" isbot=user.isBot image=user.image ></user-profile>
+		<div class="flex1" style="margin-top: 50px">
+			{{user.name}}
+			<span ng-if="user.uId === getUserId()" class="glyphicon glyphicon-user " aria-hidden="true" >
+			</span>
+		</div>
+	</div>
 </div>

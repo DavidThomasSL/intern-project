@@ -1,5 +1,5 @@
-ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
-    function($sessionStorage, communicationService) {
+ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 'toastr', 'roomService',
+    function($sessionStorage, communicationService, toastr, roomService) {
 
         /*
         --------------------
@@ -12,15 +12,21 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         var user = {};
         var gameHand = {};
         var rank = "";
-
-
-        //call function that emits to server the vote that was just submitted
-        function submitVote(answer) {
-            _emitVote(answer);
-        }
+        var playAgainWasPressed;
 
         function getUserName() {
             return user.name;
+        }
+
+        function getIfObserver() {
+
+            var isObserver;
+            if (user.isObserver === undefined) {
+                isObserver = false;
+            } else {
+                isObserver = user.isObserver;
+            }
+            return isObserver;
         }
 
         function getUserId() {
@@ -35,16 +41,19 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
             return user.image;
         }
 
-        function setName(name) {
-            sendMessage('USER set name', {
-                name: name
-            });
-        }
-
         function setNameAndImage(name, image) {
             sendMessage('USER set profile', {
                 name: name,
-                image: image
+                image: image,
+                isObserver: false
+            });
+        }
+
+        function registerNewObserver(name, image) {
+            sendMessage('USER set profile', {
+                name: name,
+                image: image,
+                isObserver: true
             });
         }
 
@@ -67,6 +76,10 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
                 messageText: messageText,
                 roomId: user.roomId
             });
+        }
+
+        function getRoomId() {
+            return user.roomId;
         }
 
         /*
@@ -92,6 +105,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         function _joinRoom(data) {
+            playAgainWasPressed = false;
             $sessionStorage.roomId = data.roomId;
             user.roomId = data.roomId;
             userInRoom = true;
@@ -99,6 +113,14 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
 
         function _setHand(data) {
             gameHand = data.hand;
+        }
+
+        function _playAgain(data) {
+            playAgainWasPressed = true;
+        }
+
+        function hidePlayAgainButton() {
+            return playAgainWasPressed;
         }
 
         /*
@@ -118,6 +140,12 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }, {
             eventName: "room join",
             eventAction: _joinRoom
+        }, {
+            eventName: "room join",
+            eventAction: _joinRoom
+        }, {
+            eventName: "play again",
+            eventAction: _playAgain
         }, {
             eventName: "hand",
             eventAction: _setHand
@@ -139,19 +167,22 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService',
         }
 
         return {
-            setName: setName,
             getUserName: getUserName,
             getUserId: getUserId,
+            getRoomId: getRoomId,
             getUserHand: getUserHand,
             getRank: getRank,
             setRank: setRank,
+            getIfObserver: getIfObserver,
             setNameAndImage: setNameAndImage,
+            registerNewObserver: registerNewObserver,
             getUserImage: getUserImage,
             _setUserDetails: _setUserDetails,
             _setHand: _setHand,
             _joinRoom: _joinRoom,
             _registerUser: _registerUser,
-            sendMessage: submitMessage
+            sendMessage: submitMessage,
+            playAgainWasPressed: hidePlayAgainButton
         };
 
     }
