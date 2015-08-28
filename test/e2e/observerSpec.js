@@ -23,11 +23,30 @@ describe('When playing as a observer', function() {
 		secondClonageUser.getIndex();
 		secondClonageUser.submitName('Alice');
 		secondClonageUser.createRoom();
+
+		secondClonageUser.element(by.binding("roomId()")).getText().then(function(text){
+			console.log(text);
+		});
+
+		expect(browser2.getCurrentUrl()).toMatch(/\/room/);
+
 		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).count()).toBeGreaterThan(0); // don't know how many rooms will have timed out by this point
 
 	});
 
-	it('can see the number of users in the room', function(){
+	it('can see the number of users in the room', function() {
+		expect(browser2.getCurrentUrl()).toMatch(/\/room/);
+		expect(secondClonageUser.element(by.binding("roomId()")).getText()).toContain("ROOM CODE:");
+
+		firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).get(0).element(by.binding('room.id')).getText().then(function(text) {
+			console.log(text);
+		});
+
+		firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).get(0).element(by.binding('room.usersInRoom.length')).getText().then(function(text){
+			console.log(text);
+		});
+
+		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).get(0).element(by.binding('room.id')).getText()).toMatch("ROOM");
 		expect(firstClonageUser.element.all(by.repeater('room in allRoomsAvailable()')).get(0).element(by.binding('room.usersInRoom.length')).getText()).toEqual("1");
 	});
 

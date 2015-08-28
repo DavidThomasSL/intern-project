@@ -102,6 +102,10 @@ module.exports = function(port, enableLogging, testing) {
             user.image = data.image;
             user.isObserver = data.isObserver;
             user.readyToProceed = data.isObserver;
+
+            if(user === undefined || user.sendUserDetails === undefined){
+                console.log("waht the fuck " + data);
+            }
             user.sendUserDetails();
 
             putUserInJoining();
