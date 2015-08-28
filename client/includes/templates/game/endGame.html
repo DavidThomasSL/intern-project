@@ -4,23 +4,23 @@
         <h4> Final Scores </h4>
     </div>
     <div class="row">
-        <div class="end-game-data-container" ng-repeat="result in getPlayerRoundResults() | orderBy : '-player.points'">
+        <div class="end-game-data-container" ng-repeat="submission in roundSubmissionData() | orderBy : '-player.points'" id="end-game-results-row">
             <div class="row end-game-data-row">
                 <div class="col-xs-2 col-xs-offset-2 col-sm-1 col-sm-offset-0 end-game-rank text-right">
-                    #{{result.player.rank}}
+                    #{{submission.player.rank}}
 
                 </div>
                 <div class="col-xs-2 col-sm-1 text-left">
-                    <user-profile sizex="60" sizey="60" isbot="getUserFromId(result.player.uId).isBot" image="getUserFromId(result.player.uId).
+                    <user-profile sizex="60" sizey="60" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
                     image"></user-profile>
                 </div>
                 <div class="col-xs-6 col-sm-2 end-game-name text-left">
                     <div class="flex-1">
                         <section>
-                            <b>{{result.player.name}}</b>
+                            <b>{{submission.player.name}}</b>
                         </section>
                         <section>
-                            {{result.player.points}} points
+                            {{submission.player.points}} points
                         </section>
                     </div>
                 </div>

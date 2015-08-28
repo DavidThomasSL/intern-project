@@ -33,7 +33,7 @@ function Round(roundCount, cardController) {
 		roundSubmissions.forEach(function(submission) {
 			if (submission.submissionsText.length > 0) {
 				submissionCounter++;
-			};
+			}
 		});
 		return submissionCounter;
 	};
@@ -59,7 +59,6 @@ function Round(roundCount, cardController) {
 				}
 			}
 		});
-		console.log("is VOTING COMPLETE = " + (maxPossibleVotes === self.getNumberOfCurrentVotes()))
 		return maxPossibleVotes === self.getNumberOfCurrentVotes();
 	};
 
@@ -67,16 +66,15 @@ function Round(roundCount, cardController) {
 		When the round starts with a set of players we generate a blank set of submissionsData
 	*/
 	self.initialise = function(players) {
-		console.log(players);
 		players.forEach(function(player) {
 			if (player.connectedToServer) {
 				submission = {
 					player: player,
 					submissionsText: [],
 					playersWhoVotedForThis: []
-				}
+				};
 				roundSubmissions.push(submission);
-			};
+			}
 		});
 		roundQuestion = cardController.getQuestion();
 	};

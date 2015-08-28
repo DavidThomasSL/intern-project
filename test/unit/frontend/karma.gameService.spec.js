@@ -65,23 +65,6 @@ describe("Testing Game Service", function() {
 		expect(gameService.getCurrentQuestion().pick).toEqual(1);
 	});
 
-	it("getAnswers gets answers", function() {
-		//set the round question
-		gameService._setChosenAnswers({
-			answers: "test answer"
-		});
-		expect(gameService.getAnswers()).toEqual("test answer");
-	});
-
-	it("getCurrentVotes gets vote number", function() {
-		//set the round question
-		gameService._setPlayerRoundResults({
-			results: "results",
-			voteNumber: 2
-		});
-		expect(gameService.getCurrentVotes()).toEqual(2);
-	});
-
 	it("getCountdown gets countdown seconds left", function() {
 		//set the round question
 		gameService._receiveQuestion({

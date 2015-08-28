@@ -64,8 +64,8 @@ describe('When starting a game with BOTS', function() {
 	});
 
 	it('can see all the answers that were submitted', function() {
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
+		expect(firstClonageUser.element.all(by.id('results-table-row')).count()).toBe(2 + BOT_NUM);
+		expect(secondClonageUser.element.all(by.id('results-table-row')).count()).toBe(2 + BOT_NUM);
 	});
 
 	it('can see the players and bots at the bottom of the page', function() {
@@ -99,14 +99,9 @@ describe('When starting a game with BOTS', function() {
 
 		expect(browser.getCurrentUrl()).toMatch(/\/endGame/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
-	});
-
-	it('can see players final scores', function() {
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
 
 		firstClonageUser.clearUser();
 		browser2.close();
-	});
 
+	});
 });

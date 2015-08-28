@@ -445,13 +445,13 @@ module.exports = function(data) {
 	var updateGameState = function(wantedState) {
 		GameState = wantedState;
 
+		var currentRound = rounds[rounds.length - 1];
+
 		if (timerIsActive) {
 			stopTimer();
 		}
 
 		if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
-
-			var currentRound = rounds[rounds.length - 1];
 
 			//add the points to the players for each vote they received
 			currentRound.getRoundSubmissionData().forEach(function(submission) {
@@ -468,8 +468,6 @@ module.exports = function(data) {
 			setRank();
 
 		} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
-
-			currentRound = rounds[rounds.length -1];
 
 			addFakeAnswers(currentRound);
 

@@ -41,6 +41,8 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
             $scope.stopTimer();
         }
 
+        console.log("index is " + $scope.index + ", num is " + gameService.getCurrentNumberOfSubmissions());
+
         return filtered;
     };
 

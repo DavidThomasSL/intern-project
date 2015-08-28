@@ -50,7 +50,7 @@
                                     <span class="caret"></span>
                                 </a>
                                 <ul id="game-ranking-dropdown" class="dropdown-menu" >
-                                    <li class="navbar-text" ng-repeat="submission in roundSubmissionData() | orderBy: '-player.points'" style="margin-left: 30px">
+                                    <li class="navbar-text" ng-repeat="submission in roundSubmissionData() | orderBy: '-player.points'" style="margin-left: 30px" id="dropdown-row">
                                         <div class="dropdown-game-rankings">
                                             <div class="dropdown-rankings-image">
                                                 <user-profile sizex="45" sizey="45" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
