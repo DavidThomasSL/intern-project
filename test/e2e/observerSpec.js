@@ -38,7 +38,7 @@ describe('When playing as a observer', function() {
 	});
 
 	it('After starting the game, observer and user are put to relevant pages', function() {
-		MAX_ROUNDS = 3;
+		MAX_ROUNDS = 2;
 		BOT_NUM = 3;
 
 
@@ -75,7 +75,9 @@ describe('When playing as a observer', function() {
 
 	it('After moving to next round, observer and user are put to relevant pages', function() {
 
-		secondClonageUser.ready();
+		browser2.wait( function(){
+		  return element(by.id('observer-question')).isPresent();
+		}, 1000);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/observeQ/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
@@ -83,18 +85,17 @@ describe('When playing as a observer', function() {
 
 	it('After finishing a game, observer and user are put to relevant pages', function() {
 
-		//taking function out of loop as jshint complains
-		var userSubmitAnswer = function(text) {
+		secondClonageUser.getBlankSpaces().then(function(text) {
+
 			cardsToSubmit = parseInt(text[5]); //PICK X.
 			secondClonageUser.submitFirstAnswers(cardsToSubmit);
-		};
-
-		//change value here if we change the number of rounds
-		for (var i = 0; i < MAX_ROUNDS - 1; i++) {
-			secondClonageUser.getBlankSpaces().then(userSubmitAnswer);
 			secondClonageUser.submitFirstVote();
-			secondClonageUser.ready();
-		}
+
+		});
+
+		browser.wait( function(){
+		  return element(by.id('end-game-container')).isPresent();
+		}, 2000);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/observeEG/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);

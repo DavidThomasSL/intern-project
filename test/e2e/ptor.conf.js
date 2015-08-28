@@ -32,6 +32,9 @@ exports.config = {
 			'args': ['incognito']
 		}
 	},
+	jasmineNodeOpts: {
+        realtimeFailure: true
+    },
 	framework: 'jasmine2',
 	getPageTimeout: 300000,
 	allScriptsTimeout: 300000

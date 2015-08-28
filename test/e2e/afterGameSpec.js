@@ -31,7 +31,7 @@ describe('After ending the game', function() {
 			secondClonageUser.joinRoom(roomId);
 			expect(browser.getCurrentUrl()).toMatch(/\/room/);
 			expect(browser2.getCurrentUrl()).toMatch(/\/room/);
-			console.log(roomId);
+
 			firstClonageUser.ready();
 			secondClonageUser.ready();
 			expect(browser.getCurrentUrl()).toMatch(/\/question/);
@@ -54,7 +54,7 @@ describe('After ending the game', function() {
 
 		browser.wait( function(){
 		  return element(by.id('end-game-container')).isPresent();
-		}, 2000);
+		}, 1000);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/endGame/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
