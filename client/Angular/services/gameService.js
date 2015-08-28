@@ -10,9 +10,14 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var currentlySubmittedAnswers = []; //if multiple blanks then hold the currently selected answers
 	var round = -1;
 	var answers = [];
-	var currentNumberOfSubmissions = 0;
+
 	var playerRoundResults = [];
 	var voteCounter = 0;
+
+	var roundSubmissionData = [];
+	var currentNumberOfSubmissions = 0;
+	var currentNumberOfVotes = 0;
+
 	var maxRounds = 0; //variable holding the number of rounds wanted
 	var currentFilledInQuestion = "";
 
@@ -35,6 +40,13 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	//get the current question being asked, object contains text and amount of answers to pick
 	function getCurrentQuestion() {
 		return currentQuestion;
+	}
+
+	//get the current submission information
+	function getRoundSubmissionData() {
+		console.log("GETTTING RSD");
+		console.log(roundSubmissionData);
+		return roundSubmissionData;
 	}
 
 	//the position in the order of answers for multiple answer selections
@@ -60,13 +72,17 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return currentNumberOfSubmissions;
 	}
 
+	function getCurrentNumberOfVotes() {
+		return currentNumberOfVotes;
+	}
+
 	function getCurrentVotes() {
 		return voteCounter;
 	}
 
 	// Clears local game data when the user leaves the game
 	function clearGameData() {
-		playerRoundResults = [];
+		roundSubmissionData = [];
 		round = -1;
 	}
 
@@ -88,13 +104,15 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return playerRoundResults;
 	}
 
+
+
 	function getPlayerCurrentRank(playerId) {
 		var returnValue = "";
 
-		if (playerRoundResults !== null) {
-			playerRoundResults.forEach(function(playerResult) {
-				if (playerId === playerResult.player.uId) {
-					returnValue = playerResult.player.rank;
+		if (roundSubmissionData !== null) {
+			roundSubmissionData.forEach(function(submission) {
+				if (playerId === submission.player.uId) {
+					returnValue = submission.player.rank;
 				}
 			});
 		}
@@ -106,16 +124,17 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
         check if a certain user had submitted an answer yet
         function called in order to visualise on the timer when a certain player has submited
     */
-	function hasSubmitted(user) {
+	function hasSubmitted(userId) {
 
 		var submitted = false;
 
-		if (answers.length > 0) {
-			answers.forEach(function(answer) {
-				if (answer.player.uId === user && answer.submissionsText.length>0)
+		if (currentNumberOfSubmissions > 0) {
+			roundSubmissionData.forEach(function(submission) {
+				if (submission.player.uId === userId && submission.submissionsText.length>0)
 					submitted = true;
 			});
 		}
+
 		return submitted;
 	}
 
@@ -123,15 +142,15 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
         check if a certain user had voted for an answer yet
         function called in order to visualise on the timer when a certain player has submitted
     */
-	function hasVoted(user) {
+	function hasVoted(userName) {
 
 		var voted = false;
 
-		if (votes.length > 0) {
-			votes.forEach(function(vote) {
-				if (vote.playersWhoVotedForThis.length > 0) {
-					vote.playersWhoVotedForThis.forEach(function(player) {
-						if (player.name === user)
+		if (currentNumberOfVotes > 0) {
+			roundSubmissionData.forEach(function(submission) {
+				if (submission.playersWhoVotedForThis.length > 0) {
+					submission.playersWhoVotedForThis.forEach(function(player) {
+						if (player.name === userName)
 							voted = true;
 					});
 				}
@@ -184,27 +203,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		we will get first when refreshing. The filledInText is another property attached to each answer just on the
 		client side used to display each answer in its context.
 		*/
-		if (answers !== undefined) {
-			answers.forEach(function(answer) {
-				answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, answer.answersText);
+		if (roundSubmissionData !== undefined) {
+			roundSubmissionData.forEach(function(submission) {
+				submission.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, submission.submissionsText);
 			});
-		}
-	}
-
-	function _setChosenAnswers(data) {
-		answers = data.answers;
-		currentNumberOfSubmissions = data.currentNumberOfSubmissions;
-
-		//generating the filled in question based on the question text and submitted answers as above
-		if (currentQuestion !== undefined) {
-			answers.forEach(function(answer) {
-				answer.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, answer.submissionsText);
-			});
-		}
-
-		countdown = data.countdown;
-		if (countdown === undefined) {
-			votes = [];
 		}
 	}
 
@@ -216,7 +218,20 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	function _setRoundSubmissionData(data) {
 		console.log("getting round submissions data");
-		playerRoundResults = data.roundSubmissionData;
+
+		roundSubmissionData = data.roundSubmissionData;
+		currentNumberOfSubmissions = data. currentNumberOfSubmissions;
+		currentNumberOfVotes = data.currentNumberOfVotes;
+
+
+		//generating the filled in question based on the question text and submitted answers as above
+		if (currentQuestion !== undefined) {
+			roundSubmissionData.forEach(function(submission) {
+				submission.filledInText = dynamicTextService.fillInSelections(currentQuestion.text, submission.submissionsText);
+			});
+		}
+
+
 	}
 
 	function _setMaxRounds(num) {
@@ -242,9 +257,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	communicationService.registerListener("GAME", [{
 		eventName: "question",
 		eventAction: _receiveQuestion
-	}, {
-		eventName: "answers",
-		eventAction: _setChosenAnswers
 	}, {
 		eventName: "timeout",
 		eventAction: _setTimeout
@@ -291,6 +303,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getAnswerPosition: getAnswerPosition,
 		getAnswers: getAnswers,
 		getCurrentNumberOfSubmissions: getCurrentNumberOfSubmissions,
+		getCurrentNumberOfVotes: getCurrentNumberOfVotes,
+		getRoundSubmissionData: getRoundSubmissionData,
 		getCurrentRound: getCurrentRound,
 		getPlayerRoundResults: getPlayerRoundResults,
 		getCurrentVotes: getCurrentVotes,

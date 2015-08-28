@@ -87,22 +87,6 @@ module.exports = function(data) {
 
 	};
 
-	// var buildBlankResults = function() {
-
-	// 	var currentRound = rounds[roundCount - 1];
-	// 	var results = [];
-
-	// 	currentRound.answers.forEach(function(currentAnswer) {
-	// 		var result = {
-	// 			player: currentAnswer.player,
-	// 			answersText: currentAnswer.answersText,
-	// 			playersWhoVotedForThis: []
-	// 		};
-	// 		results.push(result);
-	// 	});
-	// 	return results;
-	// };
-
 	/*
 		function to stop the counter
 		is called from updateGameState function
@@ -130,28 +114,6 @@ module.exports = function(data) {
 			room.botsInRoom.forEach(function(bot) {
 				setupBot(bot);
 			});
-
-			// players.forEach(function(player) {
-			// 	if (player.connectedToServer) {
-			// 		var result = {
-			// 			player: player,
-			// 			answersText: [],
-			// 			playersWhoVotedForThis: []
-			// 		};
-			// 		initialResults.push(result);
-			// 	}
-
-			// });
-
-			// bots.forEach(function(bot) {
-
-			// 	var result = {
-			// 		player: bot,
-			// 		answersText: [],
-			// 		playersWhoVotedForThis: []
-			// 	};
-			// 	initialResults.push(result);
-			// });
 
 			BOT_NUMBER = room.botsInRoom.length;
 			MAX_ROUNDS = room.numRounds;
@@ -190,13 +152,6 @@ module.exports = function(data) {
 
 			var round = new Round(roundCount, cardController);
 			round.initialise(players);
-
-			// var round = {
-			// 	count: roundCount,
-			// 	question: cardController.getQuestion(),
-			// 	answers: [],
-			// 	results: []
-			// };
 
 			rounds.push(round);
 
@@ -238,13 +193,6 @@ module.exports = function(data) {
 
 			submittingPlayer.hasSubmitted = true;
 
-			// Build the submitted answer
-			// var ans = {
-			// 	player: submittingPlayer,
-			// 	answersText: answersText,
-			// 	playersVote: []
-			// };
-
 			//Get the current round object, which will hold all the answers for that round
 			var currentRound = rounds[rounds.length - 1];
 
@@ -272,9 +220,8 @@ module.exports = function(data) {
 			} else {
 				allChoicesSubmitted = false;
 			}
-
 			callback({
-				answers: currentRound.getRoundSubmissionData(),
+				roundSubmissionData: currentRound.getRoundSubmissionData(),
 				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
 				allChoicesSubmitted: allChoicesSubmitted,
 				submittingPlayersNewHand: submittingPlayer.hand

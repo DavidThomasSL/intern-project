@@ -424,8 +424,8 @@ module.exports = function(port, enableLogging, testing) {
             room.gameController.submitAnswer(user.uId, msg.answer, function(data) {
 
                 //sends the list of answers each time someone submits one
-                room.broadcastRoom("GAME answers", {
-                    answers: data.answers,
+                room.broadcastRoom("GAME roundSubmissionData", {
+                    roundSubmissionData: data.roundSubmissionData,
                     currentNumberOfSubmissions: data.currentNumberOfSubmissions
                 });
 
@@ -482,10 +482,15 @@ module.exports = function(port, enableLogging, testing) {
             room.gameController.submitVote(user.uId, msg.answer, function(data) {
 
                 // Send room the vote data after each vote
-                room.broadcastRoom("GAME playerRoundResults", {
-                    results: data.res,
-                    currentVotes: data.currentVotes,
-                    voteNumber: data.voteNumber
+                // room.broadcastRoom("GAME playerRoundResults", {
+                //     results: data.res,
+                //     currentVotes: data.currentVotes,
+                //     voteNumber: data.voteNumber
+                // });
+
+                room.broadcastRoom("GAME roundSubmissionData", {
+                    roundSubmissionData: data.roundSubmissionData,
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions
                 });
 
                 if (data.allVotesSubmitted === true) {

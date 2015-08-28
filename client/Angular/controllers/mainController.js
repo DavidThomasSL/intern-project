@@ -11,6 +11,9 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
 
+    $scope.roundSubmissionData = gameService.getRoundSubmissionData;
+
+
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function(botsEnabled) {
         playerService.sendReadyStatus($scope.roomId());

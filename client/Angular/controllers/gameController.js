@@ -17,7 +17,10 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
     $scope.answers = gameService.getAnswers;
+
     $scope.currentNumberOfSubmissions = gameService.getCurrentNumberOfSubmissions;
+    $scope.currentNumberOfVotes = gameService.getCurrentNumberOfVotes;
+    $scope.roundSubmissionData = gameService.getRoundSubmissionData;
 
     $scope.index = 0;
     $scope.timeToWaitAnimation = gameService.getTimeout();
@@ -61,9 +64,9 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     //It is fetched from from the answers array so it can be seen after refreshing.
     $scope.filledInQuestion = function() {
         var text = "";
-        $scope.answers().forEach(function(answer) {
-            if (answer.player.uId === userService.getUserId()) {
-                text = answer.filledInText;
+        $scope.roundSubmissionData().forEach(function(submission) {
+            if (submission.player.uId === userService.getUserId()) {
+                text = submission.filledInText;
             }
         });
         return text;
