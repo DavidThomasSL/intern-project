@@ -74,11 +74,11 @@ module.exports = function(data) {
 				// trigger callback so the server sees the time has ran out
 				stopTimer();
 
-				var round = rounds[roundCount-1];
+				var round = rounds[roundCount - 1];
 
 				var roundData = {
 					roundSubmissionData: round.getRoundSubmissionData(),
-					currentNumberOfSubmissions: round.getNumberOfCurrentVotes(),
+					currentNumberOfSubmissions: round.getNumberOfCurrentSubmissions(),
 					currentNumberOfVotes: round.getNumberOfCurrentVotes()
 				};
 				callback(roundData);
@@ -197,7 +197,7 @@ module.exports = function(data) {
 			//Get the current round object, which will hold all the answers for that round
 			var currentRound = rounds[rounds.length - 1];
 
-			currentRound.addSubmission(submittingPlayer,answersText);
+			currentRound.addSubmission(submittingPlayer, answersText);
 
 			//Update this players hand with a new card, as they have just played one
 			// Loop throughas there can be multiple cards played on one answer
@@ -209,9 +209,6 @@ module.exports = function(data) {
 
 			//check if everyone submitted and sends back all the currently submitted answers
 			if (currentRound.getNumberOfCurrentSubmissions() >= getNumOfConnectedPlayers()) {
-
-				//add bot answers for people to vote on
-				addFakeAnswers(currentRound);
 
 				// Move to the voting stage of the game
 				updateGameState(POSSIBLE_GAMESTATES.VOTING);
@@ -261,7 +258,7 @@ module.exports = function(data) {
 
 			submittingPlayer.hasSubmitted = true;
 
-			currentRound.addVote(submittingPlayer,votedForAnswer);
+			currentRound.addVote(submittingPlayer, votedForAnswer);
 
 			var allVotesSubmitted;
 
@@ -418,7 +415,7 @@ module.exports = function(data) {
 				bot.updateHand(randomAns);
 				randomAnswers.push(randomAns);
 			}
-			round.addSubmission(bot,randomAnswers);
+			round.addSubmission(bot, randomAnswers);
 		});
 	};
 
@@ -471,6 +468,11 @@ module.exports = function(data) {
 			setRank();
 
 		} else if (GameState === POSSIBLE_GAMESTATES.VOTING) {
+
+			currentRound = rounds[rounds.length -1];
+
+			addFakeAnswers(currentRound);
+
 			players.forEach(function(pl) {
 				if (pl.hasSubmitted === false) {
 					pl.hasSubmitted = true;
@@ -544,7 +546,7 @@ module.exports = function(data) {
 
 		//putting all players and bots into one array then filtering based on connected to server
 		//this means set rank will ignore all observers and players who have left
-		var allPlayers = players.concat(bots).filter(function(player){
+		var allPlayers = players.concat(bots).filter(function(player) {
 			return player.connectedToServer;
 		});
 

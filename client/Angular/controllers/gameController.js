@@ -16,7 +16,6 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.handReplaceCost = gameService.getHandReplaceCost;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
-    $scope.answers = gameService.getAnswers;
 
     $scope.currentNumberOfSubmissions = gameService.getCurrentNumberOfSubmissions;
     $scope.currentNumberOfVotes = gameService.getCurrentNumberOfVotes;
@@ -29,13 +28,15 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     //get all answers submitted in order to visualise them on the voting page
     $scope.visualiseAnswers = function() {
-        var ans = gameService.getRoundSubmissionData();
+        var ans = gameService.getRoundSubmissionData().filter(function(submission){
+            return submission.submissionsText.length > 0;
+        });
         var filtered = [];
 
-        if ($scope.index < ans.length) {
+        if ($scope.index < gameService.getCurrentNumberOfSubmissions()) {
             filtered.push(ans[$scope.index]);
         } else {
-            $scope.index = ans.length;
+            $scope.index = gameService.getCurrentNumberOfSubmissions();
             filtered = ans;
             $scope.stopTimer();
         }
@@ -76,11 +77,6 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.bindHtml = function(text) {
         return $sce.trustAsHtml(text);
     };
-
-    //get results after each round which involves: what each player submitted, who voted for their answer, and their score after the round
-    //in order to calculate the points after the round multiply 50 with the number of votes
-    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
-    $scope.currentVotes = gameService.getCurrentVotes;
 
     //call function to get next round
     $scope.nextRound = function() {

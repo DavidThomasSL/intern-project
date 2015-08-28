@@ -10,9 +10,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var currentlySubmittedAnswers = []; //if multiple blanks then hold the currently selected answers
 	var round = -1;
 
-	var playerRoundResults = [];
-	var voteCounter = 0;
-
 	var roundSubmissionData = [];
 	var currentNumberOfSubmissions = 0;
 	var currentNumberOfVotes = 0;
@@ -54,7 +51,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return currentNumberOfVotes;
 	}
 
-
 	//the position in the order of answers for multiple answer selections
 	function getAnswerPosition(answer) {
 		var position = currentlySubmittedAnswers.indexOf(answer) + 1;
@@ -92,13 +88,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	function setCountdown(value) {
 		countdown = value;
 	}
-
-	//get results of voting
-	function getPlayerRoundResults() {
-		return playerRoundResults;
-	}
-
-
 
 	function getPlayerCurrentRank(playerId) {
 		var returnValue = "";
@@ -204,12 +193,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		}
 	}
 
-	function _setPlayerRoundResults(data) {
-		playerRoundResults = data.results;
-		votes = data.currentVotes;
-		voteCounter = data.voteNumber;
-	}
-
 	function _setRoundSubmissionData(data) {
 
 		roundSubmissionData = data.roundSubmissionData;
@@ -257,9 +240,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		eventName: "rooms available",
 		eventAction: _setRoomsAvailable
 	}, {
-		eventName: "playerRoundResults",
-		eventAction: _setPlayerRoundResults
-	}, {
 		eventName: "roundSubmissionData",
 		eventAction: _setRoundSubmissionData
 	}]);
@@ -298,13 +278,11 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getCurrentNumberOfVotes: getCurrentNumberOfVotes,
 		getRoundSubmissionData: getRoundSubmissionData,
 		getCurrentRound: getCurrentRound,
-		getPlayerRoundResults: getPlayerRoundResults,
 		getCurrentVotes: getCurrentVotes,
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
 		getHandReplaceCost: getHandReplaceCost,
 		_receiveQuestion: _receiveQuestion,
-		_setPlayerRoundResults: _setPlayerRoundResults,
 		_setMaxRounds: _setMaxRounds,
 		clearGameData: clearGameData,
 		getCountdown: getCountdown,

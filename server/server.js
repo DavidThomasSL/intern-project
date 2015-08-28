@@ -389,6 +389,12 @@ module.exports = function(port, enableLogging, testing) {
                             location: 'vote'
                         });
 
+                        room.broadcastRoom("GAME roundSubmissionData", {
+                            roundSubmissionData: data.roundSubmissionData,
+                            currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                            currentNumberOfVotes: data.currentNumberOfVotes
+                        });
+
                         // start new timer for the voting page
                         // and wait until time rans out
                         room.gameController.startTimer(function(data) {
