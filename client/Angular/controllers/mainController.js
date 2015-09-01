@@ -136,7 +136,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
 
             // if time hasn't run out -> decrement counter
             if ($scope.counter > 0) {
-                console.log($scope.counter);
                 $scope.counter--;
 
             } else {
@@ -146,7 +145,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
             }
 
         }, 1000); // call this function every 1 second
-    }
+    };
 
     // stop the countdown by cancelling the interval and setting it to undefined
     $scope.stopCountdown = function() {
