@@ -81,6 +81,26 @@ describe("Testing Game Service", function() {
 		expect(gameService.getCountdown()).toEqual(2);
 	});
 
+	it("getRoundSubmissionData gets the submission data for the round", function() {
+			var roundSubmissionsDataObject = {
+				roundSubmissionData: [{
+					submissionsText: ['one', 'two']
+				}, {
+					submissionsText: ['three', 'four']
+				}],
+				currentNumberOfVotes: 0,
+				currentNumberOfSubmissions: 2
+			};
+
+			gameService._setRoundSubmissionData(roundSubmissionsDataObject);
+
+
+			expect(gameService.getRoundSubmissionData().length).toEqual(2);
+			expect(gameService.getAnswersToVisualise().length).toEqual(2);
+			expect(gameService.getCurrentNumberOfSubmissions()).toEqual(2);
+			expect(gameService.getCurrentNumberOfVotes()).toEqual(0);
+	});
+
 	it("communicationService can call events in the Game Service", function() {
 
 		var listenerEvent;
