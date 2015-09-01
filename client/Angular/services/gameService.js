@@ -13,6 +13,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var roundSubmissionData = [];
 	var currentNumberOfSubmissions = 0;
 	var currentNumberOfVotes = 0;
+	var answersToVisualise = [];
 
 	var maxRounds = 0; //variable holding the number of rounds wanted
 	var currentFilledInQuestion = "";
@@ -49,6 +50,10 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	function getCurrentNumberOfVotes() {
 		return currentNumberOfVotes;
+	}
+
+	function getAnswersToVisualise() {
+		return answersToVisualise;
 	}
 
 	//the position in the order of answers for multiple answer selections
@@ -199,7 +204,11 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		currentNumberOfSubmissions = data. currentNumberOfSubmissions;
 		currentNumberOfVotes = data.currentNumberOfVotes;
 
-		console.log(roundSubmissionData);
+		if(currentNumberOfVotes === 0){
+			answersToVisualise = data.roundSubmissionData;
+		}
+
+		console.log("currentVOTES" + currentNumberOfVotes);
 		//generating the filled in question based on the question text and submitted answers as above
 		if (currentQuestion !== undefined) {
 			roundSubmissionData.forEach(function(submission) {
@@ -277,6 +286,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getCurrentNumberOfSubmissions: getCurrentNumberOfSubmissions,
 		getCurrentNumberOfVotes: getCurrentNumberOfVotes,
 		getRoundSubmissionData: getRoundSubmissionData,
+		getAnswersToVisualise: getAnswersToVisualise,
 		getCurrentRound: getCurrentRound,
 		getCurrentVotes: getCurrentVotes,
 		getMaxRounds: getMaxRounds,

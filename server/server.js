@@ -358,7 +358,9 @@ module.exports = function(port, enableLogging, testing) {
                     });
 
                     room.broadcastRoom("GAME roundSubmissionData", {
-                        roundSubmissionData: data.roundSubmissionData
+                        roundSubmissionData: data.roundSubmissionData,
+                        currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                        currentNumberOfVotes: data.currentNumberOfVotes
                     });
 
                     room.broadcastRoom("PLAYER question", {
@@ -434,7 +436,8 @@ module.exports = function(port, enableLogging, testing) {
                 //sends the list of answers each time someone submits one
                 room.broadcastRoom("GAME roundSubmissionData", {
                     roundSubmissionData: data.roundSubmissionData,
-                    currentNumberOfSubmissions: data.currentNumberOfSubmissions
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                    currentNumberOfVotes: data.currentNumberOfVotes
                 });
 
                 if (testing !== undefined) {

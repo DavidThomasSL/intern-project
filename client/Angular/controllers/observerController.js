@@ -26,7 +26,7 @@ ClonageApp.controller("observerController", function($scope, $sce, $rootScope, $
     var timer;
     //get all answers submitted in order to visualise them on the voting page
     $scope.visualiseAnswers = function() {
-        var ans = gameService.getRoundSubmissionData().filter(function(submission){
+        var ans = gameService.getAnswersToVisualise().filter(function(submission){
             return submission.submissionsText.length > 0;
         });
         var filtered = [];

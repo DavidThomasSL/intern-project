@@ -26,9 +26,11 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     var timer;
 
+    //TODO Fix off by one error with index
+
     //get all answers submitted in order to visualise them on the voting page
     $scope.visualiseAnswers = function() {
-        var ans = gameService.getRoundSubmissionData().filter(function(submission){
+        var ans = gameService.getAnswersToVisualise().filter(function(submission){
             return submission.submissionsText.length > 0;
         });
         var filtered = [];
@@ -40,6 +42,8 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
             filtered = ans;
             $scope.stopTimer();
         }
+
+        console.log("votes: " + gameService.getCurrentNumberOfVotes());
         return filtered;
     };
 

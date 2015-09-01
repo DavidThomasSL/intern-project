@@ -161,6 +161,8 @@ module.exports = function(data) {
 			data = {
 				players: players,
 				roundSubmissionData: round.getRoundSubmissionData(),
+				currentNumberOfSubmissions: round.getNumberOfCurrentSubmissions(),
+				currentNumberOfVotes: round.getNumberOfCurrentVotes(),
 				roundQuestion: round.getRoundQuestion(),
 				roundNumber: round.getRoundCount(),
 				handReplaceCost: HAND_REPLACE_COST,
@@ -221,6 +223,7 @@ module.exports = function(data) {
 			callback({
 				roundSubmissionData: currentRound.getRoundSubmissionData(),
 				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
+				currentNumberOfVotes: currentRound.getNumberOfCurrentVotes(),
 				allChoicesSubmitted: allChoicesSubmitted,
 				submittingPlayersNewHand: submittingPlayer.hand
 			});
