@@ -12,12 +12,14 @@
             <div class="panel-collapse collapse" id="collapseOne">
                 <div class="panel-body" style="overflow-y: scroll;" scroll="getMessages()">
                     <ul class="chat">
-                        <li class="left clearfix" ng-repeat="message in getMessages()">
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">{{message.playerName}}</strong>
+                        <li ng-repeat="message in getMessages()">
+                            <div ng-class="{'right clearfix': message.playerUid === getUserId(), 'left clearfix': message.playerUid !== getUserId()};">
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">{{message.playerName}}</strong>
+                                    </div>
+                                    <p>{{message.messageText}}</p>
                                 </div>
-                                <p>{{message.messageText}}</p>
                             </div>
                         </li>
                     </ul>
