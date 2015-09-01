@@ -103,7 +103,7 @@ module.exports = function(port, enableLogging, testing) {
             user.isObserver = data.isObserver;
             user.readyToProceed = data.isObserver;
 
-            if(user === undefined || user.sendUserDetails === undefined){
+            if (user === undefined || user.sendUserDetails === undefined) {
                 console.log("waht the fuck " + data);
             }
             user.sendUserDetails();
@@ -299,15 +299,16 @@ module.exports = function(port, enableLogging, testing) {
         socket.on('PLAYER replace cards', function(data) {
             var room = getRoomFromId(user.roomId);
 
-            room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newResults) {
+            room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newRoundData) {
 
                 user.emit('USER hand', {
                     hand: newHand
                 });
 
-                room.broadcastRoom('GAME playerRoundResults', {
-                    results: newResults,
-                    voteNumber: 0
+                room.broadcastRoom('GAME roundSubmissionData', {
+                    roundSubmissionData: newRoundData.getRoundSubmissionData(),
+                    currentNumberOfSubmissions: newRoundData.getNumberOfCurrentSubmissions(),
+                    currentNumberOfVotes: newRoundData.getNumberOfCurrentVotes()
                 });
 
                 user.emit("NOTIFICATION message", {
@@ -331,12 +332,7 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room, function(initialResults) {
-
-                room.broadcastRoom("GAME playerRoundResults", {
-                    results: initialResults,
-                    voteCounter: 0
-                });
+            room.gameController.initialize(room, function() {
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
             });
@@ -382,9 +378,15 @@ module.exports = function(port, enableLogging, testing) {
 
                     room.broadcastRoom("GAME question", {
                         question: data.roundQuestion,
-                        round: data.round,
+                        round: data.roundNumber,
                         maxRounds: data.maxRounds,
                         handReplaceCost: data.handReplaceCost
+                    });
+
+                    room.broadcastRoom("GAME roundSubmissionData", {
+                        roundSubmissionData: data.roundSubmissionData,
+                        currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                        currentNumberOfVotes: data.currentNumberOfVotes
                     });
 
                     room.broadcastRoom("PLAYER question", {
@@ -411,6 +413,7 @@ module.exports = function(port, enableLogging, testing) {
                     room.gameController.startTimer(testing, function(data) {
 
                         // time has ran out so everyone is routed to the voting page
+
                         putUserInVote(room);
                     });
                 }
@@ -433,8 +436,10 @@ module.exports = function(port, enableLogging, testing) {
             room.gameController.submitAnswer(user.uId, msg.answer, function(data) {
 
                 //sends the list of answers each time someone submits one
-                room.broadcastRoom("GAME answers", {
-                    answers: data.answers
+                room.broadcastRoom("GAME roundSubmissionData", {
+                    roundSubmissionData: data.roundSubmissionData,
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                    currentNumberOfVotes: data.currentNumberOfVotes
                 });
 
                 if (testing !== undefined) {
@@ -474,11 +479,11 @@ module.exports = function(port, enableLogging, testing) {
             // Otherwise they just get the current round results
             room.gameController.submitVote(user.uId, msg.answer, function(data) {
 
-                // Send room the vote data after each vote
-                room.broadcastRoom("GAME playerRoundResults", {
-                    results: data.res,
-                    currentVotes: data.currentVotes,
-                    voteNumber: data.voteNumber
+                room.broadcastRoom("GAME roundSubmissionData", {
+                    roundSubmissionData: data.roundSubmissionData,
+                    currentNumberOfVotes: data.currentNumberOfVotes,
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                    dontResetAnswers: true
                 });
 
                 if (data.allVotesSubmitted === true) {
@@ -603,9 +608,10 @@ module.exports = function(port, enableLogging, testing) {
                 });
 
 
-                room.broadcastRoom("GAME playerRoundResults", {
-                    results: data.results,
-                    voteCounter: data.voteCounter
+                room.broadcastRoom("GAME roundSubmissionData", {
+                    roundSubmissionData: data.roundSubmissionData,
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                    currentNumberOfVotes: data.currentNumberOfVotes
                 });
 
                 room.gameController.startTimer(testing, function(data) {

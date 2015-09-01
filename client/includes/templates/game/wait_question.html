@@ -6,7 +6,7 @@
 	<div class ="row">
 		<div class="col-md-12 text-center">
 			<h4>Waiting for other players to submit choices</h4>
-			<p>{{ answers().length }} / {{getActiveUsersInRoom().length}} answers submitted</p>
+			<p>{{ currentNumberOfSubmissions() }} / {{getActiveUsersInRoom().length}} answers submitted</p>
 		</div>
 	</div>
 	<ng-include src="'includes/templates/user/progressBar.html'"></ng-include>

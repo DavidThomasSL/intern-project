@@ -16,22 +16,29 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.handReplaceCost = gameService.getHandReplaceCost;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
-    $scope.answers = gameService.getAnswers;
+
+    $scope.currentNumberOfSubmissions = gameService.getCurrentNumberOfSubmissions;
+    $scope.currentNumberOfVotes = gameService.getCurrentNumberOfVotes;
+    $scope.roundSubmissionData = gameService.getRoundSubmissionData;
 
     $scope.index = 0;
     $scope.timeToWaitAnimation = gameService.getTimeout();
 
     var timer;
 
+    //TODO Fix off by one error with index
+
     //get all answers submitted in order to visualise them on the voting page
     $scope.visualiseAnswers = function() {
-        var ans = gameService.getAnswers();
+        var ans = gameService.getAnswersToVisualise().filter(function(submission){
+            return submission.submissionsText.length > 0;
+        });
         var filtered = [];
 
-        if ($scope.index < ans.length) {
+        if ($scope.index < gameService.getCurrentNumberOfSubmissions()) {
             filtered.push(ans[$scope.index]);
         } else {
-            $scope.index = ans.length;
+            $scope.index = gameService.getCurrentNumberOfSubmissions();
             filtered = ans;
             $scope.stopTimer();
         }
@@ -60,9 +67,9 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     //It is fetched from from the answers array so it can be seen after refreshing.
     $scope.filledInQuestion = function() {
         var text = "";
-        $scope.answers().forEach(function(answer) {
-            if (answer.player.uId === userService.getUserId()) {
-                text = answer.filledInText;
+        $scope.roundSubmissionData().forEach(function(submission) {
+            if (submission.player.uId === userService.getUserId()) {
+                text = submission.filledInText;
             }
         });
         return text;
@@ -72,11 +79,6 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.bindHtml = function(text) {
         return $sce.trustAsHtml(text);
     };
-
-    //get results after each round which involves: what each player submitted, who voted for their answer, and their score after the round
-    //in order to calculate the points after the round multiply 50 with the number of votes
-    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
-    $scope.currentVotes = gameService.getCurrentVotes;
 
     //call function to get next round
     $scope.nextRound = function() {
