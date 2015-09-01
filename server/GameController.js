@@ -375,14 +375,6 @@ module.exports = function(data) {
 			}
 		};
 
-		// var answerData = {
-		// 	eventName: "GAME answers",
-		// 	data: {
-		// 		answers: currentRound.answers,
-		// 		countdown: count
-		// 	}
-		// };
-
 		if (testing !== undefined) {
 
 			var timeoutData = {
@@ -395,7 +387,6 @@ module.exports = function(data) {
 		}
 
 		data.push(roundData);
-		// data.push(answerData);
 		data.push(questionData);
 		data.push(playerQuestionData);
 		data.push(userHand);
