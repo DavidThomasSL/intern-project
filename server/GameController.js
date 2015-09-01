@@ -45,7 +45,7 @@ module.exports = function(data) {
 	var counter;
 
 	// function to initialise the countdown
-	var startTimer = function(callback) {
+	var startTimer = function(testing, callback) {
 
 		count = 60;
 		if (GameState === POSSIBLE_GAMESTATES.VOTING) {
@@ -56,6 +56,10 @@ module.exports = function(data) {
 				in order to start the timer
 			*/
 			count += animationTime * (rounds[roundCount - 1].answers.length);
+		}
+		else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+			if (testing === undefined)	count = 20;
+			else count = 0;
 		}
 
 		timerIsActive = true;

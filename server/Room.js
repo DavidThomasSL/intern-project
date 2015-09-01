@@ -14,6 +14,7 @@ function Room(roomCode, testing) {
     if (testing === undefined) {
         self.numRounds = 8;
     } else {
+        self.timeToLive = 150000;
         self.numRounds = 1;
     }
 
@@ -206,7 +207,7 @@ function Room(roomCode, testing) {
             joined: canJoin
         };
     };
-    
+
     /*
         Delete the room after a set amount of time
 
@@ -236,7 +237,7 @@ function Room(roomCode, testing) {
 
         self.broadcastRoom("ROOM details");
     };
-    
+
     /*
         Emits a message to all users in the room
     */
@@ -270,7 +271,7 @@ function Room(roomCode, testing) {
 
         return usersInRoomJSON;
     };
-    
+
 
     function resolveObserverRoute(route) {
         if (route === "question" || route === "waitQuestion") {

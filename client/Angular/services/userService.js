@@ -141,9 +141,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
             eventName: "room join",
             eventAction: _joinRoom
         }, {
-            eventName: "room join",
-            eventAction: _joinRoom
-        }, {
             eventName: "play again",
             eventAction: _playAgain
         }, {
