@@ -257,8 +257,6 @@ module.exports = function(data) {
 		var results = [];
 		var submittingPlayer = getPlayerFromId(playerId);
 
-		// currentRound.results = [];
-
 		if (submittingPlayer.hasSubmitted) {
 			// Do nothing
 		} else {

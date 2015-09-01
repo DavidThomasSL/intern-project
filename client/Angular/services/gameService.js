@@ -130,7 +130,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
         check if a certain user had voted for an answer yet
         function called in order to visualise on the timer when a certain player has submitted
     */
-	function hasVoted(userName) {
+	function hasVoted(userId) {
 
 		var voted = false;
 
@@ -138,7 +138,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 			roundSubmissionData.forEach(function(submission) {
 				if (submission.playersWhoVotedForThis.length > 0) {
 					submission.playersWhoVotedForThis.forEach(function(player) {
-						if (player.name === userName)
+						if (player.uId === userId)
 							voted = true;
 					});
 				}
@@ -207,8 +207,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		if(data.dontResetAnswers === undefined){
 			answersToVisualise = data.roundSubmissionData;
 		}
-
-		console.log("currentVOTES" + currentNumberOfVotes);
 		//generating the filled in question based on the question text and submitted answers as above
 		if (currentQuestion !== undefined) {
 			roundSubmissionData.forEach(function(submission) {
