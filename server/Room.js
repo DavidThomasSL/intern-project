@@ -7,6 +7,9 @@ function Room(roomCode, testing) {
     self.gameController = undefined;
     self.botsInRoom = [];
     self.messages = [];
+    self.timeToLiveTimer = undefined;
+    self.timeToLive = 5000; // amount of time the room will persist with no-one it it
+
 
     if (testing === undefined) {
         self.numRounds = 8;
@@ -85,15 +88,15 @@ function Room(roomCode, testing) {
 
 
     /*
-    Attempts to put a user in the room
+        Attempts to put a user in the room
 
-    Does not put the user in if
-        They are already in it
-        A game has started and they were not previosuly in that game
+        Does not put the user in if
+            They are already in it
+            A game has started and they were not previosuly in that game
 
-    If force is true, it will let the user join
-        this lets observers join games in progress
-*/
+        If force is true, it will let the user join
+            this lets observers join games in progress
+    */
     self.addUser = function(user, testing, forceUserInRoom) {
 
         var canJoin = true;
@@ -133,7 +136,7 @@ function Room(roomCode, testing) {
             // to do that, we turn the user into an observer and add them to the gameController
             // now when we get info for the "reconnecting" user, they will be handled as an observer
             // and routed to the correct pages (done by the observer controllera)
-            if (!userInGame && forceUserInRoom) {
+            if (!userInGame && (forceUserInRoom || user.isObserver)) {
                 // forceable put the user into the room
                 user.isObserver = true; // make them an observer so they can't partificpate
                 user.readyToProceed = true;
@@ -191,6 +194,9 @@ function Room(roomCode, testing) {
             //Update the room service of every user
             self.broadcastRoom("ROOM details");
             self.broadcastRoom('ROOM messages');
+
+            // if there is any time to live timer set, cancel it now
+            self.clearTimeToLiveTimer();
         }
 
         // Return wether the join was successful or not
@@ -200,7 +206,22 @@ function Room(roomCode, testing) {
             joined: canJoin
         };
     };
+    
+    /*
+        Delete the room after a set amount of time
 
+        When a room is empty, and the last user has left, sets a timer that
+        will delete the room after N seconds.
+
+        If a user joins the room before the timeout expires, clears this timer
+    */
+    self.setTimeToLiveTimer = function(callback) {
+        self.timeToLiveTimer = setTimeout(callback, self.timeToLive);
+    };
+
+    self.clearTimeToLiveTimer = function() {
+        clearTimeout(self.timeToLiveTimer);
+    };
 
     self.removeUser = function(user) {
 
@@ -215,7 +236,7 @@ function Room(roomCode, testing) {
 
         self.broadcastRoom("ROOM details");
     };
-
+    
     /*
         Emits a message to all users in the room
     */
@@ -223,15 +244,9 @@ function Room(roomCode, testing) {
 
 
         if (eventName === "ROOM details") {
-            var usersInRoomJSON = [];
-
-            self.usersInRoom.forEach(function(user) {
-                usersInRoomJSON.push(user.getUserDetails());
-            });
-
             data = {
                 roomId: self.id,
-                usersInRoom: usersInRoomJSON,
+                usersInRoom:  self.getUsersInRoomDetails(),
                 botsInRoom: self.botsInRoom,
                 numRounds: self.numRounds
             };
@@ -245,6 +260,17 @@ function Room(roomCode, testing) {
             user.emit(eventName, data);
         });
     };
+
+    self.getUsersInRoomDetails = function() {
+        var usersInRoomJSON = [];
+
+        self.usersInRoom.forEach(function(user) {
+            usersInRoomJSON.push(user.getUserDetails());
+        });
+
+        return usersInRoomJSON;
+    };
+    
 
     function resolveObserverRoute(route) {
         if (route === "question" || route === "waitQuestion") {

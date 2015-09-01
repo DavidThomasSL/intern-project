@@ -102,6 +102,10 @@ module.exports = function(port, enableLogging, testing) {
             user.image = data.image;
             user.isObserver = data.isObserver;
             user.readyToProceed = data.isObserver;
+
+            if(user === undefined || user.sendUserDetails === undefined){
+                console.log("waht the fuck " + data);
+            }
             user.sendUserDetails();
 
             putUserInJoining();
@@ -118,11 +122,11 @@ module.exports = function(port, enableLogging, testing) {
             var room = new Room(roomId, testing);
             rooms.push(room);
 
+            putUserInRoom(roomId);
+
             users.forEach(function(user) {
                 user.emit("GAME rooms available", getRoomsInformation());
             });
-
-            putUserInRoom(roomId);
         });
 
         /*
@@ -180,8 +184,7 @@ module.exports = function(port, enableLogging, testing) {
             var room = getRoomFromId(msg.roomId);
 
             if (room !== undefined) {
-                room.removeUser(user);
-                room.broadcastRoom('ROOM details');
+                removeUserFromRoom(room);
             }
 
             if (!user.isObserver) {
@@ -196,6 +199,31 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Removed user " + user.name + " from room " + room.id);
         });
 
+        function removeUserFromRoom(room) {
+            logger.debug("Removing player from room" + room.id);
+
+            room.removeUser(user);
+
+            //update the observers list of available rooms
+            users.forEach(function(user) {
+                user.emit("GAME rooms available", getRoomsInformation());
+            });
+
+            // Check if anyone is still in the room
+            // if not, start expiriy timer
+            if (room.usersInRoom.length === 0) {
+                room.setTimeToLiveTimer(function() {
+                    deleteRoom(room);
+
+                    //update the observers list of available rooms
+                    users.forEach(function(user) {
+                        user.emit("GAME rooms available", getRoomsInformation());
+                    });
+
+                    logger.debug("No-one in room" + room.id + ", deleting it");
+                });
+            }
+        }
         /*
             Set by the players in the room lobby if they want to
                 enable bots during the game or not (and how many)
@@ -320,8 +348,10 @@ module.exports = function(port, enableLogging, testing) {
             rooms.forEach(function(room) {
 
                 var roomDet = {
-                    id: room.id
+                    id: room.id,
+                    usersInRoom: room.getUsersInRoomDetails()
                 };
+
                 roomsAvailable.push(roomDet);
             });
             return roomsAvailable;
@@ -471,6 +501,9 @@ module.exports = function(port, enableLogging, testing) {
             so that he can join again
 
             Takes the user out of the game if they were in one
+
+            If there is no-one left in the room, will set a time to live for the room
+            so we can delete it if no-one rejoins
         */
         socket.on('disconnect', function() {
 
@@ -478,19 +511,27 @@ module.exports = function(port, enableLogging, testing) {
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
-                room.removeUser(user);
+                removeUserFromRoom(room);
 
                 if (!user.isObserver) {
                     user.readyToProceed = false;
                 }
 
-                logger.debug("Removing player from room" + room.id);
             } else {
                 logger.debug("User was not in a room");
             }
 
             logger.debug("User disconnected " + user.name);
         });
+
+        /*
+            Removes the room from the rooms array
+        */
+        function deleteRoom(rm) {
+            rooms = rooms.filter(function(room) {
+                return room.id !== rm.id;
+            });
+        }
 
         /*
             Puts a user into a room
@@ -515,7 +556,13 @@ module.exports = function(port, enableLogging, testing) {
 
                 // Handle result of room join attempt
                 if (result.joined) {
+                    // update the game rooms available for everyone
+                    users.forEach(function(u) {
+                        u.emit("GAME rooms available", getRoomsInformation());
+                    });
+
                     logger.debug("User " + user.name + " joined room " + roomId);
+
                 } else if (result.gameInProgress) {
                     // give user abilty to join room in progress
                     emitNotificationActionable(user, {

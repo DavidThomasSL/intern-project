@@ -281,6 +281,11 @@ body, html {
   justify-content: center;
 }
 
+.flex-align-left {
+ -webkit-align-items: flex-start;
+   align-items: flex-start;
+}
+
 .flex1 {
   -webkit-flex: 1;
           flex: 1;
