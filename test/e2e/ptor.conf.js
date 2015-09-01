@@ -7,13 +7,13 @@ exports.config = {
 		'userRegisteredSpec.js',
 		'roomCreateSpec.js',
 		'joinRoomSpec.js',
+		'observerSpec.js',
 		'startingGameSpec.js',
 		'playingGameSpec.js',
 		'afterRoundSpec.js',
 		'afterGameSpec.js',
 		'playAgainSpec.js',
 		'botsSpec.js',
-		'observerSpec.js',
 		"joinInProgressSpec.js"
 	],
 	baseUrl: 'http://localhost:8080/',
@@ -32,7 +32,10 @@ exports.config = {
 			'args': ['incognito']
 		}
 	},
+	jasmineNodeOpts: {
+        realtimeFailure: true
+    },
 	framework: 'jasmine2',
-	getPageTimeout: 30000,
-	allScriptsTimeout: 30000
+	getPageTimeout: 300000,
+	allScriptsTimeout: 300000
 };

@@ -99,20 +99,19 @@ describe('After each round', function() {
 
 	});
 
-	it('can see the players at the bottom of the page', function() {
-		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
+	it('can see a timer', function() {
+		var timer = firstClonageUser.element(by.id('countdown'));
+		expect(timer.isPresent()).toBe(true);
 	});
 
-	it('can ready up for next round and this can be seen by everyone', function() {
-		secondClonageUser.ready();
-		expect(secondClonageUser.element(by.id('ready-button')).getText()).toEqual('Not Ready');
-		expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
-		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
+	it('can have a counter that indicates number of seconds left', function() {
+		var counter = firstClonageUser.element(by.binding('counter'));
+		expect(counter.isPresent()).toBeLessThan(21);
 	});
 
-	it('can start a new round when everyone is ready', function() {
+	it('can start a new round after time runs out', function() {
 
-		firstClonageUser.ready();
+		// firstClonageUser.ready();
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
 
