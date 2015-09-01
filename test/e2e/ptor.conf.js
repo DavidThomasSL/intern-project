@@ -3,18 +3,18 @@ exports.config = {
 
 	specs: [ //comment out lines here to test specific sections
 		'initalSpec.js',
-		// 'userInitialiseSpec.js',
-		// 'userRegisteredSpec.js',
-		// 'roomCreateSpec.js',
-		// 'joinRoomSpec.js',
-		// 'startingGameSpec.js',
-		// 'playingGameSpec.js',
-		// 'afterRoundSpec.js',
-		// 'afterGameSpec.js',
-		// 'playAgainSpec.js',
-		// 'botsSpec.js',
-		// 'observerSpec.js',
-		// "joinInProgressSpec.js"
+		'userInitialiseSpec.js',
+		'userRegisteredSpec.js',
+		'roomCreateSpec.js',
+		'joinRoomSpec.js',
+		'startingGameSpec.js',
+		'playingGameSpec.js',
+		'afterRoundSpec.js',
+		'afterGameSpec.js',
+		'playAgainSpec.js',
+		'botsSpec.js',
+		'observerSpec.js',
+		"joinInProgressSpec.js"
 	],
 	baseUrl: 'http://localhost:8080/',
 	params: {

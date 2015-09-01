@@ -204,7 +204,7 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		currentNumberOfSubmissions = data. currentNumberOfSubmissions;
 		currentNumberOfVotes = data.currentNumberOfVotes;
 
-		if(currentNumberOfVotes === 0){
+		if(data.dontResetAnswers === undefined){
 			answersToVisualise = data.roundSubmissionData;
 		}
 

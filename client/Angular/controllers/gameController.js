@@ -43,7 +43,6 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
             $scope.stopTimer();
         }
 
-        console.log("votes: " + gameService.getCurrentNumberOfVotes());
         return filtered;
     };
 

@@ -496,7 +496,8 @@ module.exports = function(port, enableLogging, testing) {
                 room.broadcastRoom("GAME roundSubmissionData", {
                     roundSubmissionData: data.roundSubmissionData,
                     currentNumberOfVotes: data.currentNumberOfVotes,
-                    currentNumberOfSubmissions: data.currentNumberOfSubmissions
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                    dontResetAnswers: true
                 });
 
                 if (data.allVotesSubmitted === true) {
