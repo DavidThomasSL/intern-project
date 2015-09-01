@@ -44,6 +44,7 @@ function Room(roomCode, testing) {
                     var message = {
                         playerName: data.playerName,
                         playerUid: data.playerUid,
+                        playerImage: data.playerImage,
                         messageText: data.messageText
                     };
 
