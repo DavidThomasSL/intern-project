@@ -39,10 +39,7 @@ describe("Testing Main Controller", function() {
 		});
 
 		it("when it starts, countdown should be initialised with 60 if getCountdown is undefined", function() {
-
-			var spyEvent = spyOn(gameService, 'getCountdown');
 			scope.startCountdown();
-			expect(spyEvent).toHaveBeenCalled();
 			expect(scope.counter).toBe(60);
 
 		});
