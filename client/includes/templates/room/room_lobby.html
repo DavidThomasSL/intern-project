@@ -54,7 +54,7 @@
                 <ng-include src="userPanelTemplate"></ng-include>
             </div>
         </div>
-
+        <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
         <div class="row">
             <div class="col-md-6 text-center">
                 <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getActiveUsersInRoom().length <= 1 && getGameParameters().botNumber < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
