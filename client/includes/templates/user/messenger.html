@@ -1,9 +1,9 @@
 <div class="row chat-window col-md-4 col-sm-6 col-xs-12" id="chat_window_1">
     <div class="panel panel-info" style="margin-bottom: 0px;"> <!-- add panel primary when unchecked -->
         <div class="panel-heading" id="accordion">
-            <span class="glyphicon glyphicon-comment"></span> Chat <span class="badge">42</span>
+            <span class="glyphicon glyphicon-comment"></span> Chat <span class="badge" ng-if="missedMsg>0">{{missedMsg}}</span>
             <div class="btn-group pull-right">
-                <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" ng-click="toggled = !toggled">
+                <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" ng-click="toggle()">
                     <span id="toggle-messenger" ng-class="{'glyphicon glyphicon-chevron-down': toggled, 'glyphicon glyphicon-chevron-up': !toggled}"></span>
                 </a>
             </div>
