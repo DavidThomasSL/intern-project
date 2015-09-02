@@ -326,10 +326,10 @@ module.exports = function(data) {
 			}
 
 			data = {
-				res: currentRound.results,
-				currentVotes: currentRound.results,
-				allVotesSubmitted: allVotesSubmitted,
-				voteNumber: voteNumber
+				roundSubmissionData: currentRound.getRoundSubmissionData(),
+				currentNumberOfVotes: currentRound.getNumberOfCurrentVotes(),
+				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
+				allVotesSubmitted: allVotesSubmitted
 			};
 
 			deferred.resolve(data);
