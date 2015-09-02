@@ -464,7 +464,6 @@ module.exports = function(port, enableLogging, testing) {
 
                 // once everyone submitted an answer
                 if (data.allChoicesSubmitted === true) {
-
                     putUserInVote(room);
                 }
             });

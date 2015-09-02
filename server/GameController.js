@@ -167,7 +167,6 @@ module.exports = function(data) {
 	*/
 	var newRound = function(callback) {
 
-
 		var gameOver = (roundCount >= MAX_ROUNDS);
 		var data;
 		var deferred = Q.defer();
@@ -228,7 +227,6 @@ module.exports = function(data) {
 	var submitAnswer = function(playerId, answersText) {
 
 		var deferred = Q.defer();
-
 		var submittingPlayer = getPlayerFromId(playerId);
 
 		if (submittingPlayer.hasSubmitted) {
@@ -240,6 +238,8 @@ module.exports = function(data) {
 
 			//Get the current round object, which will hold all the answers for that round
 			var currentRound = rounds[rounds.length - 1];
+			var allChoicesSubmitted;
+			var data;
 
 			currentRound.addSubmission(submittingPlayer, answersText);
 
@@ -248,8 +248,6 @@ module.exports = function(data) {
 			answersText.forEach(function(answer) {
 				submittingPlayer.updateHand(answer);
 			});
-
-			var allChoicesSubmitted;
 
 			//check if everyone submitted and sends back all the currently submitted answers
 			if (currentRound.getNumberOfCurrentSubmissions() >= getNumOfConnectedPlayers()) {
@@ -262,11 +260,15 @@ module.exports = function(data) {
 				allChoicesSubmitted = false;
 			}
 
-			deferred.resolve({
-				answers: currentRound.answers,
+			data = {
+				roundSubmissionData: currentRound.getRoundSubmissionData(),
+				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
+				currentNumberOfVotes: currentRound.getNumberOfCurrentVotes(),
 				allChoicesSubmitted: allChoicesSubmitted,
 				submittingPlayersNewHand: submittingPlayer.hand
-			});
+			};
+
+			deferred.resolve(data);
 		}
 
 		return deferred.promise;
@@ -309,6 +311,7 @@ module.exports = function(data) {
 			currentRound.addVote(submittingPlayer, votedForAnswer);
 
 			var allVotesSubmitted;
+			var data;
 
 			//check if everyone voted
 			if (currentRound.isVotingComplete(getNumOfConnectedPlayers())) {
@@ -322,12 +325,14 @@ module.exports = function(data) {
 				allVotesSubmitted = false;
 			}
 
-			deferred.resolve({
+			data = {
 				res: currentRound.results,
 				currentVotes: currentRound.results,
 				allVotesSubmitted: allVotesSubmitted,
 				voteNumber: voteNumber
-			});
+			};
+
+			deferred.resolve(data);
 		}
 
 		return deferred.promise;
