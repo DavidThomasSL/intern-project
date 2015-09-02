@@ -9,18 +9,16 @@
                 </div>
             </div>
             <div class="panel-collapse collapse" id="collapseOne">
-                <div class="panel-body" style="overflow-y: scroll;" scroll="getMessages()">
-                    <ul class="chat">
-                        <li ng-repeat="message in getMessages()" ng-class="{'right clearfix': message.playerUid === getUserId(), 'left clearfix': message.playerUid !== getUserId()};">
+                <div class="panel-body msg_container_base" style="overflow-y: scroll;" scroll="getMessages()">
+                    <ul>
+                        <li ng-repeat="message in getMessages()" ng-class="{'row msg_container base_sent': message.playerUid === getUserId(), 'row msg_container base_receive': message.playerUid !== getUserId()};">
 
                                 <span class="{'chat-img pull-right': message.playerUid === getUserId(), 'chat-img pull-left': message.playerUid !== getUserId()};">
-                                    <img src="message.playerImage" class="img-circle" alt="User Avatar" >
+                                    <img src="message.playerImage" class="img-circle" alt="Avatar" >
                                 </span>
-                                <div class="chat-body clearfix">
-                                    <div class="header">
-                                        <strong class="primary-font">{{message.playerName}}</strong>
-                                    </div>
+                                <div class="messages msg_sent">
                                     <div style="width: 400px"><p style="white-space: pre-wrap;white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word; ">{{message.messageText}}</p>
+                                    <time>{{message.playerName}}</time>
                                     </div>
                                 </div>
 
