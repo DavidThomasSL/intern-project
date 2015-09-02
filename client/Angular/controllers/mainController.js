@@ -11,6 +11,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
     $scope.getMessages = roomService.getMessages;
+    $scope.toggled = false; //used for messaging collapsing
 
      $scope.sendMessage = function(messageText) {
         userService.sendMessage(messageText);
