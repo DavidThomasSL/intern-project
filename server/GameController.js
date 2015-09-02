@@ -109,7 +109,7 @@ module.exports = function(data) {
 	/*
 		Called by the server when a game starts
 	*/
-	var initialize = function(room, callback) {
+	var initialize = function(room) {
 
 		var initialResults = [];
 		var deferred = Q.defer();
@@ -170,8 +170,7 @@ module.exports = function(data) {
 
 		var gameOver = (roundCount >= MAX_ROUNDS);
 		var data;
-
-		setRank();
+		var deferred = Q.defer();
 
 		// Check if game over
 		if (gameOver) {
@@ -181,6 +180,8 @@ module.exports = function(data) {
 			data = {
 				gameIsOver: true
 			};
+
+			deferred.resolve(data);
 
 		} else {
 			// Create new round
@@ -204,8 +205,11 @@ module.exports = function(data) {
 				maxRounds: MAX_ROUNDS,
 				gameIsOver: false
 			};
+
+			deferred.resolve(data);
 		}
-		callback(data);
+
+		return deferred.promise;
 	};
 
 
@@ -221,12 +225,15 @@ module.exports = function(data) {
 		to next stage
 
 	 */
-	var submitAnswer = function(playerId, answersText, callback) {
+	var submitAnswer = function(playerId, answersText) {
+
+		var deferred = Q.defer();
 
 		var submittingPlayer = getPlayerFromId(playerId);
 
 		if (submittingPlayer.hasSubmitted) {
 			//can't submit twice
+			deferred.reject();
 		} else {
 
 			submittingPlayer.hasSubmitted = true;
@@ -249,20 +256,20 @@ module.exports = function(data) {
 
 				// Move to the voting stage of the game
 				updateGameState(POSSIBLE_GAMESTATES.VOTING);
-
 				allChoicesSubmitted = true;
 
 			} else {
 				allChoicesSubmitted = false;
 			}
-			callback({
-				roundSubmissionData: currentRound.getRoundSubmissionData(),
-				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
-				currentNumberOfVotes: currentRound.getNumberOfCurrentVotes(),
+
+			deferred.resolve({
+				answers: currentRound.answers,
 				allChoicesSubmitted: allChoicesSubmitted,
 				submittingPlayersNewHand: submittingPlayer.hand
 			});
 		}
+
+		return deferred.promise;
 	};
 
 
@@ -280,16 +287,21 @@ module.exports = function(data) {
 		Return results, an array of objects for each answer that has been submitted
 		The result object holds who submitted it, voted for it, the voters rank and points
 	 */
-	var submitVote = function(playerId, votedForAnswer, callback) {
+	var submitVote = function(playerId, votedForAnswer) {
 
 		// TO DO : before submitting a vote check that the player hasn't already submitted one
 
 		var currentRound = rounds[rounds.length - 1];
 		var results = [];
 		var submittingPlayer = getPlayerFromId(playerId);
+		var deferred = Q.defer();
+
 
 		if (submittingPlayer.hasSubmitted) {
-			// Do nothing
+
+			currentRound.results = [];
+			deferred.reject();
+
 		} else {
 
 			submittingPlayer.hasSubmitted = true;
@@ -309,13 +321,16 @@ module.exports = function(data) {
 			} else {
 				allVotesSubmitted = false;
 			}
-			callback({
-				roundSubmissionData: currentRound.getRoundSubmissionData(),
-				currentNumberOfVotes: currentRound.getNumberOfCurrentVotes(),
-				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
-				allVotesSubmitted: allVotesSubmitted
+
+			deferred.resolve({
+				res: currentRound.results,
+				currentVotes: currentRound.results,
+				allVotesSubmitted: allVotesSubmitted,
+				voteNumber: voteNumber
 			});
 		}
+
+		return deferred.promise;
 	};
 
 	/*

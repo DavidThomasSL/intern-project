@@ -120,9 +120,10 @@ module.exports = function(port, enableLogging, testing) {
         */
         socket.on('ROOM create', function(msg) {
 
-            roomId = makeid();
+            var room;
 
-            var room = new Room(roomId, testing);
+            roomId = makeid();
+            room = new Room(roomId, testing);
             rooms.push(room);
 
             putUserInRoom(roomId);
@@ -162,7 +163,6 @@ module.exports = function(port, enableLogging, testing) {
                 newRoomId: newRoomId,
                 user: user.name
             });
-
         });
 
         /*
@@ -372,7 +372,7 @@ module.exports = function(port, enableLogging, testing) {
 
             var room = getRoomFromId(roomId);
 
-            room.gameController.newRound(function(data) {
+            room.gameController.newRound().then(function(data) {
 
                 if (data.gameIsOver === true) {
 
@@ -402,7 +402,6 @@ module.exports = function(port, enableLogging, testing) {
                     room.broadcastRoom("PLAYER question", {
                         question: data.roundQuestion,
                     });
-
 
                     room.broadcastRoom('ROOM details');
 
@@ -443,7 +442,7 @@ module.exports = function(port, enableLogging, testing) {
 
             // submit answer
             // callback will return the answers submitted and if everyone has submitted
-            room.gameController.submitAnswer(user.uId, msg.answer, function(data) {
+            room.gameController.submitAnswer(user.uId, msg.answer).then(function(data) {
 
                 //sends the list of answers each time someone submits one
                 room.broadcastRoom("GAME roundSubmissionData", {
@@ -487,7 +486,7 @@ module.exports = function(port, enableLogging, testing) {
             // Submits the vote information to the game controller
             // If all votes are submitted, move user to results page
             // Otherwise they just get the current round results
-            room.gameController.submitVote(user.uId, msg.answer, function(data) {
+            room.gameController.submitVote(user.uId, msg.answer).then(function(data) {
 
                 room.broadcastRoom("GAME roundSubmissionData", {
                     roundSubmissionData: data.roundSubmissionData,

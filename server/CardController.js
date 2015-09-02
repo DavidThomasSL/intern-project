@@ -2,14 +2,11 @@ var fs = require('fs');
 var path = require('path');
 var Q = require('q');
 
-function CardController(afterLoad) {
+function CardController() {
 
 	var self = this;
 	self.whiteCards = [];
 	self.blackCards = [];
-
-	// Load the files, call gamecontroller afterwards
-	// init(afterLoad);
 
 	/*
 		Get a Random black card and return it
@@ -52,7 +49,6 @@ function CardController(afterLoad) {
 
 				// Call back to gameController once files are loaded
 				deferred.resolve();
-				// afterLoad();
 			}
 		});
 

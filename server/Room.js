@@ -8,7 +8,7 @@ function Room(roomCode, testing) {
     self.botsInRoom = [];
     self.messages = [];
     self.timeToLiveTimer = undefined;
-    self.timeToLive = 5000; // amount of time the room will persist with no-one it it
+    self.timeToLive = 10000; // amount of time the room will persist with no-one it it
 
 
     if (testing === undefined) {
@@ -242,7 +242,6 @@ function Room(roomCode, testing) {
         Emits a message to all users in the room
     */
     self.broadcastRoom = function(eventName, data) {
-
 
         if (eventName === "ROOM details") {
             data = {
