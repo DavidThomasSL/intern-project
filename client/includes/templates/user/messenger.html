@@ -19,7 +19,7 @@
                                 <div class="col-md-10 col-xs-10">
                                     <div  ng-class="{'messages msg_sent': message.playerUid === getUserId(), 'messages msg_receive': message.playerUid !== getUserId()};">
                                         <div style="width: 400px"><p style="white-space: pre-wrap;white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word; ">{{message.messageText}}</p>
-                                        <time>{{message.playerName}}</time>
+                                        <time style="color: #A9A9A9"><i>{{message.playerName}}</i></time>
                                         </div>
                                     </div>
                                 </div>
@@ -34,7 +34,7 @@
                         <div class="input-group">
                             <input id="message-box" type="text" class="form-control input-sm" placeholder="Type your message" ng-model="messageText" autofocus required/>
                             <span class="input-group-btn">
-                                <button class="btn btn-default btn-sm" id="submit-message" > Send</button>
+                                <button type="submit" class="btn btn-default btn-sm" id="submit-message" > Send</button>
                             </span>
                         </div>
                     </form>
