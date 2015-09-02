@@ -14,7 +14,7 @@
                         <li ng-repeat="message in getMessages()" ng-class="{'row msg_container base_sent': message.playerUid === getUserId(), 'row msg_container base_receive': message.playerUid !== getUserId()};">
 
                                 <div ng-if="message.playerUid !== getUserId()" class="col-md-2 col-xs-2 avatar">
-                                    <user-profile class="flex1" sizex="60" sizey="60" image=message.playerImage></user-profile>
+                                    <user-profile class="flex1" sizex="70" sizey="70" image=message.playerImage style="right:0px"></user-profile>
                                 </div>
                                 <div class="col-md-10 col-xs-10">
                                     <div  ng-class="{'messages msg_sent': message.playerUid === getUserId(), 'messages msg_receive': message.playerUid !== getUserId()};">
@@ -24,7 +24,7 @@
                                     </div>
                                 </div>
                                 <div ng-if="message.playerUid === getUserId()" class="col-md-2 col-xs-2 avatar">
-                                    <user-profile class="flex1" sizex="60" sizey="60" image=message.playerImage></user-profile>
+                                    <user-profile class="flex1" sizex="70" sizey="70" image=message.playerImage style="left:0px"></user-profile>
                                 </div>
                         </li>
                     </ul>
