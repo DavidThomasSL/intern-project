@@ -97,6 +97,7 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Final registered details of user are: " + user.name + " " + user.uId);
         });
 
+
         socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
@@ -112,14 +113,17 @@ module.exports = function(port, enableLogging, testing) {
 
             logger.debug("User set name as: " + data.name);
         });
+
+
         /*
             create room, assign id, add current player and return room id to player
         */
         socket.on('ROOM create', function(msg) {
 
-            roomId = makeid();
+            var room;
 
-            var room = new Room(roomId, testing);
+            roomId = makeid();
+            room = new Room(roomId, testing);
             rooms.push(room);
 
             putUserInRoom(roomId);
@@ -159,7 +163,6 @@ module.exports = function(port, enableLogging, testing) {
                 newRoomId: newRoomId,
                 user: user.name
             });
-
         });
 
         /*
@@ -332,9 +335,16 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room, function() {
+           room.gameController.initialize(room).then(function(initialResults) {
+
+                room.broadcastRoom("GAME playerRoundResults", {
+                    results: initialResults,
+                    voteCounter: 0
+                });
+
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
+
             });
         }
 
@@ -362,7 +372,7 @@ module.exports = function(port, enableLogging, testing) {
 
             var room = getRoomFromId(roomId);
 
-            room.gameController.newRound(function(data) {
+            room.gameController.newRound().then(function(data) {
 
                 if (data.gameIsOver === true) {
 
@@ -392,7 +402,6 @@ module.exports = function(port, enableLogging, testing) {
                     room.broadcastRoom("PLAYER question", {
                         question: data.roundQuestion,
                     });
-
 
                     room.broadcastRoom('ROOM details');
 
@@ -433,7 +442,7 @@ module.exports = function(port, enableLogging, testing) {
 
             // submit answer
             // callback will return the answers submitted and if everyone has submitted
-            room.gameController.submitAnswer(user.uId, msg.answer, function(data) {
+            room.gameController.submitAnswer(user.uId, msg.answer).then(function(data) {
 
                 //sends the list of answers each time someone submits one
                 room.broadcastRoom("GAME roundSubmissionData", {
@@ -455,7 +464,6 @@ module.exports = function(port, enableLogging, testing) {
 
                 // once everyone submitted an answer
                 if (data.allChoicesSubmitted === true) {
-
                     putUserInVote(room);
                 }
             });
@@ -477,7 +485,7 @@ module.exports = function(port, enableLogging, testing) {
             // Submits the vote information to the game controller
             // If all votes are submitted, move user to results page
             // Otherwise they just get the current round results
-            room.gameController.submitVote(user.uId, msg.answer, function(data) {
+            room.gameController.submitVote(user.uId, msg.answer).then(function(data) {
 
                 room.broadcastRoom("GAME roundSubmissionData", {
                     roundSubmissionData: data.roundSubmissionData,

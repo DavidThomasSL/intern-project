@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var Q = require('q');
 
 var Player = require('./Player');
 var CardController = require('./CardController');
@@ -108,10 +109,16 @@ module.exports = function(data) {
 	/*
 		Called by the server when a game starts
 	*/
-	var initialize = function(room, callback) {
+	var initialize = function(room) {
 
 		var initialResults = [];
-		cardController = new CardController(function() {
+		var deferred = Q.defer();
+
+		cardController = new CardController();
+
+		//Load cards then setup players
+		cardController.init().then(function() {
+
 			room.usersInRoom.forEach(function(user) {
 				setupPlayer(user);
 			});
@@ -120,12 +127,36 @@ module.exports = function(data) {
 				setupBot(bot);
 			});
 
+			// Create empty results for first round
+			players.forEach(function(player) {
+				if (player.connectedToServer) {
+					var result = {
+						player: player,
+						answersText: [],
+						playersWhoVotedForThis: []
+					};
+					initialResults.push(result);
+				}
+			});
+
+			bots.forEach(function(bot) {
+				var result = {
+					player: bot,
+					answersText: [],
+					playersWhoVotedForThis: []
+				};
+				initialResults.push(result);
+			});
+
 			BOT_NUMBER = room.botsInRoom.length;
 			MAX_ROUNDS = room.numRounds;
 
-			//Call back to server after finish setting up
-			callback();
+			//Return the inital results to send to the clients
+			deferred.resolve(initialResults);
 		});
+
+		return deferred.promise;
+
 	};
 
 	/*
@@ -136,11 +167,9 @@ module.exports = function(data) {
 	*/
 	var newRound = function(callback) {
 
-
 		var gameOver = (roundCount >= MAX_ROUNDS);
 		var data;
-
-		setRank();
+		var deferred = Q.defer();
 
 		// Check if game over
 		if (gameOver) {
@@ -150,6 +179,8 @@ module.exports = function(data) {
 			data = {
 				gameIsOver: true
 			};
+
+			deferred.resolve(data);
 
 		} else {
 			// Create new round
@@ -173,8 +204,11 @@ module.exports = function(data) {
 				maxRounds: MAX_ROUNDS,
 				gameIsOver: false
 			};
+
+			deferred.resolve(data);
 		}
-		callback(data);
+
+		return deferred.promise;
 	};
 
 
@@ -190,18 +224,22 @@ module.exports = function(data) {
 		to next stage
 
 	 */
-	var submitAnswer = function(playerId, answersText, callback) {
+	var submitAnswer = function(playerId, answersText) {
 
+		var deferred = Q.defer();
 		var submittingPlayer = getPlayerFromId(playerId);
 
 		if (submittingPlayer.hasSubmitted) {
 			//can't submit twice
+			deferred.reject();
 		} else {
 
 			submittingPlayer.hasSubmitted = true;
 
 			//Get the current round object, which will hold all the answers for that round
 			var currentRound = rounds[rounds.length - 1];
+			var allChoicesSubmitted;
+			var data;
 
 			currentRound.addSubmission(submittingPlayer, answersText);
 
@@ -211,27 +249,29 @@ module.exports = function(data) {
 				submittingPlayer.updateHand(answer);
 			});
 
-			var allChoicesSubmitted;
-
 			//check if everyone submitted and sends back all the currently submitted answers
 			if (currentRound.getNumberOfCurrentSubmissions() >= getNumOfConnectedPlayers()) {
 
 				// Move to the voting stage of the game
 				updateGameState(POSSIBLE_GAMESTATES.VOTING);
-
 				allChoicesSubmitted = true;
 
 			} else {
 				allChoicesSubmitted = false;
 			}
-			callback({
+
+			data = {
 				roundSubmissionData: currentRound.getRoundSubmissionData(),
 				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
 				currentNumberOfVotes: currentRound.getNumberOfCurrentVotes(),
 				allChoicesSubmitted: allChoicesSubmitted,
 				submittingPlayersNewHand: submittingPlayer.hand
-			});
+			};
+
+			deferred.resolve(data);
 		}
+
+		return deferred.promise;
 	};
 
 
@@ -249,16 +289,21 @@ module.exports = function(data) {
 		Return results, an array of objects for each answer that has been submitted
 		The result object holds who submitted it, voted for it, the voters rank and points
 	 */
-	var submitVote = function(playerId, votedForAnswer, callback) {
+	var submitVote = function(playerId, votedForAnswer) {
 
 		// TO DO : before submitting a vote check that the player hasn't already submitted one
 
 		var currentRound = rounds[rounds.length - 1];
 		var results = [];
 		var submittingPlayer = getPlayerFromId(playerId);
+		var deferred = Q.defer();
+
 
 		if (submittingPlayer.hasSubmitted) {
-			// Do nothing
+
+			currentRound.results = [];
+			deferred.reject();
+
 		} else {
 
 			submittingPlayer.hasSubmitted = true;
@@ -266,6 +311,7 @@ module.exports = function(data) {
 			currentRound.addVote(submittingPlayer, votedForAnswer);
 
 			var allVotesSubmitted;
+			var data;
 
 			//check if everyone voted
 			if (currentRound.isVotingComplete(getNumOfConnectedPlayers())) {
@@ -278,13 +324,18 @@ module.exports = function(data) {
 			} else {
 				allVotesSubmitted = false;
 			}
-			callback({
+
+			data = {
 				roundSubmissionData: currentRound.getRoundSubmissionData(),
 				currentNumberOfVotes: currentRound.getNumberOfCurrentVotes(),
 				currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
 				allVotesSubmitted: allVotesSubmitted
-			});
+			};
+
+			deferred.resolve(data);
 		}
+
+		return deferred.promise;
 	};
 
 	/*
