@@ -23,13 +23,9 @@
                         <p>{{submission.player.name}}</p>
                     </td>
                     <td>
-                        <div class="panel panel-default">
-                            <div class="panel-body observer-answers-panel">
-                                <div class="flex1">
-                                    <span ng-repeat="text in submission.submissionsText track by $index">{{text}}<br></span>
-                                </div>
-                            </div>
-                        </div>
+                        <button class="btn btn-warning btn-lg btn-block observer-card-text-button disabled" type="button" id="answer">
+                        <span ng-repeat="text in submission.submissionsText track by $index">{{text}}<br></span>
+                        </button>
                     </td>
                     <td>
                         <span ng-repeat="votingPlayer in submission.playersWhoVotedForThis track by $index">
