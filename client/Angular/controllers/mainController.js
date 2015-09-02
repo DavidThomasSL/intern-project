@@ -11,11 +11,12 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
     $scope.getMessages = function() {
-        roomService.getMessages();
-        if (roomService.getMessages().length() !== messageNo) {
-            $scope.missedMsg = messageNo - roomService.getMessages().length();
+        var msg = roomService.getMessages();
+        if (msg.length !== messageNo) {
+            $scope.missedMsg = messageNo - msg.length;
         }
         console.log( $scope.missedMsg);
+        return msg;
     }
 
     $scope.toggled = false; //used for messaging collapsing
@@ -29,7 +30,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     };
 
     $scope.toggle = function() {
-        if (toggled === false) $scope.missedMsg = 0 ;
+        if ($scope.toggled === false) $scope.missedMsg = 0 ;
         $scope.toggled = !$scope.toggled;
     }
 
