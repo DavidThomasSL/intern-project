@@ -30,7 +30,7 @@
                     </ul>
                 </div>
                 <div class="panel-footer">
-                    <form name="message-form" ng-submit="sendMessage(messageText)">
+                    <form name="message-form" ng-submit="sendMessage(messageText); messageText='';">
                         <div class="input-group">
                             <input id="message-box" type="text" class="form-control input-sm" placeholder="Type your message" ng-model="messageText" autofocus required/>
                             <span class="input-group-btn">
