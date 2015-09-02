@@ -1,7 +1,7 @@
 <div class="container">
     <div class="header clearfix">
         <h1>ROOM CODE: {{roomId()}}</h1>
-        <p>Click ready when your want to start!</p>
+        <p>Press ready when you want to start!</p>
         <!-- Round options dropdowns -->
         <div style="margin-top: 10px;" class="flex flex-row">
             <div class="flex1">
@@ -21,11 +21,6 @@
                     </ul>
                 </div>
             </div>
-            <div class="flex1" ng-show="getObserversInRoom().length>0">
-                <div>
-                    {{getObserversInRoom().length}} observers
-                </div>
-            </div>
             <div class="flex1">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle flex1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="set-round-dropdown">
@@ -43,16 +38,26 @@
                 </div>
             </div>
         </div>
+        <div style="margin-top: 10px;" class="flex flex-row" ng-if="getObserversInRoom().length>0">
+            <div class="flex1">
+                <div>
+                    {{getObserversInRoom().length}} observer<span ng-if="getObserversInRoom().length>1">s</span>
+                </div>
+            </div>
+        </div>
         <!-- END  Round options dropdowns -->
     </div>
     <div id="room-lobby-container">
         <div class="row">
             <div class="col-md-4 col-sm-4 col-xs-6 text-center" ng-repeat="user in getActiveUsersInRoom()">
-                    <ng-include src="userPanelTemplate"></ng-include>
+                <ng-include src="userPanelTemplate"></ng-include>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-6 text-center" ng-repeat="user in getBotsInRoom()">
                 <ng-include src="userPanelTemplate"></ng-include>
             </div>
+        </div>
+        <div class="row text-center" style="margin-bottom:20px">
+            <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getActiveUsersInRoom().length <= 1 && getGameParameters().botNumber < 1" style="font-size:25px">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -60,9 +65,7 @@
                     <table>
                         <tr ng-repeat="message in getMessages()" style="padding-bottom: 20px ">
                             <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; width: 20%"><div ng-hide="message.playerUid === getUserId()" style="right: 0px">{{message.playerName}}</div></td>
-
                             <td style="width: 500px"><div class="form-control" ng-class="{'float-right': message.playerUid === getUserId(), 'float-left': message.playerUid !== getUserId()};" style="white-space: pre-wrap;white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;  margin-bottom: 5px; height: 100%; ">{{message.messageText}}</div></td>
-
                             <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; right: 0; width: 20%"><div ng-show="message.playerUid === getUserId()">{{message.playerName}}</div></td>
                         </tr><br>
                     </table>
@@ -82,11 +85,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 text-center">
-                <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getActiveUsersInRoom().length <= 1 && getGameParameters().botNumber < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>
-            </div>
             <div class="hidden-lg hidden-md">&nbsp;</div>
-            <div class="col-md-6 text-center">
+            <div class="col-md-12 text-center">
                 <button id="leave-lobby-button" type="button" class="btn btn-lg btn-default" ng-click="leaveRoom()" >Go Back</button>
             </div>
         </div>
