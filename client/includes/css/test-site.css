@@ -413,10 +413,6 @@ MESSENGER
     padding:0;
 }
 
-.panel {
-    margin-bottom: 0px;
-}
-
 .chat-window {
     bottom:0;
     position:fixed;
@@ -447,7 +443,7 @@ MESSENGER
 }
 
 .messages {
-  margin: 0em auto;
+  margin: 0em;
   border: 1px solid rgba(0,0,0,.1);
   padding: 1em;
   background: white;
