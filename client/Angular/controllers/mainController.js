@@ -11,17 +11,23 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
     $scope.getMessages = function() {
-        var msg = roomService.getMessages();
-        if (msg.length !== messageNo) {
-            $scope.missedMsg = messageNo - msg.length;
+        msg = roomService.getMessages();
+        if ($scope.toggled !== true) {
+            if (msg.length !== oldMsgNo) {
+                //console.log( "msg.length: " + msg.length);
+                //console.log( "old msg number: " + oldMsgNo);
+                if (oldMsgNo === undefined)  $scope.missedMsg = msg.length;
+                else $scope.missedMsg = msg.length - oldMsgNo;
+
+            }
         }
-        console.log( $scope.missedMsg);
+        //console.log( $scope.missedMsg);
         return msg;
     }
 
     $scope.toggled = false; //used for messaging collapsing
-
-    var messageNo;
+    var msg;
+    var oldMsgNo;
     $scope.missedMsg;
 
      $scope.sendMessage = function(messageText) {
@@ -30,8 +36,12 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     };
 
     $scope.toggle = function() {
-        if ($scope.toggled === false) $scope.missedMsg = 0 ;
         $scope.toggled = !$scope.toggled;
+        if ($scope.toggled === true) {
+            console.log("resetting");
+            $scope.missedMsg = 0 ;
+            oldMsgNo = msg.length;
+        }
     }
 
     //when player says they are ready to move on it sends this to the server
