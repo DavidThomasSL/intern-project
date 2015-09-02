@@ -1,7 +1,7 @@
 ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce, userService, roomService, RoutingService, gameService, toastr, $location, $sessionStorage, $anchorScroll, playerService) {
 
     $scope.getUsersInRoom = roomService.getUsersInRoom;
-    $scope.answerPosition = gameService.getAnswerPosition;
+    $scope.answerPosition = playerService.getAnswerPosition;
     $scope.currentQuestion = gameService.getCurrentQuestion;
 
     $scope.userHand = userService.getUserHand;

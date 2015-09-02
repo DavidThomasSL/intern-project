@@ -56,12 +56,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		return answersToVisualise;
 	}
 
-	//the position in the order of answers for multiple answer selections
-	function getAnswerPosition(answer) {
-		var position = currentlySubmittedAnswers.indexOf(answer) + 1;
-		return position;
-	}
-
 	function getCurrentRound() {
 		return round;
 	}
@@ -280,7 +274,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	return {
 		getCurrentQuestion: getCurrentQuestion,
-		getAnswerPosition: getAnswerPosition,
 		getCurrentNumberOfSubmissions: getCurrentNumberOfSubmissions,
 		getCurrentNumberOfVotes: getCurrentNumberOfVotes,
 		getRoundSubmissionData: getRoundSubmissionData,
