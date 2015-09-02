@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var Q = require('q');
 
 function CardController(afterLoad) {
 
@@ -8,7 +9,7 @@ function CardController(afterLoad) {
 	self.blackCards = [];
 
 	// Load the files, call gamecontroller afterwards
-	init(afterLoad);
+	// init(afterLoad);
 
 	/*
 		Get a Random black card and return it
@@ -35,22 +36,28 @@ function CardController(afterLoad) {
 	/*
 		Load the Black and White Cards from Json
 	*/
-	function init(afterLoad) {
+	self.init = function() {
+
+		var deferred = Q.defer();
+
 		path.join(__dirname, './BlackWhiteCards.json');
 		fs.readFile(__dirname + '/BlackWhiteCards.json', 'utf8', function(err, data) {
 			if (err) {
 				console.log(err);
-				throw err;
+				deferred.reject(new Error(err));
 			} else {
 				var cards = JSON.parse(data);
 				self.whiteCards = cards.whiteCards;
 				self.blackCards = cards.blackCards;
 
 				// Call back to gameController once files are loaded
-				afterLoad();
+				deferred.resolve();
+				// afterLoad();
 			}
 		});
-	}
+
+		return deferred.promise;
+	};
 }
 
 module.exports = CardController;

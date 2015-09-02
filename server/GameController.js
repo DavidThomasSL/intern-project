@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var Q = require('q');
 
 var Player = require('./Player');
 var CardController = require('./CardController');
@@ -111,7 +112,13 @@ module.exports = function(data) {
 	var initialize = function(room, callback) {
 
 		var initialResults = [];
-		cardController = new CardController(function() {
+		var deferred = Q.defer();
+
+		cardController = new CardController();
+
+		//Load cards then setup players
+		cardController.init().then(function() {
+
 			room.usersInRoom.forEach(function(user) {
 				setupPlayer(user);
 			});
@@ -120,12 +127,36 @@ module.exports = function(data) {
 				setupBot(bot);
 			});
 
+			// Create empty results for first round
+			players.forEach(function(player) {
+				if (player.connectedToServer) {
+					var result = {
+						player: player,
+						answersText: [],
+						playersWhoVotedForThis: []
+					};
+					initialResults.push(result);
+				}
+			});
+
+			bots.forEach(function(bot) {
+				var result = {
+					player: bot,
+					answersText: [],
+					playersWhoVotedForThis: []
+				};
+				initialResults.push(result);
+			});
+
 			BOT_NUMBER = room.botsInRoom.length;
 			MAX_ROUNDS = room.numRounds;
 
-			//Call back to server after finish setting up
-			callback();
+			//Return the inital results to send to the clients
+			deferred.resolve(initialResults);
 		});
+
+		return deferred.promise;
+
 	};
 
 	/*

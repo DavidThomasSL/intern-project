@@ -97,6 +97,7 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Final registered details of user are: " + user.name + " " + user.uId);
         });
 
+
         socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
@@ -112,6 +113,8 @@ module.exports = function(port, enableLogging, testing) {
 
             logger.debug("User set name as: " + data.name);
         });
+
+
         /*
             create room, assign id, add current player and return room id to player
         */
@@ -332,9 +335,16 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room, function() {
+           room.gameController.initialize(room).then(function(initialResults) {
+
+                room.broadcastRoom("GAME playerRoundResults", {
+                    results: initialResults,
+                    voteCounter: 0
+                });
+
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
+
             });
         }
 
