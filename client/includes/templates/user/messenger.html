@@ -1,19 +1,21 @@
-<div class="row">
-    <div class="col-md-8">
-        <div class="panel panel-primary">
+<div class="row chat-window col-md-4" id="chat_window_1" style="right:10px">
+        <div class="panel panel-default">
             <div class="panel-heading" id="accordion">
                 <span class="glyphicon glyphicon-comment"></span> Chat
                 <div class="btn-group pull-right">
                     <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                        <span class="glyphicon glyphicon-chevron-down"></span>
+                        <span class="glyphicon glyphicon-chevron-up"></span>
                     </a>
                 </div>
             </div>
             <div class="panel-collapse collapse" id="collapseOne">
                 <div class="panel-body" style="overflow-y: scroll;" scroll="getMessages()">
                     <ul class="chat">
-                        <li ng-repeat="message in getMessages()">
-                            <div ng-class="{'right clearfix': message.playerUid === getUserId(), 'left clearfix': message.playerUid !== getUserId()};">
+                        <li ng-repeat="message in getMessages()" ng-class="{'right clearfix': message.playerUid === getUserId(), 'left clearfix': message.playerUid !== getUserId()};">
+
+                                <span class="{'chat-img pull-right': message.playerUid === getUserId(), 'chat-img pull-left': message.playerUid !== getUserId()};">
+                                    <img src="message.playerImage" class="img-circle" alt="User Avatar" >
+                                </span>
                                 <div class="chat-body clearfix">
                                     <div class="header">
                                         <strong class="primary-font">{{message.playerName}}</strong>
@@ -21,7 +23,7 @@
                                     <div style="width: 400px"><p style="white-space: pre-wrap;white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word; ">{{message.messageText}}</p>
                                     </div>
                                 </div>
-                            </div>
+
                         </li>
                     </ul>
                 </div>
@@ -37,5 +39,4 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
