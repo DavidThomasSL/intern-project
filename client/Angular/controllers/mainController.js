@@ -10,6 +10,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.playAgainWasPressed = userService.playAgainWasPressed;
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
+    $scope.getMessages = roomService.getMessages;
 
      $scope.sendMessage = function(messageText) {
         userService.sendMessage(messageText);
