@@ -31,6 +31,10 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     var oldMsgNo;
     $scope.missedMsg;
 
+    $scope.resetToggle = function() {
+        $scope.toggled = false;
+    };
+
      $scope.sendMessage = function(messageText) {
         userService.sendMessage(messageText);
         $scope.messageText = '';
