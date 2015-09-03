@@ -69,8 +69,8 @@ describe('After each round', function() {
 
 
 		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('Alice');
-		// expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('#1');
-		// expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.points')).getText()).toContain('50 points');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.points')).getText()).toContain('50 points');
 
 	});
 
