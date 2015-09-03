@@ -10,18 +10,27 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.playAgainWasPressed = userService.playAgainWasPressed;
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
+
     $scope.getMessages = function() {
         msg = roomService.getMessages();
-        if ($scope.toggled !== true) {
+        if ($scope.toggled === false) {
             if (msg.length !== oldMsgNo) {
-                if (oldMsgNo === undefined)  $scope.missedMsg = msg.length;
-                else $scope.missedMsg = msg.length - oldMsgNo;
+                if (oldMsgNo === undefined)  {
+                    $scope.missedMsg = msg.length;
+                }
+                else {
+                    $scope.missedMsg = msg.length - oldMsgNo;
+                }
             }
         }
         return msg;
     }
 
-    $scope.toggled = false; //used for messaging collapsing
+    $scope.resetToggle = function() {
+        console.log("resting toggle");
+        $scope.toggled = false; //used for messaging collapsing
+    }
+
     var msg;
     var oldMsgNo;
     $scope.missedMsg;
@@ -33,10 +42,9 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
 
     $scope.toggle = function() {
         $scope.toggled = !$scope.toggled;
-            $scope.missedMsg = 0 ;
-            oldMsgNo = msg.length;
-
-    }
+        $scope.missedMsg = 0 ;
+        oldMsgNo = msg.length;
+    };
 
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function(botsEnabled) {
@@ -186,5 +194,4 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     /*
     ---------------------------------------------------------
     */
-
 });
