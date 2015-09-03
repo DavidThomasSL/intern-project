@@ -25,8 +25,7 @@ module.exports = function(browserInstance) {
 	};
 
 	var toggleMessenger = function() {
-		var toggleMsg = element(by.id("toggle-messenger"));
-		toggleMsg.click();
+		element(by.id('toggle-messenger')).click();
 		browserInstance.waitForAngular();
 	};
 
@@ -37,6 +36,7 @@ module.exports = function(browserInstance) {
 	};
 
 	var submitMessage = function(message) {
+		browserInstance.waitForAngular();
 		var messageInput = element(by.id('message-box'));
 		messageInput.sendKeys(message);
 		element(by.id('submit-message')).click();

@@ -54,8 +54,9 @@ describe('When joining an existing room', function() {
 
 	it('can not send an empty message or white spaces in the room', function() {
 		firstClonageUser.toggleMessenger();
+		expect(firstClonageUser.element(by.id('submit-message')).isPresent()).toBe(true);
 		firstClonageUser.submitMessage('               ');
-		//expect(firstClonageUser.element(by.repeater('message in getMessages()')).isPresent()).toBe(false);
+		expect(firstClonageUser.element(by.repeater('message in getMessages()')).isPresent()).toBe(false);
 	});
 
 	it('can send a message in the room and the input field is reset after submission', function() {
@@ -77,6 +78,10 @@ describe('When joining an existing room', function() {
 	it('when the messenger is opened, the notification dissapears', function() {
 		secondClonageUser.toggleMessenger();
 		expect(secondClonageUser.element(by.binding('missedMsg')).isPresent()).toBe(false);
+	});
+
+	it('when the messenger is opened, the user can read the message', function() {
+		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
 	});
 
 	it('on refresh user is put back into the lobby', function() {
