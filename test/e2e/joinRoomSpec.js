@@ -53,8 +53,7 @@ describe('When joining an existing room', function() {
 	});
 
 	it('can not send an empty message or white spaces in the room', function() {
-		var makeMsgVisible = firstClonageUser.element(by.id("toggle-messenger"));
-		makeMsgVisible.click();
+		firstClonageUser.toggleMessenger();
 		firstClonageUser.submitMessage('               ');
 		expect(firstClonageUser.element(by.repeater('message in getMessages()')).isPresent()).toBe(false);
 	});
@@ -66,6 +65,12 @@ describe('When joining an existing room', function() {
 	});
 
 	it('If one user submits a message everyone can see they have an unread message', function() {
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
+	});
+
+	it('on refresh user can see they have an unread message notification', function() {
+		firstClonageUser.refresh();
+		expect(browser.getCurrentUrl()).toMatch(/\/room/);
 		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
 	});
 

@@ -24,6 +24,12 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var toggleMessenger = function() {
+		var toggleMsg = element(by.id("toggle-messenger"));
+		toggleMsg.click();
+		browserInstance.waitForAngular();
+	};
+
 	var joinAsObserver = function(name) {
 		var chooseObserverButton = element(by.id('choose-observer-button'));
 		chooseObserverButton.click();
@@ -192,6 +198,7 @@ module.exports = function(browserInstance) {
 		setBotsOn: setBotsOn,
 		setRoundNumber: setRoundNumber,
 		submitMessage: submitMessage,
+		toggleMessenger: toggleMessenger,
 		openGameRankings: openGameRankings,
 		playAgain: playAgain
 	};
