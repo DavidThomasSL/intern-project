@@ -335,7 +335,7 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-           room.gameController.initialize(room).then(function(initialResults) {
+            room.gameController.initialize(room).then(function(initialResults) {
 
                 room.broadcastRoom("GAME playerRoundResults", {
                     results: initialResults,
@@ -421,8 +421,13 @@ module.exports = function(port, enableLogging, testing) {
                     // and wait until it has ran out (triggers a callback)
                     room.gameController.startTimer(testing, function(data) {
 
-                        // time has ran out so everyone is routed to the voting page
+                        room.broadcastRoom("GAME roundSubmissionData", {
+                            roundSubmissionData: data.roundSubmissionData,
+                            currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                            currentNumberOfVotes: data.currentNumberOfVotes
+                        });
 
+                        // time has ran out so everyone is routed to the voting page
                         putUserInVote(room);
                     });
                 }
