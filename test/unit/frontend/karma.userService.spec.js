@@ -86,6 +86,7 @@ describe("Testing User Service", function() {
 		expect(mockCommunicationService.sendMessage).toHaveBeenCalledWith("USER send message", {
 			playerName: "bob",
 			playerUid: 1,
+			playerImage: undefined,
 			messageText: "Hi!",
 			roomId: "B00B5"
 		}, jasmine.any(Function));
