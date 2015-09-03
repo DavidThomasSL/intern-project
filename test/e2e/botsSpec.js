@@ -60,7 +60,15 @@ describe('When starting a game with BOTS', function() {
 	});
 
 	it('Taken to the resuls page after last person voted', function() {
+		
 		secondClonageUser.submitFirstVote();
+		
+		browser.wait( function(){
+		  return browser.getCurrentUrl().then(function(url){			  
+			  return (url === "http://localhost:8080/#/results/");
+		  });
+		}, 10000);
+		
 		expect(browser2.getCurrentUrl()).toMatch(/\/results/);
 		expect(browser.getCurrentUrl()).toMatch(/\/results/);
 	});
