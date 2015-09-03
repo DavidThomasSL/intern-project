@@ -1,5 +1,5 @@
 <div class="row chat-window col-md-4 col-sm-6 col-xs-12" id="chat_window_1">
-    <div class="panel panel-info" style="margin-bottom: 0px;"> <!-- add panel primary when unchecked -->
+    <div ng-class="{'panel panel-info' : missedMsg<=0, 'panel panel-primary': missedMsg>0}" style="margin-bottom: 0px;">
         <div class="panel-heading" id="accordion">
             <span class="glyphicon glyphicon-comment"></span> Chat <span class="badge" ng-if="missedMsg>0">{{missedMsg}}</span>
             <div class="btn-group pull-right">

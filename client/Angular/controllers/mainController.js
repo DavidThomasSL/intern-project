@@ -14,14 +14,10 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         msg = roomService.getMessages();
         if ($scope.toggled !== true) {
             if (msg.length !== oldMsgNo) {
-                //console.log( "msg.length: " + msg.length);
-                //console.log( "old msg number: " + oldMsgNo);
                 if (oldMsgNo === undefined)  $scope.missedMsg = msg.length;
                 else $scope.missedMsg = msg.length - oldMsgNo;
-
             }
         }
-        //console.log( $scope.missedMsg);
         return msg;
     }
 
@@ -37,11 +33,9 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
 
     $scope.toggle = function() {
         $scope.toggled = !$scope.toggled;
-        if ($scope.toggled === true) {
-            console.log("resetting");
             $scope.missedMsg = 0 ;
             oldMsgNo = msg.length;
-        }
+
     }
 
     //when player says they are ready to move on it sends this to the server
