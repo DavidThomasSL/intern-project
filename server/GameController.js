@@ -171,6 +171,8 @@ module.exports = function(data) {
 		var data;
 		var deferred = Q.defer();
 
+		setRank();
+
 		// Check if game over
 		if (gameOver) {
 
@@ -462,6 +464,7 @@ module.exports = function(data) {
 				bot.updateHand(randomAns);
 				randomAnswers.push(randomAns);
 			}
+
 			round.addSubmission(bot, randomAnswers);
 		});
 	};
