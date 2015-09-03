@@ -65,6 +65,9 @@ describe('When joining an existing room', function() {
 		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
 	});
 
+	it('If one user submits a message everyone can see they have an unread message', function() {
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
+	});
 
 	it('on refresh user is put back into the lobby', function() {
 
