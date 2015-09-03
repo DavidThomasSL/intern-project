@@ -419,6 +419,7 @@ MESSENGER
     float:right;
     margin-left:10px;
     right:10px;
+    z-index: 999;
 }
 
 .chat-window > div > .panel {
