@@ -54,6 +54,7 @@ describe('When joining an existing room', function() {
 
 	it('can not send an empty message or white spaces in the room', function() {
 		firstClonageUser.toggleMessenger();
+		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
 		expect(firstClonageUser.element(by.id('submit-message')).isPresent()).toBe(true);
 		firstClonageUser.submitMessage('               ');
 		expect(firstClonageUser.element(by.repeater('message in getMessages()')).isPresent()).toBe(false);

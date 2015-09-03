@@ -409,9 +409,6 @@ MESSENGER
 */
 
 /************************/
-.col-md-2, .col-md-10 {
-    padding:0;
-}
 
 .chat-window {
     bottom:0;
@@ -435,12 +432,12 @@ MESSENGER
   height: 400px;
 }
 
-.right {
+.right-m {
   position: absolute;
   right: 10px;
 }
 
-.left {
+.left-m {
 }
 
 .messages {

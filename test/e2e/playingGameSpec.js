@@ -41,6 +41,9 @@ describe('When playing a game', function() {
 	});
 
 	it('can send a message in the room and the input field is reset after submission', function() {
+		firstClonageUser.toggleMessenger();
+		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
+		expect(firstClonageUser.element(by.id('submit-message')).isPresent()).toBe(true);
 		firstClonageUser.submitMessage('Hi!');
 		expect(firstClonageUser.element(by.id('message-box')).getText()).toBe('');
 		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
@@ -176,6 +179,9 @@ describe('When playing a game', function() {
 	});
 
 	it('can send a message in the room and the input field is reset after submission', function() {
+		firstClonageUser.toggleMessenger();
+		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
+		expect(firstClonageUser.element(by.id('submit-message')).isPresent()).toBe(true);
 		firstClonageUser.submitMessage('Hi!');
 		expect(firstClonageUser.element(by.id('message-box')).getText()).toBe('');
 		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
