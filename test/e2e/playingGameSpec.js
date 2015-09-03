@@ -204,7 +204,7 @@ describe('When playing a game', function() {
 	it('when the messenger is opened, the user can read the message', function() {
 		browser2.wait( function(){
 		  return element(by.binding('message.messageText')).isPresent();
-		}, 1000);
+		}, 1000 );
 		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
 	});
 
