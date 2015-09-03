@@ -4,6 +4,7 @@ describe('After ending the game', function() {
 
 	var MAX_ROUNDS;
 	var POINTS_PER_VOTE;
+	var resultWait = 3000;
 
 	var roomId;
 
@@ -54,7 +55,7 @@ describe('After ending the game', function() {
 
 		browser.wait( function(){
 		  return element(by.id('end-game-container')).isPresent();
-		}, 1000);
+		}, resultWait);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/endGame/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
