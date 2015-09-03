@@ -30,7 +30,6 @@ module.exports = function(port, enableLogging, testing) {
     router.use(express.static(path.resolve(__dirname, '../client')));
 
     var rooms = [];
-    var messages = [];
     var users = [];
     var roomId = 0;
 
@@ -520,7 +519,7 @@ module.exports = function(port, enableLogging, testing) {
         */
         socket.on('disconnect', function() {
 
-            room = getRoomFromId(user.roomId);
+            var room = getRoomFromId(user.roomId);
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
@@ -556,7 +555,6 @@ module.exports = function(port, enableLogging, testing) {
         function putUserInRoom(roomId, force) {
 
             var result = {};
-            var errorText = "";
             var room = getRoomFromId(roomId.toUpperCase()); // accept lowercase spelling of room code
 
             logger.debug("trying to put user in room " + user.name + user.uId);

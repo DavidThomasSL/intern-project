@@ -294,7 +294,6 @@ module.exports = function(data) {
 		// TO DO : before submitting a vote check that the player hasn't already submitted one
 
 		var currentRound = rounds[rounds.length - 1];
-		var results = [];
 		var submittingPlayer = getPlayerFromId(playerId);
 		var deferred = Q.defer();
 
@@ -350,9 +349,7 @@ module.exports = function(data) {
 	var getInfoForReconnectingUser = function(user, testing, callback) {
 
 		//GET round information
-		var routingInfo = "";
-		var gameData = {};
-		var userData = {};
+		var routingInfo = "";		
 		var data = [];
 		var player;
 
@@ -450,7 +447,6 @@ module.exports = function(data) {
 	var addFakeAnswers = function(round) {
 
 		var answersToPick = round.getRoundQuestion().pick;
-		var ans;
 
 		// Get answer from each bot
 		bots.forEach(function(bot) {
@@ -527,7 +523,7 @@ module.exports = function(data) {
 	};
 
 	var replaceHand = function(userId, cardsToReplace, callback) {
-		var newHand;
+
 		var currentPlayer = getPlayerFromId(userId);
 
 		//replace all requested cards with new ones and remove points
@@ -567,21 +563,6 @@ module.exports = function(data) {
 			player.removePoints(POINTS_PER_VOTE);
 		});
 	};
-
-	/*
-		count the overall votes in this round
-	*/
-	var countVotes = function(currentRound) {
-		var votes = 0;
-
-		if (currentRound !== undefined) {
-			currentRound.answers.forEach(function(option) {
-				votes += option.playersVote.length;
-			});
-		}
-		return votes;
-	};
-
 
 	/*
 		Gives a rank to every player in the game based on their points total

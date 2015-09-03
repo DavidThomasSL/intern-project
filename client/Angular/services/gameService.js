@@ -7,7 +7,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	//-------------------	*/
 
 	var currentQuestion; // the current question containing the text and how many answers to submit
-	var currentlySubmittedAnswers = []; //if multiple blanks then hold the currently selected answers
 	var round = -1;
 
 	var roundSubmissionData = [];
@@ -19,10 +18,8 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 	var currentFilledInQuestion = "";
 
 	var countdown;
-	var cardsToReplace = [];
 	var handReplaceCost = 0; //variable holing the current cost of replacing a card
 
-	var votes = [];
 	var timeout = 5000;
 	var allRooms = [];
 
@@ -62,11 +59,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 
 	function getMaxRounds() {
 		return maxRounds;
-	}
-
-
-	function getCurrentVotes() {
-		return voteCounter;
 	}
 
 	// Clears local game data when the user leaves the game
@@ -173,11 +165,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		maxRounds = data.maxRounds;
 		handReplaceCost = data.handReplaceCost;
 		countdown = data.countdown;
-		if (countdown === undefined) {
-			answers = [];
-			voteCounter = 0;
-			votes = [];
-		}
 
 		/*
 		generating the filled in question based on the question text and submitted answers
@@ -279,7 +266,6 @@ ClonageApp.service('gameService', ['communicationService', 'dynamicTextService',
 		getRoundSubmissionData: getRoundSubmissionData,
 		getAnswersToVisualise: getAnswersToVisualise,
 		getCurrentRound: getCurrentRound,
-		getCurrentVotes: getCurrentVotes,
 		getMaxRounds: getMaxRounds,
 		getPlayerCurrentRank: getPlayerCurrentRank,
 		getHandReplaceCost: getHandReplaceCost,
