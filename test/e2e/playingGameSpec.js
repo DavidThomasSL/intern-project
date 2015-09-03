@@ -40,6 +40,34 @@ describe('When playing a game', function() {
 
 	});
 
+	it('can send a message in the room and the input field is reset after submission', function() {
+		firstClonageUser.toggleMessenger();
+		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
+		expect(firstClonageUser.element(by.id('submit-message')).isPresent()).toBe(true);
+		firstClonageUser.submitMessage('Hi!');
+		expect(firstClonageUser.element(by.id('message-box')).getText()).toBe('');
+		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+	});
+
+	it('If one user submits a message everyone can see they have an unread message', function() {
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
+	});
+
+	it('on refresh user can see they have an unread message notification', function() {
+		secondClonageUser.refresh();
+		expect(browser.getCurrentUrl()).toMatch(/\/waitQuestion/);
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
+	});
+
+	it('when the messenger is opened, the notification dissapears', function() {
+		secondClonageUser.toggleMessenger();
+		expect(secondClonageUser.element(by.binding('missedMsg')).isPresent()).toBe(false);
+	});
+
+	it('when the messenger is opened, the user can read the message', function() {
+		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+	});
+
 	it('can see who submitted an answer', function() {
 		expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
 		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-submitted');
@@ -51,20 +79,19 @@ describe('When playing a game', function() {
 	});
 
 
-	// TODO PUT THIS BACK IN WHEN FIXED
-	// it('can replace a unwanted hand and this is replaced by a different one', function() {
+	it('can replace a unwanted hand and this is replaced by a different one', function() {
 
-	// 	//store current hand
-	// 	for (i = 0; i < HAND_SIZE; i++) {
-	// 		currentHand.push(secondClonageUser.getCardText(i));
-	// 	}
+		//store current hand
+		for (i = 0; i < HAND_SIZE; i++) {
+			currentHand.push(secondClonageUser.getCardText(i));
+		}
 
-	// 	secondClonageUser.replaceHand();
-	// 	// check the new hand is different to the old one
-	// 	for( i = 0; i < HAND_SIZE; i++) {
-	// 		expect(secondClonageUser.element.all(by.exactRepeater("answer in userHand()")).get(i).element(by.id("answer")).getText()).not.toMatch(currentHand[i]);
-	// 	}
-	// });
+		secondClonageUser.replaceHand();
+		// check the new hand is different to the old one
+		for( i = 0; i < HAND_SIZE; i++) {
+			expect(secondClonageUser.element.all(by.exactRepeater("answer in userHand()")).get(i).element(by.id("answer")).getText()).not.toMatch(currentHand[i]);
+		}
+	});
 
 	it('can refresh and still see who submitted an answer', function() {
 		firstClonageUser.refresh();
@@ -148,6 +175,37 @@ describe('When playing a game', function() {
 		secondClonageUser.refresh();
 		expect(firstClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
 		expect(secondClonageUser.element.all(by.id('user-panel')).last().getAttribute('class')).toMatch('player-not-submitted');
+	});
+
+	it('can send a message in the room and the input field is reset after submission', function() {
+		firstClonageUser.toggleMessenger();
+		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
+		expect(firstClonageUser.element(by.id('submit-message')).isPresent()).toBe(true);
+		firstClonageUser.submitMessage('Hi!');
+		expect(firstClonageUser.element(by.id('message-box')).getText()).toBe('');
+		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+	});
+
+	it('If one user submits a message everyone can see they have an unread message', function() {
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('2');
+	});
+
+	it('on refresh user can see they have an unread message notification', function() {
+		secondClonageUser.refresh();
+		expect(browser.getCurrentUrl()).toMatch(/\/waitVote/);
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('2');
+	});
+
+	it('when the messenger is opened, the notification dissapears', function() {
+		secondClonageUser.toggleMessenger();
+		expect(secondClonageUser.element(by.binding('missedMsg')).isPresent()).toBe(false);
+	});
+
+	it('when the messenger is opened, the user can read the message', function() {
+		browser2.wait( function(){
+		  return element(by.binding('message.messageText')).isPresent();
+		}, 1000 );
+		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
 	});
 
 	it('can refresh and stay on vote-wait page', function() {

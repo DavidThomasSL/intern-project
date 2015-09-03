@@ -53,27 +53,39 @@ describe('When joining an existing room', function() {
 	});
 
 	it('can not send an empty message or white spaces in the room', function() {
+		firstClonageUser.toggleMessenger();
+		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
+		expect(firstClonageUser.element(by.id('submit-message')).isPresent()).toBe(true);
 		firstClonageUser.submitMessage('               ');
 		expect(firstClonageUser.element(by.repeater('message in getMessages()')).isPresent()).toBe(false);
 	});
 
-	it('can send a message in the room', function() {
+	it('can send a message in the room and the input field is reset after submission', function() {
 		firstClonageUser.submitMessage('Hi!');
 		expect(firstClonageUser.element(by.id('message-box')).getText()).toBe('');
 		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
 	});
 
-	it('If one user submits a message everyone can see it without updating', function() {
-		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+	it('If one user submits a message everyone can see they have an unread message', function() {
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
 	});
 
-	it('on refresh user can still see the messages in the room', function() {
-
-		firstClonageUser.refresh();
-
+	it('on refresh user can see they have an unread message notification', function() {
+		secondClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/room/);
-		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
+	});
 
+	it('when the messenger is opened, the notification dissapears', function() {
+		secondClonageUser.toggleMessenger();
+		expect(secondClonageUser.element(by.binding('missedMsg')).isPresent()).toBe(false);
+	});
+
+	it('when the messenger is opened, the user can read the message', function() {
+		browser2.wait( function(){
+		  return element(by.binding('message.messageText')).isPresent();
+		}, 1000);
+		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
 	});
 
 	it('on refresh user is put back into the lobby', function() {

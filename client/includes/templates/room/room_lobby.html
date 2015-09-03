@@ -54,33 +54,7 @@
                 <ng-include src="userPanelTemplate"></ng-include>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default" style="height: 200px; overflow-y: scroll;" scroll="getMessages()">
-                    <table>
-                        <tr ng-repeat="message in getMessages()" style="padding-bottom: 20px ">
-                            <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; width: 20%"><div ng-hide="message.playerUid === getUserId()" style="right: 0px">{{message.playerName}}</div></td>
-
-                            <td style="width: 500px"><div class="form-control" ng-class="{'float-right': message.playerUid === getUserId(), 'float-left': message.playerUid !== getUserId()};" style="white-space: pre-wrap;white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;  margin-bottom: 5px; height: 100%; ">{{message.messageText}}</div></td>
-
-                            <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; right: 0; width: 20%"><div ng-show="message.playerUid === getUserId()">{{message.playerName}}</div></td>
-                        </tr><br>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="margin-bottom:20px">
-            <div class="col-md-12">
-                <form name="message-form" ng-submit="sendMessage(messageText)">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="message-box" placeholder="Type a message" ng-model="messageText" autofocus required>
-                        <span class="input-group-btn">
-                            <button type="submit" id="submit-message" class="btn btn-default">Send</button>
-                        </span>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
         <div class="row">
             <div class="col-md-6 text-center">
                 <button id="ready-button" type="button" class="btn btn-lg btn-primary ready-button" ng-click="sendReadyStatus(); roomReadyToggle=(!roomReadyToggle);" ng-class="{'btn-danger':roomReadyToggle}" ng-disabled="getActiveUsersInRoom().length <= 1 && getGameParameters().botNumber < 1">{{ roomReadyToggle ? 'Not Ready' : 'Ready' }}</button>

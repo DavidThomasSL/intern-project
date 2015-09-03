@@ -5,14 +5,16 @@ describe('When starting a game with BOTS', function() {
 	var BOT_NUM;
 	var MAX_ROUNDS;
 	var roomId;
-
+	
+	var resultWait = 3000;
+	
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
 	var secondClonageUser = new clonageUser(browser2);
 
 	it('Can start a game with bots', function() {
-		MAX_ROUNDS = 3;
+		MAX_ROUNDS = 1;
 		BOT_NUM = 3;
 
 		firstClonageUser.getIndex();
@@ -58,55 +60,35 @@ describe('When starting a game with BOTS', function() {
 	});
 
 	it('Taken to the resuls page after last person voted', function() {
+		
 		secondClonageUser.submitFirstVote();
+		
+		browser.wait( function(){
+		  return browser.getCurrentUrl().then(function(url){			  
+			  return (url === "http://localhost:8080/#/results/");
+		  });
+		}, 10000);
+		
 		expect(browser2.getCurrentUrl()).toMatch(/\/results/);
 		expect(browser.getCurrentUrl()).toMatch(/\/results/);
 	});
 
 	it('can see all the answers that were submitted', function() {
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
-	});
-
-	it('can see the players and bots at the bottom of the page', function() {
-		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
-		expect(firstClonageUser.element.all(by.repeater('user in getBotsInRoom()')).count()).toBe(BOT_NUM);
-
+		expect(firstClonageUser.element.all(by.id('results-table-row')).count()).toBe(2 + BOT_NUM);
+		expect(secondClonageUser.element.all(by.id('results-table-row')).count()).toBe(2 + BOT_NUM);
 	});
 
 	it('can finish a game with bots', function() {
 
-		firstClonageUser.ready();
-		secondClonageUser.ready();
-
-		//taking function out of loop as jshint complains
-		var userSubmitAnswer = function(text) {
-			cardsToSubmit = parseInt(text[5]); //PICK X.
-			firstClonageUser.submitFirstAnswers(cardsToSubmit);
-			secondClonageUser.submitFirstAnswers(cardsToSubmit);
-		};
-
-		//change value here if we change the number of rounds
-		for (var i = 0; i < MAX_ROUNDS - 1; i++) {
-			firstClonageUser.getBlankSpaces().then(userSubmitAnswer);
-
-			firstClonageUser.submitFirstVote();
-			secondClonageUser.submitFirstVote();
-
-			firstClonageUser.ready();
-			secondClonageUser.ready();
-		}
+		browser.wait( function(){
+		  return element(by.id('end-game-container')).isPresent();
+		}, resultWait);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/endGame/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
-	});
-
-	it('can see players final scores', function() {
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).count()).toBe(2 + BOT_NUM);
 
 		firstClonageUser.clearUser();
 		browser2.close();
-	});
 
+	});
 });

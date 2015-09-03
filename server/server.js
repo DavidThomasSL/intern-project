@@ -30,7 +30,6 @@ module.exports = function(port, enableLogging, testing) {
     router.use(express.static(path.resolve(__dirname, '../client')));
 
     var rooms = [];
-    var messages = [];
     var users = [];
     var roomId = 0;
 
@@ -97,13 +96,14 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Final registered details of user are: " + user.name + " " + user.uId);
         });
 
+
         socket.on('USER set profile', function(data) {
             user.name = data.name;
             user.image = data.image;
             user.isObserver = data.isObserver;
             user.readyToProceed = data.isObserver;
 
-            if(user === undefined || user.sendUserDetails === undefined){
+            if (user === undefined || user.sendUserDetails === undefined) {
                 console.log("waht the fuck " + data);
             }
             user.sendUserDetails();
@@ -112,14 +112,17 @@ module.exports = function(port, enableLogging, testing) {
 
             logger.debug("User set name as: " + data.name);
         });
+
+
         /*
             create room, assign id, add current player and return room id to player
         */
         socket.on('ROOM create', function(msg) {
 
-            roomId = makeid();
+            var room;
 
-            var room = new Room(roomId, testing);
+            roomId = makeid();
+            room = new Room(roomId, testing);
             rooms.push(room);
 
             putUserInRoom(roomId);
@@ -159,7 +162,6 @@ module.exports = function(port, enableLogging, testing) {
                 newRoomId: newRoomId,
                 user: user.name
             });
-
         });
 
         /*
@@ -289,12 +291,8 @@ module.exports = function(port, enableLogging, testing) {
                 });
 
                 // if the game hasn't started yet, start the game
-                if (room.gameController === undefined) {
-                    startGameInRoom(room.id);
-                } else {
-                    // if the game has already started, move onto the next round
-                    startNextRoundInRoom(room.id);
-                }
+                startGameInRoom(room.id);
+
             } else {
                 // Not everyone is ready, do nothing
             }
@@ -303,15 +301,16 @@ module.exports = function(port, enableLogging, testing) {
         socket.on('PLAYER replace cards', function(data) {
             var room = getRoomFromId(user.roomId);
 
-            room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newResults) {
+            room.gameController.replaceHand(user.uId, data.cardsToReplace, function(newHand, newRoundData) {
 
                 user.emit('USER hand', {
                     hand: newHand
                 });
 
-                room.broadcastRoom('GAME playerRoundResults', {
-                    results: newResults,
-                    voteNumber: 0
+                room.broadcastRoom('GAME roundSubmissionData', {
+                    roundSubmissionData: newRoundData.getRoundSubmissionData(),
+                    currentNumberOfSubmissions: newRoundData.getNumberOfCurrentSubmissions(),
+                    currentNumberOfVotes: newRoundData.getNumberOfCurrentVotes()
                 });
 
                 user.emit("NOTIFICATION message", {
@@ -335,14 +334,16 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room, function(initialResults) {
+            room.gameController.initialize(room).then(function(initialResults) {
 
                 room.broadcastRoom("GAME playerRoundResults", {
                     results: initialResults,
                     voteCounter: 0
                 });
+
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
+
             });
         }
 
@@ -370,7 +371,7 @@ module.exports = function(port, enableLogging, testing) {
 
             var room = getRoomFromId(roomId);
 
-            room.gameController.newRound(function(data) {
+            room.gameController.newRound().then(function(data) {
 
                 if (data.gameIsOver === true) {
 
@@ -386,15 +387,20 @@ module.exports = function(port, enableLogging, testing) {
 
                     room.broadcastRoom("GAME question", {
                         question: data.roundQuestion,
-                        round: data.round,
+                        round: data.roundNumber,
                         maxRounds: data.maxRounds,
                         handReplaceCost: data.handReplaceCost
+                    });
+
+                    room.broadcastRoom("GAME roundSubmissionData", {
+                        roundSubmissionData: data.roundSubmissionData,
+                        currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                        currentNumberOfVotes: data.currentNumberOfVotes
                     });
 
                     room.broadcastRoom("PLAYER question", {
                         question: data.roundQuestion,
                     });
-
 
                     room.broadcastRoom('ROOM details');
 
@@ -412,28 +418,16 @@ module.exports = function(port, enableLogging, testing) {
                     // once a new round has started (aka we are on question page)
                     // start a timer
                     // and wait until it has ran out (triggers a callback)
-                    room.gameController.startTimer(function(data) {
+                    room.gameController.startTimer(testing, function(data) {
+
+                        room.broadcastRoom("GAME roundSubmissionData", {
+                            roundSubmissionData: data.roundSubmissionData,
+                            currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                            currentNumberOfVotes: data.currentNumberOfVotes
+                        });
 
                         // time has ran out so everyone is routed to the voting page
-                        room.broadcastRoom("ROUTING", {
-                            location: 'vote'
-                        });
-
-                        // start new timer for the voting page
-                        // and wait until time rans out
-                        room.gameController.startTimer(function(data) {
-
-                            //time has ran out so everyone is routed to the results page
-                            room.broadcastRoom("ROUTING", {
-                                location: 'results'
-                            });
-
-
-                            room.broadcastRoom("GAME playerRoundResults", {
-                                results: data.results,
-                                voteCounter: data.voteCounter
-                            });
-                        });
+                        putUserInVote(room);
                     });
                 }
 
@@ -452,11 +446,13 @@ module.exports = function(port, enableLogging, testing) {
 
             // submit answer
             // callback will return the answers submitted and if everyone has submitted
-            room.gameController.submitAnswer(user.uId, msg.answer, function(data) {
+            room.gameController.submitAnswer(user.uId, msg.answer).then(function(data) {
 
                 //sends the list of answers each time someone submits one
-                room.broadcastRoom("GAME answers", {
-                    answers: data.answers
+                room.broadcastRoom("GAME roundSubmissionData", {
+                    roundSubmissionData: data.roundSubmissionData,
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                    currentNumberOfVotes: data.currentNumberOfVotes
                 });
 
                 if (testing !== undefined) {
@@ -472,23 +468,7 @@ module.exports = function(port, enableLogging, testing) {
 
                 // once everyone submitted an answer
                 if (data.allChoicesSubmitted === true) {
-
-                    room.broadcastRoom("ROUTING", {
-                        location: 'vote'
-                    });
-
-                    // start a timer for the voting page
-                    room.gameController.startTimer(function(data) {
-
-                        // once the time has ran out route everyone to the results page
-                        room.broadcastRoom("ROUTING", {
-                            location: 'results'
-                        });
-                        room.broadcastRoom("GAME playerRoundResults", {
-                            results: data.results,
-                            voteCounter: data.voteCounter
-                        });
-                    });
+                    putUserInVote(room);
                 }
             });
         });
@@ -509,19 +489,24 @@ module.exports = function(port, enableLogging, testing) {
             // Submits the vote information to the game controller
             // If all votes are submitted, move user to results page
             // Otherwise they just get the current round results
-            room.gameController.submitVote(user.uId, msg.answer, function(data) {
+            room.gameController.submitVote(user.uId, msg.answer).then(function(data) {
 
-                // Send room the vote data after each vote
-                room.broadcastRoom("GAME playerRoundResults", {
-                    results: data.res,
-                    currentVotes: data.currentVotes,
-                    voteNumber: data.voteNumber
+                room.broadcastRoom("GAME roundSubmissionData", {
+                    roundSubmissionData: data.roundSubmissionData,
+                    currentNumberOfVotes: data.currentNumberOfVotes,
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                    dontResetAnswers: true
                 });
 
                 if (data.allVotesSubmitted === true) {
                     // Moving all players to the results page
                     room.broadcastRoom("ROUTING", {
                         location: 'results'
+                    });
+
+                    room.gameController.startTimer(testing, function(data) {
+
+                        startNextRoundInRoom(room.id);
                     });
                 }
             });
@@ -539,7 +524,7 @@ module.exports = function(port, enableLogging, testing) {
         */
         socket.on('disconnect', function() {
 
-            room = getRoomFromId(user.roomId);
+            var room = getRoomFromId(user.roomId);
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
@@ -575,7 +560,6 @@ module.exports = function(port, enableLogging, testing) {
         function putUserInRoom(roomId, force) {
 
             var result = {};
-            var errorText = "";
             var room = getRoomFromId(roomId.toUpperCase()); // accept lowercase spelling of room code
 
             logger.debug("trying to put user in room " + user.name + user.uId);
@@ -619,6 +603,42 @@ module.exports = function(port, enableLogging, testing) {
             }
         }
 
+        function putUserInVote(room) {
+
+            if (testing !== undefined) {
+                room.broadcastRoom("GAME timeout", {
+                    timeout: 0
+                });
+            }
+
+            room.broadcastRoom("ROUTING", {
+                location: 'vote'
+            });
+
+            // start new timer for the voting page
+            // and wait until time rans out
+            room.gameController.startTimer(testing, function(data) {
+
+                //time has ran out so everyone is routed to the results page
+                room.broadcastRoom("ROUTING", {
+                    location: 'results'
+                });
+
+
+                room.broadcastRoom("GAME roundSubmissionData", {
+                    roundSubmissionData: data.roundSubmissionData,
+                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                    currentNumberOfVotes: data.currentNumberOfVotes
+                });
+
+                room.gameController.startTimer(testing, function(data) {
+
+                    startNextRoundInRoom(room.id);
+
+                });
+            });
+        }
+
         function emitNotificationActionable(target, data) {
             target.emit("NOTIFICATION actionable", data);
         }
@@ -638,6 +658,7 @@ module.exports = function(port, enableLogging, testing) {
                 location: '/'
             });
         }
+
 
         /*
             Given a room ID finds the room in the rooms list

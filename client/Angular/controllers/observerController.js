@@ -7,13 +7,13 @@ ClonageApp.controller("observerController", function($scope, $sce, $rootScope, $
     $scope.getObserversInRoom = roomService.getObserversInRoom;
     $scope.getBotsInRoom = roomService.getBotsInRoom;
     $scope.getGameParameters = roomService.getGameParameters;
-    $scope.answers = gameService.getAnswers;
-    $scope.currentVotes = gameService.getCurrentVotes;
-    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
     $scope.currentQuestion = gameService.getCurrentQuestion;
     $scope.currentRound = gameService.getCurrentRound;
     $scope.maxRounds = gameService.getMaxRounds;
-    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
+
+    $scope.roundSubmissionData = gameService.getRoundSubmissionData;
+    $scope.currentNumberOfSubmissions = gameService.getCurrentNumberOfSubmissions;
+    $scope.currentNumberOfVotes = gameService.getCurrentNumberOfVotes;
 
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
 
@@ -21,25 +21,27 @@ ClonageApp.controller("observerController", function($scope, $sce, $rootScope, $
 
     $scope.getUserFromId = roomService.getUserFromId;
 
-
     $scope.index = 0;
     $scope.timeToWaitAnimation = gameService.getTimeout();
     var timer;
     //get all answers submitted in order to visualise them on the voting page
     $scope.visualiseAnswers = function() {
-        var ans = gameService.getAnswers();
+        var ans = gameService.getAnswersToVisualise().filter(function(submission){
+            return submission.submissionsText.length > 0;
+        });
         var filtered = [];
 
-        if ($scope.index < ans.length) {
+        if ($scope.index < gameService.getCurrentNumberOfSubmissions()) {
             filtered.push(ans[$scope.index]);
         } else {
-            $scope.index = ans.length;
+            $scope.index = gameService.getCurrentNumberOfSubmissions();
             filtered = ans;
             $scope.stopTimer();
         }
 
         return filtered;
     };
+
 
     $scope.startTimer = function() {
         if (angular.isDefined(timer)) $timeout.cancel(timer);

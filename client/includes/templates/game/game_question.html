@@ -7,6 +7,7 @@
         </div>
     </div>
     <div id="user-hand-container">
+        <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
         <div class="row">
             <div class="col-md-12 text-center" ng-repeat="answer in userHand()" data-ng-init="startCountdown()">
                 <div class="card-text-container">
@@ -18,7 +19,7 @@
             <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12 text-center" style="margin-bottom: 30px">
             <!-- Spaceing for extra small screens between buttons when stacked -->
                 <div class="hidden-lg hidden-md hidden-sm">&nbsp;</div>
-               <!--  <button id="replace-hand-button" type="button" class="btn btn-lg btn-danger" ng-click="replaceHand(userHand())">Replace hand <span class="badge">-{{handReplaceCost()}} points</span></button> -->
+                <button id="replace-hand-button" type="button" class="btn btn-lg btn-danger" ng-click="replaceHand(userHand())">Replace hand <span class="badge">-{{handReplaceCost()}} points</span></button>
             </div>
         </div>
     </div>

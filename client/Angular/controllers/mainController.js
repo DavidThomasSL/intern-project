@@ -4,12 +4,46 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.roomId = roomService.getRoomId;
     $scope.currentRound = gameService.getCurrentRound;
     $scope.maxRounds = gameService.getMaxRounds;
-    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
     $scope.getUserImage = userService.getUserImage;
     $scope.getIfObserver = userService.getIfObserver;
     $scope.playAgainWasPressed = userService.playAgainWasPressed;
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
+
+    $scope.getMessages = function() {
+        msg = roomService.getMessages();
+        if ($scope.toggled === false) {
+            if (msg.length !== oldMsgNo) {
+                if (oldMsgNo === undefined)  {
+                    $scope.missedMsg = msg.length;
+                }
+                else {
+                    $scope.missedMsg = msg.length - oldMsgNo;
+                }
+            }
+        }
+        return msg;
+    }
+
+    $scope.toggled = false; //used for messaging collapsing
+
+    var msg;
+    var oldMsgNo;
+    $scope.missedMsg;
+
+     $scope.sendMessage = function(messageText) {
+        userService.sendMessage(messageText);
+        $scope.messageText = '';
+    };
+
+    $scope.toggle = function() {
+        $scope.toggled = !$scope.toggled;
+        $scope.missedMsg = 0 ;
+        oldMsgNo = msg.length;
+    };
+
+    $scope.roundSubmissionData = gameService.getRoundSubmissionData;
+
 
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function(botsEnabled) {
@@ -99,30 +133,28 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     */
     var countdown;
 
-    /*
-        when moving to the waiting page
-        function is called to save the value of the countdown
-    */
-    $scope.retainCountdownValue = function() {
-        if ($scope.counter !== 60) {
-            gameService.setCountdown($scope.counter);
-        }
-    };
-
     // start countdown
-    $scope.startCountdown = function() {
+    $scope.startCountdown = function(text) {
 
         //don't start a new countdown if one is already running ->>> it cancells the current one and start a new one
-        if (angular.isDefined(countdown)) $scope.stopCountdown();
+        if (angular.isDefined(countdown)) {
 
-        /*
-            if we don't get the value of the countdown from the server
-            reset countdown to 30 seconds
-            (=> page is loaded for the first time not refreshed)
-        */
-        if (gameService.getCountdown() === undefined) {
-            $scope.counter = 60;
+            $interval.cancel(countdown);
+            countdown = undefined;
+            if (text === undefined) $scope.counter = 60;
+            else $scope.counter = 20;
+            $scope.newCountdown();
         }
+        else  {
+
+            if (text === undefined) $scope.counter = 60;
+            else $scope.counter = 20;
+            $scope.newCountdown();
+        }
+
+    };
+
+    $scope.newCountdown = function() {
 
         countdown = $interval(function() {
 
@@ -138,7 +170,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
 
             // if time hasn't run out -> decrement counter
             if ($scope.counter > 0) {
-
                 $scope.counter--;
 
             } else {
@@ -162,5 +193,4 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     /*
     ---------------------------------------------------------
     */
-
 });

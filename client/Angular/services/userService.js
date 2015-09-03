@@ -73,6 +73,7 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
             sendMessage('USER send message', {
                 playerName: user.name,
                 playerUid: user.uId,
+                playerImage: user.image,
                 messageText: messageText,
                 roomId: user.roomId
             });
@@ -137,9 +138,6 @@ ClonageApp.service('userService', ['$sessionStorage', 'communicationService', 't
         }, {
             eventName: "details",
             eventAction: _setUserDetails
-        }, {
-            eventName: "room join",
-            eventAction: _joinRoom
         }, {
             eventName: "room join",
             eventAction: _joinRoom

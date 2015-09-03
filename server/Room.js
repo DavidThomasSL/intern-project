@@ -8,12 +8,13 @@ function Room(roomCode, testing) {
     self.botsInRoom = [];
     self.messages = [];
     self.timeToLiveTimer = undefined;
-    self.timeToLive = 5000; // amount of time the room will persist with no-one it it
+    self.timeToLive = 10000; // amount of time the room will persist with no-one it it
 
 
     if (testing === undefined) {
         self.numRounds = 8;
     } else {
+        self.timeToLive = 150000;
         self.numRounds = 1;
     }
 
@@ -34,22 +35,20 @@ function Room(roomCode, testing) {
 
     self.submitMessage = function(data) {
 
-        if (self.gameController === undefined) {
+        if (data.messageText !== undefined) {
 
-            if (data.messageText !== undefined) {
+            if (data.messageText.trim() !== '') {
 
-                if (data.messageText.trim() !== '') {
+                var message = {
+                    playerName: data.playerName,
+                    playerUid: data.playerUid,
+                    playerImage: data.playerImage,
+                    messageText: data.messageText
+                };
 
-                    var message = {
-                        playerName: data.playerName,
-                        playerUid: data.playerUid,
-                        messageText: data.messageText
-                    };
+                self.messages.push(message);
 
-                    self.messages.push(message);
-
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -206,7 +205,7 @@ function Room(roomCode, testing) {
             joined: canJoin
         };
     };
-    
+
     /*
         Delete the room after a set amount of time
 
@@ -236,12 +235,11 @@ function Room(roomCode, testing) {
 
         self.broadcastRoom("ROOM details");
     };
-    
+
     /*
         Emits a message to all users in the room
     */
     self.broadcastRoom = function(eventName, data) {
-
 
         if (eventName === "ROOM details") {
             data = {
@@ -270,7 +268,7 @@ function Room(roomCode, testing) {
 
         return usersInRoomJSON;
     };
-    
+
 
     function resolveObserverRoute(route) {
         if (route === "question" || route === "waitQuestion") {

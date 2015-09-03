@@ -1,6 +1,6 @@
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-2 text-center" ng-if="getPlayerRoundResults().length > 0">
+		<div class="col-md-2 text-center">
 			<ng-include src="'includes/templates/observer/observer_current_rankings_template.html'"></ng-include>
 		</div>
 		<div class="col-md-10">
@@ -9,21 +9,21 @@
 					<h1> {{currentQuestion().text}}</h1>
 				</div>
 			</div>
-			<ng-include src="'includes/templates/user/progressBarObserver.html'"  ng-if="index === answers().length" ng-init="startCountdown()"></ng-include>
+			<ng-include src="'includes/templates/user/progressBarObserver.html'"  ng-if="index === currentNumberOfSubmissions()" ng-init="startCountdown()"></ng-include>
 			<div id="observer-question-responses-container">
 				<div class="row">
-					<div class="col-md-8 col-md-offset-2 text-center repeat-animation" ng-repeat="answer in visualiseAnswers() | orderBy:'answersText[0]'" ng-init="startTimer()" ng-class-even="'left'" ng-class-odd="'right'">
+					<div class="col-md-8 col-md-offset-2 text-center repeat-animation" ng-repeat="answer in visualiseAnswers() | orderBy:'submissionsText[0]'" ng-init="startTimer()" ng-class-even="'left'" ng-class-odd="'right'">
 						<div class="card-text-container">
-							<button ng-if="(index === answers().length)" class="btn btn-warning btn-lg btn-block observer-card-text-button disabled" type="button" id="answer">
+							<button ng-if="(index === currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block observer-card-text-button disabled" type="button" id="answer">
 							<p ng-bind-html="bindHtml(answer.filledInText)"></p>
 							</button>
 							</button>
-							<button ng-if="(index !== answers().length)" class="btn btn-warning btn-lg btn-block observer-large-card disabled" type="button">
+							<button ng-if="(index !== currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block observer-large-card disabled" type="button">
 							<p ng-bind-html="bindHtml(answer.filledInText)"></p>
 						</div>
 					</div>
 				</div>
-				<div class="row" ng-if="index === answers().length">
+				<div class="row" ng-if="index === currentNumberOfSubmissions()">
 				<div class="col-md-6 col-md-offset-3">
 					<div class="row">
 						<div class="col-md-3" ng-repeat="user in getActiveUsersInRoom()">

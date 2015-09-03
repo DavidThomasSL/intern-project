@@ -1,0 +1,40 @@
+<div class="row chat-window col-md-4 col-sm-6 col-xs-12" id="chat_window_1" ng-init="toggled = false;">
+    <div ng-class="{'panel panel-info' : missedMsg<=0, 'panel panel-primary': missedMsg>0}" style="margin-bottom: 0px;">
+        <div class="panel-heading" id="accordion">
+            <span class="glyphicon glyphicon-comment"></span> Chat <span class="badge" ng-if="missedMsg>0">{{missedMsg}}</span>
+            <div class="btn-group pull-right">
+                <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" ng-click="toggle()">
+                    <span id="toggle-messenger" ng-class="{'glyphicon glyphicon-chevron-down': toggled, 'glyphicon glyphicon-chevron-up': !toggled}"></span>
+                </a>
+            </div>
+        </div>
+        <div class="panel-collapse collapse" id="collapseOne">
+            <div class="panel-body msg_container_base" scroll="getMessages()">
+                <ul style="width: 98%">
+                    <li ng-repeat="message in getMessages()" ng-class="{'row msg_container base_sent': message.playerUid === getUserId(), 'row msg_container base_receive': message.playerUid !== getUserId()};">
+                        <div ng-if="message.playerUid !== getUserId()" class="col-lg-2 col-md-2 col-xs-2 avatar">
+                            <user-profile class="flex1" sizex="50" sizey="50" image=message.playerImage style="right:0px"></user-profile>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-xs-10 messages">
+                                <p>{{message.messageText}}</p>
+                                <time style="color: #A9A9A9"><i ng-class="{'right-m': message.playerUid === getUserId(), 'left-m': message.playerUid !== getUserId()};">{{message.playerName}}</i></time>
+                        </div>
+                        <div ng-if="message.playerUid === getUserId()" class="col-lg-2 col-md-2 col-xs-2 avatar">
+                            <user-profile class="flex1" sizex="50" sizey="50" image=message.playerImage style="left:0px"></user-profile>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-footer">
+                <form name="message-form" ng-submit="sendMessage(messageText); messageText='';">
+                    <div class="input-group">
+                        <input id="message-box" type="text" class="form-control input-sm" placeholder="Type your message" ng-model="messageText" autofocus required/>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default btn-sm" id="submit-message" > Send</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

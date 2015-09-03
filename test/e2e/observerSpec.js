@@ -5,7 +5,9 @@ describe('When playing as a observer', function() {
 	var BOT_NUM;
 	var MAX_ROUNDS;
 	var roomId;
-
+	
+	var resultWait = 3000;
+		
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
@@ -51,7 +53,7 @@ describe('When playing as a observer', function() {
 	});
 
 	it('After starting the game, observer and user are put to relevant pages', function() {
-		MAX_ROUNDS = 3;
+		MAX_ROUNDS = 2;
 		BOT_NUM = 3;
 
 		secondClonageUser.setRoundNumber(MAX_ROUNDS);
@@ -87,7 +89,9 @@ describe('When playing as a observer', function() {
 
 	it('After moving to next round, observer and user are put to relevant pages', function() {
 
-		secondClonageUser.ready();
+		browser2.wait( function(){
+		  return element(by.id('observer-question')).isPresent();
+		}, resultWait);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/observeQ/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
@@ -95,18 +99,17 @@ describe('When playing as a observer', function() {
 
 	it('After finishing a game, observer and user are put to relevant pages', function() {
 
-		//taking function out of loop as jshint complains
-		var userSubmitAnswer = function(text) {
+		secondClonageUser.getBlankSpaces().then(function(text) {
+
 			cardsToSubmit = parseInt(text[5]); //PICK X.
 			secondClonageUser.submitFirstAnswers(cardsToSubmit);
-		};
-
-		//change value here if we change the number of rounds
-		for (var i = 0; i < MAX_ROUNDS - 1; i++) {
-			secondClonageUser.getBlankSpaces().then(userSubmitAnswer);
 			secondClonageUser.submitFirstVote();
-			secondClonageUser.ready();
-		}
+
+		});
+
+		browser.wait( function(){
+		  return element(by.id('end-game-container')).isPresent();
+		}, resultWait);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/observeEG/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
@@ -117,3 +120,4 @@ describe('When playing as a observer', function() {
 	});
 
 });
+
