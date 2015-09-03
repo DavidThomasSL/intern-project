@@ -5,7 +5,9 @@ describe('When playing as a observer', function() {
 	var BOT_NUM;
 	var MAX_ROUNDS;
 	var roomId;
-
+	
+	var resultWait = 3000;
+		
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
@@ -89,7 +91,7 @@ describe('When playing as a observer', function() {
 
 		browser2.wait( function(){
 		  return element(by.id('observer-question')).isPresent();
-		}, 1000);
+		}, resultWait);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/observeQ/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
@@ -107,7 +109,7 @@ describe('When playing as a observer', function() {
 
 		browser.wait( function(){
 		  return element(by.id('end-game-container')).isPresent();
-		}, 2000);
+		}, resultWait);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/observeEG/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);

@@ -2,11 +2,9 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('After each round', function() {
 
-	var HAND_SIZE = 10;
-	var currentHand = [];
-
 	var roomId;
-
+	var resultWait = 3000;
+	
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
@@ -71,8 +69,8 @@ describe('After each round', function() {
 
 
 		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('Alice');
-		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('#1');
-		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.points')).getText()).toContain('50 points');
+		// expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		// expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.points')).getText()).toContain('50 points');
 
 	});
 
@@ -106,12 +104,17 @@ describe('After each round', function() {
 
 	it('can have a counter that indicates number of seconds left', function() {
 		var counter = firstClonageUser.element(by.binding('counter'));
-		expect(counter.isPresent()).toBeLessThan(21);
+		expect(counter.isPresent()).toBeLessThan(21);	
 	});
 
 	it('can start a new round after time runs out', function() {
-
-		// firstClonageUser.ready();
+		
+		browser.wait( function(){
+		  return browser.getCurrentUrl().then(function(url){			  
+			  return (url === "http://localhost:8080/#/question/");
+		  });
+		}, 10000);
+		
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
 

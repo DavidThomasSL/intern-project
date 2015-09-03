@@ -5,7 +5,9 @@ describe('When starting a game with BOTS', function() {
 	var BOT_NUM;
 	var MAX_ROUNDS;
 	var roomId;
-
+	
+	var resultWait = 3000;
+	
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
@@ -72,7 +74,7 @@ describe('When starting a game with BOTS', function() {
 
 		browser.wait( function(){
 		  return element(by.id('end-game-container')).isPresent();
-		}, 1000);
+		}, resultWait);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/endGame/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/endGame/);
