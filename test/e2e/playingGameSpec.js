@@ -55,7 +55,7 @@ describe('When playing a game', function() {
 
 	it('on refresh user can see they have an unread message notification', function() {
 		secondClonageUser.refresh();
-		expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		expect(browser.getCurrentUrl()).toMatch(/\/waitQuestion/);
 		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
 	});
 
@@ -188,12 +188,12 @@ describe('When playing a game', function() {
 	});
 
 	it('If one user submits a message everyone can see they have an unread message', function() {
-		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('2');
 	});
 
 	it('on refresh user can see they have an unread message notification', function() {
 		secondClonageUser.refresh();
-		expect(browser.getCurrentUrl()).toMatch(/\/waitQuestion/);
+		expect(browser.getCurrentUrl()).toMatch(/\/waitVote/);
 		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('2');
 	});
 

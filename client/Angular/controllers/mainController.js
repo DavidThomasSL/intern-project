@@ -26,10 +26,7 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         return msg;
     }
 
-    $scope.resetToggle = function() {
-        console.log("resting toggle");
-        $scope.toggled = false; //used for messaging collapsing
-    }
+    $scope.toggled = false; //used for messaging collapsing
 
     var msg;
     var oldMsgNo;
