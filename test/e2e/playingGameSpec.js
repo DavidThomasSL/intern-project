@@ -193,8 +193,8 @@ describe('When playing a game', function() {
 
 	it('on refresh user can see they have an unread message notification', function() {
 		secondClonageUser.refresh();
-		expect(browser.getCurrentUrl()).toMatch(/\/room/);
-		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('1');
+		expect(browser.getCurrentUrl()).toMatch(/\/waitQuestion/);
+		expect(secondClonageUser.element(by.binding('missedMsg')).getText()).toEqual('2');
 	});
 
 	it('when the messenger is opened, the notification dissapears', function() {
