@@ -65,37 +65,37 @@ describe('After ending the game', function() {
 		POINTS_PER_VOTE = 50;
 
 
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(0).element(by.binding('submission.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(1).element(by.binding('submission.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(secondClonageUser.element.all(by.id('end-game-results-row')).get(0).element(by.binding('submission.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(secondClonageUser.element.all(by.id('end-game-results-row')).get(1).element(by.binding('submission.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
 
 	});
 
 	it('can see players names', function() {
 
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(0).element(by.binding('submission.player.name')).getText()).toContain('John');
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(1).element(by.binding('submission.player.name')).getText()).toContain('Alice');
+		expect(secondClonageUser.element.all(by.id('end-game-results-row')).get(0).element(by.binding('submission.player.name')).getText()).toContain('John');
+		expect(secondClonageUser.element.all(by.id('end-game-results-row')).get(1).element(by.binding('submission.player.name')).getText()).toContain('Alice');
 
 	});
 
 	it('can see players ranks', function() {
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.rank')).getText()).toContain('#1');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.rank')).getText()).toContain('#1');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.rank')).getText()).toContain('#1');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.rank')).getText()).toContain('#1');
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(0).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(1).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		expect(secondClonageUser.element.all(by.id('end-game-results-row')).get(0).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		expect(secondClonageUser.element.all(by.id('end-game-results-row')).get(1).element(by.binding('submission.player.rank')).getText()).toContain('#1');
 	});
 
 	it('on refresh can see scores, names and ranks', function() {
 		firstClonageUser.refresh();
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.rank')).getText()).toContain('#1');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.rank')).getText()).toContain('#1');
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(0).element(by.binding('submission.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(1).element(by.binding('submission.player.points')).getText()).toContain((MAX_ROUNDS * POINTS_PER_VOTE).toString());
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(0).element(by.binding('submission.player.name')).getText()).toContain('John');
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(1).element(by.binding('submission.player.name')).getText()).toContain('Alice');
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(0).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		expect(firstClonageUser.element.all(by.id('end-game-results-row')).get(1).element(by.binding('submission.player.rank')).getText()).toContain('#1');
 	});
 
 	it('can go back to start page after clicking finish', function() {

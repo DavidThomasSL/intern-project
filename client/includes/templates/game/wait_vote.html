@@ -1,7 +1,7 @@
 <div class="container">
     <div class="header clearfix">
         <h4>Waiting for other players to vote</h4>
-        <p>{{ currentVotes() }} / {{getActiveUsersInRoom().length}} votes cast</p>
+        <p>{{ currentNumberOfVotes() }} / {{getActiveUsersInRoom().length}} votes cast</p>
     </div>
     <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
     <ng-include src="'includes/templates/user/messenger.html'"></ng-include>

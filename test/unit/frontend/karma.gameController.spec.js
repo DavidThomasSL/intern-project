@@ -1,6 +1,6 @@
 describe("Testing Game Controller", function() {
 
-	var scope, controller ;
+	var scope, controller;
 
 	var mockCommunicationService = {
 		registerListener: function(name, events) {
@@ -31,36 +31,55 @@ describe("Testing Game Controller", function() {
 		playerService = _playerService_;
 	}));
 
-    describe('GameController', function() {
-	    beforeEach(inject(function($rootScope, $controller) {
-	      	scope = $rootScope.$new();
-	      	controller = $controller('gameController', {
-		        '$scope': scope,
-		        'gameService': gameService,
-		        'roomService': roomService,
-		        'playerService': playerService
-		    });
-	    }));
-
-	    it("when visualiseAnswers is triggered, gameService.getAnswers should be called", function() {
-			var spyEvent = spyOn(gameService, 'getAnswers').and.callThrough();
-
-	    	gameService._setChosenAnswers({
-				answers: ["test answer", "another test answer"]
+	describe('GameController', function() {
+		beforeEach(inject(function($rootScope, $controller) {
+			scope = $rootScope.$new();
+			controller = $controller('gameController', {
+				'$scope': scope,
+				'gameService': gameService,
+				'roomService': roomService,
+				'playerService': playerService
 			});
+		}));
+
+		it("when visualiseAnswers is triggered, gameService.getAnswers should be called", function() {
+			var spyEvent = spyOn(gameService, 'getAnswersToVisualise').and.callThrough();
+
+
+			var roundSubmissionsDataObject = {
+				roundSubmissionData: [{
+					submissionsText: ['one', 'two']
+				}, {
+					submissionsText: ['three', 'four']
+				}],
+				currentNumberOfVotes: 0,
+				currentNumberOfSubmission: 2
+			};
+
+			gameService._setRoundSubmissionData(roundSubmissionsDataObject);
 
 			scope.visualiseAnswers();
 			expect(spyEvent).toHaveBeenCalled();
 
 		});
 
-	    it("if timer hasn't started, visualiseAnswers should return the first answer", function() {
+		it("if timer hasn't started, visualiseAnswers should return the first answer", function() {
 
-	    	gameService._setChosenAnswers({
-				answers: ["test answer", "another test answer"]
-			});
-	    	var answer = scope.visualiseAnswers();
-			expect(answer).toEqual(["test answer"]);
+
+			var roundSubmissionsDataObject = {
+				roundSubmissionData: [{
+					submissionsText: ['one', 'two']
+				}],
+				currentNumberOfVotes: 0,
+				currentNumberOfSubmission: 1
+			};
+
+			gameService._setRoundSubmissionData(roundSubmissionsDataObject);
+
+			var answer = scope.visualiseAnswers();
+			expect(answer).toEqual([{
+				submissionsText: ['one', 'two']
+			}]);
 
 		});
 
@@ -82,12 +101,12 @@ describe("Testing Game Controller", function() {
 
 		it("timer should increase scope.index", function() {
 
-			angular.mock.inject(function (_$timeout_) {
-	            $timeout = _$timeout_;
-	        });
+			angular.mock.inject(function(_$timeout_) {
+				$timeout = _$timeout_;
+			});
 			expect(scope.index).toEqual(0);
-	        scope.startTimer();
-		    $timeout.flush();
+			scope.startTimer();
+			$timeout.flush();
 			expect(scope.index).toEqual(1);
 
 		});
@@ -95,24 +114,32 @@ describe("Testing Game Controller", function() {
 		it("when index points to the last element, timer should be stopped", function() {
 
 			var spyEvent = spyOn(scope, 'stopTimer').and.callThrough();
-			angular.mock.inject(function (_$timeout_) {
-	            $timeout = _$timeout_;
-	        });
-
-	        gameService._setChosenAnswers({
-				answers: ["test answer", "another test answer"]
+			angular.mock.inject(function(_$timeout_) {
+				$timeout = _$timeout_;
 			});
 
+			var roundSubmissionsDataObject = {
+				roundSubmissionData: [{
+					submissionsText: ['one', 'two']
+				}, {
+					submissionsText: ['three', 'four']
+				}],
+				currentNumberOfVotes: 0,
+				currentNumberOfSubmission: 2
+			};
+
+			gameService._setRoundSubmissionData(roundSubmissionsDataObject);
+
 			scope.startTimer();
-		    $timeout.flush();
+			$timeout.flush();
 
-		    scope.startTimer();
-		    $timeout.flush();
+			scope.startTimer();
+			$timeout.flush();
 
-		    scope.startTimer();
-		    $timeout.flush();
+			scope.startTimer();
+			$timeout.flush();
 
-		    scope.visualiseAnswers();
+			scope.visualiseAnswers();
 
 			expect(spyEvent).toHaveBeenCalled();
 
@@ -120,25 +147,37 @@ describe("Testing Game Controller", function() {
 
 		it("when the animation stops, we should see all answers", function() {
 
-			angular.mock.inject(function (_$timeout_) {
-	            $timeout = _$timeout_;
-	        });
-
-	        gameService._setChosenAnswers({
-				answers: ["test answer", "another test answer"]
+			angular.mock.inject(function(_$timeout_) {
+				$timeout = _$timeout_;
 			});
 
+			var roundSubmissionsDataObject = {
+				roundSubmissionData: [{
+					submissionsText: ['one', 'two']
+				}, {
+					submissionsText: ['three', 'four']
+				}],
+				currentNumberOfVotes: 0,
+				currentNumberOfSubmission: 2
+			};
+
+			gameService._setRoundSubmissionData(roundSubmissionsDataObject);
+
 			scope.startTimer();
-		    $timeout.flush();
+			$timeout.flush();
 
-		    scope.startTimer();
-		    $timeout.flush();
+			scope.startTimer();
+			$timeout.flush();
 
-		    scope.startTimer();
-		    $timeout.flush();
+			scope.startTimer();
+			$timeout.flush();
 
-		    var answers = scope.visualiseAnswers();
-		    expect(answers).toEqual(["test answer", "another test answer"]);
+			var answers = scope.visualiseAnswers();
+			expect(answers).toEqual([{
+				submissionsText: ['one', 'two']
+			}, {
+				submissionsText: ['three', 'four']
+			}]);
 
 		});
 

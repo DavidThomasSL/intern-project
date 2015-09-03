@@ -45,6 +45,12 @@ ClonageApp.service('playerService', ['communicationService', 'dynamicTextService
 		return currentFilledInQuestion;
 	}
 
+	//the position in the order of answers for multiple answer selections
+	function getAnswerPosition(answer) {
+		var position = currentlySubmittedAnswers.indexOf(answer) + 1;
+		return position;
+	}
+
 	/*
 		Tell the server one of the players in the room wants to play again
 		The server will response, and display a toast on the other clients windows
@@ -132,6 +138,7 @@ ClonageApp.service('playerService', ['communicationService', 'dynamicTextService
 		replaceHand: replaceHand,
 		getCurrentReplaceCost: getCurrentReplaceCost,
 		getCurrentFilledInQuestion: getCurrentFilledInQuestion,
+		getAnswerPosition: getAnswerPosition,
 		playAgain: playAgain,
 		_receiveQuestion: _receiveQuestion
 	};

@@ -44,35 +44,35 @@ describe('After each round', function() {
 
 	it('can see who submitted what answers', function() {
 
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
-		expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.player.name')).getText()).toContain('Alice');
-		expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.player.name')).getText()).toContain('John');
+		expect(firstClonageUser.element.all(by.id('results-table-row')).get(1).element(by.binding('submission.player.name')).getText()).toContain('Alice');
+		expect(firstClonageUser.element.all(by.id('results-table-row')).get(0).element(by.binding('submission.player.name')).getText()).toContain('John');
+		expect(secondClonageUser.element.all(by.id('results-table-row')).get(1).element(by.binding('submission.player.name')).getText()).toContain('Alice');
+		expect(secondClonageUser.element.all(by.id('results-table-row')).get(0).element(by.binding('submission.player.name')).getText()).toContain('John');
 
 	});
 
-	it('can see who voted for what answers', function() {
+	// it('can see who voted for what answers', function() {
 
-		// expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
-		// expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
-		// expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
-		// expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
+	// 	expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
+	// 	expect(firstClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
+	// 	expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(0).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
+	// 	expect(secondClonageUser.element.all(by.repeater('result in getPlayerRoundResults()')).get(1).element(by.binding('result.playersWhoVotedForThis.length')).getText()).toContain('1');
 
-	});
+	// });
 
 	it('can see all player scores and points in the game from the sidebar', function() {
 
 		firstClonageUser.openGameRankings();
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).count()).toEqual(2);
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).count()).toEqual(2);
 
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(0).element(by.binding('currentResult.player.rank')).getText()).toContain('#1');
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(0).element(by.binding('currentResult.player.rank')).getText()).toContain('John');
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(0).element(by.binding('currentResult.player.points')).getText()).toContain('50 points');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(0).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(0).element(by.binding('submission.player.rank')).getText()).toContain('John');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(0).element(by.binding('submission.player.points')).getText()).toContain('50 points');
 
 
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(1).element(by.binding('currentResult.player.rank')).getText()).toContain('Alice');
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(1).element(by.binding('currentResult.player.rank')).getText()).toContain('#1');
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(1).element(by.binding('currentResult.player.points')).getText()).toContain('50 points');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('Alice');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.points')).getText()).toContain('50 points');
 
 	});
 
@@ -86,16 +86,16 @@ describe('After each round', function() {
 
 		firstClonageUser.refresh();
 		firstClonageUser.openGameRankings();
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).count()).toEqual(2);
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).count()).toEqual(2);
 
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(0).element(by.binding('currentResult.player.rank')).getText()).toContain('#1');
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(0).element(by.binding('currentResult.player.rank')).getText()).toContain('John');
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(0).element(by.binding('currentResult.player.points')).getText()).toContain('50 points');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(0).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(0).element(by.binding('submission.player.rank')).getText()).toContain('John');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(0).element(by.binding('submission.player.points')).getText()).toContain('50 points');
 
 
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(1).element(by.binding('currentResult.player.rank')).getText()).toContain('Alice');
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(1).element(by.binding('currentResult.player.rank')).getText()).toContain('#1');
-		expect(firstClonageUser.element.all(by.repeater("currentResult in getPlayerRoundResults()")).get(1).element(by.binding('currentResult.player.points')).getText()).toContain('50 points');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('Alice');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.rank')).getText()).toContain('#1');
+		expect(firstClonageUser.element.all(by.id("dropdown-row")).get(1).element(by.binding('submission.player.points')).getText()).toContain('50 points');
 
 	});
 

@@ -1,34 +1,37 @@
 <div class="container">
-    <ng-include src="'includes/templates/user/progressBar.html'" ng-if="index === answers().length"></ng-include>
+    <ng-include src="'includes/templates/user/progressBar.html'" ng-if="index === currentNumberOfSubmissions()"></ng-include>
     <div class="header clearfix">
         <div id="round-question">
-            <h2 ng-if="index === answers().length" ng-init="startCountdown()">Vote for your favourite answer.</h2>
-            <h2 ng-hide="index === answers().length">The answers are in...</h2>
+            <h2 ng-if="index === currentNumberOfSubmissions()" ng-init="startCountdown()">Vote for your favourite answer.</h2>
+            <h2 ng-hide="index === currentNumberOfSubmissions()">The answers are in...</h2>
         </div>
     </div>
     <div id="question-responses-container">
         <div class="row">
-            <div class="col-md-12 text-center repeat-animation" ng-repeat="answer in visualiseAnswers() | orderBy:'answersText[0]'" ng-init="startTimer()" ng-class-even="'left'" ng-class-odd="'right'">
+            <div class="col-md-12 text-center repeat-animation" ng-repeat="answer in visualiseAnswers() | orderBy:'submissionsText[0]'" ng-init="startTimer()" ng-class-even="'left'" ng-class-odd="'right'">
                 <div class="card-text-container">
-                    <button ng-if="(getUserId() === answer.player.uId)&&(index === answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
+                    <button ng-if="(getUserId() === answer.player.uId)&&(index === currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
                     <i>(Your answer)</i>
                     </button>
-                    <button ng-if="getUserId() !== answer.player.uId&&(index === answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitVote(answer)">
+                    <button ng-if="getUserId() !== answer.player.uId&&(index === currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitVote(answer)">
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
                     </button>
-                    <button ng-if="(getUserId() === answer.player.uId)&&(index !== answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
+                    <button ng-if="(getUserId() === answer.player.uId)&&(index !== currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block card-text-button" type="button" id="ownAnswer" ng-disabled="true">
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
                     <i>(Your answer)</i>
                     </button>
-                    <button ng-if="getUserId() !== answer.player.uId&&(index !== answers().length)" class="btn btn-warning btn-lg btn-block card-text-button" type="button" ng-disabled="true">
+                    <button ng-if="getUserId() !== answer.player.uId&&(index !== currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block card-text-button" type="button" ng-disabled="true">
                     <p ng-bind-html="bindHtml(answer.filledInText)"></p>
                 </div>
             </div>
         </div>
     </div>
+
     <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
-    <div ng-if="index === answers().length" class="col-md-3 col-xs-4  text-center" ng-repeat="user in getActiveUsersInRoom()">
+
+    <div ng-if="index === currentNumberOfSubmissions()" class="col-md-3 col-xs-4  text-center" ng-repeat="user in getActiveUsersInRoom()">
+
         <ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
     </div>
 </div>

@@ -4,7 +4,6 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.roomId = roomService.getRoomId;
     $scope.currentRound = gameService.getCurrentRound;
     $scope.maxRounds = gameService.getMaxRounds;
-    $scope.getPlayerRoundResults = gameService.getPlayerRoundResults;
     $scope.getUserImage = userService.getUserImage;
     $scope.getIfObserver = userService.getIfObserver;
     $scope.playAgainWasPressed = userService.playAgainWasPressed;
@@ -42,6 +41,9 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         $scope.missedMsg = 0 ;
         oldMsgNo = msg.length;
     };
+
+    $scope.roundSubmissionData = gameService.getRoundSubmissionData;
+
 
     //when player says they are ready to move on it sends this to the server
     $scope.sendReadyStatus = function(botsEnabled) {

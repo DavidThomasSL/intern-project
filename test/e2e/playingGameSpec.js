@@ -79,20 +79,19 @@ describe('When playing a game', function() {
 	});
 
 
-	// TODO PUT THIS BACK IN WHEN FIXED
-	// it('can replace a unwanted hand and this is replaced by a different one', function() {
+	it('can replace a unwanted hand and this is replaced by a different one', function() {
 
-	// 	//store current hand
-	// 	for (i = 0; i < HAND_SIZE; i++) {
-	// 		currentHand.push(secondClonageUser.getCardText(i));
-	// 	}
+		//store current hand
+		for (i = 0; i < HAND_SIZE; i++) {
+			currentHand.push(secondClonageUser.getCardText(i));
+		}
 
-	// 	secondClonageUser.replaceHand();
-	// 	// check the new hand is different to the old one
-	// 	for( i = 0; i < HAND_SIZE; i++) {
-	// 		expect(secondClonageUser.element.all(by.exactRepeater("answer in userHand()")).get(i).element(by.id("answer")).getText()).not.toMatch(currentHand[i]);
-	// 	}
-	// });
+		secondClonageUser.replaceHand();
+		// check the new hand is different to the old one
+		for( i = 0; i < HAND_SIZE; i++) {
+			expect(secondClonageUser.element.all(by.exactRepeater("answer in userHand()")).get(i).element(by.id("answer")).getText()).not.toMatch(currentHand[i]);
+		}
+	});
 
 	it('can refresh and still see who submitted an answer', function() {
 		firstClonageUser.refresh();

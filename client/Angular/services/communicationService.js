@@ -26,7 +26,6 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		listenerList.push(newListener);
 	}
 
-
 	//--------------------------
 	//SOCKET EVENT LISTENERS
 	// WHen recieving an event from the server, check which registered listener the event is for
@@ -66,11 +65,6 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
-	socket.on("GAME answers", function(data) {
-		_setListenerEventAction("GAME answers");
-		onMessageFunction(data);
-	});
-
 	socket.on("GAME timeout", function(data) {
 		_setListenerEventAction("GAME timeout");
 		onMessageFunction(data);
@@ -81,8 +75,8 @@ ClonageApp.service('communicationService', ['socket', function(socket) {
 		onMessageFunction(data);
 	});
 
-	socket.on("GAME playerRoundResults", function(data) {
-		_setListenerEventAction("GAME playerRoundResults");
+	socket.on("GAME roundSubmissionData", function(data) {
+		_setListenerEventAction("GAME roundSubmissionData");
 		onMessageFunction(data);
 	});
 
