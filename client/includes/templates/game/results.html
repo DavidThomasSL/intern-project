@@ -4,6 +4,7 @@
         <h4> {{currentQuestion().text}}</h4>
     </div>
     <div class="text-center">
+        <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
         <ng-include src="'includes/templates/user/progressBarR.html'"></ng-include>
         <div class="result-data-container" ng-repeat="submission in roundSubmissionData() | orderBy : '-playersWhoVotedForThis.length'" id="results-table-row">
             <div class="row results-data-row">

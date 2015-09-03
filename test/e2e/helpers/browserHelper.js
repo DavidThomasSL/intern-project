@@ -24,6 +24,11 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
+	var toggleMessenger = function() {
+		element(by.id('toggle-messenger')).click();
+		browserInstance.waitForAngular();
+	};
+
 	var joinAsObserver = function(name) {
 		var chooseObserverButton = element(by.id('choose-observer-button'));
 		chooseObserverButton.click();
@@ -31,6 +36,7 @@ module.exports = function(browserInstance) {
 	};
 
 	var submitMessage = function(message) {
+		browserInstance.waitForAngular();
 		var messageInput = element(by.id('message-box'));
 		messageInput.sendKeys(message);
 		element(by.id('submit-message')).click();
@@ -192,6 +198,7 @@ module.exports = function(browserInstance) {
 		setBotsOn: setBotsOn,
 		setRoundNumber: setRoundNumber,
 		submitMessage: submitMessage,
+		toggleMessenger: toggleMessenger,
 		openGameRankings: openGameRankings,
 		playAgain: playAgain
 	};

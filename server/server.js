@@ -607,6 +607,12 @@ module.exports = function(port, enableLogging, testing) {
 
         function putUserInVote(room) {
 
+            if (testing !== undefined) {
+                room.broadcastRoom("GAME timeout", {
+                    timeout: 0
+                });
+            }
+
             room.broadcastRoom("ROUTING", {
                 location: 'vote'
             });

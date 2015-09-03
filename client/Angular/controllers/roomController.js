@@ -8,15 +8,8 @@ ClonageApp.controller("roomController", function($scope, $window, userService, r
     $scope.getObserversInRoom = roomService.getObserversInRoom;
     $scope.getGameParameters = roomService.getGameParameters;
     $scope.getBotsInRoom = roomService.getBotsInRoom;
-
     $scope.userPanelTemplate = "includes/templates/user/userPanelSmall.html";
 
-    $scope.sendMessage = function(messageText) {
-        userService.sendMessage(messageText);
-        $scope.messageText = '';
-    };
-
-    $scope.getMessages = roomService.getMessages;
 
     $scope.createRoom = function() {
         roomService.createRoom(userService.getUserId());

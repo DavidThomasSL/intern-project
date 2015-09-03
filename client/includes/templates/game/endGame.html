@@ -4,7 +4,11 @@
         <h4> Final Scores </h4>
     </div>
     <div class="row">
+
+        <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
+
         <div class="end-game-data-container" ng-repeat="submission in roundSubmissionData() | orderBy : '-player.points'" id="end-game-results-row">
+
             <div class="row end-game-data-row">
                 <div class="col-xs-2 col-xs-offset-2 col-sm-1 col-sm-offset-0 end-game-rank text-right">
                     #{{submission.player.rank}}

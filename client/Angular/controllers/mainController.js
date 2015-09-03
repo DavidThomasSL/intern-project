@@ -10,6 +10,38 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
 
+    $scope.getMessages = function() {
+        msg = roomService.getMessages();
+        if ($scope.toggled === false) {
+            if (msg.length !== oldMsgNo) {
+                if (oldMsgNo === undefined)  {
+                    $scope.missedMsg = msg.length;
+                }
+                else {
+                    $scope.missedMsg = msg.length - oldMsgNo;
+                }
+            }
+        }
+        return msg;
+    }
+
+    $scope.toggled = false; //used for messaging collapsing
+
+    var msg;
+    var oldMsgNo;
+    $scope.missedMsg;
+
+     $scope.sendMessage = function(messageText) {
+        userService.sendMessage(messageText);
+        $scope.messageText = '';
+    };
+
+    $scope.toggle = function() {
+        $scope.toggled = !$scope.toggled;
+        $scope.missedMsg = 0 ;
+        oldMsgNo = msg.length;
+    };
+
     $scope.roundSubmissionData = gameService.getRoundSubmissionData;
 
 
@@ -161,5 +193,4 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
     /*
     ---------------------------------------------------------
     */
-
 });

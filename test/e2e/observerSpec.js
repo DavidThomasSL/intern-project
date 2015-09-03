@@ -118,3 +118,4 @@ describe('When playing as a observer', function() {
 	});
 
 });
+

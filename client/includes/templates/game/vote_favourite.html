@@ -27,7 +27,11 @@
             </div>
         </div>
     </div>
+
+    <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
+
     <div ng-if="index === currentNumberOfSubmissions()" class="col-md-3 col-xs-4  text-center" ng-repeat="user in getActiveUsersInRoom()">
+
         <ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
     </div>
 </div>

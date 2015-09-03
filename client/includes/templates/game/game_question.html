@@ -7,6 +7,7 @@
         </div>
     </div>
     <div id="user-hand-container">
+        <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
         <div class="row">
             <div class="col-md-12 text-center" ng-repeat="answer in userHand()" data-ng-init="startCountdown()">
                 <div class="card-text-container">
