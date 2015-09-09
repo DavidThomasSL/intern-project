@@ -1,4 +1,4 @@
-ClonageApp.controller("MainController", function($scope, $interval, userService, roomService, gameService, notificationService, toastr, playerService) {
+ClonageApp.controller("MainController", function($scope, $interval, $window, userService, roomService, gameService, notificationService, toastr, playerService) {
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
@@ -25,6 +25,12 @@ ClonageApp.controller("MainController", function($scope, $interval, userService,
         }
         return msg;
     }
+
+    $scope.$watch(function(){
+       return $window.innerWidth;
+    }, function(value) {
+        $scope.screenWidth = value;
+   });
 
     $scope.toggled = false; //used for messaging collapsing
 
