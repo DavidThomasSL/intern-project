@@ -16,7 +16,7 @@
                             <user-profile class="flex1" sizex="50" sizey="50" image=message.playerImage style="right:0px"></user-profile>
                         </div>
                         <div class="col-lg-10 col-md-10 col-xs-10 messages">
-                                <p>{{message.messageText}}</p>
+                                <p id="message-text">{{message.messageText}}</p>
                                 <time style="color: #A9A9A9"><i ng-class="{'right-m': message.playerUid === getUserId(), 'left-m': message.playerUid !== getUserId()};">{{message.playerName}}</i></time>
                         </div>
                         <div ng-if="message.playerUid === getUserId()" class="col-lg-2 col-md-2 col-xs-2 avatar">
