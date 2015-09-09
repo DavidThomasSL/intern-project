@@ -9,7 +9,7 @@
     <div id="user-hand-container">
         <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
         <div class="row">
-            <div class="col-md-12 text-center" ng-repeat="answer in userHand()" data-ng-init="startCountdown()">
+            <div class="col-md-12 text-center" ng-repeat="answer in userHand() track by $index" data-ng-init="startCountdown()">
                 <div class="card-text-container">
                     <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitAnswer(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
                     <span class="pull-right" ng-show="selected && answerPosition(answer)>0">{{answerPosition(answer)}}</span>
