@@ -3,14 +3,18 @@
         <div class="panel-heading" id="accordion">
             <span class="glyphicon glyphicon-comment"></span> Chat <span class="badge" ng-if="missedMsg>0">{{missedMsg}}</span>
             <div class="btn-group pull-right">
-                <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" ng-click="toggle()">
+                <a type="button" class="myclass btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" ng-click="toggle();">
                     <span id="toggle-messenger" ng-class="{'glyphicon glyphicon-chevron-down': toggled, 'glyphicon glyphicon-chevron-up': !toggled}"></span>
                 </a>
             </div>
         </div>
         <div class="panel-collapse collapse" id="collapseOne">
-            <div class="panel-body msg_container_base" scroll="getMessages()">
+            <div class="panel-body msg_container_base" scroll="getMessages()" id="msg">
+
                 <ul style="width: 98%">
+                <script type="text/javascript">
+                    $('#msg').scrollTop($('#msg').prop("scrollHeight"));
+                </script>
                     <li ng-repeat="message in getMessages()" ng-class="{'row msg_container base_sent': message.playerUid === getUserId(), 'row msg_container base_receive': message.playerUid !== getUserId()};">
                         <div ng-if="message.playerUid !== getUserId()" class="col-lg-2 col-md-2 col-xs-2 avatar">
                             <user-profile class="flex1" sizex="50" sizey="50" image=message.playerImage style="right:0px"></user-profile>
