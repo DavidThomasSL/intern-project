@@ -111,6 +111,9 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
         // create a new room a put the user in it
         roomService.createRoom(userService.getUserId());
 
+        //as with leaveRoom, remove all ranking and scores data once the player leaves the room
+        gameService.clearGameData();
+
         // send a message to all other players in the room asking if they want to join the new room
         playerService.playAgain(userService.getUserId(), oldRoomId);
     };
