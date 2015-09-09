@@ -1,4 +1,4 @@
-<div class="row chat-window col-md-4 col-sm-6 col-xs-12" id="chat_window_1" ng-init="resetToggle()">
+<div class="row chat-window col-md-4 col-sm-6 col-xs-12" id="chat_window_1">
     <div ng-class="{'panel panel-info' : missedMsg<=0, 'panel panel-primary': missedMsg>0}" style="margin-bottom: 0px;">
         <div class="panel-heading" id="accordion">
             <span class="glyphicon glyphicon-comment"></span> Chat <span class="badge" ng-if="missedMsg>0">{{missedMsg}}</span>
@@ -8,7 +8,7 @@
                 </a>
             </div>
         </div>
-        <div class="panel-collapse collapse" id="collapseOne">
+        <div ng-class="{'panel-collapse collapse' : toggled === false, 'panel-collapse collapse in' : toggled === true}" id="collapseOne">
             <div class="panel-body msg_container_base" scroll="getMessages()" id="msg">
 
                 <ul style="width: 98%">
