@@ -334,12 +334,7 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room).then(function(initialResults) {
-
-                room.broadcastRoom("GAME playerRoundResults", {
-                    results: initialResults,
-                    voteCounter: 0
-                });
+            room.gameController.initialize(room).then(function() {
 
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
