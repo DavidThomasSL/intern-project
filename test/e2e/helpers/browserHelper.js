@@ -39,6 +39,7 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 		var messageInput = element(by.id('message-box'));
 		messageInput.sendKeys(message);
+		browserInstance.waitForAngular();
 		element(by.id('submit-message')).click();
 		browserInstance.waitForAngular();
 	};
