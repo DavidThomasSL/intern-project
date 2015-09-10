@@ -10,7 +10,7 @@
         <div class="col-md-6 text-center">
             <h4>Join Existing Room :</h4>
             <h6 ng-if="allRoomsAvailable().length <= 0">There are currently no rooms available. Please create a room</h6>
-            <div class="col-md-4  col-sm-4 col-xs-12 text-center"  ng-repeat="room in allRoomsAvailable()">
+            <div class="col-md-6  col-sm-6 col-xs-12 text-center"  ng-repeat="room in allRoomsAvailable()">
                 <ng-include src="'includes/templates/user/roomJoinPanel.html'"></ng-include>
             </div>
         </div>
