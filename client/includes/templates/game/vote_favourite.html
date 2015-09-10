@@ -2,7 +2,7 @@
     <ng-include src="'includes/templates/user/progressBar.html'" ng-if="index === currentNumberOfSubmissions()"></ng-include>
     <div class="header clearfix">
         <div id="round-question">
-            <h2 ng-if="index === currentNumberOfSubmissions()" ng-init="startCountdown()">Vote for your favourite answer.</h2>
+            <h2 ng-if="index === currentNumberOfSubmissions()" ng-init="startCountdown(60)">Vote for your favourite answer.</h2>
             <h2 ng-hide="index === currentNumberOfSubmissions()">The answers are in...</h2>
         </div>
     </div>
