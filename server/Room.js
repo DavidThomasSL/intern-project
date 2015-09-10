@@ -244,7 +244,7 @@ function Room(roomCode, testing) {
         if (eventName === "ROOM details") {
             data = {
                 roomId: self.id,
-                usersInRoom:  self.getUsersInRoomDetails(),
+                usersInRoom: self.getUsersInRoomDetails(),
                 botsInRoom: self.botsInRoom,
                 numRounds: self.numRounds
             };
@@ -268,7 +268,6 @@ function Room(roomCode, testing) {
 
         return usersInRoomJSON;
     };
-
 
     function resolveObserverRoute(route) {
         if (route === "question" || route === "waitQuestion") {
