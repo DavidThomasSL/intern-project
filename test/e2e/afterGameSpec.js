@@ -24,32 +24,28 @@ describe('After ending the game', function() {
 		secondClonageUser.getIndex();
 		secondClonageUser.submitName('Alice');
 
-		firstClonageUser.getRoomId().then(function(text) {
-			roomId = text.split(" ")[2];
-			// set round number low to prevent jasmine timeouts on circleCI
-			firstClonageUser.setRoundNumber(MAX_ROUNDS);
+		// set round number low to prevent jasmine timeouts on circleCI
+		firstClonageUser.setRoundNumber(MAX_ROUNDS);
 
-			secondClonageUser.joinRoom(roomId);
-			expect(browser.getCurrentUrl()).toMatch(/\/room/);
-			expect(browser2.getCurrentUrl()).toMatch(/\/room/);
+		secondClonageUser.joinRoom();
+		expect(browser.getCurrentUrl()).toMatch(/\/room/);
+		expect(browser2.getCurrentUrl()).toMatch(/\/room/);
 
-			firstClonageUser.ready();
-			secondClonageUser.ready();
-			expect(browser.getCurrentUrl()).toMatch(/\/question/);
-			expect(browser2.getCurrentUrl()).toMatch(/\/question/);
+		firstClonageUser.ready();
+		secondClonageUser.ready();
+		expect(browser.getCurrentUrl()).toMatch(/\/question/);
+		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
 
-			firstClonageUser.getBlankSpaces().then(function(text) {
+		firstClonageUser.getBlankSpaces().then(function(text) {
 
-				cardsToSubmit = parseInt(text[5]); //PICK X.
-				firstClonageUser.submitFirstAnswers(cardsToSubmit);
-				secondClonageUser.submitFirstAnswers(cardsToSubmit);
-				firstClonageUser.submitFirstVote();
-				secondClonageUser.submitFirstVote();
+			cardsToSubmit = parseInt(text[5]); //PICK X.
+			firstClonageUser.submitFirstAnswers(cardsToSubmit);
+			secondClonageUser.submitFirstAnswers(cardsToSubmit);
+			firstClonageUser.submitFirstVote();
+			secondClonageUser.submitFirstVote();
 
-				expect(browser.getCurrentUrl()).toMatch(/\/results/);
-				expect(browser2.getCurrentUrl()).toMatch(/\/results/);
-
-			});
+			expect(browser.getCurrentUrl()).toMatch(/\/results/);
+			expect(browser2.getCurrentUrl()).toMatch(/\/results/);
 
 		});
 
