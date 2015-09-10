@@ -2,9 +2,7 @@ var clonageUser = require("./helpers/browserHelper.js");
 
 describe('After each round', function() {
 
-	var roomId;
 	var resultWait = 3000;
-	
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
@@ -19,13 +17,10 @@ describe('After each round', function() {
 		secondClonageUser.getIndex();
 		secondClonageUser.submitName('Alice');
 
-		firstClonageUser.getRoomId().then(function(text) {
-			roomId = text.split(" ")[2];
-			firstClonageUser.setRoundNumber(8);
-			secondClonageUser.joinRoom(roomId);
-			firstClonageUser.ready();
-			secondClonageUser.ready();
-		});
+		firstClonageUser.setRoundNumber(8);
+		secondClonageUser.joinRoom();
+		firstClonageUser.ready();
+		secondClonageUser.ready();
 
 		firstClonageUser.getBlankSpaces().then(function(text) {
 			cardsToSubmit = parseInt(text[5]); //PICK X.
@@ -104,17 +99,17 @@ describe('After each round', function() {
 
 	it('can have a counter that indicates number of seconds left', function() {
 		var counter = firstClonageUser.element(by.binding('counter'));
-		expect(counter.isPresent()).toBeLessThan(21);	
+		expect(counter.isPresent()).toBeLessThan(21);
 	});
 
 	it('can start a new round after time runs out', function() {
-		
+
 		browser.wait( function(){
-		  return browser.getCurrentUrl().then(function(url){			  
+		  return browser.getCurrentUrl().then(function(url){
 			  return (url === "http://localhost:8080/#/question/");
 		  });
 		}, 10000);
-		
+
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
 

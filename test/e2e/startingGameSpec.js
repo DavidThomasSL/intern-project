@@ -3,7 +3,6 @@ var clonageUser = require("./helpers/browserHelper.js");
 describe('When starting a game', function() {
 
 	var HAND_SIZE;
-
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
