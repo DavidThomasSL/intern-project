@@ -19,18 +19,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 text-center">
-                <h2>Chat</h2>
-                <div class="panel panel-default" style="height: 400px; overflow-y: scroll;" scroll="getMessages()">
-                    <table>
-                        <tr ng-repeat="message in getMessages()" style="padding-bottom: 20px ">
-                            <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; width: 20%"><div ng-hide="message.playerUid === getUserId()" style="right: 0px">{{message.playerName}}</div></td>
-                            <td style="width: 500px"><div class="form-control" ng-class="{'float-right': message.playerUid === getUserId(), 'float-left': message.playerUid !== getUserId()};" style="white-space: pre-wrap;white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;  margin-bottom: 5px; height: 100%; ">{{message.messageText}}</div></td>
-                            <td style="font-weight:bold; margin: 80px; padding-left: 20px; padding-right: 10px; right: 0; width: 20%"><div ng-show="message.playerUid === getUserId()">{{message.playerName}}</div></td>
-                        </tr><br>
-                    </table>
-                </div>
-            </div>
         </div>
         <div class="row text-center" style="margin-top: 20px">
             <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3"  ng-show="getActiveUsersInRoom().length < 2 && getGameParameters().botNumber < 1" >
@@ -49,6 +37,7 @@
                 </div>
             </div>
         </div>
+        <ng-include src="'includes/templates/user/messengerObserver.html'"></ng-include>
         <div class="row bottom-buttons">
             <div class="col-md-12 text-center">
                 <button id="leave-lobby-button" type="button" class="btn btn-lg btn-danger" ng-click="leaveRoom()" >Go Back</button>
