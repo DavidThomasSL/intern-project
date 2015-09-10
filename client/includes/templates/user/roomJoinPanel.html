@@ -1,0 +1,14 @@
+<div class="panel panel-default">
+	<div class="panel-body flex-column text-center">
+		<div class="flex1">
+			<h4 style="margin-top:0px ">ROOM {{room.id}}</h4>
+		</div>
+		<div class="flex1" style="margin-bottom: 10px;margin-top: -20px">
+			<h1>{{room.usersInRoom.length}}</h1>players
+		</div>
+
+		<div class="flex2 text-center" >
+			<button type="submit"  class="btn btn-lg  btn-success" ng-click="joinRoom(room.id)" id="observer-join-game-button">Join Room</button>
+		</div>
+	</div>
+</div>
