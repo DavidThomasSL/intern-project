@@ -33,13 +33,8 @@ describe('When trying to join a game in progress', function() {
 		secondClonageUser.getIndex();
 		secondClonageUser.submitName('Alice');
 
-		firstClonageUser.getRoomId().then(function(text) {
-			roomId = text.split(" ")[2]; //["ROOM", "CODE", "XKFLS"]
-
-			firstClonageUser.ready(); //start the game in the room
-
-			secondClonageUser.joinRoom(roomId); //try a join now
-		});
+		firstClonageUser.ready(); //start the game in the room
+		secondClonageUser.joinRoom(); //try a join now
 
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/joining/);
