@@ -51,7 +51,7 @@ describe('When playing as a observer', function() {
 
 	it('can see a messenger', function() {
 		firstClonageUser.toggleMessenger();
-		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
+		expect(firstClonageUser.element(by.id('msg-body')).isPresent()).toBe(true);
 	});
 
 	it('cannot send a message', function() {
@@ -73,7 +73,7 @@ describe('When playing as a observer', function() {
 	});
 
 	it('after having opened the chat on previous page, it will stay opened when switching to a new page', function() {
-		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
+		expect(firstClonageUser.element(by.id('msg-body')).isPresent()).toBe(true);
 	});
 
 	it('if a user sends a message in the room, can see it', function() {
