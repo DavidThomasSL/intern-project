@@ -1,7 +1,7 @@
 <div class="container">
     <div class="header clearfix">
         <h1>Enter a Room</h1>
-        <p>Create a room or join an existing one using a room code</p>
+        <h3>Create a room or join an existing one</h3>
     </div>
     <div class="row" id="room-join-container" ng-if="!getIfObserver()">
         <div class="col-md-4  text-center" style="margin-bottom: 30px;">
@@ -9,7 +9,7 @@
         </div>
         <div class="col-md-8 text-center">
             <h4>Join Existing Room :</h4>
-            <h6 ng-if="allRoomsAvailable().length <= 0">There are currently no rooms available. Please create a room</h6>
+            <h4 ng-if="allRoomsAvailable().length <= 0">There are currently no rooms available. Please create a room</h4>
             <div class="col-md-6  col-sm-6 col-xs-12 text-center"  ng-repeat="room in allRoomsAvailable()">
                 <ng-include src="'includes/templates/user/roomJoinPanel.html'"></ng-include>
             </div>
@@ -17,9 +17,11 @@
     </div>
     <!-- show a list of all rooms if the observer -->
     <div class="row" id="room-join-container" ng-if="getIfObserver()">
-        <h6 ng-if="allRoomsAvailable().length <= 0">There are currently no rooms available. Please convince your friends to create a room.</h6>
-        <div class="col-md-4  col-sm-4 col-xs-12 text-center"  ng-repeat="room in allRoomsAvailable()">
-            <ng-include src="'includes/templates/observer/roomOverviewPanel.html'"></ng-include>
+        <div class="col-md-12 text-center">
+            <h4 ng-if="allRoomsAvailable().length <= 0">There are currently no rooms available. Please convince your friends to create a room.</h4>
+            <div class="col-md-4  col-sm-4 col-xs-12 text-center"  ng-repeat="room in allRoomsAvailable()">
+                <ng-include src="'includes/templates/observer/roomOverviewPanel.html'"></ng-include>
+            </div>
         </div>
     </div>
 </div>

@@ -23,7 +23,7 @@
             </div>
             <div class="flex1" ng-show="getObserversInRoom().length>0">
                 <div>
-                    {{getObserversInRoom().length}} observers
+                    {{getObserversInRoom().length}} observer<span ng-hide="getObserversInRoom().length === 1">s</span>
                 </div>
             </div>
             <div class="flex1">
