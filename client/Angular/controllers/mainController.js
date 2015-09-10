@@ -10,19 +10,21 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
 
+    $scope.loadedMessages = [];
 
     $scope.getMessages = function() {
         msg = roomService.getMessages();
-        if ($scope.toggled === false) {
-            if (msg.length !== oldMsgNo) {
-                if (oldMsgNo === undefined)  {
+        if ($scope.toggled === false) {         // if the chat is not open
+            if (msg.length !== oldMsgNo) {         // if we have unread messages
+                if (oldMsgNo === undefined)  {      // if the old no of messages was not defined aka -> page reload
                     $scope.missedMsg = msg.length;
                 }
-                else {
+                else {                                 // else we just have new messages
                     $scope.missedMsg = msg.length - oldMsgNo;
                 }
             }
         }
+        else $scope.loadedMessages = msg;
         return msg;
     }
 
@@ -40,6 +42,7 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
 
     $scope.resetToggle = function() {
         $scope.toggled = false;
+        $scope.loadedMessages = [];
     };
 
      $scope.sendMessage = function(messageText) {
@@ -48,6 +51,10 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
     };
 
     $scope.toggle = function() {
+        if ($scope.toggled === true) {
+            $scope.loadedMessages = [];
+        }
+        else $scope.loadedMessages =  $scope.getMessages;
         $scope.toggled = !$scope.toggled;
         $scope.missedMsg = 0 ;
         oldMsgNo = msg.length;
