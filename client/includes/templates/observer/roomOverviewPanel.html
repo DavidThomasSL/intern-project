@@ -1,5 +1,5 @@
 <div class="panel panel-default">
-	<div class="panel-body flex-column text-center">
+	<div class="panel-body flex-column text-center" id="room-panel">
 		<div class="flex1">
 			<h4 style="margin-top:0px ">ROOM {{room.id}}</h4>
 		</div>
@@ -9,6 +9,9 @@
 
 		<div class="flex2 text-center" >
 			<button type="submit"  class="btn btn-lg  btn-success" ng-click="joinRoom(room.id)" id="observer-join-game-button">Watch Game</button>
+		</div>
+		<div id="mouseover" style="padding: 10px;background-color:#d3d3d3;" class="panel panel-default panel-body">
+			<div ng-repeat="user in room.usersInRoom"><i>{{user.name}}</i></div>
 		</div>
 	</div>
 </div>
