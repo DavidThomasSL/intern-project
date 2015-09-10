@@ -61,8 +61,8 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var joinRoom = function(roomId) {
-		var joinRoomButton = element(by.id('join-game-button'));
+	var joinRoom = function() {
+		var joinRoomButton = element.all(by.repeater('room in allRoomsAvailable()')).last().element(by.id('join-game-button'));
 		joinRoomButton.click();
 		browserInstance.waitForAngular();
 	};

@@ -18,10 +18,7 @@ describe('When joining an existing room', function() {
 		secondClonageUser.getIndex();
 		secondClonageUser.submitName('Alice');
 
-		firstClonageUser.getRoomId().then(function(text) {
-			roomId = text.split(" ")[2]; //["ROOM", "CODE", "XKFLS"]
-			secondClonageUser.joinRoom(roomId);
-		});
+		secondClonageUser.joinRoom();
 
 		expect(browser2.getCurrentUrl()).toMatch(/\/room/);
 		expect(secondClonageUser.element(by.id('room-join-container')).isPresent()).toBe(false);
@@ -38,7 +35,7 @@ describe('When joining an existing room', function() {
 	});
 
 	it('if other user joins room, user in room can see that without updating', function() {
-		secondClonageUser.joinRoom(roomId);
+		secondClonageUser.joinRoom();
 		expect(firstClonageUser.element.all(by.repeater('user in getActiveUsersInRoom()')).count()).toBe(2);
 	});
 
