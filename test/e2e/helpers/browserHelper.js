@@ -62,9 +62,7 @@ module.exports = function(browserInstance) {
 	};
 
 	var joinRoom = function(roomId) {
-		var joinRoomButton = element(by.id('room-join-button'));
-		var roomCodeBox = element(by.id('room-input-box'));
-		roomCodeBox.sendKeys(roomId);
+		var joinRoomButton = element(by.id('join-game-button'));
 		joinRoomButton.click();
 		browserInstance.waitForAngular();
 	};
