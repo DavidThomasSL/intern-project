@@ -69,7 +69,11 @@ describe('When playing a game', function() {
 	});
 
 	it('when the messenger is opened, the user can read the message', function() {
-		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+		//waiting here to make sure the message window opens fully, test was occasionally failing otherwise
+		browser2.wait( function(){
+		  return element.all(by.id('message-text')).get(0).isPresent();
+		}, 2000 );
+		expect(secondClonageUser.element(by.id('message-text')).getText()).toBe('Hi!');
 	});
 
 	it('can see who submitted an answer', function() {
@@ -186,7 +190,7 @@ describe('When playing a game', function() {
 		expect(firstClonageUser.element(by.id('submit-message')).isPresent()).toBe(true);
 		firstClonageUser.submitMessage('Hi!');
 		expect(firstClonageUser.element(by.id('message-box')).getText()).toBe('');
-		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+		expect(firstClonageUser.element.all(by.id('message-text')).get(1).getText()).toBe('Hi!');
 	});
 
 	it('If one user submits a message everyone can see they have an unread message', function() {
@@ -206,9 +210,9 @@ describe('When playing a game', function() {
 
 	it('when the messenger is opened, the user can read the message', function() {
 		browser2.wait( function(){
-		  return element(by.binding('message.messageText')).isPresent();
-		}, 1000 );
-		expect(secondClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
+		  return element.all(by.id('message-text')).get(1).isPresent();
+		}, 2000 );
+		expect(secondClonageUser.element.all(by.id('message-text')).get(1).getText()).toBe('Hi!');
 	});
 
 	it('can refresh and stay on vote-wait page', function() {

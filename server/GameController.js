@@ -111,7 +111,6 @@ module.exports = function(data) {
 	*/
 	var initialize = function(room) {
 
-		var initialResults = [];
 		var deferred = Q.defer();
 
 		cardController = new CardController();
@@ -127,32 +126,11 @@ module.exports = function(data) {
 				setupBot(bot);
 			});
 
-			// Create empty results for first round
-			players.forEach(function(player) {
-				if (player.connectedToServer) {
-					var result = {
-						player: player,
-						answersText: [],
-						playersWhoVotedForThis: []
-					};
-					initialResults.push(result);
-				}
-			});
-
-			bots.forEach(function(bot) {
-				var result = {
-					player: bot,
-					answersText: [],
-					playersWhoVotedForThis: []
-				};
-				initialResults.push(result);
-			});
-
 			BOT_NUMBER = room.botsInRoom.length;
 			MAX_ROUNDS = room.numRounds;
 
 			//Return the inital results to send to the clients
-			deferred.resolve(initialResults);
+			deferred.resolve();
 		});
 
 		return deferred.promise;
@@ -351,7 +329,7 @@ module.exports = function(data) {
 	var getInfoForReconnectingUser = function(user, testing, callback) {
 
 		//GET round information
-		var routingInfo = "";		
+		var routingInfo = "";
 		var data = [];
 		var player;
 

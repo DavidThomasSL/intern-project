@@ -145,7 +145,7 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
                 onHidden: function(clicked) {
                     if (clicked) {
                         roomService.leaveRoom();
-                        rank = "";
+                        gameService.clearGameData();
                         roomService.joinRoom(data.newRoomId);
                     }
                 }
