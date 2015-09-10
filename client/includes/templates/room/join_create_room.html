@@ -8,13 +8,8 @@
             <button type="button" class="btn btn-lg btn-primary" id="create-room-button" ng-click="createRoom()">Create New Room</button>
         </div>
         <div class="col-md-6 text-center">
-            <form class="form" name="roomSubmissionForm" ng-submit="joinRoom(enteredRoomId)">
-                <button type="submit" id="room-join-button" class="btn btn-lg  btn-success" style="margin-bottom: 20px" ng-disabled="roomSubmissionForm.enteredRoomId.$invalid">Join Exisiting Room</button>
-                <div class="input-group col-sm-4 col-sm-offset-4  col-xs-8 col-xs-offset-2 col-md-6 col-md-offset-3">
-                    <div class="input-group-addon">#</div>
-                    <input type="text" class="form-control" id="room-input-box" name="enteredRoomId" placeholder="Room Code" ng-model="enteredRoomId" ng-minlength="4" required>
-                </div>
-            </form>
+            <h4>Join Existing Room :</h4>
+            <ng-include src="'includes/templates/user/roomJoinPanel.html'"></ng-include>
         </div>
     </div>
     <!-- show a list of all rooms if the observer -->
