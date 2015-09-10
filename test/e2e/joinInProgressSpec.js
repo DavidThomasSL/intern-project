@@ -4,7 +4,6 @@ describe('When trying to join a game in progress', function() {
 
 	var MAX_ROUNDS;
 	var BOT_NUM = 2;
-	var roomId;
 	var cardsToSubmit;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);
@@ -12,21 +11,10 @@ describe('When trying to join a game in progress', function() {
 	var firstClonageUser = new clonageUser(browser);
 	var secondClonageUser = new clonageUser(browser2);
 
-	it("can't join a room that doesn't exist, and can see an error with useful text", function() {
+	it('can see an error message when trying to join a room with a game in progress', function() {
 
 		firstClonageUser.getIndex();
 		firstClonageUser.submitName('John');
-		firstClonageUser.joinRoom("thisdoesntexist");
-
-
-		expect(browser.getCurrentUrl()).toMatch(/\/joining/);
-		expect(element(by.css(".toast")).isPresent()).toBe(true);
-		expect(element(by.css(".toast")).getText()).toEqual('code "thisdoesntexist" does not match any existing room');
-
-	});
-
-	it('can see an error message when trying to join a room with a game in progress', function() {
-
 		firstClonageUser.createRoom();
 		firstClonageUser.setBotsOn(BOT_NUM); // set bots so we can start the game with one user
 
