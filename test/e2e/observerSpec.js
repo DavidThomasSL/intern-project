@@ -71,6 +71,10 @@ describe('When playing as a observer', function() {
 		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
 	});
 
+	it('after having opened the chat on previous page, it will stay opened when switching to a new page', function() {
+		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
+	});
+
 	it('After submission, observer and user are put to relevant pages', function() {
 		secondClonageUser.getBlankSpaces().then(function(text) {
 			cardsToSubmit = parseInt(text[5]); //PICK X.
