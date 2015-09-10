@@ -28,6 +28,8 @@ describe('When playing a game', function() {
 		firstClonageUser.ready();
 		secondClonageUser.ready();
 
+		firstClonageUser.toggleMessenger();
+
 		firstClonageUser.getBlankSpaces().then(function(text) {
 			cardsToSubmit = parseInt(text[5]); //PICK X.
 			firstClonageUser.submitFirstAnswers(cardsToSubmit);
@@ -37,10 +39,12 @@ describe('When playing a game', function() {
 
 	});
 
+	it('after having opened the chat on previous page, it will stay opened when switching to a new page', function() {
+		expect(firstClonageUser.element(by.id('message-box')).isDisplayed()).toBeTruthy();
+		expect(firstClonageUser.element(by.id('submit-message')).isDisplayed()).toBeTruthy();
+	});
+
 	it('can send a message in the room and the input field is reset after submission', function() {
-		firstClonageUser.toggleMessenger();
-		expect(firstClonageUser.element(by.id('message-box')).isPresent()).toBe(true);
-		expect(firstClonageUser.element(by.id('submit-message')).isPresent()).toBe(true);
 		firstClonageUser.submitMessage('Hi!');
 		expect(firstClonageUser.element(by.id('message-box')).getText()).toBe('');
 		expect(firstClonageUser.element(by.binding('message.messageText')).getText()).toBe('Hi!');
@@ -146,7 +150,6 @@ describe('When playing a game', function() {
 		firstClonageUser.refresh();
 		expect(browser.getCurrentUrl()).toMatch(/\/vote/);
 		expect(firstClonageUser.element.all(by.repeater("answer in visualiseAnswers()")).count()).toEqual(2);
-
 	});
 
 	it('can vote for an answer', function() {
