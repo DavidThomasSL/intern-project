@@ -4,8 +4,6 @@ describe('When starting a game', function() {
 
 	var HAND_SIZE;
 
-	var roomId;
-
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
@@ -19,14 +17,12 @@ describe('When starting a game', function() {
 		secondClonageUser.getIndex();
 		secondClonageUser.submitName('Alice');
 
-		firstClonageUser.getRoomId().then(function(text) {
-			roomId = text.split(" ")[2];
-			secondClonageUser.joinRoom(roomId);
-			firstClonageUser.ready();
-			expect(firstClonageUser.element(by.id('ready-button')).getText()).toEqual('Not Ready');
-			expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
-			expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
-		});
+		secondClonageUser.joinRoom();
+		firstClonageUser.ready();
+		expect(firstClonageUser.element(by.id('ready-button')).getText()).toEqual('Not Ready');
+		expect(firstClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
+		expect(secondClonageUser.element.all(by.id('user-panel')).first().getAttribute('class')).toMatch('player-ready');
+
 	});
 
 	it('can start the game after everyone is ready', function() {
