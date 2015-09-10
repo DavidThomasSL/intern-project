@@ -4,8 +4,6 @@ describe('When playing as a observer', function() {
 
 	var BOT_NUM;
 	var MAX_ROUNDS;
-	var roomId;
-
 	var resultWait = 3000;
 
 	var browser2 = browser.forkNewDriverInstance(false, true);

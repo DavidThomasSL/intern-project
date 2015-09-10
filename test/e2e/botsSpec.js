@@ -4,10 +4,8 @@ describe('When starting a game with BOTS', function() {
 
 	var BOT_NUM;
 	var MAX_ROUNDS;
-	var roomId;
-	
 	var resultWait = 3000;
-	
+
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);
@@ -26,17 +24,13 @@ describe('When starting a game with BOTS', function() {
 
 		firstClonageUser.setBotsOn(BOT_NUM); // ENABLE BOTS
 
-		firstClonageUser.getRoomId().then(function(text) {
-			roomId = text.split(" ")[2];
-			secondClonageUser.joinRoom(roomId);
+		secondClonageUser.joinRoom();
 
-			// set round number low to prevent jasmine timeouts on circleCI
-			firstClonageUser.setRoundNumber(MAX_ROUNDS);
+		// set round number low to prevent jasmine timeouts on circleCI
+		firstClonageUser.setRoundNumber(MAX_ROUNDS);
 
-			firstClonageUser.ready();
-			secondClonageUser.ready();
-
-		});
+		firstClonageUser.ready();
+		secondClonageUser.ready();
 
 		firstClonageUser.getBlankSpaces().then(function(text) {
 			cardsToSubmit = parseInt(text[5]); //PICK X.
@@ -60,15 +54,15 @@ describe('When starting a game with BOTS', function() {
 	});
 
 	it('Taken to the resuls page after last person voted', function() {
-		
+
 		secondClonageUser.submitFirstVote();
-		
+
 		browser.wait( function(){
-		  return browser.getCurrentUrl().then(function(url){			  
+		  return browser.getCurrentUrl().then(function(url){
 			  return (url === "http://localhost:8080/#/results/");
 		  });
 		}, 10000);
-		
+
 		expect(browser2.getCurrentUrl()).toMatch(/\/results/);
 		expect(browser.getCurrentUrl()).toMatch(/\/results/);
 	});
