@@ -9,8 +9,40 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
     $scope.playAgainWasPressed = userService.playAgainWasPressed;
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
+    $scope.roundSubmissionData = gameService.getRoundSubmissionData;
 
-    $scope.loadedMessages = [];
+    /*
+        check if a certain user had submitted an answer yet
+        function called in order to visualise on the timer when a certain player has submited
+    */
+    $scope.hasSubmitted = gameService.hasSubmitted;
+    /*
+        check if a certain user had voted for an answer yet
+        function called in order to visualise on the timer when a certain player has submitted
+    */
+    $scope.hasVoted = gameService.hasVoted;
+
+    //when player says they are ready to move on it sends this to the server
+    $scope.sendReadyStatus = function(botsEnabled) {
+        playerService.sendReadyStatus($scope.roomId());
+    };
+
+    //get user rank
+    $scope.rank = function() {
+        var playerId = userService.getUserId();
+        return gameService.getPlayerCurrentRank(playerId);
+    };
+
+    /*
+    -----------------------------------------------------------------
+    MESSENGER FUNCTIONS
+    -----------------------------------------------------------------
+    */
+    $scope.loadedMessages = []; // used to autscroll to bottom when chat is open
+    $scope.toggled = false; // used for messaging collapsing
+
+    var msg;
+    var oldMsgNo;
 
     $scope.getMessages = function() {
         msg = roomService.getMessages();
@@ -28,28 +60,35 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
         return msg;
     }
 
-    $scope.$watch(function(){
-       return $window.innerWidth;
-    }, function(value) {
-        $scope.screenWidth = value;
+    /*
+        gets the screenWidth and stores it in scope
+        function used to set the chat to collapse on new page
+        only for mobiles and keep it's state for desktops
+    */
+    $scope.$watch(
+        function() {
+            return $window.innerWidth;
+        }, function(value) {
+            $scope.screenWidth = value;
    });
 
-    $scope.toggled = false; //used for messaging collapsing
-
-    var msg;
-    var oldMsgNo;
-    $scope.missedMsg;
-
+    // reset toggle is called only on mobile to collapse the chat on new page
     $scope.resetToggle = function() {
         $scope.toggled = false;
         $scope.loadedMessages = [];
     };
 
-     $scope.sendMessage = function(messageText) {
+    // send message and reset the input box
+    $scope.sendMessage = function(messageText) {
         userService.sendMessage(messageText);
         $scope.messageText = '';
     };
 
+    /*
+        on toggle up the messages are loaded
+        on toggle down the messages reset
+        toggled changes value
+    */
     $scope.toggle = function() {
         if ($scope.toggled === true) {
             $scope.loadedMessages = [];
@@ -60,31 +99,12 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
         oldMsgNo = msg.length;
     };
 
-    $scope.roundSubmissionData = gameService.getRoundSubmissionData;
-
-
-    //when player says they are ready to move on it sends this to the server
-    $scope.sendReadyStatus = function(botsEnabled) {
-        playerService.sendReadyStatus($scope.roomId());
-    };
 
     /*
-        check if a certain user had submitted an answer yet
-        function called in order to visualise on the timer when a certain player has submited
+    --------------------------------------------------------------------
+    NOTIFICATIONS FUNCTIONS
+    --------------------------------------------------------------------
     */
-    $scope.hasSubmitted = gameService.hasSubmitted;
-    /*
-        check if a certain user had voted for an answer yet
-        function called in order to visualise on the timer when a certain player has submitted
-    */
-    $scope.hasVoted = gameService.hasVoted;
-
-    //get user rank
-    $scope.rank = function() {
-        var playerId = userService.getUserId();
-        var rank = gameService.getPlayerCurrentRank(playerId);
-        return rank;
-    };
 
     function displayNotificationMessage(notificationMessage, notificationType) {
         switch (notificationType) {
