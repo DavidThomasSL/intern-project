@@ -178,30 +178,20 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
     var countdown;
 
     // start countdown
-    $scope.startCountdown = function(text) {
+    $scope.startCountdown = function(time) {
 
         //don't start a new countdown if one is already running ->>> it cancells the current one and start a new one
         if (angular.isDefined(countdown)) {
-
             $interval.cancel(countdown);
             countdown = undefined;
-            if (text === undefined) $scope.counter = 60;
-            else $scope.counter = 20;
-            $scope.newCountdown();
         }
-        else  {
-
-            if (text === undefined) $scope.counter = 60;
-            else $scope.counter = 20;
-            $scope.newCountdown();
-        }
-
+        $scope.counter = time;
+        $scope.newCountdown();
     };
 
     $scope.newCountdown = function() {
 
         countdown = $interval(function() {
-
             /*
                 on refresh we get the value from the server
                 so we set the counter to that value
@@ -224,6 +214,7 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
 
         }, 1000); // call this function every 1 second
     };
+
 
     // stop the countdown by cancelling the interval and setting it to undefined
     $scope.stopCountdown = function() {
