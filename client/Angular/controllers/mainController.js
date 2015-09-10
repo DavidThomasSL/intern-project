@@ -44,14 +44,20 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
     var msg;
     var oldMsgNo;
 
+    /*
+        function to return all of the messages
+        if the chat is not opened it also sets the number of missed messages:
+            - if the page is loaded and the old messages count wasn't set, all messages are unread
+            - if the old msg count was set, the unread msg count is set
+    */
     $scope.getMessages = function() {
         msg = roomService.getMessages();
-        if ($scope.toggled === false) {         // if the chat is not open
-            if (msg.length !== oldMsgNo) {         // if we have unread messages
-                if (oldMsgNo === undefined)  {      // if the old no of messages was not defined aka -> page reload
+        if ($scope.toggled === false) {
+            if (msg.length !== oldMsgNo) {
+                if (oldMsgNo === undefined)  {
                     $scope.missedMsg = msg.length;
                 }
-                else {                                 // else we just have new messages
+                else {
                     $scope.missedMsg = msg.length - oldMsgNo;
                 }
             }
