@@ -415,14 +415,17 @@ module.exports = function(port, enableLogging, testing) {
                     // and wait until it has ran out (triggers a callback)
                     room.gameController.startTimer(testing, function(data) {
 
-                        room.broadcastRoom("GAME roundSubmissionData", {
-                            roundSubmissionData: data.roundSubmissionData,
-                            currentNumberOfSubmissions: data.currentNumberOfSubmissions,
-                            currentNumberOfVotes: data.currentNumberOfVotes
-                        });
+                        room = getRoomFromId(user.roomId);
+                        if (room !== undefined) {
+                            room.broadcastRoom("GAME roundSubmissionData", {
+                                roundSubmissionData: data.roundSubmissionData,
+                                currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                                currentNumberOfVotes: data.currentNumberOfVotes
+                            });
 
-                        // time has ran out so everyone is routed to the voting page
-                        putUserInVote(room);
+                            // time has ran out so everyone is routed to the voting page
+                            putUserInVote(room);
+                        }
                     });
                 }
 
@@ -500,8 +503,10 @@ module.exports = function(port, enableLogging, testing) {
                     });
 
                     room.gameController.startTimer(testing, function(data) {
-
-                        startNextRoundInRoom(room.id);
+                        room = getRoomFromId(user.roomId);
+                        if (room !== undefined) {
+                            startNextRoundInRoom(room.id);
+                        }
                     });
                 }
             });
@@ -613,24 +618,30 @@ module.exports = function(port, enableLogging, testing) {
             // start new timer for the voting page
             // and wait until time rans out
             room.gameController.startTimer(testing, function(data) {
+                room = getRoomFromId(user.roomId);
+                if (room !== undefined) {
 
-                //time has ran out so everyone is routed to the results page
-                room.broadcastRoom("ROUTING", {
-                    location: 'results'
-                });
+                    //time has ran out so everyone is routed to the results page
+                    room.broadcastRoom("ROUTING", {
+                        location: 'results'
+                    });
 
 
-                room.broadcastRoom("GAME roundSubmissionData", {
-                    roundSubmissionData: data.roundSubmissionData,
-                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
-                    currentNumberOfVotes: data.currentNumberOfVotes
-                });
+                    room.broadcastRoom("GAME roundSubmissionData", {
+                        roundSubmissionData: data.roundSubmissionData,
+                        currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                        currentNumberOfVotes: data.currentNumberOfVotes
+                    });
 
-                room.gameController.startTimer(testing, function(data) {
 
-                    startNextRoundInRoom(room.id);
+                    room.gameController.startTimer(testing, function(data) {
+                        room = getRoomFromId(user.roomId);
+                        if (room !== undefined) {
+                            startNextRoundInRoom(room.id);
+                        }
 
-                });
+                    });
+                }
             });
         }
 
