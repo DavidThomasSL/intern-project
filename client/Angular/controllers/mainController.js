@@ -152,7 +152,7 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
             });
         } else if (data.action === "join room observer") {
             //make toast that lets the user join a game as an observer
-            toastr.warning('<div id="toaster">Game already in progress<br> Click here to watch as an Observer</div>', {
+            toastr.warning('<div id="toaster">Game already started<br> Click here to join in progress</div>', {
                 allowHtml: true,
                 showCloseButton: true,
                 timeOut: 10000,
