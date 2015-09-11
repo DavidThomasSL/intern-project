@@ -587,9 +587,7 @@ module.exports = function(port, enableLogging, testing) {
                             text: "" + user.name +" joined the game",
                             type: "info"
                         })
-
                     }
-
 
                     logger.debug("User " + user.name + " joined room " + roomId);
 
