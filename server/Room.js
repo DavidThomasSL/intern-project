@@ -134,7 +134,6 @@ function Room(roomCode, testing) {
             // in this case, we want to put the user into a room where the game is already in progress
             if (!userInGame && (forceUserInRoom || user.isObserver)) {
                 // forceable put the user into the room
-                console.log("setting up new player");
                 self.gameController.setupPlayer(user, true);
                 userInGame = self.gameController.checkIfUserInGame(user.uId);
             }
@@ -221,7 +220,6 @@ function Room(roomCode, testing) {
     };
 
     self.removeUser = function(user) {
-        var newResults = {};
 
         self.usersInRoom = self.usersInRoom.filter(function(userInRoom) {
             return userInRoom.uId !== user.uId;
@@ -230,11 +228,9 @@ function Room(roomCode, testing) {
         // Take the user out of the game (set as disconnected)
         if (self.gameController !== undefined) {
             self.gameController.disconnectPlayer(user.uId);
-            newResults = self.gameController.getCurrentResults();
         }
 
         self.broadcastRoom("ROOM details");
-        return newResults;
     };
 
     /*

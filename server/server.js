@@ -228,11 +228,6 @@ module.exports = function(port, enableLogging, testing) {
 
             //if we are mid game then update all the remaining players ranks and scoring data
             if (midGame === true) {
-                room.broadcastRoom("GAME roundSubmissionData", {
-                    roundSubmissionData: results.roundSubmissionData,
-                    currentNumberOfSubmissions: results.currentNumberOfSubmissions,
-                    currentNumberOfVotes: results.currentNumberOfVotes
-                });
                 room.broadcastRoom("NOTIFICATION message", {
                     text: "" + user.name + " left the game",
                     type: "info"
