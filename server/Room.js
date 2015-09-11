@@ -220,7 +220,7 @@ function Room(roomCode, testing) {
         clearTimeout(self.timeToLiveTimer);
     };
 
-    self.removeUser = function(user, midGame) {
+    self.removeUser = function(user) {
         var newResults = {};
 
         self.usersInRoom = self.usersInRoom.filter(function(userInRoom) {
