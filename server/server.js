@@ -84,7 +84,7 @@ module.exports = function(port, enableLogging, testing) {
             // If the room has a game in progress, they will re-join that game
             if (user.roomId !== "") {
                 logger.debug("User " + user.uId + "was in room " + user.roomId + " previously");
-                putUserInRoom(user.roomId);
+                putUserInRoom(user.roomId, true);
             } else if (user.name !== undefined) {
                 logger.debug("Putting user in joining");
                 putUserInJoining();
@@ -204,7 +204,7 @@ module.exports = function(port, enableLogging, testing) {
         function removeUserFromRoom(room, midGame) {
             logger.debug("Removing player from room" + room.id);
 
-            results = room.removeUser(user);
+            room.removeUser(user);
 
             //update the observers list of available rooms
             users.forEach(function(user) {

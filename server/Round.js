@@ -17,8 +17,6 @@ function Round(roundCount, cardController) {
 
 
 	self.getRoundSubmissionData = function() {
-		console.log("getting round sub data");
-		console.log(roundSubmissions);
 		return roundSubmissions;
 	};
 

@@ -9,8 +9,10 @@
         <div class="result-data-container" ng-repeat="submission in roundSubmissionData() | orderBy : '-playersWhoVotedForThis.length'" id="results-table-row">
             <div class="row results-data-row">
                 <div class="col-xs-4">
-                    <user-profile sizex="60" sizey="60" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
-                    image"></user-profile>
+                    <span ng-hide="getUserFromId(submission.player.uId)===undefined">
+                        <user-profile sizex="60" sizey="60" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
+                        image"></user-profile>
+                    </span>
                     <p>{{submission.player.name}}</p>
                 </div>
                 <div class="col-xs-8">
