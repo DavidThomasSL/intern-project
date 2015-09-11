@@ -58,9 +58,10 @@ module.exports = function(data) {
 				in order to start the timer
 			*/
 			count += animationTime * (rounds[roundCount - 1].getNumberOfCurrentSubmissions());
-		} else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
-			if (testing === undefined) count = 20;
-			else count = 2;
+		}
+		else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+			if (testing === undefined)	count = 20;
+			else count = 3;
 		}
 
 		timerIsActive = true;

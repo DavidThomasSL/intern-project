@@ -4,7 +4,7 @@ describe('After ending the game', function() {
 
 	var MAX_ROUNDS;
 	var POINTS_PER_VOTE;
-	var resultWait = 3000;
+	var resultWait = 4000;
 	var browser2 = browser.forkNewDriverInstance(false, true);
 
 	var firstClonageUser = new clonageUser(browser);

@@ -5,7 +5,7 @@ describe('When wanting to play again', function() {
 	var MAX_ROUNDS;
 	var POINTS_PER_VOTE;
 
-	var resultWait = 3000;
+	var resultWait = 4000;
 
 	var roomId;
 	var newRoomId;
