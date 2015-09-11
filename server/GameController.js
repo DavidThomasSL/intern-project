@@ -58,9 +58,8 @@ module.exports = function(data) {
 				in order to start the timer
 			*/
 			count += animationTime * (rounds[roundCount - 1].getNumberOfCurrentSubmissions());
-		}
-		else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
-			if (testing === undefined)	count = 20;
+		} else if (GameState === POSSIBLE_GAMESTATES.ROUND_RESULTS) {
+			if (testing === undefined) count = 20;
 			else count = 2;
 		}
 
@@ -443,6 +442,16 @@ module.exports = function(data) {
 		});
 	};
 
+	var getCurrentResults = function() {
+		var currentRound = rounds[roundCount - 1];
+
+		return {
+			roundSubmissionData: currentRound.getRoundSubmissionData(),
+			currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
+			currentNumberOfVotes: currentRound.getNumberOfCurrentVotes()
+		};
+	};
+
 	/*
 		Given a user id, returns if that user is a player in this game
 	*/
@@ -549,8 +558,6 @@ module.exports = function(data) {
 		Gives a rank to every player in the game based on their points total
 	*/
 	var setRank = function() {
-
-
 		//putting all players and bots into one array then filtering based on connected to server
 		//this means set rank will ignore all observers and players who have left
 		var allPlayers = players.concat(bots).filter(function(player) {
@@ -580,7 +587,7 @@ module.exports = function(data) {
 		Sets up a player with a user id, a new hand and 0 points
 		Adds them to the player list
 	*/
-	var setupPlayer = function(user) {
+	var setupPlayer = function(user, joiningInProgress) {
 		var player = new Player(user, cardController);
 		if (user.isObserver === true) {
 			player.connectedToServer = false;
@@ -589,6 +596,12 @@ module.exports = function(data) {
 		// Removes the cards from list of possible cards for other player
 		player.dealHand(HANDSIZE);
 		players.push(player);
+
+		if (joiningInProgress !== undefined) {
+			setRank();
+			var currentRound = rounds[rounds.length - 1];
+			currentRound.addNewPlayer(player);
+		}
 	};
 
 	var setupBot = function(bot) {
@@ -630,6 +643,7 @@ module.exports = function(data) {
 		submitVote: submitVote,
 		replaceHand: replaceHand,
 		newRound: newRound,
+		getCurrentResults: getCurrentResults,
 		setupPlayer: setupPlayer,
 		updateGameState: updateGameState,
 		startTimer: startTimer,

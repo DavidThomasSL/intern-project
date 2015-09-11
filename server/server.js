@@ -576,6 +576,18 @@ module.exports = function(port, enableLogging, testing) {
                     users.forEach(function(u) {
                         u.emit("GAME rooms available", getRoomsInformation());
                     });
+                    //if a player is joining in progress then send everyone the new scoring data
+                    if (force !== undefined) {
+                        room.broadcastRoom("GAME roundSubmissionData", {
+                            roundSubmissionData: result.currentResults.roundSubmissionData,
+                            currentNumberOfSubmissions: result.currentResults.currentNumberOfSubmissions,
+                            currentNumberOfVotes: result.currentResults.currentNumberOfVotes
+                        });
+                        room.broadcastRoom("NOTIFICATION message", {
+                            text: "" + user.name +" joined the game",
+                            type: "info"
+                        });
+                    }
 
                     logger.debug("User " + user.name + " joined room " + roomId);
 

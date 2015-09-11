@@ -102,6 +102,7 @@ function Room(roomCode, testing) {
         var userAlreadyInRoom = false;
         var gameInProgress = true;
         var routing = "";
+        var newResults = {};
 
         // Only join the room if user not already in ANY room
         // Handles user pressing join room multiple times
@@ -132,14 +133,10 @@ function Room(roomCode, testing) {
 
             // lol hakz
             // in this case, we want to put the user into a room where the game is already in progress
-            // to do that, we turn the user into an observer and add them to the gameController
-            // now when we get info for the "reconnecting" user, they will be handled as an observer
-            // and routed to the correct pages (done by the observer controllera)
             if (!userInGame && (forceUserInRoom || user.isObserver)) {
                 // forceable put the user into the room
-                user.isObserver = true; // make them an observer so they can't partificpate
-                user.readyToProceed = true;
-                self.gameController.setupPlayer(user);
+                self.gameController.setupPlayer(user, true);
+                newResults = self.gameController.getCurrentResults();
                 userInGame = self.gameController.checkIfUserInGame(user.uId);
             }
 
@@ -200,6 +197,7 @@ function Room(roomCode, testing) {
 
         // Return wether the join was successful or not
         return {
+            currentResults: newResults,
             gameInProgress: gameInProgress,
             userAlreadyInRoom: userAlreadyInRoom,
             joined: canJoin
