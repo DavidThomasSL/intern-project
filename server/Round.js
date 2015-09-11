@@ -85,9 +85,9 @@ function Round(roundCount, cardController) {
 			player: player,
 			submissionsText:[],
 			playersWhoVotedForThis:[]
-		}
-		roundSubmissions.push(submission)
-	}
+		};
+		roundSubmissions.push(submission);
+	};
 
 	self.addSubmission = function(submittingPlayer, answersText) {
 		roundSubmissions.forEach(function(submission) {

@@ -449,7 +449,7 @@ module.exports = function(data) {
 			roundSubmissionData: currentRound.getRoundSubmissionData(),
 			currentNumberOfSubmissions: currentRound.getNumberOfCurrentSubmissions(),
 			currentNumberOfVotes: currentRound.getNumberOfCurrentVotes()
-		}
+		};
 	};
 
 	/*

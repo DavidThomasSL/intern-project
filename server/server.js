@@ -586,7 +586,7 @@ module.exports = function(port, enableLogging, testing) {
                         room.broadcastRoom("NOTIFICATION message", {
                             text: "" + user.name +" joined the game",
                             type: "info"
-                        })
+                        });
                     }
 
                     logger.debug("User " + user.name + " joined room " + roomId);
