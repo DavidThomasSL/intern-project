@@ -130,13 +130,11 @@ function Room(roomCode, testing) {
 
             // Check if user was in the game
             var userInGame = self.gameController.checkIfUserInGame(user.uId);
-
             // lol hakz
             // in this case, we want to put the user into a room where the game is already in progress
             if (!userInGame && (forceUserInRoom || user.isObserver)) {
                 // forceable put the user into the room
                 self.gameController.setupPlayer(user, true);
-                newResults = self.gameController.getCurrentResults();
                 userInGame = self.gameController.checkIfUserInGame(user.uId);
             }
 
@@ -146,6 +144,7 @@ function Room(roomCode, testing) {
 
                 //User was in the game, tell the game controller they're back, route them to the current stage
                 // Find out where to put this user, i.e where all the other players are
+                newResults = self.gameController.getCurrentResults();
                 self.gameController.getInfoForReconnectingUser(user, testing, function(routingInfo, gameStateData) {
 
                     routing = routingInfo;

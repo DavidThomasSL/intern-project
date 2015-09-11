@@ -84,7 +84,7 @@ module.exports = function(port, enableLogging, testing) {
             // If the room has a game in progress, they will re-join that game
             if (user.roomId !== "") {
                 logger.debug("User " + user.uId + "was in room " + user.roomId + " previously");
-                putUserInRoom(user.roomId);
+                putUserInRoom(user.roomId, true);
             } else if (user.name !== undefined) {
                 logger.debug("Putting user in joining");
                 putUserInJoining();
@@ -227,7 +227,7 @@ module.exports = function(port, enableLogging, testing) {
             }
 
             //if we are mid game then update all the remaining players ranks and scoring data
-            if (midGame !== undefined) {
+            if (midGame === true) {
                 room.broadcastRoom("GAME roundSubmissionData", {
                     roundSubmissionData: results.roundSubmissionData,
                     currentNumberOfSubmissions: results.currentNumberOfSubmissions,
@@ -590,7 +590,7 @@ module.exports = function(port, enableLogging, testing) {
                         u.emit("GAME rooms available", getRoomsInformation());
                     });
                     //if a player is joining in progress then send everyone the new scoring data
-                    if (force !== undefined) {
+                    if (force === true) {
                         room.broadcastRoom("GAME roundSubmissionData", {
                             roundSubmissionData: result.currentResults.roundSubmissionData,
                             currentNumberOfSubmissions: result.currentResults.currentNumberOfSubmissions,
