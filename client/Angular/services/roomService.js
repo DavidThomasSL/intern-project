@@ -48,7 +48,7 @@ ClonageApp.service('roomService', ['communicationService', '$sessionStorage', fu
     }
 
     function getUserFromId(userId) {
-        var userToReturn = undefined;
+        var userToReturn = [];
         getActiveUsersInRoom().forEach(function(activeUser) {
             if(activeUser.uId == userId) {
                 userToReturn = activeUser;

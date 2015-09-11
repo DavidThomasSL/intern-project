@@ -134,6 +134,7 @@ function Room(roomCode, testing) {
             // in this case, we want to put the user into a room where the game is already in progress
             if (!userInGame && (forceUserInRoom || user.isObserver)) {
                 // forceable put the user into the room
+                console.log("setting up new player");
                 self.gameController.setupPlayer(user, true);
                 userInGame = self.gameController.checkIfUserInGame(user.uId);
             }

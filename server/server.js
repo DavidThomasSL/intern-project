@@ -84,7 +84,7 @@ module.exports = function(port, enableLogging, testing) {
             // If the room has a game in progress, they will re-join that game
             if (user.roomId !== "") {
                 logger.debug("User " + user.uId + "was in room " + user.roomId + " previously");
-                putUserInRoom(user.roomId, true);
+                putUserInRoom(user.roomId);
             } else if (user.name !== undefined) {
                 logger.debug("Putting user in joining");
                 putUserInJoining();
