@@ -580,10 +580,16 @@ module.exports = function(data) {
 		Sets up a player with a user id, a new hand and 0 points
 		Adds them to the player list
 	*/
-	var setupPlayer = function(user) {
+	var setupPlayer = function(user, joiningInProgress, callback) {
 		var player = new Player(user, cardController);
 		if (user.isObserver === true) {
 			player.connectedToServer = false;
+		}
+
+		if (joiningInProgress!==undefined){
+			var currentRound = rounds[rounds.length - 1];
+			currentRound.addNewPlayer(player);
+			setRank();
 		}
 
 		// Removes the cards from list of possible cards for other player

@@ -79,6 +79,16 @@ function Round(roundCount, cardController) {
 		roundQuestion = cardController.getQuestion();
 	};
 
+	//used to add player if they join mid-game, just adds a new submission data object to array
+	self.addNewPlayer = function(player) {
+		submission = {
+			player: player,
+			submissionsText:[],
+			playersWhoVotedForThis:[]
+		}
+		roundSubmissions.push(submission)
+	}
+
 	self.addSubmission = function(submittingPlayer, answersText) {
 		roundSubmissions.forEach(function(submission) {
 			if (submission.player.uId === submittingPlayer.uId) {

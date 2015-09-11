@@ -137,9 +137,7 @@ function Room(roomCode, testing) {
             // and routed to the correct pages (done by the observer controllera)
             if (!userInGame && (forceUserInRoom || user.isObserver)) {
                 // forceable put the user into the room
-                user.isObserver = true; // make them an observer so they can't partificpate
-                user.readyToProceed = true;
-                self.gameController.setupPlayer(user);
+                self.gameController.setupPlayer(user, true);
                 userInGame = self.gameController.checkIfUserInGame(user.uId);
             }
 
