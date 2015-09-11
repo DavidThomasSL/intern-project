@@ -558,8 +558,6 @@ module.exports = function(data) {
 		Gives a rank to every player in the game based on their points total
 	*/
 	var setRank = function() {
-
-		console.log("setting ranks for all players");
 		//putting all players and bots into one array then filtering based on connected to server
 		//this means set rank will ignore all observers and players who have left
 		var allPlayers = players.concat(bots).filter(function(player) {

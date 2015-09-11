@@ -27,16 +27,15 @@ describe('When trying to join a game in progress', function() {
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
 		expect(browser2.getCurrentUrl()).toMatch(/\/joining/);
 		expect(secondClonageUser.element(by.css(".toast")).isPresent()).toBe(true);
-		expect(secondClonageUser.element(by.css(".toast")).getText()).toContain('Game already in progress');
+		expect(secondClonageUser.element(by.css(".toast")).getText()).toContain('Game already started');
 
 	});
 
-	it('can click the game in progress error to join the game as an observer and are taken to the observer question page', function() {
+	it('can click the game in progress error to join the game as an observer and are taken to the question page', function() {
 
 		secondClonageUser.element(by.css(".toast")).click();
 
-		expect(browser2.getCurrentUrl()).toMatch(/\/observeQ/);
-		//magic just happened
+		expect(browser2.getCurrentUrl()).toMatch(/\/question/);
 
 		firstClonageUser.clearUser();
 		browser2.close();
