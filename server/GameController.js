@@ -597,7 +597,7 @@ module.exports = function(data) {
 		player.dealHand(HANDSIZE);
 		players.push(player);
 
-		if (joiningInProgress !== undefined) {
+		if (joiningInProgress !== undefined && !user.isObserver) {
 			setRank();
 			var currentRound = rounds[rounds.length - 1];
 			currentRound.addNewPlayer(player);

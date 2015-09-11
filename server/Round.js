@@ -82,7 +82,7 @@ function Round(roundCount, cardController) {
 	//used to add player if they join mid-game, just adds a new submission data object to array
 	self.addNewPlayer = function(player) {
 		var alreadyAPlayer = false;
-		submissions.forEach(function(submission) {
+		roundSubmissions.forEach(function(submission) {
 			if (submission.player.uId === player.uId) {
 				alreadyAPlayer = true;
 			}
