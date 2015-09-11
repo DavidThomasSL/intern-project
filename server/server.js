@@ -201,10 +201,10 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Removed user " + user.name + " from room " + room.id);
         });
 
-        function removeUserFromRoom(room) {
+        function removeUserFromRoom(room, midGame) {
             logger.debug("Removing player from room" + room.id);
 
-            room.removeUser(user);
+            results = room.removeUser(user);
 
             //update the observers list of available rooms
             users.forEach(function(user) {
@@ -223,6 +223,19 @@ module.exports = function(port, enableLogging, testing) {
                     });
 
                     logger.debug("No-one in room" + room.id + ", deleting it");
+                });
+            }
+
+            //if we are mid game then update all the remaining players ranks and scoring data
+            if (midGame !== undefined) {
+                room.broadcastRoom("GAME roundSubmissionData", {
+                    roundSubmissionData: results.roundSubmissionData,
+                    currentNumberOfSubmissions: results.currentNumberOfSubmissions,
+                    currentNumberOfVotes: results.currentNumberOfVotes
+                });
+                room.broadcastRoom("NOTIFICATION message", {
+                    text: "" + user.name + " left the game",
+                    type: "info"
                 });
             }
         }
@@ -528,7 +541,7 @@ module.exports = function(port, enableLogging, testing) {
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
-                removeUserFromRoom(room);
+                removeUserFromRoom(room, true);
 
                 if (!user.isObserver) {
                     user.readyToProceed = false;
@@ -584,7 +597,7 @@ module.exports = function(port, enableLogging, testing) {
                             currentNumberOfVotes: result.currentResults.currentNumberOfVotes
                         });
                         room.broadcastRoom("NOTIFICATION message", {
-                            text: "" + user.name +" joined the game",
+                            text: "" + user.name + " joined the game",
                             type: "info"
                         });
                     }

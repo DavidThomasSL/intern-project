@@ -615,6 +615,10 @@ module.exports = function(data) {
 		if (player !== undefined) {
 			player.connectedToServer = false;
 		}
+		setRank();
+		var currentRound = rounds[rounds.length - 1];
+		currentRound.removePlayer(player);
+
 	};
 
 	var getPlayerFromId = function(playerId) {

@@ -89,6 +89,12 @@ function Round(roundCount, cardController) {
 		roundSubmissions.push(submission);
 	};
 
+	self.removePlayer = function(playerToRemove){
+		roundSubmissions = roundSubmissions.filter(function(submission){
+			return submission.player.uId !== playerToRemove.uId;
+		});
+	};
+
 	self.addSubmission = function(submittingPlayer, answersText) {
 		roundSubmissions.forEach(function(submission) {
 			if (submission.player.uId === submittingPlayer.uId) {
