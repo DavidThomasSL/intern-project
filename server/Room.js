@@ -130,16 +130,18 @@ function Room(roomCode, testing) {
 
             // Check if user was in the game
             var userInGame = self.gameController.checkIfUserInGame(user.uId);
-            // lol hakz
+
+            if (user.isObserver) {
+                user.connectedToServer = false;
+            }
+
             // in this case, we want to put the user into a room where the game is already in progress
             if (!userInGame && forceUserInRoom) {
                 // forceable put the user into the room
                 self.gameController.setupPlayer(user, true);
                 userInGame = self.gameController.checkIfUserInGame(user.uId);
             }
-            if (user.isObserver) {
-                user.connectedToServer = false;
-            }
+
 
             if (userInGame) {
                 //players can only join a game they were in previosuly, for refresh purposes
