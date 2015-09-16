@@ -86,6 +86,9 @@
                 });
                 </script>
             </nav>
+            <div ng-if="roomId() !== -1">
+                <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
+            </div>
             <!-- END NAVBAR -->
             <div ng-view autoscroll="true">
             </div ng-view>

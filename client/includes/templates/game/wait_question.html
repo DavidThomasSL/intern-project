@@ -9,7 +9,6 @@
 			<p>{{ currentNumberOfSubmissions() }} / {{getActiveUsersInRoom().length}} answers submitted</p>
 		</div>
 	</div>
-	<ng-include src="'includes/templates/user/messenger.html'"></ng-include>
 	<ng-include src="'includes/templates/user/progressBar.html'" data-ng-init="startCountdown(counter)"></ng-include>
 	<div class="col-md-3 col-xs-4 text-center" ng-repeat="user in getActiveUsersInRoom()">
 		<ng-include src="'includes/templates/user/userPanelSmallQuestion.html'"></ng-include>
