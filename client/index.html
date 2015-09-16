@@ -87,7 +87,12 @@
                 </script>
             </nav>
             <div ng-if="roomId() !== -1">
-                <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
+                <div ng-if="getIfObserver() !== true">
+                    <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
+                </div>
+                <div ng-if="getIfObserver() === true">
+                    <ng-include src="'includes/templates/user/messengerObserver.html'"></ng-include>
+                </div>
             </div>
             <!-- END NAVBAR -->
             <div ng-view autoscroll="true">
