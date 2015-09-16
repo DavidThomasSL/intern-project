@@ -81,12 +81,26 @@ function Round(roundCount, cardController) {
 
 	//used to add player if they join mid-game, just adds a new submission data object to array
 	self.addNewPlayer = function(player) {
-		submission = {
-			player: player,
-			submissionsText:[],
-			playersWhoVotedForThis:[]
-		};
-		roundSubmissions.push(submission);
+		var alreadyAPlayer = false;
+		roundSubmissions.forEach(function(submission) {
+			if (submission.player.uId === player.uId) {
+				alreadyAPlayer = true;
+			}
+		});
+		if (!alreadyAPlayer) {
+			submission = {
+				player: player,
+				submissionsText: [],
+				playersWhoVotedForThis: []
+			};
+			roundSubmissions.push(submission);
+		}
+	};
+
+	self.removePlayer = function(playerToRemove) {
+		roundSubmissions = roundSubmissions.filter(function(submission) {
+			return submission.player.uId !== playerToRemove.uId;
+		});
 	};
 
 	self.addSubmission = function(submittingPlayer, answersText) {

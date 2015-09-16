@@ -7,7 +7,7 @@
     </div>
     <div class="row">
         <div class="end-game-data-container" ng-repeat="submission in roundSubmissionData() | orderBy : '-player.points'">
-            <div class="row end-game-data-row">
+            <div class="row end-game-data-row" ng-hide="getUserFromId(submission.player.uId)===undefined">
                 <div class="col-xs-3 end-game-rank text-right">
                     <span ng-hide="submission.player.rank===''">
                         #{{submission.player.rank}}
