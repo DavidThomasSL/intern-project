@@ -13,6 +13,9 @@
                         <user-profile sizex="60" sizey="60" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
                         image"></user-profile>
                     </span>
+                    <span ng-show="getUserFromId(submission.player.uId)===undefined">
+                        <img src="/includes/images/mystery-avatar.png" height="60" width="60">
+                    </span>
                     <p>{{submission.player.name}}</p>
                 </div>
                 <div class="col-xs-8">
@@ -31,6 +34,9 @@
                         <span ng-hide="getUserFromId(votingPlayer.uId)===undefined">
                             <user-profile class="flex1" sizex="40" sizey="40" isbot="getUserFromId(votingPlayer.uId).isBot" image="getUserFromId(votingPlayer.uId).
                             image"></user-profile>
+                        </span>
+                        <span ng-show="getUserFromId(votingPlayer.uId)===undefined">
+                            <img src="/includes/images/mystery-avatar.png" height="40" width="40" style="margin-bottom:15px">
                         </span>
                     </span>
                 </div>
