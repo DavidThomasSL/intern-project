@@ -30,8 +30,8 @@
         </div>
     </div>
     <div class="bottom-buttons text-center">
-        <button id="back-to-start-button" type="button" class="btn btn-lg btn-default hvr-float hvr-icon-pulse-grow" ng-click="leaveRoom()">Finish</button>
-        <button id="play-again-button" ng-if="!playAgainWasPressed()" type="button" class="btn btn-lg btn-primary hvr-float hvr-icon-spin" ng-click="playAgain()">Play Again</button>
+        <button id="back-to-start-button" type="button" ng-class="{'btn btn-lg btn-default hvr-icon-pulse-grow' : ios()===true, 'btn btn-lg btn-default hvr-float hvr-icon-pulse-grow': ios()!==true}" ng-click="leaveRoom()">Finish</button>
+        <button id="play-again-button" ng-if="!playAgainWasPressed()" type="button" ng-class="{'btn btn-lg btn-primary hvr-icon-spin' : ios()===true, 'btn btn-lg btn-primary hvr-float hvr-icon-spin': ios()!==true0}" ng-click="playAgain()">Play Again</button>
     </div>
 
 </div>

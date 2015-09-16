@@ -13,6 +13,16 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
     $scope.roundSubmissionData = gameService.getRoundSubmissionData;
     $scope.messageText;
 
+    // detect if the game is run on an iphone, ipod or ipad
+    $scope.ios = function() {
+        var userAgent = $window.navigator.userAgent || $window.navigator.vendor || $window.opera;
+         console.log(userAgent);
+        if( userAgent.match( /iPad/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPod/i ) ) {
+            return true;
+        }
+        else return false;
+    };
+
     /*
         check if a certain user had submitted an answer yet
         function called in order to visualise on the timer when a certain player has submited
