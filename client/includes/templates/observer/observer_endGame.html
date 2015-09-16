@@ -3,7 +3,6 @@
         <h1> Game Over </h1>
         <h1> Final Scores </h1>
     </div>
-    <ng-include src="'includes/templates/user/messengerObserver.html'"></ng-include>
     <div class="row">
         <div class="end-game-data-container" ng-repeat="submission in roundSubmissionData() | orderBy : '-player.points'">
             <div class="row end-game-data-row">

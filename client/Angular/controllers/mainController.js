@@ -2,6 +2,7 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
 
     $scope.getUserName = userService.getUserName;
     $scope.roomId = roomService.getRoomId;
+    $scope.getUserId = userService.getUserId;
     $scope.currentRound = gameService.getCurrentRound;
     $scope.maxRounds = gameService.getMaxRounds;
     $scope.getUserImage = userService.getUserImage;
@@ -10,6 +11,7 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
     $scope.getUserFromId = roomService.getUserFromId;
     $scope.allRoomsAvailable = gameService.allRoomsAvailable;
     $scope.roundSubmissionData = gameService.getRoundSubmissionData;
+    $scope.messageText;
 
     /*
         check if a certain user had submitted an answer yet
