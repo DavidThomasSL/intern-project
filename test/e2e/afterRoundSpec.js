@@ -75,6 +75,21 @@ describe('After each round', function() {
 		expect(firstClonageUser.element(by.binding('rank()')).getText()).toBe('Rank #1');
 	});
 
+	it('can see a timer', function() {
+
+		expect(browser.getCurrentUrl()).toMatch(/\/results/);
+
+		var timer = firstClonageUser.element(by.id('countdown'));
+		expect(timer.isPresent()).toBe(true);
+	});
+
+	it('can have a counter that indicates number of seconds left', function() {
+		expect(browser.getCurrentUrl()).toMatch(/\/results/);
+
+		var counter = firstClonageUser.element(by.binding('counter'));
+		expect(counter.isPresent()).toBeLessThan(21);
+	});
+
 	it('can refresh and still see results and scores in page and in sidebar', function() {
 
 		firstClonageUser.refresh();
@@ -93,26 +108,14 @@ describe('After each round', function() {
 
 	});
 
-	it('can see a timer', function() {
-		expect(browser.getCurrentUrl()).toMatch(/\/results/);
 
-		var timer = firstClonageUser.element(by.id('countdown'));
-		expect(timer.isPresent()).toBe(true);
-	});
-
-	it('can have a counter that indicates number of seconds left', function() {
-		expect(browser.getCurrentUrl()).toMatch(/\/results/);
-
-		var counter = firstClonageUser.element(by.binding('counter'));
-		expect(counter.isPresent()).toBeLessThan(21);
-	});
 
 	it('can start a new round after time runs out', function() {
 
-		browser.wait( function(){
-		  return browser.getCurrentUrl().then(function(url){
-			  return (url === "http://localhost:8080/#/question/");
-		  });
+		browser.wait(function() {
+			return browser.getCurrentUrl().then(function(url) {
+				return (url === "http://localhost:8080/#/question/");
+			});
 		}, 10000);
 
 		expect(browser.getCurrentUrl()).toMatch(/\/question/);
