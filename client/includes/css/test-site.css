@@ -113,11 +113,13 @@ body, html {
 
 .dropdown-game-rankings {
   display: flex;
+  display: -webkit-flex;
   align-items: center;
 /*  justify-content: center;*/
 }
 
 .results-data-row {
+  display: -webkit-flex;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -125,6 +127,7 @@ body, html {
 
 .end-game-data-row {
     display: flex;
+    display: -webkit-flex;
     align-items: center;
     justify-content: center;
 }
