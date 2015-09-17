@@ -4,26 +4,25 @@
         <h4> Final Scores </h4>
     </div>
     <div class="row">
-
-        <div class="end-game-data-container" ng-repeat="submission in roundSubmissionData() | orderBy : '-player.points'" id="end-game-results-row">
-
-            <div class="row end-game-data-row">
-                <div class="col-xs-2 col-xs-offset-2 col-sm-1 col-sm-offset-0 end-game-rank text-right">
-                    #{{submission.player.rank}}
-
-                </div>
-                <div class="col-xs-2 col-sm-1 text-left">
-                    <user-profile sizex="60" sizey="60" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
-                    image"></user-profile>
-                </div>
-                <div class="col-xs-6 col-sm-2 end-game-name text-left">
-                    <div class="flex-1">
-                        <section>
-                            <b>{{submission.player.name}}</b>
-                        </section>
-                        <section>
-                            {{submission.player.points}} points
-                        </section>
+        <div class="col-xs-12 text-center">
+            <div class="end-game-data-container" ng-repeat="submission in roundSubmissionData() | orderBy : '-player.points'" id="end-game-results-row">
+                <div class="row end-game-data-row">
+                    <div class="col-xs-2 col-xs-offset-2 col-sm-1 col-sm-offset-0 end-game-rank text-right">
+                        #{{submission.player.rank}}
+                    </div>
+                    <div class="col-xs-2 col-sm-1 text-left">
+                        <user-profile sizex="60" sizey="60" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
+                        image"></user-profile>
+                    </div>
+                    <div class="col-xs-6 col-sm-2 end-game-name text-left">
+                        <div class="flex-1">
+                            <section>
+                                <b>{{submission.player.name}}</b>
+                            </section>
+                            <section>
+                                {{submission.player.points}} points
+                            </section>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -33,7 +32,11 @@
         <button id="back-to-start-button" type="button" ng-class="{'btn btn-lg btn-default hvr-icon-pulse-grow' : ios()===true, 'btn btn-lg btn-default hvr-float hvr-icon-pulse-grow': ios()!==true}" ng-click="leaveRoom()">Finish</button>
         <button id="play-again-button" ng-if="!playAgainWasPressed()" type="button" ng-class="{'btn btn-lg btn-primary hvr-icon-spin' : ios()===true, 'btn btn-lg btn-primary hvr-float hvr-icon-spin': ios()!==true}" ng-click="playAgain()">Play Again</button>
     </div>
+<<<<<<< HEAD
+</div>
+=======
 
 </div>
 
 
+>>>>>>> dev
