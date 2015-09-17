@@ -11,7 +11,7 @@
         <div ng-if="screenWidth<=768" ng-init="resetToggle()"></div>
         <div ng-class="{'panel-collapse collapse' : toggled === false, 'panel-collapse collapse in' : toggled === true}" id="collapseOne">
             <div class="panel-body msg_container_base" scroll="loadedMessages">
-                <ul style="width: 98%">
+                <ul style="width: 98%; list-style-type: none;">
                     <li ng-repeat="message in getMessages()" ng-class="{'row msg_container base_sent': message.playerUid === getUserId(), 'row msg_container base_receive': message.playerUid !== getUserId()};">
                         <div ng-if="message.playerUid !== getUserId()" class="col-lg-2 col-md-2 col-xs-2 avatar">
                             <user-profile class="flex1" sizex="50" sizey="50" image=message.playerImage style="right:0px"></user-profile>
