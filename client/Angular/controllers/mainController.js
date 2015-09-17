@@ -16,7 +16,6 @@ ClonageApp.controller("MainController", function($scope, $interval, $window, use
     // detect if the game is run on an iphone, ipod or ipad
     $scope.ios = function() {
         var userAgent = $window.navigator.userAgent || $window.navigator.vendor || $window.opera;
-         console.log(userAgent);
         if( userAgent.match( /iPad/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPod/i ) ) {
             return true;
         }
