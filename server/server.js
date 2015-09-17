@@ -84,7 +84,7 @@ module.exports = function(port, enableLogging, testing) {
             // If the room has a game in progress, they will re-join that game
             if (user.roomId !== "") {
                 logger.debug("User " + user.uId + "was in room " + user.roomId + " previously");
-                putUserInRoom(user.roomId);
+                putUserInRoom(user.roomId, true);
             } else if (user.name !== undefined) {
                 logger.debug("Putting user in joining");
                 putUserInJoining();
@@ -201,7 +201,7 @@ module.exports = function(port, enableLogging, testing) {
             logger.debug("Removed user " + user.name + " from room " + room.id);
         });
 
-        function removeUserFromRoom(room) {
+        function removeUserFromRoom(room, midGame) {
             logger.debug("Removing player from room" + room.id);
 
             room.removeUser(user);
@@ -223,6 +223,14 @@ module.exports = function(port, enableLogging, testing) {
                     });
 
                     logger.debug("No-one in room" + room.id + ", deleting it");
+                });
+            }
+
+            //if we are mid game then update all the remaining players ranks and scoring data
+            if (midGame === true) {
+                room.broadcastRoom("NOTIFICATION message", {
+                    text: "" + user.name + " left the game",
+                    type: "info"
                 });
             }
         }
@@ -334,12 +342,7 @@ module.exports = function(port, enableLogging, testing) {
 
             // Set up the gameController
             // Will start the first round once initialized
-            room.gameController.initialize(room).then(function(initialResults) {
-
-                room.broadcastRoom("GAME playerRoundResults", {
-                    results: initialResults,
-                    voteCounter: 0
-                });
+            room.gameController.initialize(room).then(function() {
 
                 startNextRoundInRoom(room.id);
                 logger.debug("Starting game in room " + room.id);
@@ -420,14 +423,17 @@ module.exports = function(port, enableLogging, testing) {
                     // and wait until it has ran out (triggers a callback)
                     room.gameController.startTimer(testing, function(data) {
 
-                        room.broadcastRoom("GAME roundSubmissionData", {
-                            roundSubmissionData: data.roundSubmissionData,
-                            currentNumberOfSubmissions: data.currentNumberOfSubmissions,
-                            currentNumberOfVotes: data.currentNumberOfVotes
-                        });
+                        room = getRoomFromId(user.roomId);
+                        if (room !== undefined) {
+                            room.broadcastRoom("GAME roundSubmissionData", {
+                                roundSubmissionData: data.roundSubmissionData,
+                                currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                                currentNumberOfVotes: data.currentNumberOfVotes
+                            });
 
-                        // time has ran out so everyone is routed to the voting page
-                        putUserInVote(room);
+                            // time has ran out so everyone is routed to the voting page
+                            putUserInVote(room);
+                        }
                     });
                 }
 
@@ -505,8 +511,10 @@ module.exports = function(port, enableLogging, testing) {
                     });
 
                     room.gameController.startTimer(testing, function(data) {
-
-                        startNextRoundInRoom(room.id);
+                        room = getRoomFromId(user.roomId);
+                        if (room !== undefined) {
+                            startNextRoundInRoom(room.id);
+                        }
                     });
                 }
             });
@@ -528,7 +536,7 @@ module.exports = function(port, enableLogging, testing) {
 
             if (room !== undefined) {
                 // Take the user out of the game (set as disconnected)
-                removeUserFromRoom(room);
+                removeUserFromRoom(room, true);
 
                 if (!user.isObserver) {
                     user.readyToProceed = false;
@@ -576,6 +584,18 @@ module.exports = function(port, enableLogging, testing) {
                     users.forEach(function(u) {
                         u.emit("GAME rooms available", getRoomsInformation());
                     });
+                    //if a player is joining in progress then send everyone the new scoring data
+                    if (force === true) {
+                        room.broadcastRoom("GAME roundSubmissionData", {
+                            roundSubmissionData: result.currentResults.roundSubmissionData,
+                            currentNumberOfSubmissions: result.currentResults.currentNumberOfSubmissions,
+                            currentNumberOfVotes: result.currentResults.currentNumberOfVotes
+                        });
+                        room.broadcastRoom("NOTIFICATION message", {
+                            text: "" + user.name + " joined the game",
+                            type: "info"
+                        });
+                    }
 
                     logger.debug("User " + user.name + " joined room " + roomId);
 
@@ -618,24 +638,30 @@ module.exports = function(port, enableLogging, testing) {
             // start new timer for the voting page
             // and wait until time rans out
             room.gameController.startTimer(testing, function(data) {
+                room = getRoomFromId(user.roomId);
+                if (room !== undefined) {
 
-                //time has ran out so everyone is routed to the results page
-                room.broadcastRoom("ROUTING", {
-                    location: 'results'
-                });
+                    //time has ran out so everyone is routed to the results page
+                    room.broadcastRoom("ROUTING", {
+                        location: 'results'
+                    });
 
 
-                room.broadcastRoom("GAME roundSubmissionData", {
-                    roundSubmissionData: data.roundSubmissionData,
-                    currentNumberOfSubmissions: data.currentNumberOfSubmissions,
-                    currentNumberOfVotes: data.currentNumberOfVotes
-                });
+                    room.broadcastRoom("GAME roundSubmissionData", {
+                        roundSubmissionData: data.roundSubmissionData,
+                        currentNumberOfSubmissions: data.currentNumberOfSubmissions,
+                        currentNumberOfVotes: data.currentNumberOfVotes
+                    });
 
-                room.gameController.startTimer(testing, function(data) {
 
-                    startNextRoundInRoom(room.id);
+                    room.gameController.startTimer(testing, function(data) {
+                        room = getRoomFromId(user.roomId);
+                        if (room !== undefined) {
+                            startNextRoundInRoom(room.id);
+                        }
 
-                });
+                    });
+                }
             });
         }
 

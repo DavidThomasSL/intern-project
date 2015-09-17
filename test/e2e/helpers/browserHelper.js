@@ -39,6 +39,7 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 		var messageInput = element(by.id('message-box'));
 		messageInput.sendKeys(message);
+		browserInstance.waitForAngular();
 		element(by.id('submit-message')).click();
 		browserInstance.waitForAngular();
 	};
@@ -60,10 +61,8 @@ module.exports = function(browserInstance) {
 		browserInstance.waitForAngular();
 	};
 
-	var joinRoom = function(roomId) {
-		var joinRoomButton = element(by.id('room-join-button'));
-		var roomCodeBox = element(by.id('room-input-box'));
-		roomCodeBox.sendKeys(roomId);
+	var joinRoom = function() {
+		var joinRoomButton = element.all(by.repeater('room in allRoomsAvailable()')).last().element(by.id('join-game-button'));
 		joinRoomButton.click();
 		browserInstance.waitForAngular();
 	};

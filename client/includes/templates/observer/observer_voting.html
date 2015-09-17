@@ -9,16 +9,16 @@
 					<h1> {{currentQuestion().text}}</h1>
 				</div>
 			</div>
-			<ng-include src="'includes/templates/user/progressBarObserver.html'"  ng-if="index === currentNumberOfSubmissions()" ng-init="startCountdown()"></ng-include>
+			<ng-include src="'includes/templates/user/progressBarObserver.html'"  ng-if="index === currentNumberOfSubmissions()" ng-init="startCountdown(60)"></ng-include>
 			<div id="observer-question-responses-container">
 				<div class="row">
 					<div class="col-md-8 col-md-offset-2 text-center repeat-animation" ng-repeat="answer in visualiseAnswers() | orderBy:'submissionsText[0]'" ng-init="startTimer()" ng-class-even="'left'" ng-class-odd="'right'">
 						<div class="card-text-container">
-							<button ng-if="(index === currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block observer-card-text-button disabled" type="button" id="answer">
+							<button ng-if="(index === currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block observer-card-text-button disabled hvr-bounce-in" type="button" id="answer">
 							<p ng-bind-html="bindHtml(answer.filledInText)"></p>
 							</button>
 							</button>
-							<button ng-if="(index !== currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block observer-large-card disabled" type="button">
+							<button ng-if="(index !== currentNumberOfSubmissions())" class="btn btn-warning btn-lg btn-block observer-large-card disabled hvr-bounce-in" type="button">
 							<p ng-bind-html="bindHtml(answer.filledInText)"></p>
 						</div>
 					</div>

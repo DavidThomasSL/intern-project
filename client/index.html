@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <!-- Custom styles for this template -->
         <link rel="stylesheet" href="/includes/css/test-site.css" >
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" media="all">
         <!---Google's Roboto Font -->
         <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     </head>
@@ -51,12 +52,12 @@
                                 </a>
                                 <ul id="game-ranking-dropdown" class="dropdown-menu" >
                                     <li class="navbar-text" ng-repeat="submission in roundSubmissionData() | orderBy: '-player.points'" style="margin-left: 30px" id="dropdown-row">
-                                        <div class="dropdown-game-rankings">
-                                            <div class="dropdown-rankings-image">
+                                        <div class="dropdown-game-rankings flex" ng-hide="getUserFromId(submission.player.uId)===undefined">
+                                            <div class="dropdown-rankings-image aside aside-1">
                                                 <user-profile sizex="45" sizey="45" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
                                                 image"></user-profile>
                                             </div>
-                                            <div class="flex-1">
+                                            <div class="main">
                                                 <section>
                                                     <b>#{{submission.player.rank}} - {{submission.player.name}}</b>
                                                 </section>
@@ -84,6 +85,14 @@
                 });
                 </script>
             </nav>
+            <div ng-if="roomId() !== -1">
+                <div ng-if="getIfObserver() !== true">
+                    <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
+                </div>
+                <div ng-if="getIfObserver() === true">
+                    <ng-include src="'includes/templates/user/messengerObserver.html'"></ng-include>
+                </div>
+            </div>
             <!-- END NAVBAR -->
             <div ng-view autoscroll="true">
             </div ng-view>

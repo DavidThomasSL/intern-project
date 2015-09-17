@@ -3,8 +3,7 @@
         <h4>Waiting for other players to vote</h4>
         <p>{{ currentNumberOfVotes() }} / {{getActiveUsersInRoom().length}} votes cast</p>
     </div>
-    <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
-    <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
+    <ng-include src="'includes/templates/user/progressBar.html'" data-ng-init="startCountdown(counter)"></ng-include>
     <div class="col-md-3 col-xs-4 text-center" ng-repeat="user in getActiveUsersInRoom()">
         <ng-include src="'includes/templates/user/userPanelSmallVoted.html'"></ng-include>
     </div>

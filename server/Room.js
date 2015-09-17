@@ -102,6 +102,7 @@ function Room(roomCode, testing) {
         var userAlreadyInRoom = false;
         var gameInProgress = true;
         var routing = "";
+        var newResults = {};
 
         // Only join the room if user not already in ANY room
         // Handles user pressing join room multiple times
@@ -130,18 +131,17 @@ function Room(roomCode, testing) {
             // Check if user was in the game
             var userInGame = self.gameController.checkIfUserInGame(user.uId);
 
-            // lol hakz
+            if (user.isObserver) {
+                user.connectedToServer = false;
+            }
+
             // in this case, we want to put the user into a room where the game is already in progress
-            // to do that, we turn the user into an observer and add them to the gameController
-            // now when we get info for the "reconnecting" user, they will be handled as an observer
-            // and routed to the correct pages (done by the observer controllera)
-            if (!userInGame && (forceUserInRoom || user.isObserver)) {
+            if (!userInGame && forceUserInRoom) {
                 // forceable put the user into the room
-                user.isObserver = true; // make them an observer so they can't partificpate
-                user.readyToProceed = true;
-                self.gameController.setupPlayer(user);
+                self.gameController.setupPlayer(user, true);
                 userInGame = self.gameController.checkIfUserInGame(user.uId);
             }
+
 
             if (userInGame) {
                 //players can only join a game they were in previosuly, for refresh purposes
@@ -149,6 +149,7 @@ function Room(roomCode, testing) {
 
                 //User was in the game, tell the game controller they're back, route them to the current stage
                 // Find out where to put this user, i.e where all the other players are
+                newResults = self.gameController.getCurrentResults();
                 self.gameController.getInfoForReconnectingUser(user, testing, function(routingInfo, gameStateData) {
 
                     routing = routingInfo;
@@ -200,6 +201,7 @@ function Room(roomCode, testing) {
 
         // Return wether the join was successful or not
         return {
+            currentResults: newResults,
             gameInProgress: gameInProgress,
             userAlreadyInRoom: userAlreadyInRoom,
             joined: canJoin
@@ -244,7 +246,7 @@ function Room(roomCode, testing) {
         if (eventName === "ROOM details") {
             data = {
                 roomId: self.id,
-                usersInRoom:  self.getUsersInRoomDetails(),
+                usersInRoom: self.getUsersInRoomDetails(),
                 botsInRoom: self.botsInRoom,
                 numRounds: self.numRounds
             };
@@ -268,7 +270,6 @@ function Room(roomCode, testing) {
 
         return usersInRoomJSON;
     };
-
 
     function resolveObserverRoute(route) {
         if (route === "question" || route === "waitQuestion") {

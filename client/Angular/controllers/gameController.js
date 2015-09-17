@@ -5,8 +5,6 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
     $scope.currentQuestion = gameService.getCurrentQuestion;
 
     $scope.userHand = userService.getUserHand;
-    $scope.getUserId = userService.getUserId;
-    $scope.roomId = roomService.getRoomId; //Display room code in lobby
     $scope.getActiveUsersInRoom = roomService.getActiveUsersInRoom;
     $scope.getUsersInRoom = roomService.getUsersInRoom;
     $scope.getBotsInRoom = roomService.getBotsInRoom;
@@ -30,9 +28,18 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
     //get all answers submitted in order to visualise them on the voting page
     $scope.visualiseAnswers = function() {
-        var ans = gameService.getAnswersToVisualise().filter(function(submission){
+        var ans = gameService.getAnswersToVisualise().filter(function(submission) {
             return submission.submissionsText.length > 0;
         });
+
+        ans.sort(function(a, b) {
+            if (a.submissionsText[0] < b.submissionsText[0])
+                return -1;
+            if (a.submissionsText[0] > b.submissionsText[0])
+                return 1;
+            return 0;
+        })
+
         var filtered = [];
 
         if ($scope.index < gameService.getCurrentNumberOfSubmissions()) {
@@ -110,6 +117,9 @@ ClonageApp.controller("gameController", function($scope, $timeout, $window, $sce
 
         // create a new room a put the user in it
         roomService.createRoom(userService.getUserId());
+
+        //as with leaveRoom, remove all ranking and scores data once the player leaves the room
+        gameService.clearGameData();
 
         // send a message to all other players in the room asking if they want to join the new room
         playerService.playAgain(userService.getUserId(), oldRoomId);

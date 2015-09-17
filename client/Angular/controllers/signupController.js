@@ -14,7 +14,7 @@ ClonageApp.controller("signupController", function($scope, userService, roomServ
 	$scope.registerAsObserver = function () {
 		// Get the user drawing from the canvas
 		var userDrawing = $scope.joinCanvasControl.getCanvasData();
-		userService.registerNewObserver('Observer', userDrawing);
+		userService.registerNewObserver('An observer', userDrawing);
 	};
 
 });

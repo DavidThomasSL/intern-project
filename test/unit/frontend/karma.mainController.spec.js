@@ -34,12 +34,12 @@ describe("Testing Main Controller", function() {
 
 	    it('should create $scope.counter when calling startCountdown', function() {
 		        expect(scope.counter).toBeUndefined();
-		        scope.startCountdown();
+		        scope.startCountdown(60);
 		        expect(scope.counter).toBeDefined();
 		});
 
-		it("when it starts, countdown should be initialised with 60 if getCountdown is undefined", function() {
-			scope.startCountdown();
+		it("when it starts, countdown should be initialised with the given time if getCountdown is undefined", function() {
+			scope.startCountdown(60);
 			expect(scope.counter).toBe(60);
 
 		});

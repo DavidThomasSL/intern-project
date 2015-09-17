@@ -18,8 +18,13 @@
                 </tr>
                 <tr ng-repeat="submission in roundSubmissionData() | orderBy : '-playersWhoVotedForThis.length'">
                     <td>
-                        <user-profile class="flex1" sizex="60" sizey="60" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
-                        image"></user-profile>
+                        <span ng-hide="getUserFromId(submission.player.uId)===undefined">
+                            <user-profile class="flex1" sizex="60" sizey="60" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
+                            image"></user-profile>
+                        </span>
+                        <span ng-show="getUserFromId(submission.player.uId)===undefined">
+                            <img src="/includes/images/mystery-avatar.png" height="60" width="60">
+                        </span>
                         <p>{{submission.player.name}}</p>
                     </td>
                     <td>
@@ -29,8 +34,15 @@
                     </td>
                     <td>
                         <span ng-repeat="votingPlayer in submission.playersWhoVotedForThis track by $index">
-                            <user-profile class="flex1" sizex="40" sizey="40" isbot="getUserFromId(votingPlayer.uId).isBot" image="getUserFromId(votingPlayer.uId).
-                        image"></user-profile></span>
+                            <span ng-hide="getUserFromId(votingPlayer.uId)===undefined">
+                                <user-profile class="flex1" sizex="40" sizey="40" isbot="getUserFromId(votingPlayer.uId).isBot" image="getUserFromId(votingPlayer.uId).
+                                image">
+                                </user-profile>
+                            </span>
+                            <span ng-show="getUserFromId(votingPlayer.uId)===undefined">
+                                <img src="/includes/images/mystery-avatar.png" height="40" width="40" style="margin-bottom:25px">
+                            </span>
+                        </span>
                     </td>
                     <td>
                         <div style="margin-top:30px">

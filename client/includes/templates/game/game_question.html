@@ -1,5 +1,5 @@
 <div class="container">
-    <ng-include src="'includes/templates/user/progressBar.html'"></ng-include>
+    <ng-include src="'includes/templates/user/progressBar.html'" data-ng-init="startCountdown(60)"></ng-include>
     <div class="header clearfix">
         <div id="round-question">
             <h2 animate-on-change="dynamicFilledInQuestion()" ng-bind-html="bindHtml(dynamicFilledInQuestion())"></h2>
@@ -7,19 +7,18 @@
         </div>
     </div>
     <div id="user-hand-container">
-        <ng-include src="'includes/templates/user/messenger.html'"></ng-include>
         <div class="row">
-            <div class="col-md-12 text-center" ng-repeat="answer in userHand()" data-ng-init="startCountdown()">
+            <div class="col-md-12 text-center" ng-repeat="answer in userHand() track by $index">
                 <div class="card-text-container">
-                    <button class="btn btn-primary btn-lg btn-block card-text-button" type="button" id="answer" ng-click="submitAnswer(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
+                    <button ng-class="{'btn btn-primary btn-lg btn-block card-text-button' : ios()===true, 'btn btn-primary btn-lg btn-block card-text-button hvr-bounce-in': ios()!==true}" type="button" id="answer" ng-click="submitAnswer(answer); selected = !selected;" ng-class="{'btn-info':selected}">{{answer}}
                     <span class="pull-right" ng-show="selected && answerPosition(answer)>0">{{answerPosition(answer)}}</span>
                     </button>
                 </div>
             </div>
             <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12 text-center" style="margin-bottom: 30px">
-            <!-- Spaceing for extra small screens between buttons when stacked -->
+                <!-- Spaceing for extra small screens between buttons when stacked -->
                 <div class="hidden-lg hidden-md hidden-sm">&nbsp;</div>
-                <button id="replace-hand-button" type="button" class="btn btn-lg btn-danger" ng-click="replaceHand(userHand())">Replace hand <span class="badge">-{{handReplaceCost()}} points</span></button>
+                <button id="replace-hand-button" type="button" ng-class="{'btn btn-lg btn-danger' : ios()===true, 'btn btn-lg btn-danger hvr-buzz': ios()!==true}" ng-click="replaceHand(userHand())">Replace hand <span class="badge">-{{handReplaceCost()}} points</span></button>
             </div>
         </div>
     </div>
