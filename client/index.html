@@ -53,12 +53,12 @@
                                 </a>
                                 <ul id="game-ranking-dropdown" class="dropdown-menu" >
                                     <li class="navbar-text" ng-repeat="submission in roundSubmissionData() | orderBy: '-player.points'" style="margin-left: 30px" id="dropdown-row">
-                                        <div class="dropdown-game-rankings" ng-hide="getUserFromId(submission.player.uId)===undefined">
-                                            <div class="dropdown-rankings-image">
+                                        <div class="dropdown-game-rankings flex" ng-hide="getUserFromId(submission.player.uId)===undefined">
+                                            <div class="dropdown-rankings-image aside aside-1">
                                                 <user-profile sizex="45" sizey="45" isbot="getUserFromId(submission.player.uId).isBot" image="getUserFromId(submission.player.uId).
                                                 image"></user-profile>
                                             </div>
-                                            <div class="flex-1">
+                                            <div class="main">
                                                 <section>
                                                     <b>#{{submission.player.rank}} - {{submission.player.name}}</b>
                                                 </section>
